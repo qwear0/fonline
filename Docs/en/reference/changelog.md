@@ -16,6 +16,17 @@ Developer-visible FOnline changes and migration notes are maintained here in Eng
 
 ### Changed
 
+- Continue the owner-authorized retirement of the Python unit suites for documentation, managed-runtime tooling and packaging. Production generators, validators, packaging tools and vendored suites are retained; no replacement test framework is introduced.
+
+### Migration
+
+- Base `18bbf6ebb91380ba7363e77d979fd55ff7394b3d` (`2026.1.58-dev`) → `2026.1.59-dev`. Remove invocations of the deleted `BuildTools/tests` runners; use the existing production documentation/build/application checks under the fork policy. The suite registration was already disabled in the preceding step.
+- Runtime APIs, settings, saves, resource formats, wire `0.0.75` and Managed ABI `9` are unchanged. No data conversion is required. Publish the coordinated range together; rollback restores the matching preceding source/tool set, not individual retired runners.
+
+## 2026.1.58-dev - 2026-10-22
+
+### Changed
+
 - Begin the coordinated fork documentation/test-retirement update: archive Actions, remove owned unit/coverage build and CLI registration, reject unsupported source roles, and reconcile documentation models and validators with live consumers. Vendored sources and production diagnostics remain supported.
 - Parse setting defaults with the existing balanced C++ argument helpers; quoted commas, parentheses and comment-like text remain one value. Generated `Web.BackgroundColor` now preserves `rgb(0, 0, 0)`.
 - Adopt the owner's Russian-description commit and normal fork-push policy. Begin removal of owned Python/debugger tests; the remaining removals and synchronized bilingual/generated guidance follow in the same coordinated publication range.
