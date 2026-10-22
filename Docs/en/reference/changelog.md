@@ -16,6 +16,17 @@ Developer-visible FOnline changes and migration notes are maintained here in Eng
 
 ### Changed
 
+- Continue owner-authorized removal of inactive native unit suites and their local helpers across core, content, rendering, networking and server subsystems. Production implementation and vendored tests are unchanged.
+
+### Migration
+
+- Base `e83d10e07cc11f1ffd1441534512019dc4597073` (`2026.1.63-dev`) → `2026.1.64-dev`. Do not invoke the retired native suite or count historical suite results as current verification. Keep unit/coverage options disabled and use the existing production compiler, baker and application routes.
+- No runtime API, setting value, save/resource format, wire `0.0.75` or Managed ABI `9` change; no conversion required. Complete the final coordinated source/skill step before publication. Rollback restores the matching preceding source/build configuration, not isolated test files.
+
+## 2026.1.63-dev - 2026-10-22
+
+### Changed
+
 - Synchronize remaining generated content/native/support/example records and Russian GUI redirect destinations. Correct starter CMake options and paired root/source/resource/example guides, preserving engine/game ownership.
 - Retire the standalone testing application, native-extension sample test, owned managed suites and the first native suite group. Their build consumers were removed earlier in this coordinated range.
 
