@@ -84,7 +84,7 @@ automation, and script helper details.
 
 ### Testing app
 
-`Source/Applications/TestingApp.cpp` is the test runner entry point. Use the [native test-suite inventory](../../../../Source/Tests/README.md) and [Testing](../../contributing/testing/) for suite ownership.
+The former `Source/Applications/TestingApp.cpp` runner and Engine-owned unit/coverage targets are removed. Use [Testing](../../contributing/testing/) for current policy and select existing affected build, compile/bake, CLI and application checks; do not restore suites to satisfy old instructions.
 
 ## Baking tools
 
@@ -256,7 +256,9 @@ Use embedding-project docs for:
 - exact preset names or binary names such as `LF_Mapper` unless clearly marked as an example;
 - downstream pipelines that consume tool output for a specific game feature.
 
-## Tests to inspect
+## Historical test inventory
+
+The focused suites below were removed from this fork and are not current prerequisites. Build affected tools, compile/bake their real inputs and use the actual Mapper/viewer/CLI path. New automated tests require an explicit request.
 
 Baker/tool behavior is covered by focused tests in `Source/Tests/`:
 
@@ -306,12 +308,10 @@ Mapper UI behavior is less directly covered by focused unit tests. Validate thos
 
 ## Validation checklist
 
-1. For baker changes, run the smallest affected baker test and then the project bake target when behavior crosses resource-pack boundaries.
-2. For script compile changes, run AngelScript baker/compiler tests and the project `CompileAngelScript` path.
+1. For baker changes, build the affected baker and use the project bake target with its actual inputs; inspect output and diagnostics.
+2. For script compile changes, use project `CompileAngelScript` or `CompileManagedScripts`, then bake and exercise the affected dispatcher.
 3. For mapper changes, launch the mapper path that owns the change; for headless flows, verify the generated output rather than only process exit.
-4. For focused viewer changes, run
-   `BuildTools/tests/test_docs_viewer_tools.py`, build and launch both viewer
-   targets, and visibly execute the affected workflow. For particle UI
+4. For focused viewer changes, build/launch both affected viewer targets and visibly execute the workflow; use relevant existing documentation generator checks, not removed structural suites. For particle UI
    changes, also validate the interactive Mapper path on the affected
    platform/backend.
 5. For Effekseer Editor changes, run `buildtools.py build-auxiliary

@@ -5,7 +5,7 @@ locale: ru
 generated: true
 ---
 
-<!-- docs-translation: {"document_id":"generated-public-examples-index","locale":"ru","source_path":"Docs/en/reference/public-examples/index.md","source_sha256":"0a939c4cab0d9aa503b6b844df3a87521cda024272d3750b31d9ee0ba2109ea4"} -->
+<!-- docs-translation: {"document_id":"generated-public-examples-index","locale":"ru","source_path":"Docs/en/reference/public-examples/index.md","source_sha256":"ad1ec286ade7abb00594599ea605f50f553b1ec1e34a8043da918776b44e0e21"} -->
 
 # Сгенерированный реестр публичных репозиториев-примеров
 
@@ -13,7 +13,7 @@ generated: true
 
 [Политика для разработчиков](../../how-to/build/public-example-repositories.md) | [Канонический JSON](../../../generated/public-examples.json) | [Исходный реестр](../../../../Examples/PublicRepositories.json)
 
-Этот реестр описывает демонстрационные репозитории встраивающих проектов. Нормативное поведение движка определяется только исходным кодом Engine, тестами и документацией-владельцем.
+Этот реестр описывает демонстрационные репозитории подключающих проектов. Нормативное поведение определяется текущими исходниками Engine и владеющей документацией; локальная проверка и публикация внешнего репозитория — отдельные свидетельства.
 
 ## Контракт программы
 
@@ -24,7 +24,7 @@ generated: true
 | Ревизия Engine для релиза | `exact-commit` |
 | Ревизия для разработки | `master` (weekly) |
 | Доставка обновлений | `reviewed-pull-request` |
-| Digest контракта | `e8623467586bebf8c0e4c02370c42fe99aa722d23f7d6cf1f252a163e3eee16d` |
+| Digest контракта | `a84406dc298688162564e271c9fa71a627da66fa821a8139f315cb6fe3856552` |
 
 ## Свидетельства публикации
 
@@ -35,7 +35,7 @@ generated: true
 - Source/remote: `4` source-ready, `4` private, and `0` published repositories.
 - Наблюдённые состояния required checks: `not-observed`.
 - Наблюдённые Engine pins: `project-template`=`9d74c751f5684f80aef3b35a0eb16a8fabf9fa42`, `minimal-multiplayer`=not observed, `content-showcase`=not observed, `native-extension-sample`=not observed.
-- Значения программы, обязательные в том же отчёте: release Engine ref `exact-commit`, update delivery `reviewed-pull-request`, Contract digest `e8623467586bebf8c0e4c02370c42fe99aa722d23f7d6cf1f252a163e3eee16d`.
+- Значения программы, обязательные в том же отчёте: release Engine ref `exact-commit`, update delivery `reviewed-pull-request`, Contract digest `a84406dc298688162564e271c9fa71a627da66fa821a8139f315cb6fe3856552`.
 - `project-template`: source `source-ready`; remote `private` / `source-staged`; Engine pin `9d74c751f5684f80aef3b35a0eb16a8fabf9fa42`; required checks `not-observed`.
 - `minimal-multiplayer`: source `source-ready`; remote `private` / `reserved`; Engine pin not observed; required checks `not-observed`.
 - `content-showcase`: source `source-ready`; remote `private` / `reserved`; Engine pin not observed; required checks `not-observed`.
@@ -48,7 +48,7 @@ generated: true
 | 1 | `cvet/fonline-project-template` | `foundation` | `source-ready` | `private` / `source-staged` | Ответственные за сборку и релизы | Канонический шаблон GitHub и исходник быстрого старта до первого успешного headless-проекта. |
 | 2 | `cvet/fonline-minimal-multiplayer` | `tutorial` | `source-ready` | `private` / `reserved` | Ответственные за документацию | Небольшой игровой вертикальный срез для первых руководств по серверу, клиенту, контенту, скриптам, персистентности и тестам. |
 | 3 | `cvet/fonline-content-showcase` | `showcase` | `source-ready` | `private` / `reserved` | Ответственные за контент и ресурсы | Галерея презентационного качества для возможностей рендеринга и авторинга без большой кодовой базы игровой логики. |
-| 4 | `cvet/fonline-native-extension-sample` | `advanced` | `source-ready` | `private` / `reserved` | Ответственные за runtime движка | Продвинутый минимальный пример проектной композиции C++, lifecycle-хуков, экспортов в скрипты, тестов и проверки ABI. |
+| 4 | `cvet/fonline-native-extension-sample` | `advanced` | `source-ready` | `private` / `reserved` | Ответственные за runtime движка | Продвинутый минимальный пример композиции проектного C++, lifecycle hooks, script exports, runtime smoke и ревью ABI. |
 
 ## cvet/fonline-project-template
 
@@ -161,7 +161,7 @@ generated: true
 - `lifecycle-hook`
 - `script-export`
 - `role-specific-source`
-- `focused-native-test`
+- `native-runtime-smoke`
 - `abi-and-compatibility-review`
 
 Обязательные проверки:
@@ -169,7 +169,7 @@ generated: true
 - `governance-contract`
 - `pinned-engine`
 - `current-engine`
-- `native-unit-test`
+- `native-runtime-smoke`
 - `native-extension-contract`
 
 Критерий завершения: Пример по тегу демонстрирует один полный путь нативного расширения без игровых сервисов и проходит проверки сгенерированного контракта расширений.

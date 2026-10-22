@@ -237,6 +237,4 @@ The main API is in `Source/Common/ResourcePack.h`: `ResourcePackWriter`, `Resour
 `ReadResourcePatchInfo`, and `VerifyResourcePackFile`. `GetClientPackDirs`, `GetClientResourcePackPath` and `AddClientPackSource` in
 `FileSystem.h` give bootstrap, updater and runtime the same base/patch selection.
 
-`Test_ResourcePack.cpp` pins the shared Python/C++ golden bytes, payload validation, repeated append,
-interrupted-footer recovery, resumed appends and pair verification. `Test_ResourceIndex.cpp` covers pair-backed cached reads and APK region bounds;
-`Test_ClientServerIntegration.cpp` exercises the real updater/backend lifecycle.
+The former `Test_ResourcePack.cpp`, `Test_ResourceIndex.cpp` and `Test_ClientServerIntegration.cpp` suites are removed in this fork. Their earlier golden-byte/append/index/updater coverage is historical, not a current runnable gate. Use existing packager payload verification and isolated real updater/runtime paths for affected behavior; new automated tests require an explicit request. This policy does not relax the format, publication or recovery guarantees above.

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "generated_by": "BuildTools/docs_cli.py",
   "source_parser": "BuildTools/buildtools.py",
-  "repository": "cvet/fonline",
+  "repository": "qwear0/fonline",
   "source_ref": "master",
   "scope": {
     "surface": "buildtools-cli",
@@ -93,7 +93,7 @@
       "summary": "configure and build a target",
       "description": null,
       "usage": "usage: buildtools.py build [-h] platform target [config]",
-      "help_output": "usage: buildtools.py build [-h] platform target [config]\n\npositional arguments:\n  platform    engine platform key, such as linux, win64, web, or android-arm64\n  target      BuildTools target profile, such as client, server, baker, or unit-tests\n  config      CMake build configuration\n\noptions:\n  -h, --help  show this help message and exit\n",
+      "help_output": "usage: buildtools.py build [-h] platform target [config]\n\npositional arguments:\n  platform    engine platform key, such as linux, win64, web, or android-arm64\n  target      BuildTools target profile, such as client, server, mapper, or baker\n  config      CMake build configuration\n\noptions:\n  -h, --help  show this help message and exit\n",
       "arguments": [
         {
           "id": "cli.buildtools.command.build.argument.platform",
@@ -121,7 +121,7 @@
           "choices": null,
           "default": null,
           "type": null,
-          "description": "BuildTools target profile, such as client, server, baker, or unit-tests"
+          "description": "BuildTools target profile, such as client, server, mapper, or baker"
         },
         {
           "id": "cli.buildtools.command.build.argument.config",
@@ -571,5 +571,5 @@
     "global_argument_count": 0,
     "command_argument_count": 25
   },
-  "contract_digest": "fe4230108f54098166ceb508251225ab910d03b975cd7bd5267b7c212341d27d"
+  "contract_digest": "1e4dda702d6f4d465a27e7a326e5742b779df6ee668dba4415c39f782ba21a73"
 }

@@ -5,7 +5,7 @@ locale: ru
 generated: true
 ---
 
-<!-- docs-translation: {"document_id":"generated-prototype-format-validation","locale":"ru","source_path":"Docs/en/reference/prototype-format/validation.md","source_sha256":"a2828f707c6fb5d5ec9283e61416bf4c72d1f216faa4a9cd32d982ed0230280f"} -->
+<!-- docs-translation: {"document_id":"generated-prototype-format-validation","locale":"ru","source_path":"Docs/en/reference/prototype-format/validation.md","source_sha256":"2e9972c0904f517ef712f7244e931f067042af18206c881bf2b0fc7fdc9e2afb"} -->
 
 # Валидация формата прототипов
 
@@ -33,6 +33,6 @@ generated: true
 | <a id="entry-prototype-format-rule-property-migration-c7293b2035"></a><code>prototype-format.rule.property-migration</code> | Действия миграции свойств | Property Rename требует существующего назначения; Transform — существующего Persistent-свойства; Remove навсегда запрещает удалённое имя у того же владельца, включая поля RefType. | Объявляйте MigrationRule Property &lt;Owner&gt; Rename &lt;Old&gt; &lt;New&gt;, Transform &lt;Property&gt; &lt;Migrator&gt; или Remove &lt;Old&gt;. Property и Proto имеют общие записи Rename/Transform из пяти частей и Remove из четырёх. Старые значения пропускаются при загрузке документа/текста; bake и финализация метаданных отклоняют повторное имя. | [Source/Common/EngineBase.cpp](https://github.com/cvet/fonline/blob/master/Source/Common/EngineBase.cpp) |
 | <a id="entry-prototype-format-rule-side-specific-output-ade0b5dff3"></a><code>prototype-format.rule.side-specific-output</code> | Выходы отдельных сторон | Один набор исходников отдельно разбирается и сериализуется для метаданных сервера, клиента и Mapper. | Исходное свойство может иметь смысл на одной стороне и пропускаться на другой; server output также проверяет свойства script callbacks. | [Source/Tools/ProtoBaker.cpp](https://github.com/cvet/fonline/blob/master/Source/Tools/ProtoBaker.cpp) |
 
-## Текущее ограничение диагностики
+## Циклы наследования
 
-Граф родителей должен быть ациклическим. Текущий baker рекурсивно раскрывает родителей без отдельной диагностики цикла, поэтому встраивающим проектам следует проверять циклы до baking и держать цепочки наследования короткими. Это документированное ограничение реализации, а не поддержка циклического поведения.
+Граф родителей должен быть ациклическим. ProtoBaker и ProtoTextBaker отслеживают активный обход наследования и отклоняют цикл с отдельной диагностикой. Успех запекания не проверяет проектную политику наследования.

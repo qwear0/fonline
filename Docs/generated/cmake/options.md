@@ -173,9 +173,3 @@ The canonical generated reference moved to locale-specific paths.
 
 <a id="entry-cmake-option-fo-build-baker-bd941dc509"></a>
 - [`entry-cmake-option-fo-build-baker-bd941dc509`](../../en/reference/cmake/options.md#entry-cmake-option-fo-build-baker-bd941dc509)
-
-<a id="entry-cmake-option-fo-unit-tests-d9ccad8a5d"></a>
-- [`entry-cmake-option-fo-unit-tests-d9ccad8a5d`](../../en/reference/cmake/options.md#entry-cmake-option-fo-unit-tests-d9ccad8a5d)
-
-<a id="entry-cmake-option-fo-code-coverage-30381a9ffe"></a>
-- [`entry-cmake-option-fo-code-coverage-30381a9ffe`](../../en/reference/cmake/options.md#entry-cmake-option-fo-code-coverage-30381a9ffe)

@@ -214,7 +214,7 @@ The snapshot for a newly mounted source is taken before that source is published
 
 `FilterFiles()` and `GetAllFiles()` continue to enumerate sources in order even when point lookup is indexed. Script module load order, prototype registration, and other consumers depend on that source-by-source order, which an unordered index does not preserve.
 
-`Common.Packaged` is a fixed auto-setting populated from the executable's packaged marker by `GlobalSettings::ApplyAutoSettings()`. After settings are loaded, runtime policy must read that snapshot (`settings.Packaged`) so copied or injected settings stay internally consistent and testable. Direct `IsPackaged()` checks are reserved for pre-settings bootstrap decisions and `FileSystem::AddPackSource()`, where the physical executable marker deliberately selects archive-versus-directory mounting; tests may also inspect that marker when choosing compatible fixtures.
+`Common.Packaged` is a fixed auto-setting populated from the executable's packaged marker by `GlobalSettings::ApplyAutoSettings()`. After settings are loaded, runtime policy must read that snapshot (`settings.Common.Packaged`) so copied or injected settings stay internally consistent and testable. Direct `IsPackaged()` checks are reserved for pre-settings bootstrap decisions and `FileSystem::AddPackSource()`, where the physical executable marker deliberately selects archive-versus-directory mounting; tests may also inspect that marker when choosing compatible fixtures.
 
 Packaged clients select one effective source per configured logical pack: a writable replacement `Pack.fores` when present, otherwise the installed base, paired with a writable `Pack.patch.fores` only when it binds to that exact physical base. Its complete catalog determines present and deleted paths; later configured packs retain precedence. `GetClientResources()` assembles that same view for gameplay and the updater's metadata check. The suffix after the last Embedded entry can use a disposable `Resources.foindex` cache; stale or damaged cache data falls back to authoritative pair mounts, while damaged authoritative pack data remains an error. An absolute installed or APK root puts writable replacements under `<UserWritablePath>/Resources`. See [Resource Pack Format](../../../ResourcePackFormat.md) and [Client Runtime Split and Updater](../../explanation/runtime/client-updater.md).
 
@@ -234,7 +234,7 @@ An entry is stored as one plain file named after the entry, with path separators
 
 ## Settings store
 
-`Source/Common/SettingsStorage.*` persists small per-user tool/editor preferences (ImGui window layout, view options, last selection) behind `GetString()`/`SetString()`, typed `GetInt`/`SetInt`, `GetBool`/`SetBool`, `GetFloat`/`SetFloat`, `HasKey()`, and `Remove()`. It is scoped by an application name passed to the constructor so different tools never collide. The backend is platform-specific through a pimpl: on `FO_WINDOWS` the values are `REG_SZ` entries under `HKCU\Software\FOnline\<app_name>` (Win32 headers are confined to the `.cpp` behind `WIN32_LEAN_AND_MEAN` + `WinApiUndef.inc`, using the explicit `*A` registry entry points); on other platforms it is a per-application `CacheStorage` under `Platform::GetUserDataBase()/FOnline/<app_name>`. Every value is stored as a string (the typed accessors serialize through it), so both backends behave identically, and the multi-line ImGui `imgui.ini` blob round-trips verbatim. Persistence is **best-effort**: a backend failure is logged, never thrown, so a tool never dies because its settings could not be written. It differs from `CacheStorage` in intent (durable user preferences vs. regenerable cache artifacts) and, on Windows, in medium (registry vs. files).
+`Source/Common/SettingsStorage.*` persists small per-user tool/editor preferences (ImGui window layout, view options, last selection) behind `GetString()`/`SetString()`, typed `GetInt`/`SetInt`, `GetBool`/`SetBool`, `GetFloat`/`SetFloat`, `HasKey()`, and `Remove()`. It is scoped by an application name passed to the constructor so different tools never collide. The backend is platform-specific through a pimpl: on `FO_WINDOWS` the values are `REG_SZ` entries under `HKCU\Software\<FO_NICE_NAME>\<app_name>` (Win32 headers are confined to the `.cpp` behind `WIN32_LEAN_AND_MEAN` + `WinApiUndef.inc`, using the explicit `*A` registry entry points); on other platforms it is a per-application `CacheStorage` under `platform::get_user_data_base()/<FO_NICE_NAME>/<app_name>`. Every value is stored as a string (the typed accessors serialize through it), so both backends behave identically, and the multi-line ImGui `imgui.ini` blob round-trips verbatim. Persistence is **best-effort**: a backend failure is logged, never thrown, so a tool never dies because its settings could not be written. It differs from `CacheStorage` in intent (durable user preferences vs. regenerable cache artifacts) and, on Windows, in medium (registry vs. files).
 
 Only the GUI tools reference it (Mapper `MapperEngine::_uiSettings`, migrated from the resource `Cache`; standalone AnimationViewer / ParticleViewer, each loading in its constructor and saving on shutdown). It lives in `CommonLib` for simplicity, but because the client and server reference no `SettingsStorage` symbol, the linker (`/OPT:REF` plus on-demand static-library inclusion) drops the object from the shipped client/server binaries — so the Windows registry calls never land where antivirus heuristics might flag them. ImGui's own `imgui.ini` autosave stays disabled (`Application.cpp`), so all layout persistence flows through this store.
 
@@ -245,7 +245,9 @@ Only the GUI tools reference it (Mapper `MapperEngine::_uiSettings`, migrated fr
 - `BuildTools/cmake/stages/Packages.cmake` packages resources for runtime targets.
 - `Source/Tools/ConfigBaker.*` bakes config resources; full bake orchestration is in [Baking Pipeline](../../explanation/content-pipeline/baking.md).
 
-## Tests to inspect
+## Historical test inventory
+
+The suites below were removed from this fork and are not current prerequisites. Use existing affected-role builds and direct configuration/filesystem/cache consumers; new automated tests require an explicit request.
 
 Focused tests for this area:
 
@@ -276,7 +278,7 @@ Related consumers are covered by resource, client, server, script, and baker tes
 
 ## Validation checklist
 
-1. Run the focused parser/settings/filesystem/cache tests for the changed area.
+1. Build the affected consumer and directly exercise the changed parser/settings/filesystem/cache boundary with the existing CLI or application.
 2. If resource-pack shape or mount order changes, run at least one bake path and one runtime/tool consumer path.
 3. If command-line or sub-config behavior changes, verify the embedding project config that exercises it, but keep project-specific values in project docs.
 4. If packaging/resource staging changes, re-check [Web Build, Packaging, and Browser Debugging](../../how-to/platforms/web-debugging.md), [Android Build, Packaging, and Device Debugging](../../how-to/platforms/android-debugging.md), and [Client Runtime Split and Updater](../../explanation/runtime/client-updater.md) as applicable.

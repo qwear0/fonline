@@ -7,7 +7,7 @@ permalink: /Docs/ru/reference/scripting/remote-calls.html
 ---
 
 # Удалённые вызовы
-<!-- docs-translation: {"document_id":"remote-calls","locale":"ru","source_path":"Docs/en/reference/scripting/remote-calls.md","source_sha256":"0296d8b306436a22e69b8791166421dd04b7ff33a69a3f2fd0d351b31c7659ab"} -->
+<!-- docs-translation: {"document_id":"remote-calls","locale":"ru","source_path":"Docs/en/reference/scripting/remote-calls.md","source_sha256":"1581ad4c97145c6b6c68741130c34207ac913ec01b3999e5a9e57331371c557f"} -->
 > Документация движка. Эта страница определяет переиспользуемый контракт удалённых вызовов FOnline. Каждый подключающий проект владеет конкретными вызовами, правилами авторизации, сгенерированным каталогом вызовов и политикой совместимости.
 
 ## Назначение
@@ -272,7 +272,7 @@ python Engine/BuildTools/docs_metadata.py \
 - Одиночная запись документации: серверные и клиентские метаданные получены из разных или неполных bake либо один файл устарел.
 - Отсутствующий или несовпадающий limits record: заново запеките обе цели на одной revision Engine/project; каждая запись должна заканчиваться `Limits <max-bytes> <max-collection-size>`, и обе стороны должны совпадать.
 - Нет ссылки на исходный код в сгенерированном результате: `.fometa` хранит только подсказку имени файла; исследуйте инвентарь исходного кода проекта вместо угадывания пути.
-- Ошибка сериализации runtime: сократите контракт до заведомо поддерживаемых типов и добавьте узкий сквозной транспортный тест.
+- Ошибка сериализации runtime: сократите контракт до поддерживаемых типов, rebake обеих сторон и выполните existing end-to-end transport path; новые автоматизированные тесты требуют явного запроса.
 
 ## Контрольный список проверки
 
@@ -280,12 +280,12 @@ python Engine/BuildTools/docs_metadata.py \
 2. Реализуйте точную входящую сигнатуру на правильной стороне и с правильным атрибутом.
 3. Выполните обычное запекание ресурсов проекта; для каждого включённого backend требуются AngelScript compile без warnings и/или чистые Managed C# compile плюс analyzer pass.
 4. Создайте и проверьте парный JSON/Markdown-каталог из этого bake.
-5. Выполняйте `BuildTools/docs_metadata.py --check` с теми же входами в CI.
+5. Выполняйте `BuildTools/docs_metadata.py --check` с теми же входами после baking; CI embedding project принадлежит ему отдельно, workflows этого форка архивированы.
 6. Проверьте авторизацию client-to-server и представление server-to-client через реальную сеть или интеграционный тест проекта.
 7. Проверьте отклонение прав, устаревших идентификаторов, некорректных предметных значений, global/per-call пределов payload, а также пределов внешних и вложенных коллекций.
 8. Для каждого несовместимого изменения вызова задайте явное решение по выпуску и совместимости.
 
-Принадлежащий движку AngelScript [минимальный проект](../../../../Examples/MinimalProject/README.ru.md) доказывает разбор declarations, обе inbound binding, paired baked metadata, stable catalog IDs и server lifecycle startup. `Test_ManagedScriptBaker` вместе с Managed CoreScripts tests доказывают generated caller shape и managed handler registration/loopback. Ни один из этих уровней не заменяет реальные multiplayer transport/authorization tests игры.
+Принадлежащий движку AngelScript [минимальный проект](../../../../Examples/MinimalProject/README.ru.md) доказывает разбор declarations, обе inbound binding, paired baked metadata, stable catalog IDs и server lifecycle startup. Прежние `Test_ManagedScriptBaker` и Managed CoreScripts suites удалены, не current prerequisites. Compile/bake выбранной Managed роли и observation реального dispatcher/transport path нужны отдельно; generated caller shape или diagnostic loopback не доказывают real multiplayer authorization.
 
 ## См. также
 

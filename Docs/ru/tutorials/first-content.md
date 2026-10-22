@@ -5,7 +5,7 @@ locale: ru
 document_id: first-content-tutorial
 permalink: /Docs/ru/tutorials/first-content.html
 ---
-<!-- docs-translation: {"document_id":"first-content-tutorial","locale":"ru","source_path":"Docs/en/tutorials/first-content.md","source_sha256":"670fd7312d9b562cec599887b320c340e04b5c83f1cf3a931cc310a78daafc27"} -->
+<!-- docs-translation: {"document_id":"first-content-tutorial","locale":"ru","source_path":"Docs/en/tutorials/first-content.md","source_sha256":"45e01b3f4854b1aac773daa8775632207667f1fe00b2d717a1d5073d2dc8c4c5"} -->
 # Первое изменение контента
 
 Измените локализованный текст прототипа и подтвердите результат запекания в
@@ -98,8 +98,7 @@ tutorial_server_supply_collected=1
 3. Создайте данные для каждого языка из `Baking.BakeLanguages`.
 4. Ссылайтесь на объект через метаданные скрипта или проверенный `hstring` в
    соответствии с контрактом API-владельца.
-5. Расширьте тест контента, затем запеките ресурсы и запустите самый узкий
-   маршрут, который их потребляет.
+5. Запеките ресурсы и запустите самый узкий существующий consuming route. Новые автоматизированные тесты/инфраструктура требуют явного запроса по политике проверок форка.
 
 Полные контракты описаны в руководствах [Формат прототипов](../how-to/content/prototype-format.md),
 [Формат карт](../how-to/content/map-format.md) и

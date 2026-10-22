@@ -5,7 +5,7 @@ locale: ru
 document_id: configuration-data-sources
 permalink: /Docs/ru/reference/settings/configuration-and-data-sources.html
 ---
-<!-- docs-translation: {"document_id":"configuration-data-sources","locale":"ru","source_path":"Docs/en/reference/settings/configuration-and-data-sources.md","source_sha256":"847e3046bb9bfa4e4a1c5d7eaadf26763d05db2d06dba718820b7eead95c078f"} -->
+<!-- docs-translation: {"document_id":"configuration-data-sources","locale":"ru","source_path":"Docs/en/reference/settings/configuration-and-data-sources.md","source_sha256":"67944d719df2482a5273028b4413863a80148abd3e36ee6421e915b6b25721bb"} -->
 # Конфигурация и источники данных
 
 > Документация движка. Эта страница описывает переиспользуемые механизмы разбора конфигурации, runtime settings, смонтированные источники данных, поиск файлов и хранение кэша. Конкретные значения конфигурации и правила размещения контента принадлежат встраивающему проекту.
@@ -194,7 +194,7 @@ Snapshot нового источника снимается до его публ
 
 `FilterFiles()` и `GetAllFiles()` продолжают перебирать источники по порядку даже при индексированных точечных lookup-операциях. Загрузка script modules, регистрация прототипов и другие consumers зависят от source-by-source order, который unordered index не сохраняет.
 
-`Common.Packaged` — fixed auto-setting, заполняемый из packaged marker исполняемого файла в `GlobalSettings::ApplyAutoSettings()`. После загрузки настроек runtime-политика обязана читать этот снимок (`settings.Packaged`), чтобы скопированные или подставленные настройки оставались внутренне согласованными и тестируемыми. Прямые проверки `IsPackaged()` зарезервированы за решениями bootstrap до настроек и за `FileSystem::AddPackSource()`, где физический marker исполняемого файла намеренно выбирает монтирование архива или каталога; тесты также могут смотреть на этот marker при выборе совместимых фикстур.
+`Common.Packaged` — fixed auto-setting, заполняемый из packaged marker исполняемого файла в `GlobalSettings::ApplyAutoSettings()`. После загрузки настроек runtime-политика обязана читать этот снимок (`settings.Common.Packaged`), чтобы скопированные или подставленные настройки оставались внутренне согласованными и тестируемыми. Прямые проверки `IsPackaged()` зарезервированы за решениями bootstrap до настроек и за `FileSystem::AddPackSource()`, где физический marker исполняемого файла намеренно выбирает монтирование архива или каталога; тесты также могут смотреть на этот marker при выборе совместимых фикстур.
 
 Упакованный клиент выбирает один effective source на каждый логический pack: writable замену `Pack.fores`, если она есть, иначе установленную базу, плюс writable `Pack.patch.fores`, привязанный к физическому хешу этой базы. Полный каталог пары определяет как присутствующие, так и удалённые пути; порядок приоритета логических packs сохраняется. `GetClientResources()` собирает одинаковый вид для gameplay и проверки metadata в updater. Для суффикса после последнего Embedded может применяться удаляемый кэш `Resources.foindex`: устаревший или повреждённый кэш заменяется прямым mount авторитетных пар, а повреждение самих packs остаётся ошибкой. При абсолютном installed/APK root замены хранятся в `<UserWritablePath>/Resources`. См. [формат пакетов ресурсов](../../../ResourcePackFormat.md) и [разделение client runtime и updater](../../explanation/runtime/client-updater.md).
 
@@ -214,7 +214,7 @@ Snapshot нового источника снимается до его публ
 
 ## Хранилище settings
 
-`Source/Common/SettingsStorage.*` сохраняет небольшие пользовательские настройки инструментов и редакторов (ImGui window layout, view options, last selection) через `GetString()`/`SetString()`, типизированные `GetInt`/`SetInt`, `GetBool`/`SetBool`, `GetFloat`/`SetFloat`, а также `HasKey()` и `Remove()`. Область задается именем приложения в конструкторе, поэтому разные инструменты не конфликтуют. Platform-specific backend скрыт за pimpl: при `FO_WINDOWS` значения являются `REG_SZ` entries в `HKCU\Software\FOnline\<app_name>` (Win32 headers остаются в `.cpp` за `WIN32_LEAN_AND_MEAN` и `WinApiUndef.inc`, используются явные registry entry points `*A`); на остальных платформах применяется per-application `CacheStorage` в `Platform::GetUserDataBase()/FOnline/<app_name>`. Каждое значение хранится строкой, а typed accessors сериализуют через нее, поэтому оба backends ведут себя одинаково и многострочный ImGui blob `imgui.ini` проходит round trip без изменений. Persistence работает по принципу **best effort**: backend failure журналируется, но не выбрасывается, поэтому инструмент не завершается из-за невозможности записать settings. От `CacheStorage` этот слой отличается назначением (долговечные user preferences вместо восстанавливаемых cache artifacts), а в Windows еще и носителем (registry вместо файлов).
+`Source/Common/SettingsStorage.*` сохраняет небольшие пользовательские настройки инструментов и редакторов (ImGui window layout, view options, last selection) через `GetString()`/`SetString()`, типизированные `GetInt`/`SetInt`, `GetBool`/`SetBool`, `GetFloat`/`SetFloat`, а также `HasKey()` и `Remove()`. Область задается именем приложения в конструкторе, поэтому разные инструменты не конфликтуют. Platform-specific backend скрыт за pimpl: при `FO_WINDOWS` значения являются `REG_SZ` entries в `HKCU\Software\<FO_NICE_NAME>\<app_name>` (Win32 headers остаются в `.cpp` за `WIN32_LEAN_AND_MEAN` и `WinApiUndef.inc`, используются явные registry entry points `*A`); на остальных платформах применяется per-application `CacheStorage` в `platform::get_user_data_base()/<FO_NICE_NAME>/<app_name>`. Каждое значение хранится строкой, а typed accessors сериализуют через нее, поэтому оба backends ведут себя одинаково и многострочный ImGui blob `imgui.ini` проходит round trip без изменений. Persistence работает по принципу **best effort**: backend failure журналируется, но не выбрасывается, поэтому инструмент не завершается из-за невозможности записать settings. От `CacheStorage` этот слой отличается назначением (долговечные user preferences вместо восстанавливаемых cache artifacts), а в Windows еще и носителем (registry вместо файлов).
 
 Его используют только GUI tools: Mapper через `MapperEngine::_uiSettings`, перенесенный из resource `Cache`, а также standalone AnimationViewer и ParticleViewer, загружающие settings в конструкторе и сохраняющие при shutdown. Код находится в `CommonLib` для простоты, но client и server не ссылаются на символы `SettingsStorage`, поэтому linker (`/OPT:REF` и on-demand inclusion static library) исключает объект из поставляемых client/server binaries. Windows registry calls тем самым не попадают в них и не вызывают лишних antivirus heuristics. Собственный autosave ImGui `imgui.ini` отключен в `Application.cpp`, поэтому вся persistence layout проходит через это хранилище.
 
@@ -227,7 +227,7 @@ Snapshot нового источника снимается до его публ
 
 ## Проверяемые тесты
 
-Сфокусированные тесты этой области:
+Suites ниже удалены в этом форке и не являются current prerequisites. Используйте существующие builds затронутых ролей и прямые configuration/filesystem/cache consumers; новые автоматизированные тесты требуют явного запроса. Историческое покрытие:
 
 - `Source/Tests/Test_CacheStorage.cpp`
 - `Source/Tests/Test_SettingsStorage.cpp`
@@ -256,7 +256,7 @@ Snapshot нового источника снимается до его публ
 
 ## Контрольный список проверки
 
-1. Запустите сфокусированные parser/settings/filesystem/cache tests для измененной области.
+1. Соберите затронутый consumer и прямо выполните изменённый parser/settings/filesystem/cache boundary существующим CLI или приложением.
 2. Если изменилась форма resource pack или порядок mount, выполните хотя бы один bake path и один runtime/tool consumer path.
 3. Если изменилось поведение command line или sub-config, проверьте конфигурацию встраивающего проекта, которая его использует, но оставьте project-specific values в документации проекта.
 4. Если изменился packaging или resource staging, при необходимости повторно проверьте [Web build, packaging и browser debugging](../../how-to/platforms/web-debugging.md), [Android build, packaging и device debugging](../../how-to/platforms/android-debugging.md) и [разделение client runtime и updater](../../explanation/runtime/client-updater.md).

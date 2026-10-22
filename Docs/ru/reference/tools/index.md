@@ -5,7 +5,7 @@ locale: ru
 document_id: tools
 permalink: /Docs/ru/reference/tools/
 ---
-<!-- docs-translation: {"document_id":"tools","locale":"ru","source_path":"Docs/en/reference/tools/index.md","source_sha256":"d838d0682a0b4b00bf01359a1f6731518025d1123a11c6ecf4da09c92ae8c26c"} -->
+<!-- docs-translation: {"document_id":"tools","locale":"ru","source_path":"Docs/en/reference/tools/index.md","source_sha256":"c5075668f8f3cd64ffb01d3042b1a7eb6dc6890ce026ef0311b6f6cc3df956b1"} -->
 # Инструменты
 
 > Документация движка. Эта страница сопоставляет переиспользуемые инструменты из `Source/Tools/` с точками входа приложений. Конкретные игровые content pipelines, project-specific command lines и release automation принадлежат документации встраивающего проекта, если они явно не отмечены как примеры.
@@ -79,7 +79,7 @@ permalink: /Docs/ru/reference/tools/
 
 ### Тестовое приложение
 
-`Source/Applications/TestingApp.cpp` является точкой входа test runner. Владение suites описано в [инвентаре native test suites](../../../../Source/Tests/README.ru.md) и разделе [Тестирование](../../contributing/testing/).
+Прежний runner `Source/Applications/TestingApp.cpp` и собственные unit/coverage targets движка удалены. Текущую политику задаёт [Тестирование](../../contributing/testing/); выбирайте существующие затронутые build, compile/bake, CLI и application checks, не восстанавливая suites ради старых инструкций.
 
 ## Инструменты baking
 
@@ -186,7 +186,9 @@ Editor не имеет Engine CMake option или target и не являетс�
 - точных preset names или binary names вроде `LF_Mapper`, если они явно не помечены как пример;
 - downstream pipelines, использующих tool output для конкретной игровой функции.
 
-## Проверяемые тесты
+## Исторический перечень тестов
+
+Focused suites ниже удалены в этом форке и не являются current prerequisites. Соберите затронутые tools, compile/bake их real inputs и выполните настоящий Mapper/viewer/CLI path. Новые автоматизированные тесты требуют явного запроса.
 
 Поведение bakers и tools покрывается сфокусированными тестами в `Source/Tests/`:
 
@@ -229,10 +231,10 @@ Editor не имеет Engine CMake option или target и не являетс�
 
 ## Контрольный список проверки
 
-1. Для изменений baker запустите самый узкий затронутый baker test, затем project bake target, если поведение пересекает границу resource pack.
-2. Для изменений script compilation запустите AngelScript baker/compiler tests и project path `CompileAngelScript`.
+1. При изменении baker соберите его и выполните project bake target с actual inputs, проверьте outputs/diagnostics.
+2. При изменении script compilation используйте project `CompileAngelScript` или `CompileManagedScripts`, затем bake и affected dispatcher.
 3. Для изменений Mapper запустите mapper path, владеющий изменением; в headless flows проверяйте generated output, а не только exit code процесса.
-4. Для изменений focused viewers запустите `BuildTools/tests/test_docs_viewer_tools.py`, соберите и запустите оба viewer targets и визуально выполните измененный workflow. Для изменений particle UI также проверьте интерактивный Mapper на затронутой platform/backend.
+4. При изменении focused viewers соберите/запустите затронутые viewer targets и визуально выполните workflow; используйте relevant existing documentation generator checks, не удалённые structural suites. Для изменений particle UI также проверьте интерактивный Mapper на затронутой platform/backend.
 5. Для изменений Effekseer Editor выполните `buildtools.py build-auxiliary effekseer-editor Release` на Windows win64, запустите managed UI, сохраните текстовый `.efkproj`, затем выполните baking и preview проекта в Mapper. При изменении staged layout проверьте generic package `INCLUDE`.
 6. Если изменилось wiring tool target, проверьте [Applications](../applications.md), [конвейер BuildTools](../cmake-and-buildtools/pipeline.md) и сгенерированные CMake targets из встраивающего проекта.
 7. Оставляйте game-specific tool pipelines в документации встраивающего проекта и ссылайтесь на документацию движка для переиспользуемой механики.

@@ -779,13 +779,6 @@
             "math.isfinite(timeout)",
             "timeout must be a finite positive number"
           ]
-        },
-        {
-          "path": "BuildTools/tests/test_ai_control_protocol.py",
-          "anchors": [
-            "def test_reference_client_rejects_invalid_timeouts_before_connection",
-            "def test_reference_client_accepts_finite_positive_timeouts"
-          ]
         }
       ]
     },
@@ -809,7 +802,7 @@
       "id": "ai-control-protocol.validation.malformed-peer",
       "name": "Malformed peer responses",
       "stability": "experimental",
-      "requirement": "Client tests reject malformed JSON, unsupported envelopes, mismatched ids, dual result/error responses, and oversized lines.",
+      "requirement": "The reference client rejects malformed JSON, unsupported envelopes, mismatched ids, dual result/error responses, and oversized lines; source-backed generation does not execute these rejection paths.",
       "rationale": "Automation must fail closed instead of consuming ambiguous data.",
       "source": [
         {
@@ -823,10 +816,10 @@
     },
     {
       "id": "ai-control-protocol.validation.security",
-      "name": "Security boundary tests",
+      "name": "Security boundary verification",
       "stability": "experimental",
-      "requirement": "Tests prove non-loopback refusal, per-connection authorization, wrong-token rejection, and absence of token command-line arguments.",
-      "rationale": "Security prose must remain executable as the helper evolves.",
+      "requirement": "Inspect the reference client and sample for non-loopback opt-in and environment-backed token input. The retained smoke exercises per-connection authorization and failed authentication; deleted unit suites are not a current gate.",
+      "rationale": "A successful sample smoke is bounded protocol evidence, not a native listener security review or shipping-artifact inspection.",
       "source": [
         {
           "path": "Examples/AiControlSample/run_protocol_smoke.py",
@@ -896,5 +889,5 @@
       "experimental": 50
     }
   },
-  "contract_digest": "cea32aa5325a0f7601c93c0b40d599865eac7b5471093ec61ade8eb4baf070dd"
+  "contract_digest": "b61880c68e9f28ec3a6011436f696e683bd4512091e979963d1c2095e9a9b49e"
 }

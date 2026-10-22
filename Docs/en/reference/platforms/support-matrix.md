@@ -31,7 +31,7 @@ payload branch is capability, not "full support."
 - `BuildTools/buildtools.py`
 - `BuildTools/cmake/stages/Init.cmake`
 - `BuildTools/cmake/stages/Applications.cmake`
-- `.github/workflows/validate.yml`
+- `.github/disabled-workflows/validate.yml` (historical definition, not active CI)
 - `Examples/MinimalProject/`
 - `Examples/MinimalMultiplayer/`
 - `Docs/generated/support-matrix.json`
@@ -47,21 +47,32 @@ payload branch is capability, not "full support."
 
 These labels are deliberately narrower than "works on my machine." A successful cross-compile does not prove a window opens, a device resumes correctly, a browser connects, a renderer works on shipping drivers, or a signed package can be installed.
 
-## Current qualified baseline
+## Current fork baseline
 
-The strongest required reusable route is native Windows x64 and Ubuntu 24.04 x64:
+GitHub Actions are disabled in this workspace. The workflow under
+`.github/disabled-workflows/` is an archive, not an active gate or proof of a
+successful build on the current revision. All profiles in the current matrix
+are **source-capable**. Archived target lists preserve historical configuration
+separately from available local BuildTools targets; neither list is a run result.
+Moving the local workflow did not change remote repository settings.
 
-1. The required workflow builds the desktop client, server, mapper/viewers, AngelScript compiler, and baker.
-2. Engine-owned examples provide opt-in local validators for a minimal headless project, tutorial multiplayer flow, native extensions, packaging, and Content Showcase; they are not registered as required workflow lanes.
-3. Visible rendering, audio, signing/installers, persistence backends, public networking, and long-running service operation remain project-owned acceptance concerns.
+Engine-owned examples retain opt-in local validators for a minimal headless
+project, tutorial multiplayer flow, native extensions, packaging, and Content
+Showcase. Run only the relevant existing route and report its exact revision,
+configuration, result, and limits. Unit suites are retired; do not enable the
+removed test/coverage options.
 
-Windows x86, Linux GCC, macOS, iOS, Android ARM, and Web are build-gated at the narrower scope recorded in the generated matrix. Android x86 and Windows ClangCL are source-capable profiles, not release support claims.
+Visible rendering, audio, signing/installers, persistence backends, public
+networking, and long-running service operation remain project-owned acceptance
+concerns. A dated upstream or external-project result cannot qualify this fork.
 
 ## Application boundaries
 
 Desktop builds may expose more applications than mobile and Web builds. The public mobile/Web matrix covers the client path only. Do not infer supported servers, mappers, bakers, compilers, services, or daemons on those targets merely because common source can compile there.
 
-The actual application construction lives in `BuildTools/cmake/stages/Applications.cmake`. The public validation names live in `BuildTools/buildtools.py`; `.github/workflows/validate.yml` decides which names are required gates.
+Application construction lives in `BuildTools/cmake/stages/Applications.cmake`;
+local validation names live in `BuildTools/buildtools.py`. The archived workflow
+records former selections only; there are no current required CI targets.
 
 The generic Editor target has been removed. Interactive map authoring is provided by Mapper; animation and particle inspection use their focused viewers. Required CI must not retain `*-editor` validation names after the corresponding BuildTools target disappears.
 
@@ -96,13 +107,13 @@ A project may promote a profile only after those gates are versioned and repeata
 ## Adding or changing a profile
 
 1. Add or modify the real validation target in `BuildTools/buildtools.py`.
-2. Add it to the required workflow when it is meant to be build-gated.
+2. Do not reactivate CI as a documentation repair. A future build gate needs an
+   explicitly authorized active workflow and observed execution.
 3. Update `BuildTools/SupportMatrix.json` with the narrowest truthful level.
 4. Run:
 
    ```bash
    python BuildTools/docs_support_matrix.py --write
-   python BuildTools/tests/test_docs_support_matrix.py
    python BuildTools/docs_support_matrix.py --check
    ```
 
@@ -111,6 +122,8 @@ A project may promote a profile only after those gates are versioned and repeata
 
 ## Maintenance
 
-The generated model rejects unknown BuildTools target names and claims that a CI target exists when it is absent from the required workflow. It cannot infer runtime quality from compilation, so runtime evidence and limitations remain reviewed policy text.
+The generated model checks local target names against the live registry,
+historical selections against the archive, and rejects active-gate claims from
+an archived workflow. It cannot infer runtime quality from compilation, so runtime evidence and limitations remain reviewed policy text.
 
 When Engine or an embedding project is updated, audit the complete incoming range for changes to platform detection, minimum toolchains, application construction, BuildTools validation profiles, workflow runners, renderer gates, package support, and updater boundaries. Update this matrix in the same change.

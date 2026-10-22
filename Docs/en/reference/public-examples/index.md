@@ -11,7 +11,7 @@ generated: true
 
 [Human policy](../../how-to/build/public-example-repositories.md) | [Canonical JSON](../../../generated/public-examples.json) | [Source registry](../../../../Examples/PublicRepositories.json)
 
-This registry describes illustrative embedding-project repositories. Engine behavior remains normative only in Engine source, tests, and owning documentation.
+This registry describes illustrative embedding-project repositories. Engine behavior remains normative only in current Engine source and owning documentation; local verification and external repository publication are separate evidence.
 
 ## Program contract
 
@@ -22,7 +22,7 @@ This registry describes illustrative embedding-project repositories. Engine beha
 | Release Engine ref | `exact-commit` |
 | Development ref | `master` (weekly) |
 | Update delivery | `reviewed-pull-request` |
-| Contract digest | `e8623467586bebf8c0e4c02370c42fe99aa722d23f7d6cf1f252a163e3eee16d` |
+| Contract digest | `a84406dc298688162564e271c9fa71a627da66fa821a8139f315cb6fe3856552` |
 
 ## Publication evidence
 
@@ -33,7 +33,7 @@ Read each repository's source status, remote visibility/state, observed required
 - Source/remote: `4` source-ready, `4` private, and `0` published repositories.
 - Observed required-check states: `not-observed`.
 - Observed Engine pins: `project-template`=`9d74c751f5684f80aef3b35a0eb16a8fabf9fa42`, `minimal-multiplayer`=not observed, `content-showcase`=not observed, `native-extension-sample`=not observed.
-- Program values required in the same report: release Engine ref `exact-commit`, update delivery `reviewed-pull-request`, Contract digest `e8623467586bebf8c0e4c02370c42fe99aa722d23f7d6cf1f252a163e3eee16d`.
+- Program values required in the same report: release Engine ref `exact-commit`, update delivery `reviewed-pull-request`, Contract digest `a84406dc298688162564e271c9fa71a627da66fa821a8139f315cb6fe3856552`.
 - `project-template`: source `source-ready`; remote `private` / `source-staged`; Engine pin `9d74c751f5684f80aef3b35a0eb16a8fabf9fa42`; required checks `not-observed`.
 - `minimal-multiplayer`: source `source-ready`; remote `private` / `reserved`; Engine pin not observed; required checks `not-observed`.
 - `content-showcase`: source `source-ready`; remote `private` / `reserved`; Engine pin not observed; required checks `not-observed`.
@@ -46,7 +46,7 @@ Read each repository's source status, remote visibility/state, observed required
 | 1 | `cvet/fonline-project-template` | `foundation` | `source-ready` | `private` / `source-staged` | Build and release maintainers | Canonical GitHub template and source for the first successful headless-project quickstart. |
 | 2 | `cvet/fonline-minimal-multiplayer` | `tutorial` | `source-ready` | `private` / `reserved` | Documentation maintainers | Tiny playable vertical slice used by first server, client, content, scripting, persistence, and test tutorials. |
 | 3 | `cvet/fonline-content-showcase` | `showcase` | `source-ready` | `private` / `reserved` | Content and asset maintainers | Presentation-quality gallery for rendering and authoring capabilities without a large gameplay codebase. |
-| 4 | `cvet/fonline-native-extension-sample` | `advanced` | `source-ready` | `private` / `reserved` | Engine runtime maintainers | Advanced minimal example of project-native C++ composition, lifecycle hooks, script exports, tests, and ABI review. |
+| 4 | `cvet/fonline-native-extension-sample` | `advanced` | `source-ready` | `private` / `reserved` | Engine runtime maintainers | Advanced minimal example of project-native C++ composition, lifecycle hooks, script exports, runtime smoke, and ABI review. |
 
 ## cvet/fonline-project-template
 
@@ -159,7 +159,7 @@ Capabilities:
 - `lifecycle-hook`
 - `script-export`
 - `role-specific-source`
-- `focused-native-test`
+- `native-runtime-smoke`
 - `abi-and-compatibility-review`
 
 Required checks:
@@ -167,7 +167,7 @@ Required checks:
 - `governance-contract`
 - `pinned-engine`
 - `current-engine`
-- `native-unit-test`
+- `native-runtime-smoke`
 - `native-extension-contract`
 
 Exit gate: The tagged sample demonstrates one complete native extension path without game-specific services and passes the generated extension contract checks.

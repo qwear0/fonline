@@ -44,7 +44,11 @@ lessons. Then read [Embedding FOnline](../how-to/build/embedding-project.md). Th
 repository should own its root CMake files, `.fomain`, content folders,
 scripts, and release-specific settings. The engine should stay reusable.
 
-### I want to build or run tests
+<a id="i-want-to-build-or-run-tests"></a>
+
+### I want to build or verify a change
+
+This fork removed its own unit suites and disabled workflows. Use existing configure/build, script compile/bake, CLI and direct application routes under [Testing](../contributing/testing/); new automated tests or infrastructure require an explicit request. A retained runner/example does not imply a universal Engine test target.
 
 Start with [Build Workflow](../how-to/build/). Prefer the embedding project's presets and tasks. Engine-only assumptions are easy to get wrong because actual target names, package names, and generated API files are project-dependent.
 

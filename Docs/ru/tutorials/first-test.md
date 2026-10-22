@@ -5,11 +5,10 @@ locale: ru
 document_id: first-test-tutorial
 permalink: /Docs/ru/tutorials/first-test.html
 ---
-<!-- docs-translation: {"document_id":"first-test-tutorial","locale":"ru","source_path":"Docs/en/tutorials/first-test.md","source_sha256":"a6a04fc38189630334396b16f1cc9e37436fbb7de3b9f8aa74e57a1c62a23f0d"} -->
+<!-- docs-translation: {"document_id":"first-test-tutorial","locale":"ru","source_path":"Docs/en/tutorials/first-test.md","source_sha256":"938d07150223772126c66cbb941c03dc5812c1ef73a0cd44720dfc58238478a3"} -->
 # Первый автоматизированный тест
 
-Расширьте исполняемые проверки из трёх слоёв в примере
-[Minimal Multiplayer](../../../Examples/MinimalMultiplayer/README.ru.md).
+Изучите и запустите существующие трёхслойные application checks в [Minimal Multiplayer](../../../Examples/MinimalMultiplayer/README.ru.md). Это сохранённая runtime verification, не удалённые Engine unit suites. Новые автоматизированные тесты/инфраструктура требуют явного запроса по [политике проверок](../contributing/testing/); урок не требует добавлять их для каждого изменения.
 
 ## Слои тестирования
 
@@ -43,39 +42,16 @@ cmake --build --preset windows-check
 В Linux используйте `linux` и `linux-check`. Команда `python validate.py`
 выбирает подходящие команды для текущего хоста.
 
-CI движка использует эквивалентный переиспользуемый маршрут:
+Из checkout Engine используйте эквивалентный локальный маршрут; workflows форка архивированы и не являются активным CI:
 
 ```powershell
 cd Examples\MinimalMultiplayer
 python validate.py
 ```
 
-## Добавьте одно условие контента
+## Изучите одно условие контента
 
-Предположим, проект добавляет предмет со стабильным именем `TutorialBeacon`.
-Сначала добавьте его прототип, затем расширьте `RunContentTest()` в
-[`Scripts/Tutorial.fos`](../../../Examples/MinimalMultiplayer/Scripts/Tutorial.fos):
-
-```angelscript
-const hstring BeaconPid = "TutorialBeacon".hstr();
-
-void RunContentTest()
-{
-    verify(Game.CheckProtoItem(BeaconPid), "Tutorial beacon prototype is missing");
-    // Keep the existing assertions and clean shutdown.
-}
-```
-
-Разместите константу рядом с другими стабильными идентификаторами и сохраните
-существующее тело функции; сокращённый пример выше показывает только новую
-проверку. Запустите полный маршрут. Затем временно внесите опечатку в
-идентификатор и убедитесь, что слой тестирования контента завершается ошибкой до
-запуска многопользовательского клиента. Восстановите корректный идентификатор и
-повторите проверку.
-
-Такое воспроизведение ошибки с последующим успешным запуском доказывает, что
-проверка активна. Тест, который наблюдали только зелёным, даёт более слабое
-свидетельство.
+Прочтите `RunContentTest()` в [`Scripts/Tutorial.fos`](../../../Examples/MinimalMultiplayer/Scripts/Tutorial.fos). Проследите существующую проверку прототипа/карты до авторского входа, затем маркера успеха и ожидаемого маркера runner. Сохраняйте полное существующее тело и чистое завершение. Для изменения контента используйте имеющийся bake/application route; не добавляйте замену suite или временный failure-injection script ради унаследованной проверки документации.
 
 ## Политика маркеров и таймаутов
 
@@ -95,12 +71,9 @@ void RunContentTest()
 
 ## Граница постоянного хранения
 
-`SuppliesCollected` и `TutorialAccount` объявлены как `Persistent`, а проверка
-запечённых метаданных защищает эти объявления. Руководство использует
+`SuppliesCollected` и `TutorialAccount` объявлены как `Persistent` в исходнике скрипта. Текущая metadata probe проверяет наличие имён полей, а не оба persistence flags; её сообщение об успехе не доказывает проверку этих деклараций. Руководство использует
 `Server.DbStorage = Memory`, поэтому не заявляет о сохранении данных между
-перезапусками серверного процесса. Игра, заявляющая такое сохранение, должна
-выполнять дополнительный тест с поддерживаемым backend базы данных и проверять
-восстановленное состояние сущностей.
+перезапусками серверного процесса. Игра, заявляющая такое сохранение, должна использовать поддерживаемый persistent backend, остановить и перезапустить процесс и проверить восстановленные сущности через существующий разрешённый application path.
 
 ## Восстановление после ошибок
 
@@ -112,6 +85,4 @@ void RunContentTest()
   используйте фиксированные задержки как критерий успеха.
 
 Переиспользуемая семантика fixture, маркеров, таймаутов, очистки и отчётов о
-процессах описана в [Тестировании игрового процесса и интеграций](../../GameplayTesting.md).
-Владение нативными тестами Catch2 и покрытием описано в
-[Тестировании](../../Testing.md).
+процессах описана в [Тестировании игрового процесса и интеграций](../how-to/testing/gameplay-and-integration.md). Политика проверок форка и удалённых suites описана в [Тестировании](../contributing/testing/).

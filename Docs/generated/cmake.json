@@ -2,7 +2,7 @@
   "schema_version": 1,
   "generated_by": "BuildTools/docs_cmake.py",
   "source_manifest": "BuildTools/cmake/ProjectInterface.json",
-  "repository": "cvet/fonline",
+  "repository": "qwear0/fonline",
   "source_ref": "master",
   "scope": {
     "surface": "cmake-project-interface",
@@ -28,11 +28,11 @@
     "declared interface default"
   ],
   "summary": {
-    "option_count": 58,
+    "option_count": 56,
     "required_option_count": 9,
-    "optional_option_count": 49,
+    "optional_option_count": 47,
     "options_by_cache_type": {
-      "BOOL": 35,
+      "BOOL": 33,
       "STRING": 23
     },
     "options_by_category": {
@@ -46,7 +46,6 @@
       "output": 2,
       "profiling": 2,
       "project-identity": 4,
-      "quality": 2,
       "rendering": 2,
       "rendering-shape": 2,
       "scripting": 3,
@@ -677,28 +676,6 @@
       "description": "Generate baker application targets.",
       "affects_baking": false,
       "id": "cmake.option.FO_BUILD_BAKER"
-    },
-    {
-      "name": "FO_UNIT_TESTS",
-      "cache_type": "BOOL",
-      "value_kind": "boolean",
-      "required": false,
-      "default": "OFF",
-      "category": "quality",
-      "description": "Generate engine unit-test targets.",
-      "affects_baking": false,
-      "id": "cmake.option.FO_UNIT_TESTS"
-    },
-    {
-      "name": "FO_CODE_COVERAGE",
-      "cache_type": "BOOL",
-      "value_kind": "boolean",
-      "required": false,
-      "default": "OFF",
-      "category": "quality",
-      "description": "Generate the code-coverage configuration; this mode cannot be combined with application or unit-test build modes.",
-      "affects_baking": false,
-      "id": "cmake.option.FO_CODE_COVERAGE"
     }
   ],
   "stages": [
@@ -783,7 +760,7 @@
         "Post"
       ],
       "source": "BuildTools/cmake/stages/Applications.cmake",
-      "description": "Create enabled client, server, mapper, compiler, baker, viewer, and test applications.",
+      "description": "Create enabled client, server, mapper, compiler, baker, and viewer applications.",
       "id": "cmake.stage.Applications"
     },
     {
@@ -858,8 +835,7 @@
         "SERVER",
         "CLIENT",
         "MAPPER",
-        "BAKER",
-        "TESTS"
+        "BAKER"
       ],
       "description": "Add role-scoped embedding-project native sources before RegisterEngineSources.",
       "id": "cmake.helper.AddEngineSources"

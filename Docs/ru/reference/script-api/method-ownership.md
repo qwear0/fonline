@@ -7,7 +7,7 @@ permalink: /Docs/ru/reference/script-api/method-ownership.html
 ---
 
 # Карта методов скриптового API
-<!-- docs-translation: {"document_id":"script-methods-map","locale":"ru","source_path":"Docs/en/reference/script-api/method-ownership.md","source_sha256":"948220776546c2a495bb21489e4f09b391017efe7692b3f8b761df964091e32d"} -->
+<!-- docs-translation: {"document_id":"script-methods-map","locale":"ru","source_path":"Docs/en/reference/script-api/method-ownership.md","source_sha256":"3de37314fe9cbb65e0b5dcc1c230c62c8719d08ca504e94b6af8a1230d1e56dd"} -->
 > Документация движка. Эта страница сопоставляет нативные файлы `///@ ExportMethod` в `Source/Scripting/` с их обязанностями в скриптовом интерфейсе. Она дополняет страницу [Скриптовый runtime](../../explanation/scripting-runtime/), но не является полным сгенерированным справочником API.
 
 ## Назначение
@@ -17,11 +17,11 @@ permalink: /Docs/ru/reference/script-api/method-ownership.html
 - выберите правильную сторону runtime (`Common`, `Server`, `Client` или `Mapper`);
 - выберите правильное семейство receiver или сущности (`Game`, `Entity`, `Critter`, `Map`, `Item`, `Location`, `Player`, `ImGui`);
 - сохраните границы серверной авторитетности и клиентского представления;
-- обновите тесты и документацию при переносе групп экспортируемых методов.
+- обновите владеющую документацию и выберите existing compile/bake/application checks при переносе групп экспортируемых методов.
 
 ## Инвентарь исходного кода
 
-Авторитетный список файлов и число объявлений `///@ ExportMethod` в каждом из `Source/Scripting/*ScriptMethods.cpp` генерируются в [source-inventory.json](https://fonline.ru/Docs/generated/source-inventory.json). Полные разобранные записи методов находятся в [канонической модели API](../../../generated/api.json), а [сгенерированный справочник методов](../../../generated/api/methods.md) показывает ID перегрузок, сигнатуры, значения по умолчанию, nullable-признаки, стороны runtime, фактические receiver, стабильность и исходные позиции. Эта страница отвечает за понятное человеку объяснение семейств методов и границ стороны/receiver; она не дублирует сгенерированные итоги и сигнатуры.
+Авторитетный список файлов и число объявлений `///@ ExportMethod` в каждом из `Source/Scripting/*ScriptMethods.cpp` генерируются в [source-inventory.json](https://fonline.ru/Docs/generated/source-inventory.json). Полные разобранные записи методов находятся в [канонической модели API](../../../generated/api.json), а [сгенерированный справочник методов](methods.md) показывает ID перегрузок, сигнатуры, значения по умолчанию, nullable-признаки, стороны runtime, фактические receiver, стабильность и исходные позиции. Эта страница отвечает за понятное человеку объяснение семейств методов и границ стороны/receiver; она не дублирует сгенерированные итоги и сигнатуры.
 
 После добавления, удаления или перемещения export обновите инвентарь:
 
@@ -261,16 +261,16 @@ python BuildTools/docs_inventory.py --check
 3. Добавьте `///@ ExportMethod` и `FO_SCRIPT_API` в принадлежащий владельцу файл. Для необязательных завершающих аргументов используйте C++-параметры по умолчанию вместо дублирующих перегрузок, тела которых только подставляют fallback. Codegen нормализует значения типов движка вроде `isize32 {}` или `ucolor {}` в AngelScript-выражения `isize()` или `ucolor()`.
 4. Обозначайте scalar pointer параметр или результат как `nptr<T>` только если он действительно принимает или возвращает null; иначе используйте non-null `ptr<T>`. См. [Nullability.md](../../../Nullability.md).
 5. Перегенерируйте код, чтобы descriptors методов и wrappers отражали новую сигнатуру.
-6. Добавьте или обновите самый узкий подходящий тест script method.
+6. Выполните compile/bake затронутых ролей и existing method/dispatcher path; новые тесты требуют явного запроса.
 7. Проверяйте или добавляйте `///@ ApiContract` только когда статус поддержки метода имеет подтверждённое владельцем решение; достижимость не является обещанием стабильности.
 8. Перегенерируйте `Docs/generated/api.json`, страницы сгенерированного справочника и `Docs/generated/source-inventory.json`; изменяйте эту страницу только при содержательном изменении файла или группы обязанностей.
 
 ## Контрольный список проверки
 
-1. После изменения API или контракта выполните `python BuildTools/tests/test_docs_api.py`, `python BuildTools/docs_api.py --write`, `python BuildTools/docs_reference.py --write`, а затем обе команды с `--check`.
+1. После изменения API/контракта выполните `python BuildTools/docs_api.py --write`, `python BuildTools/docs_reference.py --write`, затем обе команды с `--check`. Прежние suites `BuildTools/tests` удалены.
 2. После изменения export-файлов выполните `python BuildTools/docs_inventory.py --write`, затем `--check`.
 3. Выполните генерацию кода и скомпилируйте созданные wrappers.
-4. Запустите подходящие тесты методов:
+4. Выполните affected method через existing application path. Следующие former method-suite locations — historical coverage notes, не runnable targets:
    - общие методы: `Source/Tests/Test_AngelScriptCommonScriptMethods.cpp`;
    - серверные методы: `Source/Tests/Test_AngelScriptServerScriptMethods.cpp` и соответствующие server runtime tests;
    - поведение entity и handles: `Source/Tests/Test_AngelScriptEntityOps.cpp`;

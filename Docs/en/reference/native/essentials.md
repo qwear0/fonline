@@ -14,7 +14,7 @@ permalink: /Docs/en/reference/native/essentials.html
 
 Use this page when changing code that sits below `Source/Common/` or when you need to know whether a utility belongs in the reusable engine foundation instead of client, server, tools, or game-specific code.
 
-For the memory model's exception contract — `SafeAlloc` / `SafeAllocator` terminate on OOM (so `std::bad_alloc` is not a recoverable error) and the `throw` / `FO_VERIFY_*` / `FO_STRONG_ASSERT` error tiers built on `ExceptionHandling.h` — see [ExceptionSafety.md](../../contributing/coding-contracts/exception-safety.md).
+For the memory model's exception contract — `safe_alloc` / `safe_allocator` terminate on OOM (so `std::bad_alloc` is not a recoverable error) and the `throw` / `FO_VERIFY_*` / `FO_STRONG_ASSERT` error tiers built on `ExceptionHandling.h` — see [ExceptionSafety.md](../../contributing/coding-contracts/exception-safety.md).
 
 The essentials layer should stay dependency-light. It is included by most of the engine through `Source/Essentials/Essentials.h`, so changes here can affect every application target.
 
@@ -134,7 +134,7 @@ not bypass the contract-change gate.
 
 `BasicCore` → `GlobalData` → `StackTrace` → `BaseLogging` → `FatalError` → `FunctionObjects` → `SmartPointers` → `MemorySystem` → `StringObject` → `DequeObject` → `Containers` → `StringUtils` → `WinApi` → `Posix` → `Platform` → `ExceptionHandling` → `RandomGenerator` → `Threading` → `SafeArithmetics` → `DataSerialization` → `HashedString` → `StrongType` → `TimeRelated` → `ExtendedTypes` → `Compressor` → `Cryptography` → `WorkThread` → `Logging` → `DiskFileSystem` → `CommonHelpers` → `NetSockets`.
 
-This list is intentionally exact rather than thematic. `Essentials.h` defines a strict dependency DAG: every Essentials header and its `.cpp` may include and call only modules that appear earlier in the umbrella block. Declaring an API early but defining it in a later `.cpp` is still a reverse link dependency. `BuildTools/tests/test_essentials_layering.py` checks direct includes and namespace-level external-definition ownership. Do not reorder the list to hide a cycle; move data through parameters or split the responsibility at the correct layer.
+This list is intentionally exact rather than thematic. `Essentials.h` defines a strict dependency DAG: every Essentials header and its `.cpp` may include and call only modules that appear earlier in the umbrella block. Declaring an API early but defining it in a later `.cpp` is still a reverse link dependency. Review direct includes and namespace-level definition ownership; the former layering test is removed. Do not reorder the list to hide a cycle; move data through parameters or split the responsibility at the correct layer.
 
 Keep new essentials APIs free of dependencies on `Source/Common/`, `Source/Client/`, `Source/Server/`, `Source/Tools/`, or embedding-project headers.
 
@@ -175,7 +175,7 @@ re-raise keep their existing behavior. Ordinary consumers continue using the
 
 Windows builds retain the `_WIN32_WINNT=0x0601` compile baseline. One Windows build-platform registry owns the CMake architecture, toolset, and canonical packaging architecture for the regular, `-clang`, and `-win7` variants. The Win7 pair pins MSVC 14.44, while `FO_BINARY_OUTPUT_POSTFIX` remains independent of the platform. In the package DSL the corresponding `BINARY` entry can select its own postfix, for example `BINARY Client Windows win32-win7 Raw+Zip+Wix POSTFIX Win7`, without affecting sibling binaries in the package. Compatibility checks are kept outside application targets.
 
-`platform::process_identity` pairs PID with process start time. An ID alone can be reused, so client-session diagnostics match both values. On Windows the liveness check polls the process handle with zero timeout rather than reading exit code `259` (`STILL_ACTIVE`), which a terminated process can retain while another process holds its handle. `BuildTools/tests/test_process_identity.py` covers live and terminated retained-handle cases when `clang++` is available.
+`platform::process_identity` pairs PID with process start time. An ID alone can be reused, so client-session diagnostics match both values. On Windows the liveness check polls the process handle with zero timeout rather than reading exit code `259` (`STILL_ACTIVE`), which a terminated process can retain while another process holds its handle. Verify live and terminated retained-handle behavior through the existing client-session path when changing this code; the former process-identity suite is removed.
 
 #### Temporary compatibility
 
@@ -183,7 +183,7 @@ Old-build/data handling uses `FO_TEMPORARY_COMPAT(Id, "YYYY-MM-DD");` (native, `
 
 CMake uses `TemporaryCompat(Id "YYYY-MM-DD")` from `BuildTools/cmake/helpers/Commands.cmake`. Mark temporary refusals/dependency exclusions; permanent gates need no date. It checks argument/date shape. Remove only the temporary exclusion after validating platform support.
 
-`BuildTools/temporary_compat.py` and its tests run in CI. Defaults scan `Source/` and `BuildTools/cmake/` (`.cmake`, `CMakeLists.txt`, inactive branches); projects pass files/directories. Comments/CMake strings are ignored. Malformed/inconsistent dates or dates over 366 days ahead fail; expiry fails the next day with every location. Remove expired code/constraints or review an extension. Builds remain reproducible.
+Run the existing `BuildTools/temporary_compat.py` check locally when temporary compatibility constraints change; the fork's workflows are archived and former tests removed. Defaults scan `Source/` and `BuildTools/cmake/` (`.cmake`, `CMakeLists.txt`, inactive branches); projects pass files/directories. Comments/CMake strings are ignored. Malformed/inconsistent dates or dates over 366 days ahead fail; expiry fails the next day with every location. Remove expired code/constraints or review an extension. Builds remain reproducible.
 
 ### Diagnostics and failure handling
 
@@ -195,7 +195,7 @@ CMake uses `TemporaryCompat(Id "YYYY-MM-DD")` from `BuildTools/cmake/helpers/Com
 
 ### Memory, pointers, and lifetime utilities
 
-`MemorySystem.*` owns backup-memory chunks, bad-allocation reporting, and `SafeAllocator`. `SmartPointers.*` contains pointer wrappers used to make ownership, nullability, and raw-reference intent explicit; see [SmartPointers.md](../../contributing/coding-contracts/smart-pointers.md) for the native `ptr` / `nptr` vocabulary and migration rules. Use this layer for generic ownership utilities only; entity lifetime and holder semantics belong in [Entity Model](../../explanation/entity-and-property-model/).
+`MemorySystem.*` owns backup-memory chunks, bad-allocation reporting, and `safe_allocator`. `SmartPointers.*` contains pointer wrappers used to make ownership, nullability, and raw-reference intent explicit; see [SmartPointers.md](../../contributing/coding-contracts/smart-pointers.md) for the native `ptr` / `nptr` vocabulary and migration rules. Use this layer for generic ownership utilities only; entity lifetime and holder semantics belong in [Entity Model](../../explanation/entity-and-property-model/).
 
 #### Callable vocabulary
 
@@ -214,10 +214,10 @@ script-provider hook is the sole retained `std::function`, because it precedes
 
 Engine code allocates through one of two surfaces, and nothing else:
 
-- **The `fo` container aliases** from `Containers.h` — `string`, `wstring`, `vector`, `map`, `unordered_map`, `set`, `list`, `deque`, `stringstream`, `small_vector` and friends. `string` and `wstring` use the engine `basic_string` from `StringObject.h`; `deque` uses `basic_deque` from `DequeObject.h`; the remaining allocator-aware aliases use `SafeAllocator`. Use these, never the `std::` originals.
-- **`SafeAlloc`** — `MakeUnique` / `MakeShared` / `MakeRefCounted` / `MakeRawArr` / `MakeUniqueArr` for typed objects, and the raw tier `MallocRaw` / `CallocRaw` / `ReallocRaw` / `FreeRaw` plus `MallocAlignedRaw` / `FreeAlignedRaw` for C-ABI boundaries.
+- **The `fo` container aliases** from `Containers.h` — `string`, `wstring`, `vector`, `map`, `unordered_map`, `set`, `list`, `deque`, `stringstream`, `small_vector` and friends. `string` and `wstring` use the engine `basic_string` from `StringObject.h`; `deque` uses `basic_deque` from `DequeObject.h`; the remaining allocator-aware aliases use `safe_allocator`. Use these, never the `std::` originals.
+- **`safe_alloc`** — `make_unique` / `make_shared` / `make_refcounted` / `make_raw_arr` / `make_unique_arr` for typed objects, and the raw tier `malloc_raw` / `calloc_raw` / `realloc_raw` / `free_raw` plus `malloc_aligned_raw` / `free_aligned_raw` for C-ABI boundaries. The allocator type is `safe_allocator<T>`; use the current snake_case Essentials vocabulary in code.
 
-The raw tier exists because third-party allocator hooks are C-shaped: they demand `realloc`, or an untyped byte block, or both, which a C++ allocator cannot express. It carries the same out-of-memory policy as `SafeAllocator` — report, drain the backup pool, retry, then exit deterministically — so wiring a library through it does not silently opt that library out of the contract. A zero-size request is passed through rather than treated as failure.
+The raw tier exists because third-party allocator hooks are C-shaped: they demand `realloc`, or an untyped byte block, or both, which a C++ allocator cannot express. It carries the same out-of-memory policy as `safe_allocator` — report, drain the backup pool, retry, then exit deterministically — so wiring a library through it does not silently opt that library out of the contract. A zero-size request is passed through rather than treated as failure.
 
 The underlying `rpmalloc` primitives are deliberately **not** exported from `MemorySystem.h`. They return null on failure and would be a second, equally reachable entry point that skips the contract; they live as file-local statics in `MemorySystem.cpp`. The vendored allocator propagates both an on-demand commit failure in a reserved span and a failed recommit of a decommitted free page as null. It recommits that page before publishing it as available; on failure it returns the page to the free list, so the backup-pool retry cannot hand out reserve-only memory. `Test_MemorySystem.cpp` injects both failures. Bad-allocation reports are serialized across threads; if stack-trace generation itself cannot allocate, the nested report writes its header without recursing. Backup chunks released by another thread return to their original thread heap and do not guarantee retry headroom for every thread. Mono's lock-free allocator is outside this contract and can abort on OOM. The `MemCopy` / `MemMove` / `MemFill` / `MemCompare` / `MemReadUnaligned` / `MemWriteUnaligned` block operations are unrelated to allocation and remain public.
 
@@ -235,7 +235,7 @@ Three distinct things are at stake when code bypasses this vocabulary, and they 
 |---|---|
 | **Separate heap** | Global `operator new`/`delete` are replaced with rpmalloc, so every `new` and every `std::allocator` already lands in the engine heap. But rpmalloc is built with `ENABLE_OVERRIDE=0`, so C `malloc`/`free` is **not** intercepted — anything allocating through it lives in the CRT heap, outside rpmalloc, invisible to `AllocatorGetInUseBytes()` and to Tracy allocation tracking. |
 | **Wrong out-of-memory policy** | `std::allocator` throws `std::bad_alloc` instead of following the terminate-on-OOM model in [ExceptionSafety.md](../../contributing/coding-contracts/exception-safety.md) §1. |
-| **Alignment** | `SafeAllocator` routes over-aligned element types through the aligned `operator new`/`delete` overloads. Note that the over-alignment test must stay a member *function*: `alignof(T)` needs a complete `T`, while the allocator has to remain usable with an incomplete one, since `std::vector<T>` may be declared before `T` is defined. |
+| **Alignment** | `safe_allocator` routes over-aligned element types through the aligned `operator new`/`delete` overloads. Note that the over-alignment test must stay a member *function*: `alignof(T)` needs a complete `T`, while the allocator has to remain usable with an incomplete one, since `std::vector<T>` may be declared before `T` is defined. |
 
 Known and accepted limits: `std::future`/`std::promise`/`std::packaged_task`, `std::thread`, `std::filesystem::path` and the file streams have no allocator parameter at all, so they reach the engine heap through global `new` but throw on exhaustion. The sole `std::function` in `StackTrace.h` is also above the engine callable module. Separately, `BasicCore`, `StackTrace` and `BaseLogging` sit above `MemorySystem` in the `Essentials.h` include order and therefore use `std::` containers by design — `MemorySystem.cpp` calls `GetStackTrace()` from `ReportBadAlloc`, so the reporting path must not depend on the allocator that just failed.
 
@@ -274,12 +274,12 @@ allocations as Engine-heap or Tracy allocation events.
 
 | Library | Routed to | Where |
 |---|---|---|
-| ImGui | `SafeAllocator` | `Common/ImGuiExt/ImGuiStuff.cpp` |
-| AngelScript | `SafeAllocator` | `Scripting/AngelScript/AngelScriptScripting.cpp` |
-| zlib | `SafeAllocator` | `Essentials/Compressor.cpp` |
-| ozz-animation | `SafeAlloc` aligned tier | `Common/ModelAnimationData.cpp` |
-| meshoptimizer | `SafeAllocator` | `Tools/ModelMeshBaker.cpp` |
-| ufbx | `SafeAllocator` | compile-time `UFBX_EXTERNAL_MALLOC` plus `extern "C" ufbx_malloc/realloc/free` in `Tools/ModelMeshBaker.cpp` |
+| ImGui | `safe_alloc` raw tier | `Common/ImGuiExt/ImGuiStuff.cpp` |
+| AngelScript | `safe_alloc` raw tier | `Scripting/AngelScript/AngelScriptScripting.cpp` |
+| zlib | `safe_alloc` raw tier | `Essentials/Compressor.cpp` |
+| ozz-animation | `safe_alloc` aligned tier | `Common/ModelAnimationData.cpp` |
+| meshoptimizer | `safe_alloc` raw tier | `Tools/ModelMeshBaker.cpp` |
+| ufbx | `safe_alloc` raw tier | compile-time `UFBX_EXTERNAL_MALLOC` plus `extern "C" ufbx_malloc/realloc/free` in `Tools/ModelMeshBaker.cpp` |
 | SDL | `safe_alloc::*_raw` | `Frontend/Application.cpp` |
 | Effekseer | `safe_alloc::*_raw` + aligned | `Client/EffekseerExtension.cpp`, declared in its header; both owners (client runtime and `Tools/ParticleBaker.cpp`) install through that one definition |
 | libpng | `safe_alloc::*_raw` | `Tools/ImageBaker-Png.cpp`, via `png_create_read_struct_2` |
@@ -296,10 +296,10 @@ When vendoring or updating a library, check whether it has an allocator hook and
 
 #### Vector containers and inline storage
 
-`Containers.h` exposes two sequence aliases backed by `SafeAllocator<T>`:
+`Containers.h` exposes two sequence aliases backed by `safe_allocator<T>`:
 
 - `vector<T>` is the normal dynamically allocated sequence and remains the default for unbounded data, persistent collections that amortize their allocation, move-heavy pipelines, and exact engine interfaces.
-- `small_vector<T, InlineCapacity>` stores up to `InlineCapacity` elements inside the object and spills to `SafeAllocator` storage above that limit. The engine alias requires an explicit capacity; `GCH_SMALL_VECTOR_DEFAULT_SIZE` configures the vendored implementation and is not a capacity-selection policy.
+- `small_vector<T, InlineCapacity>` stores up to `InlineCapacity` elements inside the object and spills to `safe_allocator` storage above that limit. The engine alias requires an explicit capacity; `GCH_SMALL_VECTOR_DEFAULT_SIZE` configures the vendored implementation and is not a capacity-selection policy.
 
 Use `small_vector` only when measurements or a hard protocol limit show that a frequently constructed collection is usually small. Choose the capacity from observed typical cardinality, keep rare large cases correct through heap spill, and account for the inline bytes in every instance. A per-call scratch list can be a strong candidate; adding several inline buffers to every cell in a dense map can cost more memory than the avoided first allocation. `inlined()` reports the current storage mode and is useful in focused tests and profiling instrumentation.
 
@@ -309,18 +309,18 @@ The representation has several correctness consequences:
 2. Inline moves and swaps perform element work and are only conditionally `noexcept`; re-derive the touched function's exception-safety guarantee instead of inheriting assumptions from `vector`.
 3. A `small_vector<T, N>` data member instantiates inline element destruction at the containing class boundary. `T` must therefore be complete there; it is not a drop-in replacement for a `vector` member whose element type is only forward-declared.
 4. With the vendored implementation, a member whose element is a nested type with default member initializers can make default-inserting operations ill-formed while the enclosing class is incomplete, notably under Clang. For a shrink, prefer `erase(begin() + new_size, end())`; otherwise move the element type out of the enclosing class or make construction requirements explicit.
-5. Heap spill still follows the engine's terminate-on-OOM policy because the alias uses `SafeAllocator`. Element construction, conversion, and move operations may still throw; see [ExceptionSafety.md](../../contributing/coding-contracts/exception-safety.md).
+5. Heap spill still follows the engine's terminate-on-OOM policy because the alias uses `safe_allocator`. Element construction, conversion, and move operations may still throw; see [ExceptionSafety.md](../../contributing/coding-contracts/exception-safety.md).
 
 Do not substitute `small_vector` across an exact-type boundary merely because the operations look vector-like:
 
 - script export/codegen signatures and `ScriptSystem` registration use exact `vector<T>` / `readonly_vector<T>` spellings and type identities;
-- property writes, serialized backing stores, `DataReader` / `DataWriter`, `NetBuffer`, and `CScriptArray` have exact `vector` contracts at selected boundaries;
+- property writes, serialized backing stores, `data_reader` / `data_writer`, `NetBuffer`, and `CScriptArray` have exact `vector` contracts at selected boundaries;
 - a span-taking internal helper may accept either representation without exposing the concrete container type, which is the preferred seam when both are valid;
 - `FO_ENTITY_PROPERTY` cannot take `small_vector<T, N>` directly because the comma also separates macro arguments.
 
 `vector_collection` admits both engine aliases for generic readers. The producing helpers `vec_filter`, `vec_transform`, and `vec_sorted` preserve `vector` versus `small_vector` and retain the inline capacity through `rebind_vector_t`; non-vector ranges materialize as `vector`. `to_vector` intentionally always materializes a `vector`, while `copy_hold_ref` exposes an opaque ref-held snapshot rather than a concrete sequence contract. The generic formatter accepts both aliases for ordinary numeric elements, but its string and boolean special cases currently match exact `vector<string>` and `vector<bool>` types; do not assume equivalent formatting for `small_vector<string, N>` or `small_vector<bool, N>` without extending and testing that formatter.
 
-For an adoption, record the measured distribution and object count, audit address lifetime plus move/swap sites, verify complete-type and exact-interface constraints, and add focused coverage for inline operation, spill, and any generic-helper result type. Then run the complete native unit suite, the embedding project's exception-safety and smart-pointer audits when present, and representative bake/gameplay/profiling paths for the changed subsystem.
+For an adoption, record measured distribution/object count, review address lifetime and move/swap sites, and verify complete-type/exact-interface constraints. Use affected-role compilation, existing project exception-safety/smart-pointer audits when present and representative bake/application/profiling paths to inspect inline/spill and helper-result behavior. The native unit suite is removed; new automated tests require an explicit request.
 
 #### Deque containers
 
@@ -359,7 +359,7 @@ unqualified so argument-dependent lookup selects the engine overload. String
 growth uses the same deterministic terminate-on-OOM policy as other engine
 storage.
 
-`DataSerialization.*` contains binary read/write helpers used by network, persistence, resources, and tests. `DataReader::Read<T>()` and `DataWriter::Write<T>()` copy standard-layout values through byte copies so serialized streams do not depend on buffer alignment. The zero-copy `ReadPtr<T>(size)` overload is only for raw byte/string views (`uint8_t`, `char`, or `void`); typed values that need alignment must use `Read<T>()` or `ReadPtr(destination, size)`. `StringUtils.*`, `HashedString.*`, `StrongType.*`, `ExtendedTypes.*`, `SafeArithmetics.*`, and `TimeRelated.*` provide the small reusable values that higher layers treat as primitives. `iround` rejects non-finite and out-of-int64-range floating-point input before rounding so no value undefined for `std::llround` can reach it. `HashStorage::SetResolveHashFailureHandler` lets higher layers observe failed hash resolution in both throwing and flagged no-throw lookup paths without teaching essentials about a specific recovery policy.
+`DataSerialization.*` contains binary read/write helpers used by network, persistence, resources, and tests. `data_reader::read<T>()` and `data_writer::write<T>()` copy standard-layout values through byte copies so serialized streams do not depend on buffer alignment. The zero-copy `read_ptr<T>(size)` overload is only for raw byte/string views (`uint8_t`, `char`, or `void`); typed values that need alignment must use `read<T>()` or `read_ptr(destination, size)`. `StringUtils.*`, `HashedString.*`, `StrongType.*`, `ExtendedTypes.*`, `SafeArithmetics.*`, and `TimeRelated.*` provide the small reusable values that higher layers treat as primitives. `iround` rejects non-finite and out-of-int64-range floating-point input before rounding so no value undefined for `std::llround` can reach it. `HashStorage::SetResolveHashFailureHandler` lets higher layers observe failed hash resolution in both throwing and flagged no-throw lookup paths without teaching essentials about a specific recovery policy.
 
 ### Filesystem, compression, sockets, and work threads
 
@@ -412,7 +412,7 @@ When a `WorkThread` job throws, a registered exception handler owns the reportin
 
 `BuildTools/cmake/stages/EngineSources.cmake` lists every authored Essentials `.h` / `.cpp` pair plus the two `.inc` files and debugger visualization in `FO_ESSENTIALS_SOURCE`. `BuildTools/cmake/stages/CoreLibs.cmake` then creates `EssentialsLib` from that list. The library is part of the core dependency chain used by applications, tools, tests, and generated-code consumers. If a new Essentials file is added, place it at the correct dependency point in `Essentials.h`, wire it through `FO_ESSENTIALS_SOURCE`, and add focused coverage where possible.
 
-## Tests to inspect
+## Historical removed test inventory
 
 The essentials layer has direct test coverage in:
 
@@ -448,7 +448,7 @@ The essentials layer has direct test coverage in:
 
 `Test_Containers.cpp` pins the engine alias, allocator, inline-to-heap transition, move, swap, and formatting behavior. `Test_DequeObject.cpp` covers block growth, both-ended mutation, iterators, reference stability, copy/move, and destruction. `Test_RandomGenerator.cpp` pins the seeded cross-platform sequence and bounded ranges. `Test_Threading.cpp` checks the sleep primitives and their sub-millisecond behavior. `Test_CommonHelpers.cpp` pins container-kind preservation through `rebind_vector_t` and the producing `vec_*` helpers.
 
-See [Testing](../../contributing/testing/) for the complete test-suite map and target wiring.
+The inventory above records removed historical suites, not current prerequisites. See [Testing](../../contributing/testing/) for existing-check routing and the no-new-tests policy.
 
 ## Change routing
 
@@ -480,7 +480,7 @@ participant can still hold it. Baker ownership is described in
 
 1. Confirm the change does not introduce a dependency from essentials back into higher engine layers.
 2. Update `BuildTools/cmake/stages/EngineSources.cmake` when adding/removing essentials files.
-3. Run the smallest matching essentials test and then the broader `RunUnitTests` target when behavior crosses utility boundaries.
+3. Build the smallest affected role and exercise its existing CLI/application path. Engine-owned Essentials/unit suites and `RunUnitTests` are removed; do not recreate them or add new tests without an explicit request.
 4. For diagnostics changes, also verify [Native, AngelScript, and Managed Debugging](../../troubleshooting/debugging.md) stays accurate.
 5. For filesystem/socket/threading changes, validate at least one higher-level consumer if the low-level contract changed.
 6. For a `small_vector` adoption, prove capacity and object-count assumptions with data, audit move/address lifetime and exact-type boundaries, and re-run exception-safety plus pointer-ownership gates.

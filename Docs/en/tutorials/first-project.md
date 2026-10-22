@@ -42,7 +42,7 @@ cd Examples/MinimalProject
 python3 validate.py
 ```
 
-BuildTools recreates `Workspace/validation-project`, copies the canonical scaffold into it, links that copy back to the current engine checkout, configures the server and baker, builds them, bakes resources, and runs the `StarterSmoke` sub-config. The smoke runner has a 60-second timeout.
+`validate.py` runs the example's host configure preset and `<host>-smoke` build preset in `Examples/MinimalProject`. They configure/build the server and baker, bake resources and run the existing `RunStarterSmoke` target with `StarterSmoke`. It does not create `Workspace/validation-project`. The smoke runner has a 60-second timeout.
 
 ## Confirm success
 
@@ -58,7 +58,7 @@ starter_smoke_passed
 
 The command must exit with code zero. The native value proves that the server-scoped C++ source entered `ServerLib`, codegen generated its script binding, and baked AngelScript called it. The lifecycle markers prove that the module subscribed to `Game.OnStart` and ran after server initialization; a native process that merely started and stopped is not sufficient.
 
-Generated files stay under `Workspace/`:
+Generated files stay under the example's ignored `Build/`:
 
 - `Examples/MinimalProject/Build/windows/` is the Windows build/output tree;
 - `Examples/MinimalProject/Build/linux/` is the Linux build/output tree.

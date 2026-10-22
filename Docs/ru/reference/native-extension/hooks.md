@@ -5,7 +5,7 @@ locale: ru
 generated: true
 ---
 
-<!-- docs-translation: {"document_id":"generated-native-extension-hooks","locale":"ru","source_path":"Docs/en/reference/native-extension/hooks.md","source_sha256":"0a4cb39b7625651e4fefc05935b925b6766a54d21d0257f4c7a698456da85f71"} -->
+<!-- docs-translation: {"document_id":"generated-native-extension-hooks","locale":"ru","source_path":"Docs/en/reference/native-extension/hooks.md","source_sha256":"1581f2b1684c3b49cc6fad1b80e78b39cc71439fac2710b02dcbb6b6473f272d"} -->
 
 # Хуки движка
 
@@ -23,7 +23,7 @@ generated: true
 - Стабильный ID: `native-extension.hook.ApplicationInitHook`
 - Роль: `COMMON`
 - Наличие входит в хеш совместимости: `yes`
-- Места вызова: [Source/Frontend/ApplicationInit.cpp](https://github.com/cvet/fonline/blob/master/Source/Frontend/ApplicationInit.cpp)
+- Места вызова: [Source/Frontend/ApplicationInit.cpp](https://github.com/qwear0/fonline/blob/master/Source/Frontend/ApplicationInit.cpp)
 
 ```cpp
 FO_BEGIN_NAMESPACE
@@ -42,7 +42,7 @@ FO_END_NAMESPACE
 - Стабильный ID: `native-extension.hook.ApplicationShutdownHook`
 - Роль: `COMMON`
 - Наличие входит в хеш совместимости: `no`
-- Места вызова: [Source/Applications/ClientApp.cpp](https://github.com/cvet/fonline/blob/master/Source/Applications/ClientApp.cpp), [Source/Applications/ClientLib.cpp](https://github.com/cvet/fonline/blob/master/Source/Applications/ClientLib.cpp)
+- Места вызова: [Source/Applications/ClientApp.cpp](https://github.com/qwear0/fonline/blob/master/Source/Applications/ClientApp.cpp), [Source/Applications/ClientLib.cpp](https://github.com/qwear0/fonline/blob/master/Source/Applications/ClientLib.cpp)
 
 ```cpp
 FO_BEGIN_NAMESPACE
@@ -61,7 +61,7 @@ FO_END_NAMESPACE
 - Стабильный ID: `native-extension.hook.ServerInitHook`
 - Роль: `SERVER`
 - Наличие входит в хеш совместимости: `yes`
-- Места вызова: [Source/Server/Server.cpp](https://github.com/cvet/fonline/blob/master/Source/Server/Server.cpp)
+- Места вызова: [Source/Server/Server.cpp](https://github.com/qwear0/fonline/blob/master/Source/Server/Server.cpp)
 
 ```cpp
 FO_BEGIN_NAMESPACE
@@ -80,7 +80,7 @@ FO_END_NAMESPACE
 - Стабильный ID: `native-extension.hook.ClientInitHook`
 - Роль: `CLIENT`
 - Наличие входит в хеш совместимости: `yes`
-- Места вызова: [Source/Client/Client.cpp](https://github.com/cvet/fonline/blob/master/Source/Client/Client.cpp)
+- Места вызова: [Source/Client/Client.cpp](https://github.com/qwear0/fonline/blob/master/Source/Client/Client.cpp)
 
 ```cpp
 FO_BEGIN_NAMESPACE
@@ -99,7 +99,7 @@ FO_END_NAMESPACE
 - Стабильный ID: `native-extension.hook.ClientStartupSettingsHook`
 - Роль: `COMMON`
 - Наличие входит в хеш совместимости: `yes`
-- Места вызова: [Source/Applications/ClientApp.cpp](https://github.com/cvet/fonline/blob/master/Source/Applications/ClientApp.cpp), [Source/Applications/ServerApp.cpp](https://github.com/cvet/fonline/blob/master/Source/Applications/ServerApp.cpp), [Source/Applications/ServerHeadlessApp.cpp](https://github.com/cvet/fonline/blob/master/Source/Applications/ServerHeadlessApp.cpp)
+- Места вызова: [Source/Applications/ClientApp.cpp](https://github.com/qwear0/fonline/blob/master/Source/Applications/ClientApp.cpp), [Source/Applications/ServerApp.cpp](https://github.com/qwear0/fonline/blob/master/Source/Applications/ServerApp.cpp), [Source/Applications/ServerHeadlessApp.cpp](https://github.com/qwear0/fonline/blob/master/Source/Applications/ServerHeadlessApp.cpp)
 
 ```cpp
 FO_BEGIN_NAMESPACE
@@ -118,7 +118,7 @@ FO_END_NAMESPACE
 - Стабильный ID: `native-extension.hook.SetupBakersHook`
 - Роль: `BAKER`
 - Наличие входит в хеш совместимости: `yes`
-- Места вызова: [Source/Tools/Baker.cpp](https://github.com/cvet/fonline/blob/master/Source/Tools/Baker.cpp)
+- Места вызова: [Source/Tools/Baker.cpp](https://github.com/qwear0/fonline/blob/master/Source/Tools/Baker.cpp)
 
 ```cpp
 FO_BEGIN_NAMESPACE
@@ -137,7 +137,7 @@ FO_END_NAMESPACE
 - Стабильный ID: `native-extension.hook.CheckCritterVisibilityHook`
 - Роль: `SERVER`
 - Наличие входит в хеш совместимости: `yes`
-- Места вызова: [Source/Server/MapManager.cpp](https://github.com/cvet/fonline/blob/master/Source/Server/MapManager.cpp)
+- Места вызова: [Source/Server/MapManager.cpp](https://github.com/qwear0/fonline/blob/master/Source/Server/MapManager.cpp)
 
 ```cpp
 FO_BEGIN_NAMESPACE
@@ -156,7 +156,7 @@ FO_END_NAMESPACE
 - Стабильный ID: `native-extension.hook.CheckItemVisibilityHook`
 - Роль: `SERVER`
 - Наличие входит в хеш совместимости: `yes`
-- Места вызова: [Source/Server/Critter.cpp](https://github.com/cvet/fonline/blob/master/Source/Server/Critter.cpp)
+- Места вызова: [Source/Server/Critter.cpp](https://github.com/qwear0/fonline/blob/master/Source/Server/Critter.cpp)
 
 ```cpp
 FO_BEGIN_NAMESPACE

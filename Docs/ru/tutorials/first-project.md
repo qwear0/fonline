@@ -5,7 +5,7 @@ locale: ru
 document_id: legacy-tutorial-entry
 permalink: /Docs/ru/tutorials/first-project.html
 ---
-<!-- docs-translation: {"document_id":"legacy-tutorial-entry","locale":"ru","source_path":"Docs/en/tutorials/first-project.md","source_sha256":"b136193f90ed0307bac291d22ffd2e28c37645d533293a2df113015126567758"} -->
+<!-- docs-translation: {"document_id":"legacy-tutorial-entry","locale":"ru","source_path":"Docs/en/tutorials/first-project.md","source_sha256":"649cbff693a9b2faa4610099dcb91e606066928d29c936e2b8f612b33fdf71d9"} -->
 # Первый headless-проект FOnline
 
 В этом руководстве запускается принадлежащий движку минимальный проект без
@@ -49,10 +49,7 @@ cd Examples/MinimalProject
 python3 validate.py
 ```
 
-BuildTools заново создаёт `Workspace/validation-project`, копирует туда
-канонический scaffold, связывает копию с текущим checkout движка,
-конфигурирует и собирает сервер и baker, запекает ресурсы и запускает sub-config
-`StarterSmoke`. Таймаут smoke-runner равен 60 секундам.
+`validate.py` запускает host configure preset примера и build preset `<host>-smoke` из `Examples/MinimalProject`. Они настраивают/собирают сервер и baker, запекают ресурсы и запускают существующий `RunStarterSmoke` с `StarterSmoke`. Каталог `Workspace/validation-project` не создаётся. Таймаут smoke-runner равен 60 секундам.
 
 ## Подтвердите успех
 
@@ -73,7 +70,7 @@ starter_smoke_passed
 инициализации сервера; недостаточно просто запустить и остановить нативный
 процесс.
 
-Сгенерированные файлы остаются в `Workspace/`:
+Сгенерированные файлы остаются в игнорируемом `Build/` примера:
 
 - `Examples/MinimalProject/Build/windows/` — дерево сборки и результатов Windows;
 - `Examples/MinimalProject/Build/linux/` — дерево сборки и результатов Linux.

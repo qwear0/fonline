@@ -21,7 +21,7 @@ Inspect or adjust application startup settings after platform initialization.
 - Stable ID: `native-extension.hook.ApplicationInitHook`
 - Role: `COMMON`
 - Compatibility-hashed presence: `yes`
-- Call sites: [Source/Frontend/ApplicationInit.cpp](https://github.com/cvet/fonline/blob/master/Source/Frontend/ApplicationInit.cpp)
+- Call sites: [Source/Frontend/ApplicationInit.cpp](https://github.com/qwear0/fonline/blob/master/Source/Frontend/ApplicationInit.cpp)
 
 ```cpp
 FO_BEGIN_NAMESPACE
@@ -40,7 +40,7 @@ Release project-owned process services during application shutdown.
 - Stable ID: `native-extension.hook.ApplicationShutdownHook`
 - Role: `COMMON`
 - Compatibility-hashed presence: `no`
-- Call sites: [Source/Applications/ClientApp.cpp](https://github.com/cvet/fonline/blob/master/Source/Applications/ClientApp.cpp), [Source/Applications/ClientLib.cpp](https://github.com/cvet/fonline/blob/master/Source/Applications/ClientLib.cpp)
+- Call sites: [Source/Applications/ClientApp.cpp](https://github.com/qwear0/fonline/blob/master/Source/Applications/ClientApp.cpp), [Source/Applications/ClientLib.cpp](https://github.com/qwear0/fonline/blob/master/Source/Applications/ClientLib.cpp)
 
 ```cpp
 FO_BEGIN_NAMESPACE
@@ -59,7 +59,7 @@ Initialize project-owned server services and engine user data.
 - Stable ID: `native-extension.hook.ServerInitHook`
 - Role: `SERVER`
 - Compatibility-hashed presence: `yes`
-- Call sites: [Source/Server/Server.cpp](https://github.com/cvet/fonline/blob/master/Source/Server/Server.cpp)
+- Call sites: [Source/Server/Server.cpp](https://github.com/qwear0/fonline/blob/master/Source/Server/Server.cpp)
 
 ```cpp
 FO_BEGIN_NAMESPACE
@@ -78,7 +78,7 @@ Initialize project-owned client services and engine user data.
 - Stable ID: `native-extension.hook.ClientInitHook`
 - Role: `CLIENT`
 - Compatibility-hashed presence: `yes`
-- Call sites: [Source/Client/Client.cpp](https://github.com/cvet/fonline/blob/master/Source/Client/Client.cpp)
+- Call sites: [Source/Client/Client.cpp](https://github.com/qwear0/fonline/blob/master/Source/Client/Client.cpp)
 
 ```cpp
 FO_BEGIN_NAMESPACE
@@ -97,7 +97,7 @@ Adjust per-client startup settings, including embedded multi-client instances.
 - Stable ID: `native-extension.hook.ClientStartupSettingsHook`
 - Role: `COMMON`
 - Compatibility-hashed presence: `yes`
-- Call sites: [Source/Applications/ClientApp.cpp](https://github.com/cvet/fonline/blob/master/Source/Applications/ClientApp.cpp), [Source/Applications/ServerApp.cpp](https://github.com/cvet/fonline/blob/master/Source/Applications/ServerApp.cpp), [Source/Applications/ServerHeadlessApp.cpp](https://github.com/cvet/fonline/blob/master/Source/Applications/ServerHeadlessApp.cpp)
+- Call sites: [Source/Applications/ClientApp.cpp](https://github.com/qwear0/fonline/blob/master/Source/Applications/ClientApp.cpp), [Source/Applications/ServerApp.cpp](https://github.com/qwear0/fonline/blob/master/Source/Applications/ServerApp.cpp), [Source/Applications/ServerHeadlessApp.cpp](https://github.com/qwear0/fonline/blob/master/Source/Applications/ServerHeadlessApp.cpp)
 
 ```cpp
 FO_BEGIN_NAMESPACE
@@ -116,7 +116,7 @@ Append project-owned resource bakers requested by the active bake configuration.
 - Stable ID: `native-extension.hook.SetupBakersHook`
 - Role: `BAKER`
 - Compatibility-hashed presence: `yes`
-- Call sites: [Source/Tools/Baker.cpp](https://github.com/cvet/fonline/blob/master/Source/Tools/Baker.cpp)
+- Call sites: [Source/Tools/Baker.cpp](https://github.com/qwear0/fonline/blob/master/Source/Tools/Baker.cpp)
 
 ```cpp
 FO_BEGIN_NAMESPACE
@@ -135,7 +135,7 @@ Apply project visibility policy between an observer and target critter.
 - Stable ID: `native-extension.hook.CheckCritterVisibilityHook`
 - Role: `SERVER`
 - Compatibility-hashed presence: `yes`
-- Call sites: [Source/Server/MapManager.cpp](https://github.com/cvet/fonline/blob/master/Source/Server/MapManager.cpp)
+- Call sites: [Source/Server/MapManager.cpp](https://github.com/qwear0/fonline/blob/master/Source/Server/MapManager.cpp)
 
 ```cpp
 FO_BEGIN_NAMESPACE
@@ -154,7 +154,7 @@ Apply project visibility policy between an observer critter and map item.
 - Stable ID: `native-extension.hook.CheckItemVisibilityHook`
 - Role: `SERVER`
 - Compatibility-hashed presence: `yes`
-- Call sites: [Source/Server/Critter.cpp](https://github.com/cvet/fonline/blob/master/Source/Server/Critter.cpp)
+- Call sites: [Source/Server/Critter.cpp](https://github.com/qwear0/fonline/blob/master/Source/Server/Critter.cpp)
 
 ```cpp
 FO_BEGIN_NAMESPACE

@@ -8,32 +8,32 @@ generated_by: BuildTools/docs_support_matrix.py
 
 # Generated Support Matrix
 
-This page is generated from the checked support policy and the live BuildTools/CI target registry.
-A build gate proves configuration and compilation; only a smoke gate proves the named process route.
+This page checks live BuildTools targets and retains archived workflow definitions separately; this fork has no active CI gates.
+Archived targets are historical configuration, not evidence that a build or process route ran on the current revision.
 
 ## Evidence levels
 
 | Level | Meaning |
 |---|---|
-| `build_gated` | Configured and compiled by the required validation workflow on every change. |
-| `smoke_gated` | Build-gated and exercised by an automated process-level starter, native-extension, multiplayer, or content-showcase smoke test. |
-| `source_capable` | The checked BuildTools registry exposes a target, but the required workflow does not exercise it. |
+| `build_gated` | Reserved for an active required workflow that configures and compiles the profile on every change; no profile currently has this level in this fork. |
+| `smoke_gated` | Reserved for an active build gate plus a named automated process route; archived workflow definitions are not executed evidence. |
+| `source_capable` | The live BuildTools registry exposes a target. This fork has no active required CI gate; a target declaration proves neither a completed build nor runtime acceptance. |
 | `not_in_public_matrix` | No supported validation target is published for this application/platform combination. |
 
 ## Platform profiles
 
-| Host / target | Compiler | Level | Applications | Required validation targets | Runtime evidence | Limitations |
-|---|---|---|---|---|---|---|
-| Windows / Windows x64 | MSVC 19.44 or newer | `build_gated` | desktop client and headless client; server, headless server, and Windows service; mapper, animation viewer, and particle viewer; AngelScript compiler; resource baker | `win64-client`, `win64-server`, `win64-mapper`, `win64-ascompiler`, `win64-baker` | No process-level smoke route is required by the checked BuildTools validation registry. | The required lane proves configure and compilation, not renderer, driver, database, installer, signing, store, deployment, rollback, or runtime lifecycle behavior. |
-| Windows / Windows x86 | MSVC 19.44 or newer | `build_gated` | desktop client | `win32-client` | No process-level smoke route is required. | Server and tool applications are outside the published x86 validation surface. |
-| Ubuntu 24.04 / Linux x64 | Clang 20 or newer | `build_gated` | desktop client and headless client; server, headless server, and daemon; mapper, animation viewer, and particle viewer; AngelScript compiler; resource baker | `linux-client`, `linux-server`, `linux-mapper`, `linux-ascompiler`, `linux-baker` | No process-level smoke route is required by the checked BuildTools validation registry. | The current matrix qualifies Ubuntu 24.04 configure and compilation only; runtime, other distributions, installers, signing, stores, deployment, and rollback require project acceptance. |
-| Ubuntu 24.04 / Linux x64 | GCC 13 or newer | `build_gated` | desktop client and headless client; server, headless server, and daemon; mapper, animation viewer, and particle viewer; AngelScript compiler; resource baker | `linux-gcc-client`, `linux-gcc-server`, `linux-gcc-mapper`, `linux-gcc-ascompiler`, `linux-gcc-baker` | No GCC-specific process smoke route is required. | Runtime qualification comes from the Clang lane; a project relying on GCC-specific behavior needs its own smoke lane. |
-| macOS 26 Intel and Apple Silicon runners / macOS x64 and arm64 | AppleClang | `build_gated` | desktop client | `mac-client` | No process-level client smoke route is required. | The public matrix does not qualify macOS server, mapper, tools, packaging, signing, or notarization. |
-| macOS 26 Intel and Apple Silicon runners / iOS client | AppleClang | `build_gated` | client library/application bundle inputs | `ios-client` | No simulator or device smoke route is required. | Provisioning, signing, App Store delivery, device input, audio, networking, and lifecycle acceptance are project-owned. |
-| Ubuntu 24.04 cross-build host / Android armeabi-v7a and arm64-v8a | Android NDK Clang | `build_gated` | client shared library/package inputs | `android-arm32-client`, `android-arm64-client` | No emulator or physical-device smoke route is required. | APK assembly, signing, store delivery, device GPU/input/audio, pause/resume, and network acceptance are project-owned. |
-| cross-build host / Android x86 | Android NDK Clang | `source_capable` | client shared library/package inputs | `android-x86-client` | No required CI or runtime lane exists. | Do not advertise Android x86 as a supported release target without a project-owned build and device/emulator gate. |
-| Ubuntu 24.04 cross-build host / WebAssembly | Emscripten Clang | `build_gated` | browser client | `web-client` | No browser process smoke route is required by the checked BuildTools validation registry. | The stock web target is WebGL 2 client-only. The build lane does not qualify browser/GPU pairs or production hosting, headers, persistence, audio activation, deployment, CDN, signing, or rollback behavior; those remain project-owned acceptance gates. |
-| Windows / Windows x64 | ClangCL 20 or newer | `source_capable` | desktop client; server; AngelScript compiler; resource baker | `win64-clang-client`, `win64-clang-server`, `win64-clang-ascompiler`, `win64-clang-baker` | No required CI or runtime lane exists. | Use MSVC for the qualified Windows route unless the embedding project adds and owns ClangCL validation. |
+| Host / target | Compiler | Level | Applications | Available local targets | Archived workflow targets | Runtime evidence | Limitations |
+|---|---|---|---|---|---|---|---|
+| Windows / Windows x64 | MSVC 19.44 or newer | `source_capable` | desktop client and headless client; server, headless server, and Windows service; mapper, animation viewer, and particle viewer; AngelScript compiler; resource baker | `win64-client`, `win64-server`, `win64-mapper`, `win64-ascompiler`, `win64-baker` | `win64-client`, `win64-server`, `win64-mapper`, `win64-ascompiler`, `win64-baker` | No process-level smoke route is required by the checked BuildTools validation registry. | Archived lane definitions are historical configuration, not current build or runtime evidence. Renderer, driver, database, packaging, deployment, and lifecycle acceptance remain project-owned. |
+| Windows / Windows x86 | MSVC 19.44 or newer | `source_capable` | desktop client | `win32-client` | `win32-client` | No process-level smoke route is required. | Server and tool applications are outside the published x86 validation surface. |
+| Ubuntu 24.04 / Linux x64 | Clang 20 or newer | `source_capable` | desktop client and headless client; server, headless server, and daemon; mapper, animation viewer, and particle viewer; AngelScript compiler; resource baker | `linux-client`, `linux-server`, `linux-mapper`, `linux-ascompiler`, `linux-baker` | `linux-client`, `linux-server`, `linux-mapper`, `linux-ascompiler`, `linux-baker` | No process-level smoke route is required by the checked BuildTools validation registry. | Ubuntu 24.04 is the archived lane host, not a fresh qualification. Other distributions, runtime, installers, signing, deployment, and rollback require project acceptance. |
+| Ubuntu 24.04 / Linux x64 | GCC 13 or newer | `source_capable` | desktop client and headless client; server, headless server, and daemon; mapper, animation viewer, and particle viewer; AngelScript compiler; resource baker | `linux-gcc-client`, `linux-gcc-server`, `linux-gcc-mapper`, `linux-gcc-ascompiler`, `linux-gcc-baker` | `linux-gcc-client`, `linux-gcc-server`, `linux-gcc-mapper`, `linux-gcc-ascompiler`, `linux-gcc-baker` | No GCC-specific process smoke route is required. | Neither GCC nor Clang has a current required runtime lane in this fork. Qualify the compiler and artifact actually shipped. |
+| macOS 26 Intel and Apple Silicon runners / macOS x64 and arm64 | AppleClang | `source_capable` | desktop client | `mac-client` | `mac-client` | No process-level client smoke route is required. | The public matrix does not qualify macOS server, mapper, tools, packaging, signing, or notarization. |
+| macOS 26 Intel and Apple Silicon runners / iOS client | AppleClang | `source_capable` | client library/application bundle inputs | `ios-client` | `ios-client` | No simulator or device smoke route is required. | Provisioning, signing, App Store delivery, device input, audio, networking, and lifecycle acceptance are project-owned. |
+| Ubuntu 24.04 cross-build host / Android armeabi-v7a and arm64-v8a | Android NDK Clang | `source_capable` | client shared library/package inputs | `android-arm32-client`, `android-arm64-client` | `android-arm32-client`, `android-arm64-client` | No emulator or physical-device smoke route is required. | APK assembly, signing, store delivery, device GPU/input/audio, pause/resume, and network acceptance are project-owned. |
+| cross-build host / Android x86 | Android NDK Clang | `source_capable` | client shared library/package inputs | `android-x86-client` | - | No required CI or runtime lane exists. | Do not advertise Android x86 as a supported release target without a project-owned build and device/emulator gate. |
+| Ubuntu 24.04 cross-build host / WebAssembly | Emscripten Clang | `source_capable` | browser client | `web-client` | `web-client` | No browser process smoke route is required by the checked BuildTools validation registry. | The stock Web target is WebGL 2 client-only. An archived cross-build definition does not qualify browser/GPU pairs, hosting, headers, persistence, audio activation, packaging, deployment, or rollback. |
+| Windows / Windows x64 | ClangCL 20 or newer | `source_capable` | desktop client; server; AngelScript compiler; resource baker | `win64-clang-client`, `win64-clang-server`, `win64-clang-ascompiler`, `win64-clang-baker` | - | No required CI or runtime lane exists. | MSVC and ClangCL both require project-owned configure/build and runtime evidence; this fork currently qualifies neither through active CI. |
 
 ## Renderer qualification
 
@@ -47,8 +47,8 @@ A build gate proves configuration and compilation; only a smoke gate proves the 
 ## Summary
 
 - Platform profiles: **10**
-- Build-gated profiles: **8**
+- Build-gated profiles: **0**
 - Smoke-gated profiles: **0**
-- Distinct required CI validation targets: **21**
+- Distinct required CI validation targets: **0**
 
 See [Support Matrix](support-matrix.md) for release interpretation and project acceptance requirements.

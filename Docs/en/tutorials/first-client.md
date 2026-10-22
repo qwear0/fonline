@@ -38,17 +38,18 @@ Use the same `python3 validate.py` entry point from `Examples/MinimalMultiplayer
 
 ## Start the visible client
 
-After `validate.py` succeeds, open two terminals in the standalone example
-root. Start the server first:
+After `validate.py` succeeds, open two terminals in the standalone example root. Use `Build/windows` as each runtime working directory so relative `Baking/` resources resolve to the generated outputs. Start the server first:
 
 ```powershell
-Build\windows\Binaries\Server-Windows-win64\FOMM_ServerHeadless.exe -ApplyConfig FOnlineMinimalMultiplayer.fomain
+cd Build\windows
+.\Binaries\Server-Windows-win64\FOMM_ServerHeadless.exe -ApplyConfig ..\..\FOnlineMinimalMultiplayer.fomain
 ```
 
 Then start the desktop client:
 
 ```powershell
-Build\windows\Binaries\Client-Windows-win64\FOMM_Client.exe -ApplyConfig FOnlineMinimalMultiplayer.fomain
+cd Build\windows
+.\Binaries\Client-Windows-win64\FOMM_Client.exe -ApplyConfig ..\..\FOnlineMinimalMultiplayer.fomain
 ```
 
 The generated platform directory may differ with the host and generator. The
@@ -108,8 +109,7 @@ rejects drift before baking or packaging.
 ## Recovery
 
 - `Connection refused`: start the server first and confirm port `4010` is free.
-- `Config file not found`: run from the example root or pass the full path to
-  `-ApplyConfig`.
+- `Config file not found`: from `Build/windows`, use `../../FOnlineMinimalMultiplayer.fomain` or its absolute path. Keep the runtime cwd at the build output root; an absolute config path alone does not rebase relative resource paths.
 - Missing `FOMM_ClientLib.dll` or `FOMM_BakerLib.dll`: rebuild the
   `windows-check` preset; do not copy a DLL from another project.
 - A map or script change is ignored: run `cmake --build --preset windows-check`

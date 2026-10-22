@@ -5,7 +5,7 @@ locale: ru
 document_id: getting-started
 permalink: /Docs/ru/tutorials/getting-started.html
 ---
-<!-- docs-translation: {"document_id":"getting-started","locale":"ru","source_path":"Docs/en/tutorials/getting-started.md","source_sha256":"2773347b8ab1cf3e2888aeafb00141e47b3d3749437622ab26cfa3f347d5f6d6"} -->
+<!-- docs-translation: {"document_id":"getting-started","locale":"ru","source_path":"Docs/en/tutorials/getting-started.md","source_sha256":"4d3e5c86cc299d440378f349e24c36838b5620bfc55c873c5e5d7415206e3631"} -->
 # Начало работы с движком FOnline
 
 Это первая страница для разработчика, который открыл репозиторий движка и хочет понять, что читать, что собирать и где проходит граница между движком и игрой.
@@ -44,7 +44,11 @@ permalink: /Docs/ru/tutorials/getting-started.html
 Корневые файлы CMake, `.fomain`, каталоги контента, скрипты и настройки выпуска
 должны принадлежать репозиторию игры. Движок должен оставаться переиспользуемым.
 
-### Я хочу собрать проект или запустить тесты
+<a id="я-хочу-собрать-проект-или-запустить-тесты"></a>
+
+### Я хочу собрать проект или проверить изменение
+
+Собственные unit suites форка удалены, workflows отключены. Используйте existing configure/build, script compile/bake, CLI и direct application routes по [политике проверок](../contributing/testing/); новые автоматизированные тесты/инфраструктура требуют явного запроса. Сохранённый runner/example не означает универсальный Engine test target.
 
 Начните с [Процесса сборки](../how-to/build/). Предпочитайте пресеты и задачи подключающего проекта. Предположения, сделанные только по движку, легко оказываются неверными, потому что реальные имена целей и пакетов, а также сгенерированные API-файлы задаются проектом.
 

@@ -7,7 +7,7 @@ permalink: /Docs/ru/reference/platforms/support-matrix.html
 ---
 
 # Матрица поддержки
-<!-- docs-translation: {"document_id":"support-matrix","locale":"ru","source_path":"Docs/en/reference/platforms/support-matrix.md","source_sha256":"d356552b3da1aa91e0a16896da15f00e8113d95f2a259a0c730f454458d4efa4"} -->
+<!-- docs-translation: {"document_id":"support-matrix","locale":"ru","source_path":"Docs/en/reference/platforms/support-matrix.md","source_sha256":"c8be38440d999ef141698bf9b590cb1dd2baf88dcdb77dbfb644a484dbd5436c"} -->
 Эта страница определяет, что документация текущего канала (`current`) FOnline
 может называть поддерживаемым. Она разделяет наличие возможности в исходниках,
 обязательную компиляцию в CI, автоматические процессные smoke-тесты и приёмку
@@ -38,7 +38,7 @@ capability, а не «полной поддержкой».
 - `BuildTools/buildtools.py`
 - `BuildTools/cmake/stages/Init.cmake`
 - `BuildTools/cmake/stages/Applications.cmake`
-- `.github/workflows/validate.yml`
+- `.github/disabled-workflows/validate.yml` (историческое определение, не активный CI)
 - `Examples/MinimalProject/`
 - `Examples/MinimalMultiplayer/`
 - `Docs/generated/support-matrix.json`
@@ -63,28 +63,24 @@ capability, а не «полной поддержкой».
 возобновит работу, браузер подключится, renderer заработает на пользовательских
 драйверах или подписанный пакет установится.
 
-## Текущая квалифицированная база
+## Текущая база форка
 
-Самый сильный переиспользуемый маршрут действует для нативных Windows x64 и
-Ubuntu 24.04 x64:
+GitHub Actions отключены в этом workspace. Workflow в
+`.github/disabled-workflows/` — архив, а не действующий gate или доказательство
+успешной сборки текущей ревизии. Все профили текущей матрицы имеют уровень
+**source-capable**. Архивные списки целей сохраняют историческую конфигурацию
+отдельно от доступных локальных целей BuildTools; ни один список не является
+результатом запуска. Перенос локального workflow не менял настройки remote.
 
-1. Обязательный workflow собирает desktop client, server, mapper/viewers,
-   AngelScript compiler и baker.
-2. Принадлежащие Engine examples предоставляют необязательные локальные
-   validators для minimal headless project, tutorial multiplayer flow, native
-   extensions, packaging и Content Showcase; они не зарегистрированы как
-   обязательные workflow lanes.
-3. Видимый rendering, audio, signing/installers, persistence backends, public
-   networking и длительная service operation остаются project-owned acceptance
-   concerns.
-6. Видимый rendering, audio, подпись и installers, persistence backends,
-   публичная сеть и длительная работа службы остаются отдельными предметами
-   приёмки.
+Примеры Engine сохраняют необязательные локальные validators для minimal
+headless project, tutorial multiplayer flow, native extensions, packaging и
+Content Showcase. Запускайте нужный существующий маршрут и указывайте точную
+ревизию, конфигурацию, результат и ограничения. Unit suites удалены; не
+включайте удалённые test/coverage options.
 
-Windows x86, Linux GCC, macOS, iOS, Android ARM и Web имеют build gate в
-более узкой области, записанной в сгенерированной матрице. Android x86 и
-Windows ClangCL являются source-capable профилями, а не заявлениями о
-поддержке релиза.
+Видимый rendering, audio, signing/installers, persistence backends, публичная
+сеть и длительная работа службы остаются приёмкой проекта. Датированный
+результат upstream или внешнего проекта не квалифицирует этот форк.
 
 ## Границы приложений
 
@@ -93,10 +89,9 @@ Desktop-сборки могут предоставлять больше прил
 mapper, baker, compiler, service или daemon поддерживаемыми на этих целях лишь
 потому, что там компилируется общий исходный код.
 
-Фактическое создание приложений находится в
-`BuildTools/cmake/stages/Applications.cmake`. Публичные validation names
-находятся в `BuildTools/buildtools.py`; `.github/workflows/validate.yml`
-определяет, какие из них являются обязательными gates.
+Создание приложений находится в `BuildTools/cmake/stages/Applications.cmake`,
+локальные validation names — в `BuildTools/buildtools.py`. Архивный workflow
+фиксирует прежний выбор; действующих обязательных целей CI нет.
 
 Универсальная цель Editor удалена. Для интерактивного редактирования карт
 используется Mapper, а для просмотра анимаций и частиц — отдельные viewers.
@@ -147,14 +142,14 @@ packaging в проверяемую проектную процедуру и acc
 
 1. Добавьте или измените реальную validation target в
    `BuildTools/buildtools.py`.
-2. Добавьте её в обязательный workflow, если профиль должен быть build-gated.
+2. Не включайте CI ради ремонта документации. Будущий build gate требует явно
+   разрешённого активного workflow и наблюдаемого исполнения.
 3. Обновите `BuildTools/SupportMatrix.json`, указав самое узкое правдивое
    значение level.
 4. Выполните:
 
    ```bash
    python BuildTools/docs_support_matrix.py --write
-   python BuildTools/tests/test_docs_support_matrix.py
    python BuildTools/docs_support_matrix.py --check
    ```
 
@@ -165,8 +160,9 @@ packaging в проверяемую проектную процедуру и acc
 
 ## Сопровождение
 
-Сгенерированная модель отклоняет неизвестные BuildTools target names и
-заявления о наличии CI target, которой нет в обязательном workflow. Она не
+Сгенерированная модель проверяет локальные цели по актуальному реестру,
+исторические — по архиву и отклоняет заявления об активном gate на основании
+архивного workflow. Она не
 может вывести качество runtime из факта компиляции, поэтому runtime evidence и
 ограничения остаются проверяемым policy text.
 

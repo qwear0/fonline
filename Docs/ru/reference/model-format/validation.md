@@ -5,7 +5,7 @@ locale: ru
 generated: true
 ---
 
-<!-- docs-translation: {"document_id":"generated-model-format-validation","locale":"ru","source_path":"Docs/en/reference/model-format/validation.md","source_sha256":"03d91bc90d5bcf05d563da85fda965d552e12371344261ce6a55c040c4bcabbf"} -->
+<!-- docs-translation: {"document_id":"generated-model-format-validation","locale":"ru","source_path":"Docs/en/reference/model-format/validation.md","source_sha256":"26c9cb1710359ac3e126981ad5cf598a60b112af469379ef9155fc882e19452b"} -->
 
 # Валидация формата моделей
 
@@ -31,7 +31,7 @@ generated: true
 | <a id="entry-model-format-rule-runtime-composition-582952d10d"></a><code>model-format.rule.runtime-composition</code> | Смена layers перестраивает composition | Считайте model-layer arrays состоянием композиции: значение может создать/удалить children и particles, изменить materials/effects, geometry, cuts и combined meshes. | Layer change не является косметическим integer update: он меняет render graph и batching state. | [Source/Client/ModelInstance.cpp](https://github.com/cvet/fonline/blob/master/Source/Client/ModelInstance.cpp) |
 | <a id="entry-model-format-rule-baked-link-bounds-b41d53030a"></a><code>model-format.rule.baked-link-bounds</code> | Запечённые bounds geometry link | Каждый non-particle child link содержит проверенный aggregate root-space AABB и per-animation AABB mapped clips parent; default и particle links не содержат geometry payload. | Runtime framing выбирает bounds direct child для active parent clips и при их отсутствии использует aggregate link envelope вместо обхода и skinning combined-mesh vertices. | [Source/Tools/ModelInfoBaker.cpp](https://github.com/cvet/fonline/blob/master/Source/Tools/ModelInfoBaker.cpp), [Source/Client/ModelInformation.cpp](https://github.com/cvet/fonline/blob/master/Source/Client/ModelInformation.cpp), [Source/Client/ModelInstance.cpp](https://github.com/cvet/fonline/blob/master/Source/Client/ModelInstance.cpp) |
 | <a id="entry-model-format-rule-source-units-and-mirroring-1e8f6bb970"></a><code>model-format.rule.source-units-and-mirroring</code> | Положительный scale и world units Engine | До export заморозьте mirrored mesh nodes к положительному transform и держите direct FBX/OBJ attachments в диапазоне Baking.ModelAttachmentMinExtent .. Baking.ModelAttachmentMaxExtent. Если нужен явный description-level scale, используйте child .fo3d. | Отрицательные transforms инвертируют winding и normals, а чужой масштаб units создаёт невозможные model-sprite frames. Отказ bake оставляет оба дефекта у authored source. | [Source/Tools/ModelMeshBaker.cpp](https://github.com/cvet/fonline/blob/master/Source/Tools/ModelMeshBaker.cpp), [Source/Tools/ModelInfoBaker.cpp](https://github.com/cvet/fonline/blob/master/Source/Tools/ModelInfoBaker.cpp) |
-| <a id="entry-model-format-rule-validation-boundary-7d55b07e20"></a><code>model-format.rule.validation-boundary</code> | Bake и видимая проверка | Требуйте clean resource bake для syntax/asset closure, затем проверяйте scale, pose, composition, attachments, materials, cuts и interaction bounds в visible client scene. | Baking доказывает references и serialized structure; composed visual result доказывает только client renderer. | [Source/Tests/Test_ModelBaker.cpp](https://github.com/cvet/fonline/blob/master/Source/Tests/Test_ModelBaker.cpp) |
+| <a id="entry-model-format-rule-validation-boundary-7d55b07e20"></a><code>model-format.rule.validation-boundary</code> | Bake и видимая проверка | Требуйте clean resource bake для syntax/asset closure, затем проверяйте scale, pose, composition, attachments, materials, cuts и interaction bounds в visible client scene. | Baking доказывает references и serialized structure; composed visual result доказывает только client renderer. | [Source/Tools/ModelInfoBaker.cpp](https://github.com/cvet/fonline/blob/master/Source/Tools/ModelInfoBaker.cpp) |
 
 ## Удалённые legacy-написания
 
@@ -50,8 +50,6 @@ Compatibility spelling `Subset` отдельно помечен как deprecate
 
 ```powershell
 python BuildTools\docs_model_format.py --check
-python -m unittest BuildTools.tests.test_docs_model_format
-.\Binaries\Tests-Windows-win64\LF_UnitTests.exe "ModelBaker*"
 cmake --build Build\Auto --config RelWithDebInfo --target BakeResources
 ```
 

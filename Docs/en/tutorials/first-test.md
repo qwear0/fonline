@@ -8,8 +8,7 @@ permalink: /Docs/en/tutorials/first-test.html
 
 # First Automated Test
 
-Extend the three-layer executable checks in
-[Minimal Multiplayer](../../../Examples/MinimalMultiplayer/README.md).
+Inspect and run the existing three-layer application checks in [Minimal Multiplayer](../../../Examples/MinimalMultiplayer/README.md). This route is retained runtime verification, not the removed Engine unit suites. New automated tests or infrastructure require an explicit user request under [Testing](../contributing/testing/); this lesson does not mandate adding them for every change.
 
 ## Test layers
 
@@ -41,36 +40,16 @@ cmake --build --preset windows-check
 Use `linux` and `linux-check` on Linux. `python validate.py` selects these
 commands for the current host.
 
-Engine CI uses the equivalent reusable route:
+From the Engine checkout, use the equivalent local route; the fork's workflows are archived, not active CI:
 
 ```powershell
 cd Examples\MinimalMultiplayer
 python validate.py
 ```
 
-## Add one content invariant
+## Inspect one content invariant
 
-Suppose the project adds an item with stable name `TutorialBeacon`. Add its
-prototype first, then extend `RunContentTest()` in
-[`Scripts/Tutorial.fos`](../../../Examples/MinimalMultiplayer/Scripts/Tutorial.fos):
-
-```angelscript
-const hstring BeaconPid = "TutorialBeacon".hstr();
-
-void RunContentTest()
-{
-    verify(Game.CheckProtoItem(BeaconPid), "Tutorial beacon prototype is missing");
-    // Keep the existing assertions and clean shutdown.
-}
-```
-
-Keep the constant with the other stable IDs and preserve the existing body;
-the abbreviated function above only shows the new assertion. Run the complete
-check. Then temporarily misspell the ID and confirm the content-test layer
-fails before the multiplayer client starts. Restore the valid ID and rerun.
-
-This fail-then-pass replay proves the assertion is active. A test that has only
-ever been observed green is weaker evidence.
+Read `RunContentTest()` in [`Scripts/Tutorial.fos`](../../../Examples/MinimalMultiplayer/Scripts/Tutorial.fos). Follow an existing prototype/map assertion to its authored input, then its success marker and the runner's expected marker. Keep the complete existing body and clean shutdown intact. Use the existing bake/application route for a content change; do not add a replacement suite or temporary failure-injection script merely to satisfy an inherited documentation gate.
 
 ## Marker and timeout policy
 
@@ -89,12 +68,9 @@ milestone completed.
 
 ## Persistence scope
 
-`SuppliesCollected` and `TutorialAccount` are declared `Persistent`, and the
-baked metadata test protects those declarations. The tutorial uses
+`SuppliesCollected` and `TutorialAccount` are declared `Persistent` in the script source. The current metadata probe checks field-name presence, not both persistence flags; its success message is not evidence that those declarations were verified. The tutorial uses
 `Server.DbStorage = Memory`, so it does not claim persistence across server
-process restarts. A game that claims restart durability must run an additional
-test against its supported database backend and verify the restored entity
-state.
+process restarts. A game that claims restart durability must exercise its supported persistent backend, stop and restart the process, and inspect the restored entity state using an existing authorized application path.
 
 ## Recovery
 
@@ -106,5 +82,4 @@ state.
   fixed delays as success criteria.
 
 For reusable fixture, marker, timeout, cleanup, and process-report semantics,
-continue with [Gameplay and Integration Testing](../../GameplayTesting.md). For
-native Catch2 ownership and coverage, use [Testing](../../Testing.md).
+continue with [Gameplay and Integration Testing](../how-to/testing/gameplay-and-integration.md). For the fork's verification and removed-suite policy, use [Testing](../contributing/testing/).

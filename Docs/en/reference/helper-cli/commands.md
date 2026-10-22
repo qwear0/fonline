@@ -23,7 +23,7 @@ Generate engine configuration, metadata registration, script bindings, and embed
 - Owner: `build-release`
 - Audience: `engine-contributor`, `embedding-project-build-system`
 - Invocation owner: BuildTools/cmake/stages/Codegen.cmake
-- Parser source: [BuildTools/codegen.py](https://github.com/cvet/fonline/blob/master/BuildTools/codegen.py)
+- Parser source: [BuildTools/codegen.py](https://github.com/qwear0/fonline/blob/master/BuildTools/codegen.py)
 
 ### Top-level arguments
 
@@ -63,220 +63,6 @@ options:
   -verbose              verbose mode
 ```
 
-<a id="entry-helper-cli-codecoverage-b014400e5e"></a>
-## Code coverage
-
-Clean, collect, and report engine code coverage for generated test targets.
-
-- Stable ID: `helper-cli.codecoverage`
-- Program: `codecoverage.py`
-- Owner: `quality`
-- Audience: `engine-contributor`, `ci-maintainer`
-- Invocation owner: BuildTools/cmake/stages/Applications.cmake
-- Parser source: [BuildTools/codecoverage.py](https://github.com/cvet/fonline/blob/master/BuildTools/codecoverage.py)
-
-### Top-level arguments
-
-No arguments at this level.
-
-### Exact top-level `--help` output
-
-```text
-usage: codecoverage.py [-h] {clean,run,report,full} ...
-
-Run and analyze engine code coverage
-
-positional arguments:
-  {clean,run,report,full}
-    clean               Remove previously collected coverage data and reports
-    run                 Run the instrumented test binary and collect coverage data
-    report              Generate text and HTML reports from collected coverage data
-    full                Clean, run the instrumented binary, and generate reports
-
-options:
-  -h, --help            show this help message and exit
-```
-
-<a id="entry-helper-cli-codecoverage-command-clean-af34f1698d"></a>
-### `clean`
-
-Remove previously collected coverage data and reports
-
-Stable ID: `helper-cli.codecoverage.command.clean`
-
-```text
-usage: codecoverage.py clean [-h] --workspace-root WORKSPACE_ROOT --build-dir BUILD_DIR --binary BINARY --backend {gcc,llvm,msvc} --output-dir OUTPUT_DIR [--object OBJECTS] ...
-```
-
-| Stable ID | Argument | Kind | Required | Values | Choices | Default | Description |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| <a id="entry-helper-cli-codecoverage-command-clean-argument-workspace-root-b6d8a2447e"></a><code>helper-cli.codecoverage.command.clean.argument.workspace_root</code> | <code>--workspace-root</code> | <code>option</code> | yes | <code>1</code> | - | - | embedding-project source directory |
-| <a id="entry-helper-cli-codecoverage-command-clean-argument-build-dir-094d74e38d"></a><code>helper-cli.codecoverage.command.clean.argument.build_dir</code> | <code>--build-dir</code> | <code>option</code> | yes | <code>1</code> | - | - | configured CMake build directory |
-| <a id="entry-helper-cli-codecoverage-command-clean-argument-binary-d3b3cf975b"></a><code>helper-cli.codecoverage.command.clean.argument.binary</code> | <code>--binary</code> | <code>option</code> | yes | <code>1</code> | - | - | instrumented test executable |
-| <a id="entry-helper-cli-codecoverage-command-clean-argument-backend-1dd776233e"></a><code>helper-cli.codecoverage.command.clean.argument.backend</code> | <code>--backend</code> | <code>option</code> | yes | <code>1</code> | <code>gcc</code>, <code>llvm</code>, <code>msvc</code> | - | coverage compiler/toolchain backend |
-| <a id="entry-helper-cli-codecoverage-command-clean-argument-output-dir-89690c3f10"></a><code>helper-cli.codecoverage.command.clean.argument.output_dir</code> | <code>--output-dir</code> | <code>option</code> | yes | <code>1</code> | - | - | coverage data and report output directory |
-| <a id="entry-helper-cli-codecoverage-command-clean-argument-objects-394f819f2f"></a><code>helper-cli.codecoverage.command.clean.argument.objects</code> | <code>--object</code> | <code>option</code> | no | <code>1</code> | - | - | additional instrumented executable or shared library for LLVM reporting; repeatable |
-| <a id="entry-helper-cli-codecoverage-command-clean-argument-binary-args-51d31087ed"></a><code>helper-cli.codecoverage.command.clean.argument.binary_args</code> | <code>binary_args</code> | <code>positional</code> | yes | <code>...</code> | - | - | arguments passed to the test binary |
-
-#### Exact `--help` output
-
-```text
-usage: codecoverage.py clean [-h] --workspace-root WORKSPACE_ROOT --build-dir BUILD_DIR --binary BINARY --backend {gcc,llvm,msvc} --output-dir OUTPUT_DIR [--object OBJECTS] ...
-
-Remove previously collected coverage data and reports
-
-positional arguments:
-  binary_args           arguments passed to the test binary
-
-options:
-  -h, --help            show this help message and exit
-  --workspace-root WORKSPACE_ROOT
-                        embedding-project source directory
-  --build-dir BUILD_DIR
-                        configured CMake build directory
-  --binary BINARY       instrumented test executable
-  --backend {gcc,llvm,msvc}
-                        coverage compiler/toolchain backend
-  --output-dir OUTPUT_DIR
-                        coverage data and report output directory
-  --object OBJECTS      additional instrumented executable or shared library for LLVM reporting; repeatable
-```
-
-<a id="entry-helper-cli-codecoverage-command-run-6ff9c981af"></a>
-### `run`
-
-Run the instrumented test binary and collect coverage data
-
-Stable ID: `helper-cli.codecoverage.command.run`
-
-```text
-usage: codecoverage.py run [-h] --workspace-root WORKSPACE_ROOT --build-dir BUILD_DIR --binary BINARY --backend {gcc,llvm,msvc} --output-dir OUTPUT_DIR [--object OBJECTS] ...
-```
-
-| Stable ID | Argument | Kind | Required | Values | Choices | Default | Description |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| <a id="entry-helper-cli-codecoverage-command-run-argument-workspace-root-3ea13c9ab2"></a><code>helper-cli.codecoverage.command.run.argument.workspace_root</code> | <code>--workspace-root</code> | <code>option</code> | yes | <code>1</code> | - | - | embedding-project source directory |
-| <a id="entry-helper-cli-codecoverage-command-run-argument-build-dir-23ad87643e"></a><code>helper-cli.codecoverage.command.run.argument.build_dir</code> | <code>--build-dir</code> | <code>option</code> | yes | <code>1</code> | - | - | configured CMake build directory |
-| <a id="entry-helper-cli-codecoverage-command-run-argument-binary-3d92cbd0fb"></a><code>helper-cli.codecoverage.command.run.argument.binary</code> | <code>--binary</code> | <code>option</code> | yes | <code>1</code> | - | - | instrumented test executable |
-| <a id="entry-helper-cli-codecoverage-command-run-argument-backend-da1a5d1400"></a><code>helper-cli.codecoverage.command.run.argument.backend</code> | <code>--backend</code> | <code>option</code> | yes | <code>1</code> | <code>gcc</code>, <code>llvm</code>, <code>msvc</code> | - | coverage compiler/toolchain backend |
-| <a id="entry-helper-cli-codecoverage-command-run-argument-output-dir-3fc1672e9a"></a><code>helper-cli.codecoverage.command.run.argument.output_dir</code> | <code>--output-dir</code> | <code>option</code> | yes | <code>1</code> | - | - | coverage data and report output directory |
-| <a id="entry-helper-cli-codecoverage-command-run-argument-objects-9659c0efc0"></a><code>helper-cli.codecoverage.command.run.argument.objects</code> | <code>--object</code> | <code>option</code> | no | <code>1</code> | - | - | additional instrumented executable or shared library for LLVM reporting; repeatable |
-| <a id="entry-helper-cli-codecoverage-command-run-argument-binary-args-0e1e4b8437"></a><code>helper-cli.codecoverage.command.run.argument.binary_args</code> | <code>binary_args</code> | <code>positional</code> | yes | <code>...</code> | - | - | arguments passed to the test binary |
-
-#### Exact `--help` output
-
-```text
-usage: codecoverage.py run [-h] --workspace-root WORKSPACE_ROOT --build-dir BUILD_DIR --binary BINARY --backend {gcc,llvm,msvc} --output-dir OUTPUT_DIR [--object OBJECTS] ...
-
-Run the instrumented test binary and collect coverage data
-
-positional arguments:
-  binary_args           arguments passed to the test binary
-
-options:
-  -h, --help            show this help message and exit
-  --workspace-root WORKSPACE_ROOT
-                        embedding-project source directory
-  --build-dir BUILD_DIR
-                        configured CMake build directory
-  --binary BINARY       instrumented test executable
-  --backend {gcc,llvm,msvc}
-                        coverage compiler/toolchain backend
-  --output-dir OUTPUT_DIR
-                        coverage data and report output directory
-  --object OBJECTS      additional instrumented executable or shared library for LLVM reporting; repeatable
-```
-
-<a id="entry-helper-cli-codecoverage-command-report-8de4627b8f"></a>
-### `report`
-
-Generate text and HTML reports from collected coverage data
-
-Stable ID: `helper-cli.codecoverage.command.report`
-
-```text
-usage: codecoverage.py report [-h] --workspace-root WORKSPACE_ROOT --build-dir BUILD_DIR --binary BINARY --backend {gcc,llvm,msvc} --output-dir OUTPUT_DIR [--object OBJECTS] ...
-```
-
-| Stable ID | Argument | Kind | Required | Values | Choices | Default | Description |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| <a id="entry-helper-cli-codecoverage-command-report-argument-workspace-root-c368887528"></a><code>helper-cli.codecoverage.command.report.argument.workspace_root</code> | <code>--workspace-root</code> | <code>option</code> | yes | <code>1</code> | - | - | embedding-project source directory |
-| <a id="entry-helper-cli-codecoverage-command-report-argument-build-dir-ef1800b8f4"></a><code>helper-cli.codecoverage.command.report.argument.build_dir</code> | <code>--build-dir</code> | <code>option</code> | yes | <code>1</code> | - | - | configured CMake build directory |
-| <a id="entry-helper-cli-codecoverage-command-report-argument-binary-ccafd82b7a"></a><code>helper-cli.codecoverage.command.report.argument.binary</code> | <code>--binary</code> | <code>option</code> | yes | <code>1</code> | - | - | instrumented test executable |
-| <a id="entry-helper-cli-codecoverage-command-report-argument-backend-927a805169"></a><code>helper-cli.codecoverage.command.report.argument.backend</code> | <code>--backend</code> | <code>option</code> | yes | <code>1</code> | <code>gcc</code>, <code>llvm</code>, <code>msvc</code> | - | coverage compiler/toolchain backend |
-| <a id="entry-helper-cli-codecoverage-command-report-argument-output-dir-ef938b1452"></a><code>helper-cli.codecoverage.command.report.argument.output_dir</code> | <code>--output-dir</code> | <code>option</code> | yes | <code>1</code> | - | - | coverage data and report output directory |
-| <a id="entry-helper-cli-codecoverage-command-report-argument-objects-96a47bda0f"></a><code>helper-cli.codecoverage.command.report.argument.objects</code> | <code>--object</code> | <code>option</code> | no | <code>1</code> | - | - | additional instrumented executable or shared library for LLVM reporting; repeatable |
-| <a id="entry-helper-cli-codecoverage-command-report-argument-binary-args-6f9a492ac0"></a><code>helper-cli.codecoverage.command.report.argument.binary_args</code> | <code>binary_args</code> | <code>positional</code> | yes | <code>...</code> | - | - | arguments passed to the test binary |
-
-#### Exact `--help` output
-
-```text
-usage: codecoverage.py report [-h] --workspace-root WORKSPACE_ROOT --build-dir BUILD_DIR --binary BINARY --backend {gcc,llvm,msvc} --output-dir OUTPUT_DIR [--object OBJECTS] ...
-
-Generate text and HTML reports from collected coverage data
-
-positional arguments:
-  binary_args           arguments passed to the test binary
-
-options:
-  -h, --help            show this help message and exit
-  --workspace-root WORKSPACE_ROOT
-                        embedding-project source directory
-  --build-dir BUILD_DIR
-                        configured CMake build directory
-  --binary BINARY       instrumented test executable
-  --backend {gcc,llvm,msvc}
-                        coverage compiler/toolchain backend
-  --output-dir OUTPUT_DIR
-                        coverage data and report output directory
-  --object OBJECTS      additional instrumented executable or shared library for LLVM reporting; repeatable
-```
-
-<a id="entry-helper-cli-codecoverage-command-full-43f183aedc"></a>
-### `full`
-
-Clean, run the instrumented binary, and generate reports
-
-Stable ID: `helper-cli.codecoverage.command.full`
-
-```text
-usage: codecoverage.py full [-h] --workspace-root WORKSPACE_ROOT --build-dir BUILD_DIR --binary BINARY --backend {gcc,llvm,msvc} --output-dir OUTPUT_DIR [--object OBJECTS] ...
-```
-
-| Stable ID | Argument | Kind | Required | Values | Choices | Default | Description |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| <a id="entry-helper-cli-codecoverage-command-full-argument-workspace-root-ad42e148ad"></a><code>helper-cli.codecoverage.command.full.argument.workspace_root</code> | <code>--workspace-root</code> | <code>option</code> | yes | <code>1</code> | - | - | embedding-project source directory |
-| <a id="entry-helper-cli-codecoverage-command-full-argument-build-dir-0d3d1b2e06"></a><code>helper-cli.codecoverage.command.full.argument.build_dir</code> | <code>--build-dir</code> | <code>option</code> | yes | <code>1</code> | - | - | configured CMake build directory |
-| <a id="entry-helper-cli-codecoverage-command-full-argument-binary-f3c0888145"></a><code>helper-cli.codecoverage.command.full.argument.binary</code> | <code>--binary</code> | <code>option</code> | yes | <code>1</code> | - | - | instrumented test executable |
-| <a id="entry-helper-cli-codecoverage-command-full-argument-backend-fa1db784c3"></a><code>helper-cli.codecoverage.command.full.argument.backend</code> | <code>--backend</code> | <code>option</code> | yes | <code>1</code> | <code>gcc</code>, <code>llvm</code>, <code>msvc</code> | - | coverage compiler/toolchain backend |
-| <a id="entry-helper-cli-codecoverage-command-full-argument-output-dir-7b53f8aad9"></a><code>helper-cli.codecoverage.command.full.argument.output_dir</code> | <code>--output-dir</code> | <code>option</code> | yes | <code>1</code> | - | - | coverage data and report output directory |
-| <a id="entry-helper-cli-codecoverage-command-full-argument-objects-8a1e4c2132"></a><code>helper-cli.codecoverage.command.full.argument.objects</code> | <code>--object</code> | <code>option</code> | no | <code>1</code> | - | - | additional instrumented executable or shared library for LLVM reporting; repeatable |
-| <a id="entry-helper-cli-codecoverage-command-full-argument-binary-args-586e8c3c4a"></a><code>helper-cli.codecoverage.command.full.argument.binary_args</code> | <code>binary_args</code> | <code>positional</code> | yes | <code>...</code> | - | - | arguments passed to the test binary |
-
-#### Exact `--help` output
-
-```text
-usage: codecoverage.py full [-h] --workspace-root WORKSPACE_ROOT --build-dir BUILD_DIR --binary BINARY --backend {gcc,llvm,msvc} --output-dir OUTPUT_DIR [--object OBJECTS] ...
-
-Clean, run the instrumented binary, and generate reports
-
-positional arguments:
-  binary_args           arguments passed to the test binary
-
-options:
-  -h, --help            show this help message and exit
-  --workspace-root WORKSPACE_ROOT
-                        embedding-project source directory
-  --build-dir BUILD_DIR
-                        configured CMake build directory
-  --binary BINARY       instrumented test executable
-  --backend {gcc,llvm,msvc}
-                        coverage compiler/toolchain backend
-  --output-dir OUTPUT_DIR
-                        coverage data and report output directory
-  --object OBJECTS      additional instrumented executable or shared library for LLVM reporting; repeatable
-```
-
 <a id="entry-helper-cli-gameplay-test-runner-b34ed8deb4"></a>
 ## Gameplay test runner
 
@@ -287,7 +73,7 @@ Run ordered multi-process gameplay smoke scenarios with readiness, marker, deadl
 - Owner: `quality`
 - Audience: `game-developer`, `engine-contributor`, `embedding-project-build-system`, `ci-maintainer`
 - Invocation owner: embedding-project CMake targets and CI gameplay smoke jobs
-- Parser source: [BuildTools/gameplay_test_runner.py](https://github.com/cvet/fonline/blob/master/BuildTools/gameplay_test_runner.py)
+- Parser source: [BuildTools/gameplay_test_runner.py](https://github.com/qwear0/fonline/blob/master/BuildTools/gameplay_test_runner.py)
 
 ### Top-level arguments
 
@@ -321,7 +107,7 @@ Call an Engine-compatible project AiControl bridge through the versioned NDJSON/
 - Owner: `tooling`
 - Audience: `game-developer`, `engine-contributor`, `tool-developer`, `ci-maintainer`
 - Invocation owner: embedding-project AI adapters, protocol smoke tests, and direct developer diagnostics
-- Parser source: [BuildTools/ai_control_client.py](https://github.com/cvet/fonline/blob/master/BuildTools/ai_control_client.py)
+- Parser source: [BuildTools/ai_control_client.py](https://github.com/qwear0/fonline/blob/master/BuildTools/ai_control_client.py)
 
 ### Top-level arguments
 
@@ -509,7 +295,7 @@ Inspect linked PE files for Windows 7 import compatibility and optionally requir
 - Owner: `quality`
 - Audience: `engine-contributor`, `embedding-project-build-system`, `release-operator`
 - Invocation owner: embedding-project Windows 7 CI and release validation
-- Parser source: [BuildTools/check_windows7_imports.py](https://github.com/cvet/fonline/blob/master/BuildTools/check_windows7_imports.py)
+- Parser source: [BuildTools/check_windows7_imports.py](https://github.com/qwear0/fonline/blob/master/BuildTools/check_windows7_imports.py)
 
 ### Top-level arguments
 
@@ -544,7 +330,7 @@ Discover, connect, install, launch, stop, and inspect Android Wi-Fi devices thro
 - Owner: `platform`
 - Audience: `game-developer`, `engine-contributor`
 - Invocation owner: embedding-project Android tasks and direct developer use
-- Parser source: [BuildTools/android_device.py](https://github.com/cvet/fonline/blob/master/BuildTools/android_device.py)
+- Parser source: [BuildTools/android_device.py](https://github.com/qwear0/fonline/blob/master/BuildTools/android_device.py)
 
 ### Top-level arguments
 
@@ -769,7 +555,7 @@ Serve a packaged web client from a no-cache local HTTP server.
 - Owner: `platform`
 - Audience: `game-developer`, `release-operator`
 - Invocation owner: BuildTools/package.py WebServer payload
-- Parser source: [BuildTools/web/simple-web-server.py](https://github.com/cvet/fonline/blob/master/BuildTools/web/simple-web-server.py)
+- Parser source: [BuildTools/web/simple-web-server.py](https://github.com/qwear0/fonline/blob/master/BuildTools/web/simple-web-server.py)
 
 ### Top-level arguments
 
@@ -801,7 +587,7 @@ Build an MSI installer from a package-generated WiX definition.
 - Owner: `build-release`
 - Audience: `release-operator`, `engine-contributor`
 - Invocation owner: BuildTools/package.py Wix pack
-- Parser source: [BuildTools/msicreator/createmsi.py](https://github.com/cvet/fonline/blob/master/BuildTools/msicreator/createmsi.py)
+- Parser source: [BuildTools/msicreator/createmsi.py](https://github.com/qwear0/fonline/blob/master/BuildTools/msicreator/createmsi.py)
 
 ### Top-level arguments
 

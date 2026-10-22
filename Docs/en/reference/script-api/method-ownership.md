@@ -17,7 +17,7 @@ Use this page when adding, moving, or reviewing script-visible native methods. T
 - choose the correct runtime side (`Common`, `Server`, `Client`, or `Mapper`);
 - choose the correct receiver/entity family (`Game`, `Entity`, `Critter`, `Map`, `Item`, `Location`, `Player`, `ImGui`);
 - preserve authoritative server boundaries and client/view-only boundaries;
-- update tests and docs when exported method groups move.
+- update owning docs and select existing compile/bake/application checks when exported method groups move.
 
 ## Source inventory
 
@@ -261,16 +261,16 @@ Use this checklist before editing a `*ScriptMethods.cpp` file:
 3. Add `///@ ExportMethod` and `FO_SCRIPT_API` in the owning file. Use trailing C++ default parameters for optional suffix arguments instead of duplicating overloads whose bodies only supply fallback values. Codegen normalizes engine value-type defaults such as `isize32 {}` or `ucolor {}` into AngelScript defaults such as `isize()` or `ucolor()`.
 4. Spell a scalar pointer parameter/return `nptr<T>` only when it genuinely accepts or returns null; otherwise use the non-null `ptr<T>`. See [Nullability.md](../../../Nullability.md).
 5. Regenerate code so method descriptors and wrappers reflect the new signature.
-6. Add or update the smallest relevant script method tests.
+6. Compile/bake the affected script roles and exercise the existing method/dispatcher path; new tests require an explicit request.
 7. Review or add `///@ ApiContract` only when the method's support status has an owner-backed disposition; reachability is not a stability promise.
 8. Regenerate `Docs/generated/api.json`, generated reference pages, and `Docs/generated/source-inventory.json`; update this page only if a file or responsibility group changes meaning.
 
 ## Validation checklist
 
-1. Run `python BuildTools/tests/test_docs_api.py`, `python BuildTools/docs_api.py --write`, `python BuildTools/docs_reference.py --write`, and then both `--check` commands after API or contract changes.
+1. Run `python BuildTools/docs_api.py --write`, `python BuildTools/docs_reference.py --write`, and then both `--check` commands after API or contract changes. The former `BuildTools/tests` suites are removed.
 2. Run `python BuildTools/docs_inventory.py --write` and then `--check` after export-file changes.
 3. Run code generation and compile generated wrappers.
-4. Run the relevant method tests:
+4. Exercise the affected method through an existing application path. The following former method-suite locations are historical coverage notes, not runnable targets:
    - common methods: `Source/Tests/Test_AngelScriptCommonScriptMethods.cpp`;
    - server methods: `Source/Tests/Test_AngelScriptServerScriptMethods.cpp` plus relevant server runtime tests;
    - entity/handle behavior: `Source/Tests/Test_AngelScriptEntityOps.cpp`;

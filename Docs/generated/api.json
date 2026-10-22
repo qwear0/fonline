@@ -103921,7 +103921,7 @@
         "mapper"
       ],
       "receiver": null,
-      "signature": "string Web.BackgroundColor = rgb(0, 0, 0",
+      "signature": "string Web.BackgroundColor = rgb(0, 0, 0)",
       "description": "Background color for the web page around the game screen",
       "flags": [],
       "stability": "experimental",
@@ -103947,9 +103947,7 @@
       "setting_kind": "read-only",
       "mutability": "read-only",
       "default_values": [
-        "rgb(0",
-        "0",
-        "0"
+        "rgb(0, 0, 0)"
       ],
       "command_line_redacted_by_default": false,
       "redaction_rule": "name matches a default Common.SecretSettingTokens entry"

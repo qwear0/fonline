@@ -272,7 +272,7 @@ Renaming a call, changing its target, reordering arguments, changing an argument
 - Unpaired documentation record: server/client metadata came from different or incomplete bakes, or one file is stale.
 - Missing or mismatched limits record: rebake both targets with the same Engine/project revision; every record must end with `Limits <max-bytes> <max-collection-size>` and both sides must agree.
 - Source link unavailable in generated output: `.fometa` stores only the source file hint; inspect the project source inventory instead of guessing a path.
-- Runtime serialization failure: reduce the contract to known supported types and add a focused end-to-end transport test.
+- Runtime serialization failure: reduce the contract to known supported types, rebake both sides and exercise the existing end-to-end transport path; new automated tests require an explicit request.
 
 ## Validation checklist
 
@@ -280,12 +280,12 @@ Renaming a call, changing its target, reordering arguments, changing an argument
 2. Implement the exact inbound signature under the correct side and attribute.
 3. Run the project's normal resource bake; require warning-free AngelScript compilation and/or a clean Managed C# compile plus analyzer pass for every backend the project enables.
 4. Generate and review the paired JSON/Markdown catalog from that bake.
-5. Run `BuildTools/docs_metadata.py --check` with the same inputs in CI.
+5. Run `BuildTools/docs_metadata.py --check` with the same inputs after baking; any embedding-project CI is separately owned, while this fork's workflows are archived.
 6. Exercise client-to-server authorization and server-to-client presentation through a real network or project integration test.
 7. Test rejected permissions, stale identifiers, malformed domain values, global/per-call payload limits, and outer plus nested collection limits.
 8. Give every incompatible call change an explicit release/compatibility disposition.
 
-The engine-owned AngelScript [minimal project](../../../../Examples/MinimalProject/README.md) proves declaration parsing, both inbound handler bindings, paired baked metadata, stable catalog IDs, and server lifecycle startup. `Test_ManagedScriptBaker` plus the Managed CoreScripts tests prove generated caller shape and managed handler registration/loopback. Neither replaces a game's real multiplayer transport and authorization tests.
+The engine-owned AngelScript [minimal project](../../../../Examples/MinimalProject/README.md) proves declaration parsing, both inbound handler bindings, paired baked metadata, stable catalog IDs, and server lifecycle startup. The former `Test_ManagedScriptBaker` and Managed CoreScripts suites are removed, not current prerequisites. Compile/bake the selected Managed role and observe its actual dispatcher/transport path; generated caller shape or diagnostic loopback alone does not prove real multiplayer authorization.
 
 ## See also
 

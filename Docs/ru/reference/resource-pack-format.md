@@ -6,7 +6,7 @@ document_id: resource-pack-format
 permalink: /Docs/ru/reference/resource-pack-format.html
 ---
 
-<!-- docs-translation: {"document_id":"resource-pack-format","locale":"ru","source_path":"Docs/en/reference/resource-pack-format.md","source_sha256":"44fcd41b22a878e0e53490d7085648317acf5c8791201c0f2e38487802543422"} -->
+<!-- docs-translation: {"document_id":"resource-pack-format","locale":"ru","source_path":"Docs/en/reference/resource-pack-format.md","source_sha256":"436079ca6b87e0846ae1813ac8a482898d18ec5843588de24bdb61debc7dac60"} -->
 # Формат пакета ресурсов
 
 Логический пакет состоит из полного `Pack.fores` и, при необходимости, изменяемого `Pack.patch.fores`. Патч содержит новые данные и полный актуальный каталог: каждая запись ссылается на данные в базе или патче, а удалённые пути просто отсутствуют. Цепочек патчей, файлов наборов ресурсов и частей пакетов нет. `Resources.foindex` — удаляемый кеш объединённого поиска по выбранным парам.
@@ -153,4 +153,4 @@ Web использует предварительно загруженную in-
 
 Основной API находится в `Source/Common/ResourcePack.h`: `ResourcePackWriter`, `ResourcePatchWriter`, `ResourcePackSource`, `ResourcePairVerifier`, `ReadResourcePackHeader`, `DecodeResourcePackIndex`, `ReadResourcePatchInfo` и `VerifyResourcePackFile`. `GetClientPackDirs`, `GetClientResourcePackPath` и `AddClientPackSource` в `FileSystem.h` дают bootstrap, updater и runtime общий выбор базы/патча.
 
-`Test_ResourcePack.cpp` закрепляет общие эталонные байты Python/C++, проверку данных, повторные append, восстановление после прерванного footer, возобновление append и проверку пары. `Test_ResourceIndex.cpp` проверяет чтение через кеш и границы APK-диапазона; `Test_ClientServerIntegration.cpp` — реальный цикл updater/backend.
+Прежние suites `Test_ResourcePack.cpp`, `Test_ResourceIndex.cpp` и `Test_ClientServerIntegration.cpp` удалены в этом форке. Их golden-byte/append/index/updater coverage историческое, не current runnable gate. Используйте существующую проверку payload упаковщиком и isolated real updater/runtime paths; новые автоматизированные тесты требуют явного запроса. Политика не ослабляет format, publication или recovery guarantees выше.

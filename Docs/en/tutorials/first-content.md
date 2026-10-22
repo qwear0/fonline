@@ -96,7 +96,7 @@ For a new prototype or map:
 3. Author every locale in `Baking.BakeLanguages`.
 4. Reference it through script metadata or a validated `hstring`, according to
    the owning API.
-5. Extend the content test, then bake and run the smallest consuming route.
+5. Bake and run the smallest existing consuming route. New automated tests or infrastructure require an explicit request under the fork's verification policy.
 
 Use [Prototype Format](../how-to/content/prototype-format.md), [Map Format](../how-to/content/map-format.md),
 and [Text and Localization](../how-to/content/text-and-localization.md) for the complete

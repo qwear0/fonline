@@ -16,6 +16,18 @@ Developer-visible FOnline changes and migration notes are maintained here in Eng
 
 ### Documentation
 
+- Reconcile paired native, scripting, content/media and platform references and getting-started tutorials. Correct setting groups, supported RPC/migration kinds, text fallback, font/image/particle behavior and practical validation boundaries.
+- Refresh generated AI, API, audio, CLI and CMake records from their repaired owners, including the complete `Web.BackgroundColor` default.
+
+### Migration
+
+- Base `ea4174a784516c0cf4323b52f3634a4a55b5f3ba` (`2026.1.61-dev`) → `2026.1.62-dev`. Regenerate reference outputs rather than hand-editing generated tables; follow the corrected tutorial directories/options and existing scripting contracts. Documentation parser corrections do not add runtime setting syntax, RPC shapes or migration kinds.
+- No new runtime API, configuration value, save/resource format, wire `0.0.75` or Managed ABI `9` change and no data conversion. Remaining generated models and starter guides follow in the coordinated range. Rollback restores matching preceding sources/generated artifacts.
+
+## 2026.1.61-dev - 2026-10-22
+
+### Documentation
+
 - Correct paired build/content/scripting/operations guides and audio, AI, CMake and effect references. Clarify engine/game ownership, supported native and managed contracts, media validation limits, release evidence and the replacement verification workflow without restoring unit suites.
 
 ### Migration

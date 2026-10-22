@@ -5,7 +5,7 @@ locale: ru
 document_id: first-client-tutorial
 permalink: /Docs/ru/tutorials/first-client.html
 ---
-<!-- docs-translation: {"document_id":"first-client-tutorial","locale":"ru","source_path":"Docs/en/tutorials/first-client.md","source_sha256":"c96b9ffeaf641a1f2dc5af3b1d520d649740af3814044c84026f85cdde0f66c0"} -->
+<!-- docs-translation: {"document_id":"first-client-tutorial","locale":"ru","source_path":"Docs/en/tutorials/first-client.md","source_sha256":"27b044c4c1cfbcc648bb32a585e2b91bb63138063601b73a4ef7f58e3b3601c4"} -->
 # Первый игровой клиент
 
 Соберите и запустите настольный клиент, подключённый к серверу примера
@@ -38,17 +38,18 @@ python validate.py
 
 ## Запуск видимого клиента
 
-После успешного завершения `validate.py` откройте два терминала в корне
-отдельного примера. Сначала запустите сервер:
+После успешного завершения `validate.py` откройте два терминала в корне отдельного примера. В обоих используйте `Build/windows` как runtime cwd, чтобы относительный `Baking/` указывал на сгенерированные ресурсы. Сначала запустите сервер:
 
 ```powershell
-Build\windows\Binaries\Server-Windows-win64\FOMM_ServerHeadless.exe -ApplyConfig FOnlineMinimalMultiplayer.fomain
+cd Build\windows
+.\Binaries\Server-Windows-win64\FOMM_ServerHeadless.exe -ApplyConfig ..\..\FOnlineMinimalMultiplayer.fomain
 ```
 
 Затем запустите настольный клиент:
 
 ```powershell
-Build\windows\Binaries\Client-Windows-win64\FOMM_Client.exe -ApplyConfig FOnlineMinimalMultiplayer.fomain
+cd Build\windows
+.\Binaries\Client-Windows-win64\FOMM_Client.exe -ApplyConfig ..\..\FOnlineMinimalMultiplayer.fomain
 ```
 
 Имя сгенерированного платформенного каталога может отличаться в зависимости от
@@ -106,7 +107,7 @@ baker для дистрибутива требует инициализации 
 ## Восстановление после ошибок
 
 - `Connection refused`: сначала запустите сервер и убедитесь, что порт `4010` свободен.
-- `Config file not found`: запускайте команду из корня примера или передайте полный путь в `-ApplyConfig`.
+- `Config file not found`: из `Build/windows` передавайте `../../FOnlineMinimalMultiplayer.fomain` либо абсолютный путь. Runtime cwd должен оставаться корнем build outputs; абсолютный путь config сам по себе не меняет базу относительных resource paths.
 - Отсутствует `FOMM_ClientLib.dll` или `FOMM_BakerLib.dll`: пересоберите пресет `windows-check`; не копируйте DLL из другого проекта.
 - Изменение карты или скрипта не учитывается: выполните `cmake --build --preset windows-check`, чтобы запечь ресурсы и повторить весь маршрут.
 
