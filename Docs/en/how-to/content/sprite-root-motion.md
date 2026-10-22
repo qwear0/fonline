@@ -35,7 +35,6 @@ The owning sources are:
 - `Source/Common/Geometry.*` for lossless hex/offset re-splitting and passability-aware normalization;
 - `Source/Client/CritterHexView.*` for cycle anchoring, movement displacement, frame selection, rendered animation offsets, and stop-time normalization;
 - `Source/Client/ResourceManager.cpp` for animation selection, frame extraction, merges, cloning, and their private offset transforms;
-- `Source/Tests/Test_ImageBaker.cpp` and `Source/Tests/Test_Geometry.cpp` for format-level offset and geometry-normalization coverage.
 
 Project documents and content repositories are useful integration evidence, but they are not the authority for reusable Engine behavior.
 
@@ -87,7 +86,7 @@ frame displacement. FOFRM `Alias` retains both kinds of offset, while ordinary
 composition copies only child frames and adds authored frame deltas. See the
 [ART import contract](image-format.md#art) for rotation and placement rules.
 
-Offsets are direction-specific. Image baking may mirror, crop, or compose frames. Client resource selection may extract the first or last frame, clone a sheet, or merge a base and extra Fallout animation. That merge path is private Engine behavior and has no focused per-axis regression in the current native suite; do not treat offset preservation across the splice as a public guarantee. Validate the selected baked sheet on both axes rather than editing the baked stream.
+Offsets are direction-specific. Image baking may mirror, crop, or compose frames. Client resource selection may extract the first or last frame, clone a sheet, or merge a base and extra Fallout animation. That merge path is private Engine behavior and has no retained focused per-axis execution evidence in this fork; do not treat offset preservation across the splice as a public guarantee. Validate the selected baked sheet on both axes rather than editing the baked stream.
 
 ## Baked and runtime representation
 
@@ -276,7 +275,7 @@ The embedding project owns sprite assets, FOFRM composition, animation substitut
 
 ## Maintenance triggers
 
-Re-audit this page and its focused tests when a change touches any of these surfaces:
+Re-audit this page and its owning sources when a change touches any of these surfaces:
 
 - `FrameShot::NextX` / `NextY`, SpriteResource versioning, `NextOffset`, shared-frame behavior, or `SpriteSheet::_sprOffset`;
 - FOFRM/legacy image import, mirroring, cropping, frame extraction, animation merge, cloning, or substitution;
@@ -291,7 +290,6 @@ For an external project or Engine update, fetch first, record the old/new commit
 For documentation changes:
 
 ```bash
-python BuildTools/tests/test_docs_sprite_root_motion.py
 python BuildTools/docs_external_evidence.py --check
 python BuildTools/docs_localization.py --check
 python BuildTools/docs_site.py --check
@@ -299,6 +297,8 @@ python BuildTools/docs_ai_delivery.py --check
 python BuildTools/docs_validate.py
 ```
 
-For offset import and baked transport, run the `ImageBaker` unit-test cases in the embedding project's Engine test binary. `Test_ImageBaker.cpp` covers signed FRM offsets, FOFRM lower/camel-case keys, nested composition, mirroring, frame selection, and baked round trips. `Test_Geometry.cpp` covers successful re-splitting, blocked-target refusal, same-hex behavior, unrestricted normalization, and outside-map refusal.
-
-The current native suite does not expose a focused `CritterHexView` root-motion fixture. After changing `MovingContext`, `CritterHexView`, `SpriteSheet`, `ResourceManager` animation selection, or authored locomotion offsets, run the [visual acceptance matrix](#visual-acceptance-matrix) in a visible client scene. Baking proves the data path, geometry tests prove re-splitting, and the visible scene proves gait alignment.
+Engine-owned unit suites are retired. For offset import and transport, bake
+representative FRM/FOFRM resources and inspect the consumed frame offsets through
+the existing runtime path. Exercise normalization, blocked and outside-map
+movement in the application; documentation checks do not execute these paths.
+After changing `MovingContext`, `CritterHexView`, `SpriteSheet`, `ResourceManager` animation selection, or authored locomotion offsets, run the [visual acceptance matrix](#visual-acceptance-matrix) in a visible client scene. A successful bake exercises conversion; only the observed runtime cases establish normalization and visible gait alignment.

@@ -27,8 +27,7 @@ binaries, resources, and data across incompatible release units. Require `Start
 server complete!`, a project-owned semantic probe, and a new write/read cycle
 that proves the write survived. Rehearse from the off-site copy, measure RPO/RTO,
 record semantic checks, and assign corrective action for every missed objective.
-The Engine exposes no online backup or checkpoint command; provider-native
-SQLite or Mongo procedures must come from the reviewed project runbook.
+The Engine exposes native snapshot primitives, not an operator backup/checkpoint command. Their backend/quiescence limits and any provider-native SQLite/Mongo procedure must be part of the reviewed project runbook.
 
 ## Establish the recovery boundary
 
@@ -40,7 +39,7 @@ The Engine owns the database facade, JSON/SQLite/Mongo/Memory backends, asynchro
 - recovery point objective (RPO), recovery time objective (RTO), service dependencies, traffic drain, and restore authority;
 - production credentials, personal-data handling, incident decisions, and destructive-action approval.
 
-The Engine has no database snapshot command, online-backup API, point-in-time recovery controller, migration transaction, traffic-drain endpoint, or restore orchestrator. A project must supply and test those operations without presenting them as built-in Engine behavior.
+The Engine has no operator-facing database snapshot command, point-in-time recovery controller, database-wide migration transaction, traffic-drain endpoint or restore orchestrator. Native `DataBase::CreateSnapshot()`/`RestoreSnapshot()` capture/restore backend-supported byte representations with commit/producer barriers; unsupported backends throw. SQLite uses serialization and online-backup machinery. `ServerEngine::CreateSnapshot()` additionally reaches quiescence, rejects counted runtime-only contexts/delayed jobs/time events/movement and returns typed state plus payload. Neither API publishes a backup file/manifest or captures arbitrary project state. See [Persistence](../../explanation/persistence/#backend-consistent-snapshots). The project owns eligibility, serialization, integrity, atomic publication and proven isolated restore.
 
 Treat one recoverable release as a compatible unit: immutable server package, effective configuration and sub-config identity, Engine and game revisions, baked resources, persistent data, recovery oplogs, migration state, and the secrets or key identifiers needed to read them. Never restore data into an arbitrary binary merely because both start.
 
@@ -59,7 +58,7 @@ For JSON and SQLite, the complete trimmed remainder after the provider name is t
 
 JSON records now use ordinary JSON and SQLite records use CBOR. Both require fresh storage; historical BSON-backed stores have no reader or automatic migration. See [storage formats and upgrade boundary](../../explanation/persistence/#storage-formats-and-upgrade-boundary) before selecting or restoring a backup.
 
-The Engine also opens `DataBase.OpLogPath` and derives the committed-progress path by replacing `.oplog` with `-committed.oplog`. Their default names are `DbPendingChanges.oplog` and `DbPendingChanges-committed.oplog`. Paths are relative to the server working directory unless the project makes them absolute. Startup rejects only an empty configured path; it does not enforce the `.oplog` suffix. Keep the conventional suffix and verify that the two resolved paths are distinct before deployment.
+The Engine also opens `DataBase.OpLogPath` and derives the committed-progress path by replacing `.oplog` with `-committed.oplog`. Their default names are `DbPendingChanges.oplog` and `DbPendingChanges-committed.oplog`. Relative JSON/SQLite storage and oplog paths pass through `fs::make_writable_path(Common.UserWritablePath, path)`: a nonempty writable root anchors them there; an empty portable root leaves them relative to process cwd. Absolute paths remain absolute. Record the resolved paths, not only config strings. Startup rejects only an empty configured path; it does not enforce the `.oplog` suffix. Keep the conventional suffix and verify that the two resolved paths are distinct before deployment.
 
 Both oplog files belong to capture and incident evidence. Preserve them with the backend snapshot, even when empty. Never edit, merge, reorder, partially copy, or manually truncate them.
 
@@ -171,9 +170,9 @@ A drill passes only when evidence identifies the backup, release unit, restore o
 
 ## Validate the runbook
 
-For every supported persistent backend, automate backup creation, isolated restore, integrity checks, server startup, semantic read/write/restart checks, and measured recovery evidence using synthetic data. Test the exact production topology and provider method in the project lane; Engine unit tests prove backend and oplog mechanics, not an operator's backup system.
+For every supported persistent backend, automate backup creation, isolated restore, integrity checks, server startup, semantic read/write/restart checks, and measured recovery evidence using synthetic data. Test the exact production topology and provider method in the project lane; source-level snapshot/commit guarantees do not prove an operator's backup system. This fork has no own unit suites, and new automated tests/infrastructure require an explicit request.
 
-When persistence or recovery source changes, run `Source/Tests/Test_DataBase.cpp` through the Engine unit-test target. Keep failure-injection coverage for spill-to-oplog, reconnect/replay, invalid records, conflicts, thresholds, and backend round trips. Run the package and release-operations lanes when a recovery unit or process procedure changes.
+When persistence/recovery changes, build the affected backend and exercise existing authorized application/provider paths on isolated synthetic data: commit drain, save/reload/restart, snapshot capture/refusal/restore and relevant oplog recovery. Record what was actually exercised; no new failure-injection infrastructure is implied. Use existing package and release-operations routes when the recovery unit or process procedure changes.
 
 ## Source paths inspected
 
@@ -185,4 +184,3 @@ When persistence or recovery source changes, run `Source/Tests/Test_DataBase.cpp
 - `Source/Server/DataBase-Mongo.cpp`
 - `Source/Server/DataBase-Memory.cpp`
 - `Source/Server/Server.cpp`
-- `Source/Tests/Test_DataBase.cpp`

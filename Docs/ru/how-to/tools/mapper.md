@@ -5,7 +5,7 @@ locale: ru
 document_id: mapper-tools
 permalink: /Docs/ru/how-to/tools/mapper.html
 ---
-<!-- docs-translation: {"document_id":"mapper-tools","locale":"ru","source_path":"Docs/en/how-to/tools/mapper.md","source_sha256":"43fab870b4af8d1124ca2a8665de15b9a76612c99b4516515ba46839c271c90a"} -->
+<!-- docs-translation: {"document_id":"mapper-tools","locale":"ru","source_path":"Docs/en/how-to/tools/mapper.md","source_sha256":"4dec61836dc3df9edb925bb1272990c43ffcc38487a5b508401fef87ffefac31"} -->
 # Инструменты Mapper
 
 > Документация движка по переиспользуемым API жизненного цикла Mapper,
@@ -180,6 +180,10 @@ SPARK или Effekseer. Исходники SPARK `.spark` и Effekseer `.efkproj
 `Mapper.ParticlePreviewPrewarm` выполняют тот же путь при запуске. Они полезны
 для воспроизводимых smoke-тестов, не превращая проектный профиль запуска в
 контракт движка.
+
+Направление ограничено backend: SPARK принимает look direction, Effekseer
+отклоняет ненулевой угол. Для Effekseer оставляйте ноль в карте и focused
+preview и проверяйте диагностику setup.
 
 ### Редактор исходников SPARK
 

@@ -5,7 +5,7 @@ locale: ru
 document_id: font-format-guide
 permalink: /Docs/ru/how-to/content/font-format.html
 ---
-<!-- docs-translation: {"document_id":"font-format-guide","locale":"ru","source_path":"Docs/en/how-to/content/font-format.md","source_sha256":"40b691afb97e7264162953a58b48a42f1e52b25f53282ed366d8200f0adb2340"} -->
+<!-- docs-translation: {"document_id":"font-format-guide","locale":"ru","source_path":"Docs/en/how-to/content/font-format.md","source_sha256":"9d1beebd3cf97254e6798d2c5dba5462c646ec19ded67e97927e68a0b4a9da73"} -->
 # Форматы шрифтов и компоновка текста
 
 FOnline отрисовывает растровые шрифты, описанные текстовым форматом Engine
@@ -124,7 +124,8 @@ End
 
 `Letter` декодирует одну кодовую точку UTF-8 после первого апострофа. Следующие
 ключи метрик изменяют текущий глиф до следующего `Letter`. Повторная кодовая
-точка заменяет предыдущую запись. Неизвестные ключи игнорируются, поэтому
+точка использует прежний глиф: встреченные поля перезаписываются, а опущенные
+сохраняют старые значения. Неизвестные ключи игнорируются, поэтому
 опечатки особенно опасны: дескриптор может привязаться с нулевыми метриками по
 умолчанию. Считайте предупреждения, отсутствующие глифы и визуальное смещение
 ошибками ресурса.
@@ -181,6 +182,10 @@ End
 вертикального выноса, но не копируется напрямую. Engine `LineHeight` использует
 видимую высоту глифа `W`, если он есть, иначе Common `base`; `YAdvance` равен
 половине результата.
+
+Повторные binary character IDs не отклоняются: поздняя полная запись
+перезаписывает метрики того же глифа. В отличие от отдельных полей FOFNT,
+каждая бинарная Chars record задаёт все эти метрики.
 
 Каждая бинарная привязка BMFont нормализуется в оттенки серого и получает копию
 атласа с обводкой. Runtime игнорирует кернинг и не поддерживает несколько
@@ -337,9 +342,7 @@ backend-валидация описаны в [формате эффектов](e
 
 ```powershell
 python BuildTools\docs_font_format.py --write
-python -m unittest BuildTools.tests.test_docs_font_format
 python BuildTools\docs_contract_diff.py --check
-cmake --build <build-dir> --config RelWithDebInfo --target RunUnitTests
 ```
 
 После изменения шрифта во встраивающем проекте:

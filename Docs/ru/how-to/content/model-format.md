@@ -5,7 +5,7 @@ document_id: model-format-guide
 locale: ru
 permalink: /Docs/ru/how-to/content/model-format.html
 ---
-<!-- docs-translation: {"document_id":"model-format-guide","locale":"ru","source_path":"Docs/en/how-to/content/model-format.md","source_sha256":"343e310f1338b96c00857c939bb3b7581a8ca31a066ed278c6ad5e766de74a6e"} -->
+<!-- docs-translation: {"document_id":"model-format-guide","locale":"ru","source_path":"Docs/en/how-to/content/model-format.md","source_sha256":"14ce9f62cb6cbea798851af77d5b111967f35bd4591acc883d0c6bcb19cdf79d"} -->
 # Формат моделей и 3D-композиция
 
 FOnline использует описания моделей `.fo3d`, чтобы собрать на клиенте запечённые 3D-меши, преобразованные исходные анимации, выбираемую слоями экипировку, дочерние модели, частицы, переопределения материалов и объёмы отсечения.
@@ -472,14 +472,10 @@ next directive = Texture 0 Parent_Torso
    ```powershell
    python BuildTools\docs_model_format.py --write
    python BuildTools\docs_model_format.py --check
-   python -m unittest BuildTools.tests.test_docs_model_format
    ```
 
-2. Запустите focused Engine tests:
-
-   ```powershell
-   .\Binaries\Tests-Windows-win64\LF_UnitTests.exe "ModelBaker*"
-   ```
+2. Соберите затронутые native/script-роли проекта. Собственные unit suites
+   движка удалены; проверки документации не исполняют преобразование mesh/rig.
 
 3. Перезапеките встраивающий проект:
 
@@ -494,8 +490,8 @@ next directive = Texture 0 Parent_Torso
 
 ## Маршрутизация изменений
 
-- При изменении `.fo3d` tokens, parser state, include, path rules или validation обновите руководство, `BuildTools/ModelFormatInterface.json`, generated outputs и focused tests.
-- При изменении импорта `.fbx` / `.obj`, skinning, materials, animation conversion или model limits обновите asset/limit contract и native mesh-baker tests.
+- При изменении `.fo3d` tokens, parser state, include, path rules или validation обновите руководство, `BuildTools/ModelFormatInterface.json`, generated outputs и соответствующие проверки bake/runtime.
+- При изменении импорта `.fbx` / `.obj`, skinning, materials, animation conversion или model limits обновите asset/limit contract; запеките представительные mesh assets и проверьте диагностику.
 - При изменении layers, attachments, particles, transforms, materials, cuts, batching или flags обновите composition/runtime sections и проверьте видимый client scene.
 - Animation tuples, aliases, speed, duration и script lookup принадлежат также [Model Animation](model-animation.md).
 - 2D frame offsets и sprite phase принадлежат [Sprite Root Motion](sprite-root-motion.md).

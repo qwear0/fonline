@@ -5,7 +5,7 @@ locale: ru
 document_id: applications-entry-points
 permalink: /Docs/ru/reference/applications.html
 ---
-<!-- docs-translation: {"document_id":"applications-entry-points","locale":"ru","source_path":"Docs/en/reference/applications.md","source_sha256":"4c94d7f50df1bbd67bee33dc0baac378598eb461680d78be58c9f761dfe970d4"} -->
+<!-- docs-translation: {"document_id":"applications-entry-points","locale":"ru","source_path":"Docs/en/reference/applications.md","source_sha256":"5448d6a93a7af814bf1dd4503711cacdfe23f6a36e58ad125acb367aeb6faa86"} -->
 # Приложения и точки входа
 
 Этот документ сопоставляет точки входа приложений в `Source/Applications/` и их wiring в BuildTools.
@@ -50,7 +50,7 @@ permalink: /Docs/ru/reference/applications.html
 - `Source/Applications/BakerLib.cpp` - точка входа baking library при композиции baking как library.
 - `Source/Applications/ASCompilerApp.cpp` - точка входа AngelScript compiler.
 - `Source/Applications/ManagedScriptBakerApp.cpp` - standalone entrypoint генерации Managed C# API и compilation, используемый `CompileManagedScripts`.
-- `Source/Applications/TestingApp.cpp` - точка входа приложения test runner.
+- Прежний test-runner entrypoint `Source/Applications/TestingApp.cpp` удалён; собственного Engine unit/coverage executable нет.
 
 ## Wiring CMake
 
@@ -62,7 +62,7 @@ permalink: /Docs/ru/reference/applications.html
 - Headless variants используют headless frontend libraries, где это применимо.
 - Варианты server выбираются server/platform/service options.
 - Mapper, AnimationViewer и ParticleViewer создаются вместе при включённом `FO_BUILD_MAPPER`. Viewers переиспользуют client и baker services, но не запускают Mapper или networked client loop.
-- Test applications помечаются как testing apps для отдельной обработки от product runtime apps.
+- Прежние test/coverage applications удалены; сохранённые runtime diagnostics не являются unit targets.
 - AngelScript compiler и Managed script baker являются отдельными script build applications. Их generated project targets существуют только при включённом соответствующем backend.
 
 Перед объявлением target доступным прочитайте CMake stage. Доступность может зависеть от platform и project options.
@@ -88,7 +88,7 @@ Standalone animation и particle viewers также создают `ClientEngine
 - Автоматизация Mapper: `MapperApp.cpp`, [инструменты Mapper](../how-to/tools/mapper.md).
 - Animation inspection: `AnimationViewerApp.cpp`, `Source/Tools/AnimationViewer.*`, [просмотр анимации и частиц](../how-to/tools/animation-particle-viewers.md).
 - Particle inspection: `ParticleViewerApp.cpp`, `Source/Tools/ParticleViewer.*`, [просмотр анимации и частиц](../how-to/tools/animation-particle-viewers.md) и [Particle Format](../how-to/content/particle-format.md).
-- Tests: `TestingApp.cpp`, [Source/Tests README](../../../Source/Tests/README.ru.md) и [Testing](../../Testing.md).
+- Политика проверок: [Тестирование](../contributing/testing/). Прежний runner `TestingApp.cpp` и собственные unit/coverage targets движка удалены; используйте существующие затронутые application/build/bake routes.
 
 ## Правило документации
 

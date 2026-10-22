@@ -7,7 +7,7 @@ permalink: /Docs/ru/how-to/testing/gameplay-and-integration.html
 ---
 
 # Gameplay- и integration-тестирование
-<!-- docs-translation: {"document_id":"gameplay-testing","locale":"ru","source_path":"Docs/en/how-to/testing/gameplay-and-integration.md","source_sha256":"2cd0aa61a8e5ed82840b3fb12048aa4da44a0880a231bd577f713965cbc3d271"} -->
+<!-- docs-translation: {"document_id":"gameplay-testing","locale":"ru","source_path":"Docs/en/how-to/testing/gameplay-and-integration.md","source_sha256":"b62e01d9409d79f1b9324c3efdb832eb03424f688176f6d9d8cc20a2d5718a3d"} -->
 > Документация принадлежит движку. Руководство задает переиспользуемые правила
 > выбора test boundary, детерминированных fixtures, process runner, markers,
 > deadline, cleanup и evidence для игр на FOnline.
@@ -24,8 +24,7 @@ project-neutral process runner и два уровня доказательств
   проводит тот же runner через baked content, metadata, headless server/client,
   network, map load, remote calls, replicated state и interaction.
 
-Native Catch2 targets, sanitizers и coverage описаны в
-[Testing](../../contributing/testing/). Первый учебный end-to-end путь находится
+Native Catch2 executable, собственные unit suites и coverage targets удалены в этом форке. [Testing](../../contributing/testing/) задаёт текущую политику: существующие CLI/compiler/bake/application paths предпочтительны, новые автоматизированные тесты/инфраструктура требуют явного запроса. Runner и application probes ниже сохранены. Первый учебный end-to-end путь находится
 в [First Automated Test](../../tutorials/first-test.md).
 
 ## Решение о тесте
@@ -45,8 +44,8 @@ acceptance thresholds, accounts, databases, scenes и release lanes.
 
 | Граница изменения | Первое доказательство | Когда расширять |
 |---|---|---|
-| Native algorithm/data structure | focused Catch2 | construction, serialization, thread или runtime role меняют результат |
-| Parser, baker, generated metadata | native test и bake | generated result потребляет runtime |
+| Native algorithm/data structure | affected-role build и existing direct consumer | construction, serialization, thread или runtime role меняют результат |
+| Parser, baker, generated metadata | existing CLI/codegen check и real bake | generated result потребляет runtime |
 | Один script module/callback | project-owned side-specific script test | state пересекает module, entity, persistence или client/server |
 | Prototype/map/text/resource | bake и semantic assertion | клиент обязан загрузить, показать, воспроизвести или дать взаимодействовать |
 | Server lifecycle/world setup | один headless server | нужен network/client-observable результат |
@@ -188,10 +187,7 @@ Gameplay smoke оформляется named custom target с dependencies на �
 output. Исполняемый образец находится в
 [Minimal Multiplayer CMake](../../../../Examples/MinimalMultiplayer/CMakeLists.txt).
 
-Synthetic runner tests запускаются при каждом изменении runner/schema. Хотя бы
-один реальный headless server/client example нужен на каждой заявленной
-платформе. Product CI добавляет свои script tests, content assertions, packages,
-persistence backends, visible checks и release gates.
+Используйте сохранённую application fixture `Examples/GameplayTestHarness` и хотя бы один существующий real headless server/client route каждой фактически заявленной платформы. Прежняя synthetic unit suite удалена, workflows форка архивированы; записывайте локальные commands/results. Embedding projects владеют своим CI, fixture catalog, package/persistence/visible acceptance и release gates; новые тесты/инфраструктура не подразумеваются.
 
 ## Маршрутизация ошибок
 
@@ -226,13 +222,11 @@ sample не доказывает, что native FOnline client выполнил 
 ## Проверенные исходные пути
 
 - `BuildTools/gameplay_test_runner.py`
-- `BuildTools/tests/test_gameplay_test_runner.py`
 - `Examples/GameplayTestHarness/fixture_process.py`
 - `Examples/GameplayTestHarness/synthetic-smoke.json`
 - `Examples/MinimalMultiplayer/tutorial-smoke.json`
 - `Examples/MinimalMultiplayer/run_tutorial_smoke.py`
 - `Examples/MinimalMultiplayer/CMakeLists.txt`
 - `Examples/MinimalMultiplayer/Scripts/Tutorial.fos`
-- `Source/Applications/TestingApp.cpp`
 - `BuildTools/cmake/stages/Applications.cmake`
-- `.github/workflows/validate.yml`
+- `.github/disabled-workflows/validate.yml` (исторический, не активный CI)

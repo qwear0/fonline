@@ -7,7 +7,7 @@ permalink: /Docs/ru/how-to/release/backup-and-recovery.html
 ---
 
 # Резервное копирование и восстановление
-<!-- docs-translation: {"document_id":"backup-and-recovery","locale":"ru","source_path":"Docs/en/how-to/release/backup-and-recovery.md","source_sha256":"54e438e000729ca813f38a66bb840013b5627f7276718598bae62479d41c0b8b"} -->
+<!-- docs-translation: {"document_id":"backup-and-recovery","locale":"ru","source_path":"Docs/en/how-to/release/backup-and-recovery.md","source_sha256":"a092ab97d3c2908ff1f2625c1473add02b10e2b1cbe1e63410ea3514a6ca5f7a"} -->
 Этот runbook определяет переиспользуемую границу резервного копирования, восстановления и disaster recovery для сервера FOnline. Используйте его вместе с [Persistence](../../explanation/persistence/) для механики хранилища, [Release Operations](operations.md) для управления процессом и [Engine Upgrade Guide](../migration/engine-upgrade.md), когда долговечные данные переходят между ревизиями Engine или игры.
 
 ## Решение о восстановлении
@@ -41,7 +41,7 @@ Engine владеет facade базы данных, backend-реализация
 - recovery point objective (RPO), recovery time objective (RTO), зависимостями сервисов, drain трафика и полномочиями восстановления;
 - production credentials, обработкой персональных данных, решениями по инцидентам и одобрением разрушительных действий.
 
-Engine не предоставляет команду snapshot базы данных, online-backup API, контроллер point-in-time recovery, транзакцию миграции, endpoint для drain трафика или orchestrator восстановления. Проект должен предоставить и проверить эти операции, не представляя их встроенным поведением Engine.
+Engine не предоставляет операторскую команду snapshot БД, контроллер point-in-time recovery, database-wide migration transaction, endpoint для drain трафика или restore orchestrator. Native `DataBase::CreateSnapshot()`/`RestoreSnapshot()` снимают/восстанавливают поддерживаемые backend байтовые представления с commit/producer barriers; неподдерживаемый backend бросает исключение. SQLite использует serialization и online-backup machinery. `ServerEngine::CreateSnapshot()` дополнительно достигает quiescence, отклоняет подсчитанные runtime-only contexts/delayed jobs/time events/movement и возвращает typed state с payload. Оба API не публикуют backup file/manifest и не захватывают произвольное project state. См. [Persistence](../../explanation/persistence/#согласованные-с-backend-снимки). Проект владеет eligibility, serialization, integrity, atomic publication и доказанным isolated restore.
 
 Считайте одним восстанавливаемым релизом совместимый комплект: неизменяемый server package, identity эффективной конфигурации и sub-config, ревизии Engine и игры, запечённые ресурсы, постоянные данные, recovery oplog, состояние миграций и secrets или key identifiers, необходимые для чтения комплекта. Никогда не восстанавливайте данные в произвольный binary только потому, что оба запускаются.
 
@@ -60,7 +60,7 @@ Engine не предоставляет команду snapshot базы данн
 
 Записи JSON теперь используют обычный JSON, записи SQLite — CBOR. Для обоих провайдеров нужно новое хранилище; reader и автоматической миграции исторических BSON-хранилищ нет. Перед выбором или восстановлением backup смотрите [форматы хранения и границу обновления](../../explanation/persistence/#storage-formats-and-upgrade-boundary).
 
-Engine также открывает `DataBase.OpLogPath` и получает путь файла подтверждённого прогресса заменой `.oplog` на `-committed.oplog`. Имена по умолчанию: `DbPendingChanges.oplog` и `DbPendingChanges-committed.oplog`. Пути относительны рабочего каталога сервера, если проект не сделал их абсолютными. При запуске отклоняется только пустой настроенный путь; суффикс `.oplog` не проверяется. Сохраняйте обычный суффикс и до deployment убеждайтесь, что два разрешённых пути различны.
+Engine также открывает `DataBase.OpLogPath` и получает путь файла подтверждённого прогресса заменой `.oplog` на `-committed.oplog`. Имена по умолчанию: `DbPendingChanges.oplog` и `DbPendingChanges-committed.oplog`. Относительные JSON/SQLite storage и oplog paths проходят `fs::make_writable_path(Common.UserWritablePath, path)`: непустой writable root задаёт базу, пустой portable root оставляет базой cwd процесса. Абсолютные пути остаются абсолютными. Записывайте разрешённые пути, а не только строки config. При запуске отклоняется только пустой настроенный путь; суффикс `.oplog` не проверяется. Сохраняйте обычный суффикс и до deployment убеждайтесь, что два разрешённых пути различны.
 
 Оба oplog входят в backup и evidence инцидента. Сохраняйте их вместе со snapshot backend, даже если они пусты. Никогда не редактируйте, не объединяйте, не меняйте порядок, не копируйте частично и не обрезайте их вручную.
 
@@ -172,9 +172,9 @@ Drill проходит только тогда, когда evidence опреде
 
 ## Проверьте runbook
 
-Для каждого поддерживаемого persistent backend автоматизируйте создание backup, изолированный restore, integrity checks, startup сервера, semantic read/write/restart checks и измеряемое recovery evidence на синтетических данных. Проверяйте точную production topology и provider method в проектной lane; unit tests Engine доказывают механику backend и oplog, а не систему резервного копирования оператора.
+Для каждого поддерживаемого persistent backend автоматизируйте создание backup, изолированный restore, integrity checks, startup сервера, semantic read/write/restart checks и измеряемое recovery evidence на синтетических данных. Проверяйте точную production topology и provider method в проектной lane; source-level snapshot/commit guarantees не доказывают систему резервного копирования оператора. Собственные unit suites форка удалены; новые автоматизированные тесты/инфраструктура требуют явного запроса.
 
-При изменении persistence или recovery source запускайте `Source/Tests/Test_DataBase.cpp` через Engine unit-test target. Сохраняйте failure-injection coverage для spill в oplog, reconnect/replay, invalid records, conflicts, thresholds и round trips backend. Запускайте package и release-operations lanes при изменении recovery unit или process procedure.
+При изменении persistence/recovery соберите затронутый backend и выполните существующие разрешённые application/provider paths на изолированных synthetic data: commit drain, save/reload/restart, snapshot capture/refusal/restore и relevant oplog recovery. Укажите реально выполненное; новая failure-injection infrastructure не подразумевается. Используйте существующие package и release-operations routes при изменении recovery unit или process procedure.
 
 ## Проверенные пути исходников
 
@@ -186,4 +186,3 @@ Drill проходит только тогда, когда evidence опреде
 - `Source/Server/DataBase-Mongo.cpp`
 - `Source/Server/DataBase-Memory.cpp`
 - `Source/Server/Server.cpp`
-- `Source/Tests/Test_DataBase.cpp`

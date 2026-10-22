@@ -5,7 +5,7 @@ locale: ru
 generated: true
 ---
 
-<!-- docs-translation: {"document_id":"generated-cli-index","locale":"ru","source_path":"Docs/en/reference/buildtools/index.md","source_sha256":"37837843a72c7377ea3c89a8b0b65794ab4c5647ddeac1c7b99f6ef8580340d2"} -->
+<!-- docs-translation: {"document_id":"generated-cli-index","locale":"ru","source_path":"Docs/en/reference/buildtools/index.md","source_sha256":"7be83a6c9c4e024079408993c23898f9df4ba6350ddd3a02354c15a9bd605c69"} -->
 
 # Сгенерированный справочник CLI BuildTools
 
@@ -22,8 +22,8 @@ generated: true
 | Стабильность | <code>internal</code> |
 | Начиная с версии | Не объявлено |
 | Политика поддержки | Версионируемая линия поддержки CLI не объявлена; закрепляйте ревизию движка в автоматизации. |
-| Исходный парсер | [BuildTools/buildtools.py](https://github.com/cvet/fonline/blob/master/BuildTools/buildtools.py) |
-| Дайджест контракта | <code>fe4230108f54098166ceb508251225ab910d03b975cd7bd5267b7c212341d27d</code> |
+| Исходный парсер | [BuildTools/buildtools.py](https://github.com/qwear0/fonline/blob/master/BuildTools/buildtools.py) |
+| Дайджест контракта | <code>1e4dda702d6f4d465a27e7a326e5742b779df6ee668dba4415c39f782ba21a73</code> |
 
 ## Покрытие
 

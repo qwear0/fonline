@@ -121,7 +121,8 @@ binding diagnostic.
 
 `Letter` decodes one UTF-8 codepoint beginning after the first apostrophe. Its
 following metric keys modify that current glyph until another `Letter` appears.
-A duplicate codepoint replaces the earlier record. Unknown keys are ignored;
+A duplicate codepoint reuses the earlier glyph: encountered fields overwrite
+their values, while omitted fields survive. Unknown keys are ignored;
 this makes typos especially dangerous because the descriptor may bind with
 zero/default metrics. Treat warnings, missing glyphs, and visual displacement
 as asset failures.
@@ -178,6 +179,10 @@ convention, and adds one to X advance. BMFont Common `lineHeight` participates
 in vertical-bearing conversion but is not copied directly. Engine `LineHeight`
 uses the visible `W` glyph height when `W` exists, otherwise Common `base`, and
 `YAdvance` becomes half of that result.
+
+Duplicate binary character IDs are not rejected: later complete records
+rewrite the mapped glyph metrics. Unlike FOFNT's field-by-field updates, every
+binary Chars record supplies all those metrics.
 
 Every binary BMFont binding is grayscale-normalized and gets a bordered atlas
 copy. The runtime ignores kerning and supports neither multiple texture pages
@@ -331,9 +336,7 @@ For an Engine parser, metric, layout, or script-binding change:
 
 ```powershell
 python BuildTools\docs_font_format.py --write
-python -m unittest BuildTools.tests.test_docs_font_format
 python BuildTools\docs_contract_diff.py --check
-cmake --build <build-dir> --config RelWithDebInfo --target RunUnitTests
 ```
 
 For an embedding-project font change:

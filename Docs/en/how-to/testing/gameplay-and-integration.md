@@ -17,7 +17,7 @@ Use this guide when a change must be proved beyond one native function but does 
 - [Gameplay Test Harness Fixture](../../../../Examples/GameplayTestHarness/README.md) proves the runner itself without compiled game binaries;
 - [Minimal Multiplayer](../../../../Examples/MinimalMultiplayer/README.md) proves the same runner against baked content, metadata, a headless server, a headless client, networking, map load, remote calls, replicated state, and an interaction.
 
-For the native Catch2 executable, generated targets, sanitizers, and coverage inventory, use [Testing](../../contributing/testing/). For a first end-to-end lesson, use [First Automated Test](../../tutorials/first-test.md).
+The native Catch2 executable, Engine-owned unit suites and coverage targets were removed in this fork. [Testing](../../contributing/testing/) owns current verification policy: prefer existing CLI/compiler/bake/application paths; new automated tests or infrastructure require an explicit request. The runner and application probes below remain available. For a first end-to-end lesson, use [First Automated Test](../../tutorials/first-test.md).
 
 ## Test decision
 
@@ -35,8 +35,8 @@ Choose the first layer that can observe the contract being changed. Add broader 
 
 | Change boundary | First proof | Add when |
 |---|---|---|
-| Pure native algorithm or data structure | focused Catch2 case | integration changes construction, serialization, threads, or runtime roles |
-| Parser, baker, or generated metadata | focused native test plus bake | a runtime consumes the generated result |
+| Pure native algorithm or data structure | affected-role build and existing direct consumer | integration changes construction, serialization, threads, or runtime roles |
+| Parser, baker, or generated metadata | existing CLI/codegen check plus real bake | a runtime consumes the generated result |
 | One script module or callback | project-owned script test in the affected side | state crosses module, entity, persistence, or client/server boundaries |
 | Authored prototype, map, text, or resource | bake plus semantic content assertion | a client must load, render, hear, or interact with it |
 | Server lifecycle or world setup | one headless server process | networking or a client-observable result is part of the contract |
@@ -154,7 +154,7 @@ With `--report`, the runner writes JSON schema version 1. It records suite/scena
 
 Wire a gameplay smoke as a named custom target that depends on the exact binaries and baked artifacts it consumes. Pass target paths with generator expressions, keep the manifest in `SOURCES`, use `VERBATIM`, and use a terminal when interleaved process output is useful. The [Minimal Multiplayer CMake file](../../../../Examples/MinimalMultiplayer/CMakeLists.txt) is the current executable pattern.
 
-CI should run the synthetic runner tests on every change to the runner or schema. Run at least one real headless server/client example on each platform claimed by the example. Product CI then adds its own script tests, content assertions, package lanes, persistence backends, visible checks, and release gates according to the boundaries it owns.
+Use the retained `Examples/GameplayTestHarness` application fixture and at least one existing real headless server/client route for each platform actually claimed. The former synthetic unit suite is removed; this fork's workflows are archived, so record local commands/results. Embedding projects own any CI, fixture catalog, package/persistence/visible acceptance and release gates; no new tests or infrastructure are implicit.
 
 ## Failure routing
 
@@ -186,13 +186,11 @@ enforced normal authority.
 ## Source paths inspected
 
 - `BuildTools/gameplay_test_runner.py`
-- `BuildTools/tests/test_gameplay_test_runner.py`
 - `Examples/GameplayTestHarness/fixture_process.py`
 - `Examples/GameplayTestHarness/synthetic-smoke.json`
 - `Examples/MinimalMultiplayer/tutorial-smoke.json`
 - `Examples/MinimalMultiplayer/run_tutorial_smoke.py`
 - `Examples/MinimalMultiplayer/CMakeLists.txt`
 - `Examples/MinimalMultiplayer/Scripts/Tutorial.fos`
-- `Source/Applications/TestingApp.cpp`
 - `BuildTools/cmake/stages/Applications.cmake`
-- `.github/workflows/validate.yml`
+- `.github/disabled-workflows/validate.yml` (historical, not active CI)

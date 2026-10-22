@@ -5,7 +5,7 @@ locale: ru
 generated: true
 ---
 
-<!-- docs-translation: {"document_id":"generated-cmake-options","locale":"ru","source_path":"Docs/en/reference/cmake/options.md","source_sha256":"dce71e3693208b355c30650b5d245010d18391fd11c1370d5cca3da2726cef55"} -->
+<!-- docs-translation: {"document_id":"generated-cmake-options","locale":"ru","source_path":"Docs/en/reference/cmake/options.md","source_sha256":"bb60a540b02cea0f615f8903059088850df8b8c54cbb32c6099719057f396ce1"} -->
 
 # Параметры проекта CMake
 
@@ -13,7 +13,7 @@ generated: true
 
 [Индекс справочника](index.md) | [Каноническая JSON-модель](../../../generated/cmake.json) | [Контракт генерации](../metadata/)
 
-Параметры объявляются из manifest интерфейса во время `StartProjectGeneration()`. После объявления все значения являются значениями кеша CMake.
+Параметры объявляются в `BuildTools/cmake/stages/Init.cmake` во время `StartProjectGeneration()`; manifest интерфейса их документирует. После объявления все значения являются значениями кеша CMake.
 
 Порядок переопределения приведён в [индексе справочника](index.md#приоритет-переопределения-параметров).
 
@@ -75,5 +75,3 @@ generated: true
 | <a id="entry-cmake-option-fo-build-mapper-a545c784ff"></a><code>cmake.option.FO_BUILD_MAPPER</code> | <code>FO_BUILD_MAPPER</code> | <code>BOOL</code> / <code>boolean</code> | Нет | No | <code>OFF</code> | - | <code>target</code> | Создаёт цели приложения Mapper. |
 | <a id="entry-cmake-option-fo-build-ascompiler-5ca22226b8"></a><code>cmake.option.FO_BUILD_ASCOMPILER</code> | <code>FO_BUILD_ASCOMPILER</code> | <code>BOOL</code> / <code>boolean</code> | Нет | No | <code>OFF</code> | - | <code>target</code> | Создаёт цель приложения-компилятора AngelScript. |
 | <a id="entry-cmake-option-fo-build-baker-bd941dc509"></a><code>cmake.option.FO_BUILD_BAKER</code> | <code>FO_BUILD_BAKER</code> | <code>BOOL</code> / <code>boolean</code> | Нет | No | <code>OFF</code> | - | <code>target</code> | Создаёт цели приложений baker. |
-| <a id="entry-cmake-option-fo-unit-tests-d9ccad8a5d"></a><code>cmake.option.FO_UNIT_TESTS</code> | <code>FO_UNIT_TESTS</code> | <code>BOOL</code> / <code>boolean</code> | Нет | No | <code>OFF</code> | - | <code>quality</code> | Создаёт цели модульных тестов движка. |
-| <a id="entry-cmake-option-fo-code-coverage-30381a9ffe"></a><code>cmake.option.FO_CODE_COVERAGE</code> | <code>FO_CODE_COVERAGE</code> | <code>BOOL</code> / <code>boolean</code> | Нет | No | <code>OFF</code> | - | <code>quality</code> | Создаёт конфигурацию покрытия кода; этот режим нельзя сочетать с режимами сборки приложений или модульных тестов. |

@@ -5,7 +5,7 @@ locale: ru
 document_id: sprite-root-motion
 permalink: /Docs/ru/how-to/content/sprite-root-motion.html
 ---
-<!-- docs-translation: {"document_id":"sprite-root-motion","locale":"ru","source_path":"Docs/en/how-to/content/sprite-root-motion.md","source_sha256":"62249a09af953c9e67a1cbbd50c1154dcff5111d1c393eea735ead38c36f384c"} -->
+<!-- docs-translation: {"document_id":"sprite-root-motion","locale":"ru","source_path":"Docs/en/how-to/content/sprite-root-motion.md","source_sha256":"dec2b43ea137f54e8dfc0cbb53f7291cb18e191beb1c9fd5aeeac2c4b4464985"} -->
 # Корневое движение спрайтов и циклы ходьбы
 
 FOnline переносит запечённые 2D-дельты кадров и согласует позы walk/run с
@@ -36,7 +36,6 @@ Last Frontier/TLA — discovery и compatibility evidence, закреплённ�
 - `Source/Common/Geometry.*` - re-split без потери позиции между гексом и offset с учётом проходимости;
 - `Source/Client/CritterHexView.*` - anchor цикла, displacement движения, выбор кадра, отображаемый animation offset и нормализация при остановке;
 - `Source/Client/ResourceManager.cpp` - выбор анимации, извлечение кадров, merge, clone и их внутренние преобразования offsets;
-- `Source/Tests/Test_ImageBaker.cpp` и `Source/Tests/Test_Geometry.cpp` - покрытие offsets на уровне формата и нормализации геометрии.
 
 Документация и контент проектов полезны как integration evidence, но не являются источником истины для переиспользуемого поведения Engine.
 
@@ -89,7 +88,7 @@ NextY_1 = -1
 межкадровые смещения. Ротации и размещение описывает
 [контракт импорта ART](image-format.md#art).
 
-Offsets зависят от направления. Image baking может отражать, обрезать или компоновать кадры. Клиентский выбор ресурсов может извлечь первый или последний кадр, клонировать sheet либо объединить базовую и дополнительную Fallout-анимации. Этот merge path является внутренним поведением Engine и не имеет focused per-axis regression в текущем native suite; не считайте сохранение offsets на splice публичной гарантией. Проверяйте выбранный baked sheet по обеим осям и не редактируйте baked stream.
+Offsets зависят от направления. Image baking может отражать, обрезать или компоновать кадры. Клиентский выбор ресурсов может извлечь первый или последний кадр, клонировать sheet либо объединить базовую и дополнительную Fallout-анимации. Этот merge path является внутренним поведением Engine и не имеет сохранённого focused per-axis execution evidence в этом форке; не считайте сохранение offsets на splice публичной гарантией. Проверяйте выбранный baked sheet по обеим осям и не редактируйте baked stream.
 
 ## Запечённое и runtime-представление
 
@@ -280,7 +279,7 @@ Engine владеет импортом исходных форматов, пер
 
 ## Триггеры сопровождения
 
-Повторно проверяйте эту страницу и focused tests, когда изменение затрагивает любую из следующих поверхностей:
+Повторно проверяйте эту страницу и владеющие исходники, когда изменение затрагивает любую из следующих поверхностей:
 
 - `FrameShot::NextX` / `NextY`, версию SpriteResource, `NextOffset`, shared-frame behavior или `SpriteSheet::_sprOffset`;
 - импорт FOFRM/legacy images, mirroring, cropping, frame extraction, animation merge, cloning или substitution;
@@ -295,7 +294,6 @@ Engine владеет импортом исходных форматов, пер
 Для изменений документации:
 
 ```bash
-python BuildTools/tests/test_docs_sprite_root_motion.py
 python BuildTools/docs_external_evidence.py --check
 python BuildTools/docs_localization.py --check
 python BuildTools/docs_site.py --check
@@ -303,6 +301,8 @@ python BuildTools/docs_ai_delivery.py --check
 python BuildTools/docs_validate.py
 ```
 
-Для импорта offsets и переноса запечённых данных запустите тесты `ImageBaker` в Engine test binary встраиваемого проекта. `Test_ImageBaker.cpp` покрывает знаковые FRM offsets, lower/camel-case keys FOFRM, вложенную композицию, mirroring, выбор кадров и baked round trips. `Test_Geometry.cpp` покрывает успешный re-split, отказ для заблокированной цели, поведение внутри текущего гекса, unrestricted normalization и отказ за пределами карты.
-
-В текущем native suite нет focused fixture для root motion `CritterHexView`. После изменения `MovingContext`, `CritterHexView`, `SpriteSheet`, выбора анимации `ResourceManager` или созданных locomotion offsets выполните [матрицу визуальной приёмки](#матрица-визуальной-приёмки) в видимой клиентской сцене. Baking подтверждает data path, geometry tests - re-split, а видимая сцена - согласование походки.
+Собственные unit suites движка удалены. Для импорта и переноса offsets запеките
+представительные FRM/FOFRM и проверьте потребляемые смещения существующим runtime
+маршрутом. Нормализацию, блокировки и выход за карту проверяйте в приложении;
+документационные проверки не исполняют эти пути.
+После изменения `MovingContext`, `CritterHexView`, `SpriteSheet`, выбора анимации `ResourceManager` или созданных locomotion offsets выполните [матрицу визуальной приёмки](#матрица-визуальной-приёмки) в видимой клиентской сцене. Успешное запекание выполняет конвертацию; только наблюдаемые runtime-сценарии подтверждают нормализацию и видимое согласование походки.

@@ -175,7 +175,7 @@ Use [Client Runtime Split and Updater](../../explanation/runtime/client-updater.
 
 Run the narrowest checks first, then the full declared project matrix:
 
-- Engine unit tests for changed native domains;
+- affected-role native builds and existing CLI/application checks for changed native domains; Engine-owned unit suites and coverage targets were removed, workflows archived, and new automated tests/infrastructure require an explicit request;
 - configure and compile with each supported host compiler;
 - `CompileAngelScript` and/or `CompileManagedScripts` for every scripting backend enabled by the project;
 - `ForceBakeResources` when the data graph changed;

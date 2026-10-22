@@ -5,7 +5,7 @@ locale: ru
 generated: true
 ---
 
-<!-- docs-translation: {"document_id":"generated-audio-index","locale":"ru","source_path":"Docs/en/reference/audio/index.md","source_sha256":"0488548ae24059100284b84ec2facdcc107643d763828cebc1a17ef9cbd8d52d"} -->
+<!-- docs-translation: {"document_id":"generated-audio-index","locale":"ru","source_path":"Docs/en/reference/audio/index.md","source_sha256":"c79880f2903d199e8df53c783fe48df1a0bef5b738b47b2643dbeeeabae5eb6c"} -->
 
 # Сгенерированный справочник audio
 
@@ -20,13 +20,12 @@ generated: true
 | Поле | Значение |
 | --- | --- |
 | Стабильность | <code>experimental</code> |
-| Политика поддержки | Авторские входы WAV и нативного Ogg, запечённый payload Ogg, handles звука, обновления позиционирования и поведение клиентского воспроизведения привязаны к ревизии сфокусированными тестами baker и mixer. |
+| Политика поддержки | Модель проверяет актуальные source anchors и выведенные константы аудио. Запекание ресурсов и слышимый запуск клиента — отдельные проектные проверки; собственных unit suites движка в этом форке нет. |
 | Исходный манифест | [BuildTools/AudioInterface.json](https://github.com/cvet/fonline/blob/master/BuildTools/AudioInterface.json) |
-| Digest контракта | <code>8805fa8607a51a9b146f3732e31222bf83fcdf86ef353be3f315b22254063bb9</code> |
+| Digest контракта | <code>75b4620055b71a9794fec35ac35fa953a1cf4778f67937acc320148fa88c7108</code> |
 | Runtime-форматы | <code>.ogg</code> |
 | Missing-suffix fallback | no |
 | Сторона выполнения | <code>client</code> |
-| Сфокусированные нативные audio-тесты | 3 |
 
 | Справочник | Записи | Назначение |
 | --- | --- | --- |

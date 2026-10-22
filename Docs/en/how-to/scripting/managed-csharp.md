@@ -40,7 +40,7 @@ Projects own game scripts/namespaces, custom attributes/registrars, high-level l
 
 ## Configure the backend
 
-`FO_MANAGED_SCRIPTING` enables the runtime, backend, baker, CoreScripts tests and application wiring. It is independent of `FO_NATIVE_SCRIPTING` and `FO_ANGELSCRIPT_SCRIPTING`. Production projects select one gameplay backend; cross-backend invocation tests may enable more.
+`FO_MANAGED_SCRIPTING` enables the runtime, backend, baker and application wiring. It is independent of `FO_NATIVE_SCRIPTING` and `FO_ANGELSCRIPT_SCRIPTING`. Production projects select one gameplay backend; tools may enable more. This fork has no Engine-owned unit suites.
 
 The immutable startup settings in the `ManagedScript` group define the generated project:
 
@@ -105,7 +105,7 @@ Property components also generate Has/qualified-field accessors for entities and
 
 Use the project namespace and import `FOnline` for generated types. CoreScripts use file-scoped `namespace FOnline;`; game domain types belong outside it.
 
-Generated reference/entity APIs distinguish nullable values as part of the script/native contract. Branch on expected absence; use `Game.Verify` or `Game.VerifyNotNull` for invariant violations. Managed entity references own neither persistence nor lifetime.
+Generated reference/entity APIs distinguish nullable values as part of the script/native contract. Branch on expected absence; use `Invariant.Verify` or `Invariant.VerifyNotNull` for invariant violations. For an unreachable return path, write `throw Invariant.Unreachable("Fixed message", context)`; this helper returns the exception so C# recognizes termination. Managed entity references own neither persistence nor lifetime.
 
 Each backend has an isolated load context, but gameplay state requires an explicit per-engine owner: `Game`, entity, property or ref type. Static constants and immutable type metadata are valid; mutable caches, registries, timer gates and collections do not gain ownership from C# static fields.
 
@@ -141,9 +141,9 @@ Entity-only post-set reactions may return `Task`; value-transforming setters wit
 
 Inbound remote-call handlers may return `void`, `Task`, or `Task<T>`. Remote calls have no wire result, so incomplete tasks are observed without blocking the network/client pump; a `Task<T>` value is ignored. A named script function returning non-generic `Task` follows the same asynchronous boundary. A `Task<T>` named function remains synchronous when native code requires `T`.
 
-Callback and remote-call arguments keep their metadata shape: native `any[]` arrives as `List<any>` and `string=>any` as `Dictionary<string, any>`. The bridge does not adapt these into `List<object>` or string dictionaries; declare the exact generated types.
+Callback arguments keep their metadata shape: native `any[]` arrives as `List<any>` and `string=>any` as `Dictionary<string, any>`. The callback bridge does not adapt these into `List<object>` or string dictionaries. Remote calls use a narrower serializer: supported scalars and arrays only, including only dynamic managed ref types; dictionaries, dictionaries of arrays and native-only ref wrappers are rejected. Callback support does not imply RPC support.
 
-`[CallableFromNative]` methods register under `TypeName::MethodName`. `List<T>` and `Dictionary<K,V>` parameters and results use Engine array and dictionary descriptors when their element/key/value types are supported simple Engine types. The native registration resolves `K=>V` before array syntax; dictionaries with collection values remain outside this callback bridge. By-reference registration currently supports the built-in `(Critter, Critter, ref string)` delegates. `Test_ManagedScriptRuntime.cpp` checks these calls through real compiled assemblies, including dictionary arguments and returned values.
+`[CallableFromNative]` methods register under `TypeName::MethodName`. `List<T>` and `Dictionary<K,V>` parameters and results use Engine array and dictionary descriptors when their element/key/value types are supported simple Engine types. The native registration resolves `K=>V` before array syntax; dictionaries with collection values remain outside this callback bridge. By-reference registration currently supports the built-in `(Critter, Critter, ref string)` delegates. Qualify callback marshalling through the actual compiled role and native dispatcher; its dictionary support does not extend Managed RPC.
 
 ## Async and continuation scheduling
 
@@ -159,7 +159,7 @@ Synchronous native-result callbacks and module initialization use a private cont
 
 ## Server entity synchronization
 
-The server cover contract is backend-neutral: script callers must cover every existing entity the native call graph can read or mutate. An `await` ends the old cover; re-resolve or revalidate retained entities and reacquire cover before reuse.
+With `Server.SingleThreadedLogic = False`, the server cover contract is backend-neutral: script callers must cover every existing entity the native call graph can read or mutate. An `await` ends the old cover; re-resolve or revalidate retained entities and reacquire cover before reuse. With `Server.SingleThreadedLogic = True`, logic runs on one worker and runtime cover validation/acquisition is bypassed: scripts need no entity synchronization. Suspension still invalidates world-state assumptions. Managed compile-time analyzers are separately configured; this runtime switch is not evidence that their diagnostics are disabled.
 
 The native bridge validates a managed entity receiver before invoking an exported instance method or firing an event through either ABI; event subscription validates its target too. An uncovered receiver therefore reports a script-boundary cover fault instead of reaching a `noexcept` property accessor that would terminate the process. This validation does not acquire cover: callers still need to satisfy the declared requirements.
 
@@ -176,8 +176,7 @@ The Roslyn analyzer reports invalid annotations (`FOSYNC001`), unsatisfied trans
 Provider inference first proves that a candidate call executes on every returning
 path and only then traverses its callees. A call hidden in a conditional branch
 cannot establish cover; this order also prevents dense conditional call cycles
-from expanding exponentially. Analyzer self-tests time-bound that graph and still
-require `FOSYNC009` for an uncovered use after `await`.
+from expanding exponentially. The active analyzer still requires `FOSYNC009` for an uncovered use after `await`; retired analyzer self-tests are not a runnable gate.
 
 `Sync.Acquire` expands linked cover in place through `Game.SyncWiden`; it does not release and reacquire the already-held entities. This keeps the native cover continuous while following `[SyncWiden]` relationships and avoids a race window between the two sets.
 
@@ -257,7 +256,7 @@ The migrator edits a detached value before entity properties or load events run.
 
 All results are staged before the document changes. An exception leaves the document and the database update queue untouched. Successful changes enqueue only changed canonical fields through the normal database commit path. Game globals, player documents, ordinary entities, batched item loading, and custom persistent entities use this boundary before property loading. This is atomic preparation of one document, not a database-wide transaction. The project owns identity types, conditional transformations, collisions, and idempotency; the Engine does not infer a prototype type from an arbitrary `hstring` or `any`.
 
-Stored property-name migrations use `///@ MigrationRule Property Critter Rename MyPropOld MyPropNew`. The new name must exist. Point historical sources to the live name; its `Transform`, if present, also processes a value stored under an old name. An existing canonical key wins over obsolete keys. Obsolete top-level keys may remain in storage because database commits update individual fields. Existing `Enum`, `Entity`, `EntityHolder`, and `Version` rule forms remain unchanged. Dynamic server-only owners and their rules are omitted from other metadata roles. `Transform` callbacks are automatically bound by both implemented backends; an unbound function refuses document migration instead of silently skipping it. Use `///@ MigrationRule Property Critter Remove MyPropOld` without a replacement to retire a deleted property. Metadata finalization and baking reject a property still declared under that name on the same owner, including RefType fields. Document and property-text loading skip its old value; historical top-level database keys may remain. Keep the rule as a permanent name tombstone. Property and Proto share the action grammar: Rename/Transform have five parts and Remove has four; an extra Remove argument is rejected.
+Stored property-name migrations use `///@ MigrationRule Property Critter Rename MyPropOld MyPropNew`. The new name must exist. Point historical sources to the live name; its `Transform`, if present, also processes a value stored under an old name. An existing canonical key wins over obsolete keys. Obsolete top-level keys may remain in storage because database commits update individual fields. The native declaration parser accepts only `Version`, `Property`, `Proto`, `Component`, `Remove`, and `Enum` rule kinds; generic project metadata does not add native `Entity` or `EntityHolder` migration forms. Dynamic server-only owners and their rules are omitted from other metadata roles. `Transform` callbacks are automatically bound by both implemented backends; an unbound function refuses document migration instead of silently skipping it. Use `///@ MigrationRule Property Critter Remove MyPropOld` without a replacement to retire a deleted property. Metadata finalization and baking reject a property still declared under that name on the same owner, including RefType fields. Document and property-text loading skip its old value; historical top-level database keys may remain. Keep the rule as a permanent name tombstone. Property and Proto share the action grammar: Rename/Transform have five parts and Remove has four; an extra Remove argument is rejected.
 
 Use an owned `DatabaseDocument(entityType, originalValues)` and `Migrate<T>(property, ref value)` for isolated property fixtures. This invokes the registered typed callback without creating an entity; it does not commit a document or emulate database writes. Qualify persistence separately through a real database reload and process restart.
 
@@ -388,24 +387,15 @@ First diagnosis routes:
 
 | Change | Required evidence |
 | --- | --- |
-| Managed CoreScripts or backend | C# style from `Source/.clang-format` (fixtures too), CoreScripts tests, generated project build, native unit tests. |
-| Dynamic assemblies or live compiler | `test_managed_dynamic_assemblies.py`, `test_managed_script_compiler.py`, target package/closure check, and an embedding-project runtime authorization and execution test. |
-| Patch-point weaving or live patches | `test_managed_patch_points.py`, managed baker/incremental inputs, exact target bake, and embedding-project application/revert/authorization tests on each enabled side; profile the target runtime separately. |
-| Synchronization failures | `FOnline.Sync.Tests.csproj`, analyzer tests, and the embedding-project subscriber/log behavior. |
-| Generated API shape or native export | Codegen, managed baker, generated diff, API contract diff, both backend tests where the contract is shared. |
-| Attribute, event, callback, timer, or named call | Managed reflection/registration test plus the owning native/runtime dispatch. |
-| Mutable collection event arguments | `test_managed_event_collections.py` with real native inputs, native collection-proxy unit tests, and the affected tool/game event. |
-| Async scheduler | `test_managed_async_callbacks.py`, backend-isolation/frame-pump tests, and an embedding-project awaited gameplay path. |
-| Entity-cover contract | Roslyn analyzer tests, warning-free managed build, and the owning synchronized server behavior. |
-| Runtime/cache/thread attachment | Managed baker/backend native tests plus repeated multi-instance startup/shutdown. |
-| Native RefType ownership or finalization | `test_managed_ref_type_lifetime.py`, generated constructor/reference adapters in `Test_ManagedScriptBaker`, exact-role compilation, and native holder/runtime shutdown acceptance. |
-| Indexed ABI, callback adapters, or wrapper caches | `Test_ManagedScriptBaker`, aligned-frame/native backend tests, `InteropProbe.VerifyTransports`, allocation counters, and the exact target runtime. |
-| Package or updater | Runtime-payload and packaging tests, exact target package inspection, startup from the packaged artifact, and update replacement. |
-| Platform claim | Configure/build, target payload, process/device/browser smoke, and project acceptance for that platform. |
+| Managed CoreScripts or backend | Existing C# formatter, affected native-role build, generated project compile and `CompileManagedScripts`/bake. |
+| Dynamic assemblies/live compiler/patches | Exact-target bake/package closure, existing authorized runtime execution, authorization and apply/revert route; measure target performance separately. |
+| Generated API/ABI or native export | Codegen, generated/API-contract diff, compile/bake of every affected backend/role, early ABI bind and actual call path. |
+| Attributes/events/collections/timers | Exact generated signature, compile/bake, owning dispatcher interaction, writeback/subsequent subscriber and cleanup where affected. |
+| Async/cover/runtime ownership | Configured analyzer diagnostics, warning-free compile, actual suspension/resumption, mode-appropriate entity access, isolated multi-instance startup/shutdown. |
+| Native RefType lifetime | Generated constructor/reference adapters, exact-role compile, holder use through its last draw, disposal and runtime shutdown. |
+| Package/updater/platform claim | Exact target payload inspection, startup from that package and update replacement on the claimed process/device/browser. |
 
-The optional `test_managed_event_collections.py` probe builds both entry and host assemblies from Engine sources and compiles the complete production backend with an existing GCC/Clang Ninja unit build. Set `FO_MANAGED_EVENT_BUILD` to that Managed-enabled build and `FO_MANAGED_EVENT_RUNTIME` to its prepared host runtime, including `runtime.manifest`; `FO_MANAGED_EVENT_CONFIG` selects a multi-config build configuration and defaults to `RelWithDebInfo`. Run `python -m pytest -q BuildTools/tests/test_managed_event_collections.py` from the Engine root. With no build selected, the native tests are skipped; a configured incomplete build/runtime fails qualification. The same behavioral test exercises list and dictionary replacement, a subsequent subscriber, clearing, native order, const rejection, forced GC, the outer `BaseEngine` context, and clean shutdown. A temporary backend copy without collection writeback must fail. This probe covers integer lists and string/integer dictionaries; entity payloads, server synchronization, and other platform toolchains still require their owning runtime tests.
-
-At minimum, run the focused Python managed suites under `BuildTools/tests/test_managed_*.py`, the analyzer test project, CoreScripts tests, `Test_ManagedScriptBaker.cpp`, the generated embedding-project unit-test target, `CompileManagedScripts`, and the affected bake/package/runtime path. A dry-run baker marker, a successful `dotnet build`, and a native process-start smoke prove different layers and must be reported separately.
+This fork removed the former managed/native/Python/analyzer unit suites and their optional probes. Do not invoke them, recreate them, or add new automated tests without an explicit request. Use the existing compilation, bake, package and direct application routes above. A dry-run baker marker, successful `dotnet build`, process start and observed gameplay prove different layers; report exact results and unexercised boundaries separately.
 
 ## Migration from AngelScript
 
@@ -455,5 +445,3 @@ Also regenerate affected CMake, helper-CLI, package, API, public-contract, trans
 - `BuildTools/cmake/stages/Packages.cmake`
 - `BuildTools/managed_runtime_payload.py`
 - `BuildTools/package.py`
-- `BuildTools/tests/test_managed_*.py`
-- `Source/Tests/Test_ManagedScriptBaker.cpp`

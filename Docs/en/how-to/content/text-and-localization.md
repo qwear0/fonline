@@ -102,8 +102,11 @@ Engine default is `engl`; embedding projects normally override it in their
 `.fomain`.
 
 For a changed raw pack, `TextBaker` gathers all configured language files for
-that pack. The base-language source must be present. Unsupported filename
-suffixes are warned and skipped.
+that pack. The base-language check is aggregate across the selected raw inputs,
+not a per-pack source guarantee. A child-only pack absent from its fallback can
+be removed during normalization even after a successful bake. Audit per-pack
+source completeness in the embedding project. Unsupported filename suffixes
+are warned and skipped.
 
 `TextPack::FixPacks` then normalizes every non-base language against its explicit
 parent, or against the first language when no parent is declared:
@@ -240,12 +243,12 @@ same change:
 ```powershell
 python BuildTools\docs_text_format.py --write
 python BuildTools\docs_text_format.py --check
-python -m unittest BuildTools.tests.test_docs_text_format
 ```
 
-Run focused native tests for `TextPack`, `TextBaker`, and `ProtoTextBaker` when
-their behavior changes. Validate color-parser changes through the nearest
-rendering tests and a visible client. Then rebake an embedding project.
+Engine-owned unit suites are retired. Rebake representative raw and prototype
+text packs and inspect results through the typed lookup API. Validate color
+parsing in a visible client; documentation generation does not execute text
+parsers or prove per-pack translation completeness.
 Project-owned pack catalogs, translation guards, lexem formatters, and GUI
 refresh behavior require project tests rather than Engine fixtures.
 

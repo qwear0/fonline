@@ -5,7 +5,7 @@ locale: ru
 generated: true
 ---
 
-<!-- docs-translation: {"document_id":"generated-cmake-index","locale":"ru","source_path":"Docs/en/reference/cmake/index.md","source_sha256":"a11c65b68c7005ae72d0c33c5d22bba0d3b7b44a2a0c67e14bdc2f6866daf8d6"} -->
+<!-- docs-translation: {"document_id":"generated-cmake-index","locale":"ru","source_path":"Docs/en/reference/cmake/index.md","source_sha256":"97c2f564cb018070974a60e8277f9048774da98ef4ffdec0f84128214b055d36"} -->
 
 # Сгенерированный интерфейс проекта CMake
 
@@ -22,13 +22,13 @@ generated: true
 | Стабильность | <code>experimental</code> |
 | Начиная с версии | Не объявлено |
 | Политика поддержки | Версионируемая линия поддержки пока не объявлена; подключающим проектам следует закреплять ревизию движка. |
-| Исходный manifest | [BuildTools/cmake/ProjectInterface.json](https://github.com/cvet/fonline/blob/master/BuildTools/cmake/ProjectInterface.json) |
+| Исходный manifest | [BuildTools/cmake/ProjectInterface.json](https://github.com/qwear0/fonline/blob/master/BuildTools/cmake/ProjectInterface.json) |
 
 ## Покрытие
 
 | Справочник | Записи | Назначение |
 | --- | --- | --- |
-| [Параметры проекта](options.md) | 58 | Обязательные входы, значения по умолчанию и приоритет переопределений. |
+| [Параметры проекта](options.md) | 56 | Обязательные входы, значения по умолчанию и приоритет переопределений. |
 | [Стадии и hooks](stages.md) | 10 | Строгий порядок генерации проекта и границы расширения. |
 | [Проектные helper-команды](helpers.md) | 7 | Выбранные команды, предназначенные для подключающих проектов. |
 

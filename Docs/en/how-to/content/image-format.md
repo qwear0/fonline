@@ -48,8 +48,6 @@ The owning sources are:
   loading, `AtlasSprite`, `SpriteSheet`, frame offsets, and atlas upload;
 - `Source/Client/SpriteManager.cpp` for extension dispatch and sprite caches;
 - `Source/Client/TextureAtlas.cpp` for atlas allocation;
-- `Source/Tests/Test_ImageBaker.cpp` and `Test_TextureAtlas.cpp` for executable
-  import, failure, and allocation examples.
 
 `BuildTools/ImageFormatInterface.json` owns the structured contract.
 `BuildTools/docs_image_format.py` checks source anchors, live baker/runtime
@@ -207,8 +205,12 @@ frm_1 = Walk_E_01.png
 # Continue every configured map direction.
 ```
 
-Every direction must flatten to the same final frame count. A partial direction
-set, a missing later section, or a different flattened count fails baking.
+Author one direction or the complete map direction set with equal flattened
+frame counts. The parser stops as single-direction when direction one has no
+section or a missing frame reference; it does not inspect later authored
+directions. Once later directions are reached, missing sections and unequal
+flattened counts fail. A successful bake alone does not prove a complete
+authored direction set.
 
 ### Nested references and flattening
 
@@ -450,8 +452,10 @@ at frame/direction zero with valid size/anchor and retain state/action tags.
 `AtlasSprite::MakeCopy()` shares atlas pixels/geometry. First/last extraction
 cannot shorten later loads; each trimmed direction has one sprite and offset.
 `_nonFoundSprites` memoizes missing files/extensions, unknown factories and load
-failures by path. `CleanupSpriteCache()` does not clear it: recreate the manager
-or restart after adding a previously failed resource.
+failures by path. `CleanupSpriteCache()` does not clear it. Native callers can
+use `ForgetFailedSprite(path)` for the failed-path memo or
+`InvalidateSpriteResource(path)` for that resource's caches. If project tooling
+exposes neither, recreate the manager or restart before retrying the path.
 
 ## Authoring practices
 
@@ -501,15 +505,14 @@ For documentation/model changes:
 ```powershell
 python BuildTools\docs_image_format.py --write
 python BuildTools\docs_image_format.py --check
-python -m unittest BuildTools.tests.test_docs_image_format
 python BuildTools\docs_contract_diff.py --help
 python BuildTools\docs_validate.py
 ```
 
-Importer/container/atlas/playback changes require focused `RunUnitTests`:
-`Test_ImageBaker.cpp` covers targeted/scanned baking, BakeChecker, PNG/TGA,
-legacy loaders/options, FOFRM flattening/directions, shared records, renaming
-and malformed inputs; `Test_TextureAtlas.cpp` covers allocation split/search/free.
+Engine-owned unit suites are retired. Importer/container changes need an actual
+bake of representative inputs and inspection of diagnostics and output. Atlas
+and playback changes also need a visible application interaction; documentation
+checks do not execute those paths.
 
 For affected projects:
 
@@ -520,8 +523,9 @@ For affected projects:
 4. For locomotion, follow [Sprite Root Motion](sprite-root-motion.md): straight
    movement, turns, direction changes and stop/start transitions.
 
-Native tests prove decoding/container invariants; framing, pack precedence,
-cadence, filtering, clickability and perceived foot sliding require visual checks.
+Source-backed checks and a successful bake do not prove framing, pack
+precedence, cadence, filtering, clickability or perceived foot sliding; those
+require visible application checks.
 
 ## Change checklist
 
@@ -529,8 +533,8 @@ For image changes:
 
 - Update `BuildTools/ImageFormatInterface.json` and this guide together;
   regenerate `Docs/generated/image-format.json` and all image pages.
-- Run `BuildTools/tests/test_docs_image_format.py`, complete docs validation,
-  `docs_contract_diff.py` against the intended base and focused native tests.
+- Run docs validation and `docs_contract_diff.py` against the intended base;
+  rebake affected resources and repeat the relevant visible interaction.
 - update [Baking Pipeline](../../explanation/content-pipeline/baking.md),
   [Client Runtime](../../explanation/runtime/client.md), or
   [Sprite Root Motion](sprite-root-motion.md) only when their owned behavior

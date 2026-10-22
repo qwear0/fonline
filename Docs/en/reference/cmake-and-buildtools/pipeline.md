@@ -62,10 +62,7 @@ guessing cross-revision compatibility.
 - `BuildTools/docs_cmake.py`
 - `BuildTools/PackageInterface.json`
 - `BuildTools/docs_package.py`
-- `BuildTools/tests/validate_package_interface.cmake`
-- `BuildTools/tests/validate_project_interface.cmake`
 - `BuildTools/package.py`
-- `BuildTools/tests/test_package_include.py`
 - `BuildTools/msicreator/createmsi.py`
 
 Important consequences:
@@ -187,14 +184,14 @@ Start here when source grouping, library dependencies, or runtime layer boundari
 
 Creates executable and shared-library applications from `Source/Applications/*.cpp`. It uses helpers such as `AddExecutableApplication` and `AddSharedApplication` and project variables such as `FO_DEV_NAME`, output paths, platform flags, and enabled build modes.
 
-Examples of entry points wired here include client, client runtime library, client headless variants, server variants, mapper, animation and particle viewers, baker, AngelScript compiler, Managed script baker, and testing app depending on options. There is no generic Editor application or validation target.
+Examples of entry points wired here include client, client runtime library, client headless variants, server variants, mapper, animation and particle viewers, baker, AngelScript compiler, Managed script baker depending on options. There is no generic Editor application or validation target.
 
 Effekseer Editor is intentionally absent from this stage and from the
 application target graph. Its standalone `BuildTools/EffekseerEditor/build.ps1`
 entry point configures and builds upstream sources independently of an
 embedding project's FOnline CMake configuration.
 
-For Visual Studio/MSBuild test targets, the stage invokes the test executable through `BuildTools/cmake/helpers/RunAndLog.cmake`. The helper captures stdout and stderr in `<build-dir>/<target>.log` and fails the CMake command from the real process exit code. This preserves expected negative-test diagnostics without letting MSBuild reinterpret lines containing words such as `error` as build failures. Other generators run the executable directly.
+The fork does not generate unit-test or coverage applications; enabling the retired options fails in Init. `AddEngineSources` accepts only COMMON, SERVER, CLIENT, MAPPER, and BAKER, rejecting TESTS and unknown roles before source/metadata registration.
 
 Native non-cross-compiling Windows, Linux and macOS configurations also build
 `FOnlineResourcePackHash` before the baker and CMake package targets. This host-only
@@ -226,12 +223,9 @@ Creates package targets from `FO_PACKAGES` and calls `BuildTools/package.py` wit
 
 The local `package-web-debug` and `package-android-debug` wrappers pass
 `-resource-pack-compress-level 1` for Raw payloads; distribution-bundle
-compression remains inherited from project configuration. The wrapper regression
-`test_buildtools_debug_packaging.py` checks the generated commands against the
-actual packager parser for Web and every supported Android architecture,
-multiple debug configurations and paths with spaces.
+compression remains inherited from project configuration. Validate a changed wrapper through the executable packager parser and inspect the affected package output; no removed Python suite proves the command.
 
-`DefinePackage` declaration clauses, accepted runtime targets/platforms/architectures, pack tokens, support status, and payload effects are modeled in `BuildTools/PackageInterface.json` and rendered in the [generated package reference](../packages/index.md). The manifest is documentation/validation data; `DefinePackage`, `Packages.cmake`, and `package.py` remain the runtime authorities. Focused and structural tests compare the modeled grammar and dimensions with those implementations. The embedding project still owns which valid combinations it declares.
+`DefinePackage` declaration clauses, accepted runtime targets/platforms/architectures, pack tokens, support status, and payload effects are modeled in `BuildTools/PackageInterface.json` and rendered in the [generated package reference](../packages/index.md). The manifest is documentation/validation data; `DefinePackage`, `Packages.cmake`, and `package.py` remain the runtime authorities. The existing generator validates its modeled grammar against implementation anchors; configure and package affected consumers to establish behavior. The embedding project still owns which valid combinations it declares.
 
 `POSTFIX <value>` follows a single `BINARY` clause and is never inherited by sibling entries. It must match the `FO_BINARY_OUTPUT_POSTFIX` used when that binary was built, because both sides participate in the input-directory name and packaged runtime identity. The `win32-win7` and `win64-win7` package architecture keys resolve to canonical `win32` and `win64` binary architectures; their legacy toolset choice comes from `buildtools.py`, while an explicit postfix such as `POSTFIX Win7` keeps the produced Raw/Zip/Wix names distinct. Run `BuildTools/check_windows7_imports.py` against every linked Win7 PE before packaging or publication.
 
@@ -272,8 +266,7 @@ built tools are declared alongside `BINARY` parts with
 `INCLUDE <source-path-glob> <target-path-in-pack>`. The source glob is relative
 to `FO_OUTPUT_PATH`. After the ordinary binary parts are assembled, the generic
 packager replaces the included target tree and updates an existing `SingleZip`
-without duplicate or stale entries. This path is covered by
-`BuildTools/tests/test_package_include.py`.
+without duplicate or stale entries. For changes, run the affected package path and inspect both the included tree and archive entries.
 
 Start in `Packages.cmake` when package target wiring changes. Start in `BuildTools/PackageInterface.json` plus `package.py` when declaration vocabulary, supported combinations, payload layout, artifact behavior, packager arguments, or package-time installer metadata changes.
 
@@ -298,11 +291,8 @@ Reusable helpers live in `BuildTools/cmake/helpers/`:
   random identity when the marker is written. Markers therefore match the build
   identity embedded in the configured native applications, including source
   archives without Git and output paths containing spaces.
-  `BuildTools/tests/test_cmake_build_hash.py` verifies actual compiled applications
-  and both standard baking targets before and after a Git revision change.
-  Its temporary source tree stages the unchanged helpers from the Engine checkout,
-  so the fixture also works when Windows stores the checkout and temporary files
-  on different drives.
+  Verify changed build-hash wiring against the configured native application and
+  resource markers after an actual build/bake; a stale generated marker is not proof.
 
 When a stage needs reusable behavior, prefer adding a helper here instead of copy-pasting logic between stages.
 
@@ -340,8 +330,8 @@ The generated [stage and hook reference](../cmake/stages.md) is the documented i
 
 For BuildTools changes:
 
-1. Run `cmake -P BuildTools/tests/validate_project_interface.cmake` for project-interface changes.
-2. Run `python BuildTools/tests/test_docs_cmake.py` and `python BuildTools/docs_cmake.py --check` after regenerating the CMake reference.
+1. Review project-interface declarations and implementation together.
+2. Run `python BuildTools/docs_cmake.py --check` after regenerating the CMake reference.
 3. Configure from a real embedding project root.
 4. Use the narrowest preset that exercises the changed stage.
 5. For source-list changes, verify the affected target builds.
@@ -352,8 +342,8 @@ For BuildTools changes:
    managed/native/resources payload; exercise the package `INCLUDE` when the
    developer-package layout changes.
 9. For package changes, run the affected package target and inspect output layout; for WiX/MSI changes, also verify the generated installer config/registry values or run the installer build on a host with WiX/wixl.
-10. For package-interface changes, run `python BuildTools/tests/test_docs_package.py`, `cmake -P BuildTools/tests/validate_package_interface.cmake`, and `python BuildTools/docs_package.py --check` after regeneration.
-11. For native-extension interface changes, run `python BuildTools/tests/test_docs_native_extension.py`, `cmake -P BuildTools/tests/validate_native_extension_interface.cmake`, and `python BuildTools/docs_native_extension.py --check` after regeneration.
+10. For package-interface changes, run `python BuildTools/docs_package.py --check` after regeneration and inspect the affected real package.
+11. For native-extension interface changes, run `python BuildTools/docs_native_extension.py --check` after regeneration and build the affected registered role.
 12. Compare all regenerated API/CMake/main-CLI/package/helper-CLI/native-extension models with the intended base through `BuildTools/docs_contract_diff.py`; complete any required [contract disposition](../../contributing/contract-change-management.md).
 13. Run documentation link checks if docs changed.
 14. Run `git diff --check` before reporting completion.

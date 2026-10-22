@@ -6,7 +6,7 @@ document_id: image-format-guide
 permalink: /Docs/ru/how-to/content/image-format.html
 ---
 
-<!-- docs-translation: {"document_id":"image-format-guide","locale":"ru","source_path":"Docs/en/how-to/content/image-format.md","source_sha256":"c414ee04770321dcda7e04ceb36bd89f75776535e35119dedab0931fbd679854"} -->
+<!-- docs-translation: {"document_id":"image-format-guide","locale":"ru","source_path":"Docs/en/how-to/content/image-format.md","source_sha256":"6e2cec0bdb2dc42b89ce5abb7f62f4260957bf7aed8a981aaf9f3e8a1e2ec824"} -->
 
 # Форматы изображений и спрайтов
 
@@ -54,8 +54,6 @@ FOnline запекает авторские и устаревшие изобра
 - `Source/Client/SpriteManager.cpp`: диспетчеризация по расширению и кэши
   спрайтов;
 - `Source/Client/TextureAtlas.cpp`: выделение места в атласе;
-- `Source/Tests/Test_ImageBaker.cpp` и `Test_TextureAtlas.cpp`: исполняемые
-  примеры импорта, отказов и выделения памяти.
 
 `BuildTools/ImageFormatInterface.json` является структурированным контрактом,
 подтверждённым исходниками. `BuildTools/docs_image_format.py` проверяет каждый
@@ -225,9 +223,12 @@ frm_1 = Walk_E_01.png
 # Continue every configured map direction.
 ```
 
-Каждое направление должно после flattening давать одинаковое итоговое число
-кадров. Неполный набор направлений, отсутствующий последующий раздел или иное
-число расплющенных кадров приводят к ошибке запекания.
+Авторите одно направление или полный набор направлений карты с одинаковым
+числом кадров после flattening. При отсутствии раздела направления один или
+ссылки на его кадр parser завершает загрузку как однонаправленную, не проверяя
+более поздние разделы. Если обход дошёл до поздних направлений, отсутствие
+раздела или несовпадение числа кадров вызывает ошибку. Один успех запекания
+не доказывает полноту авторского набора направлений.
 
 ### Вложенные ссылки и flattening
 
@@ -483,9 +484,11 @@ state/action tags. `AtlasSprite::MakeCopy()` разделяет atlas pixels/geo
 Усечение не сокращает следующие загрузки: каждое направление содержит один
 спрайт и offset. Отсутствующие файлы/расширения,
 неизвестные factories и ошибки загрузки отдельно мемоизируются по пути в
-`_nonFoundSprites`. `CleanupSpriteCache()` не очищает этот набор. После
-добавления ресурса, который запущенный клиент уже не смог загрузить, пересоздайте
-sprite manager или перезапустите клиент перед проверкой того же пути.
+`_nonFoundSprites`. `CleanupSpriteCache()` не очищает этот набор. Нативный код
+может вызвать `ForgetFailedSprite(path)` для сброса ошибки пути или
+`InvalidateSpriteResource(path)` для сброса кэшей ресурса. Если проектные
+инструменты не открывают эти операции, пересоздайте manager или перезапустите
+клиент перед повтором.
 
 ## Практики авторинга
 
@@ -516,7 +519,7 @@ sprite manager или перезапустите клиент перед про�
 
 AI-автору следует предпочитать явные ключи FOFRM и ссылки на однокадровые PNG.
 Перед изменением существующей строки legacy-параметров изучите сгенерированный
-справочник options и focused native fixtures, а не угадывайте поведение по имени
+справочник options и исходник владеющего loader, а не угадывайте поведение по имени
 файла.
 
 ## Диагностика
@@ -548,17 +551,14 @@ AI-автору следует предпочитать явные ключи FO
 ```powershell
 python BuildTools\docs_image_format.py --write
 python BuildTools\docs_image_format.py --check
-python -m unittest BuildTools.tests.test_docs_image_format
 python BuildTools\docs_contract_diff.py --help
 python BuildTools\docs_validate.py
 ```
 
-Для изменений importer, container, atlas или playback запустите focused native
-image-baker и texture-atlas coverage через настроенную цель `RunUnitTests`.
-`Test_ImageBaker.cpp` покрывает targeted/scan baking, поведение BakeChecker,
-PNG/TGA, каждый legacy importer, options, flattening/directions FOFRM, shared
-records, переименование выхода и повреждённые входы. `Test_TextureAtlas.cpp`
-покрывает split/search/free allocator.
+Собственные unit suites движка удалены. Изменения importer/container требуют
+реального запекания представительных входов и проверки диагностики и выхода.
+Для atlas/playback также нужно видимое взаимодействие с приложением: проверки
+документации не исполняют эти пути.
 
 Затем проверьте затронутый встраиваемый проект:
 
@@ -573,9 +573,9 @@ records, переименование выхода и повреждённые �
    [Sprite Root Motion](sprite-root-motion.md) и проверьте прямое
    движение, повороты, смену направления и переходы stop/start.
 
-Native tests доказывают инварианты декодирования и контейнера. Они не доказывают
-framing графики проекта, приоритет resource pack, визуальный темп, filtering,
-clickability или воспринимаемое скольжение ног.
+Проверки по исходникам и успешное запекание не доказывают framing, приоритет
+resource pack, визуальный темп, filtering, clickability или воспринимаемое
+скольжение ног: для этого нужны видимые проверки приложения.
 
 ## Checklist изменения
 
@@ -585,9 +585,8 @@ clickability или воспринимаемое скольжение ног.
   правке Engine;
 - перегенерируйте `Docs/generated/image-format.json` и все generated
   image-страницы;
-- запустите `BuildTools/tests/test_docs_image_format.py`, полный documentation
-  suite и `docs_contract_diff.py` относительно требуемой базы;
-- запустите focused native tests затронутой границы loader/runtime/atlas;
+- запустите проверку документации и `docs_contract_diff.py` относительно нужной
+  базы; перезапеките ресурсы и повторите соответствующее видимое взаимодействие;
 - обновляйте [Baking Pipeline](../../explanation/content-pipeline/baking.md),
   [Client Runtime](../../explanation/runtime/client.md) или
   [Sprite Root Motion](sprite-root-motion.md), только когда меняется

@@ -7,7 +7,7 @@ permalink: /Docs/ru/how-to/scripting/lifecycle-and-concurrency.html
 ---
 
 # Жизненный цикл и конкурентность скриптов
-<!-- docs-translation: {"document_id":"script-lifecycle-concurrency","locale":"ru","source_path":"Docs/en/how-to/scripting/lifecycle-and-concurrency.md","source_sha256":"bc7917da34eec287bfd8815759c81b6335525ff7ac97795492d6f9c7b7c82b39"} -->
+<!-- docs-translation: {"document_id":"script-lifecycle-concurrency","locale":"ru","source_path":"Docs/en/how-to/scripting/lifecycle-and-concurrency.md","source_sha256":"d2a354954c7825f9b0a1517e81d16d1a9f08caaf09b7709406309dde1bc5c5a6"} -->
 > Документация движка. Это руководство описывает переиспользуемое поведение lifecycle и concurrency, общее для AngelScript и Managed C#, а затем явно называет правила каждого языка. Модули проекта, gameplay policies и проектные synchronization helpers принадлежат подключающей игре.
 
 ## Назначение
@@ -30,8 +30,9 @@ Native entry cover зависит от dispatcher: правило inbound remote
 с пустым или тем же cover. Перед утверждением initial cover проверяйте его
 native dispatcher-владелец.
 
-Для каждой server entry point, обращающейся к entity, используйте следующее
-решение:
+Сначала выберите runtime mode. При `Server.SingleThreadedLogic = True` логика работает одним worker и entity-cover validation/acquisition обходится: синхронизация скриптам не нужна. Suspension по-прежнему делает прежние решения о mutable state неактуальными. Cover/lock requirements ниже относятся к multithreaded mode (`False`); compiler propagation `[[Async]]` и отдельно настроенные managed analyzers не отменяются runtime-исключением.
+
+Для каждой multithreaded server entry point, обращающейся к entity, используйте следующее решение:
 
 `ServerEngine::RunScriptContext()` создаёт вложенный `SyncContext`, который
 может хранить entity cover; сам по себе он не покрывает ни одной entity. Initial
@@ -151,7 +152,7 @@ Runtime индексирует валидные init functions, сохраняе
 3. прерывает запуск при ошибке любого вызова;
 4. замораживает globals после завершения всех функций.
 
-Следовательно, `Game.SetConstGlobalVar(...)` допустим только при инициализации. После границы freeze он выбрасывает исключение. Baker также отклоняет изменяемые globals уровня модуля, если их namespace явно не разрешён в `Script.MutableGlobalsAllowedNamespaces`.
+Следовательно, `Game.SetConstGlobalVar(...)` допустим только при инициализации. После границы freeze он выбрасывает исключение. Baker также отклоняет изменяемые globals уровня модуля, если их namespace явно не разрешён в `AngelScript.MutableGlobalsAllowedNamespaces`.
 
 Используйте module init для регистрации и построения неизменяемых lookup. Не запускайте gameplay work, предполагающий, что world, current player, map или network session уже существуют. Клиент вызывает `Game.OnStart` после инициализации модулей; сервер запускает свои initialization lifecycle events после `InitModules()` в последовательности старта сервера.
 
@@ -250,7 +251,7 @@ Context manager не позволяет двум workers одновременн�
 
 ## Серверная синхронизация сущностей
 
-Server callbacks могут выполняться конкурентно. Движок проверяет доступ к авторитетной сущности против `SyncContext` текущего потока; непокрытое чтение или запись является ошибкой контракта, а не безобидной гонкой.
+В multithreaded mode server callbacks могут выполняться конкурентно. Движок проверяет доступ к авторитетной сущности против `SyncContext` текущего потока; непокрытое чтение или запись является ошибкой контракта, а не безобидной гонкой.
 
 `Game.Sync(...)` является видимой скриптам границей получения cover:
 
@@ -309,7 +310,7 @@ resolve entity -> Game.Sync(entity) -> read/mutate -> Yield(...)
 resolve or revalidate entity -> Game.Sync(entity) -> re-read -> decide/mutate
 ```
 
-У native extension есть дополнительный helper расширения `EnsureEntitySynced(...)` для операций движка, которые включают покрытого descendant или только что созданную сущность в текущий context. Он не заменяет видимый скриптам контракт `Game.Sync(...)` и не должен предоставляться как проектный workaround для неверно ограниченной операции.
+Native extension может использовать `EnsureEntitySynced(...)` только для удержания собственной блокировки уже покрытой сущности без освобождения cover вызывающего. Свежие неопубликованные сущности проходят private trusted registration boundary `EnsureFreshEntitySynced()`; оба пути не приобретают пропущенную existing dependency. Он не заменяет видимый скриптам контракт `Game.Sync(...)` и не должен предоставляться как проектный workaround для неверно ограниченной операции.
 
 ## Владение изменяемым состоянием
 
@@ -335,7 +336,7 @@ Managed C# входит в те же независимые от backend кон�
 - Event-, timer-, remote-call-, property- и другие dispatch handlers используют managed attributes из `CoreScripts/Attributes.cs`. Метод с dispatcher-owned attribute входит через свой dispatcher, а не вызывается напрямую только потому, что C# позволяет назвать его.
 - `async void` запрещён. Awaitable handlers и named calls возвращают `Task`; используйте `Task<T>` только когда caller contract потребляет результат. Возвращаемое значение inbound remote call игнорируется wire даже для awaitable managed handler.
 - `Game.YieldAsync(milliseconds)` планирует continuation в `ScriptSynchronizationContext` backend. У каждого backend своя очередь, которую прокачивают кадры движка. Работа, перенесённая в `ThreadPool` или продолженная через `ConfigureAwait(false)`, находится вне этого context и не должна вызывать Engine API.
-- Server cover объявляется и проверяется через `[RequiresCover]`, `[ProvidesCover]`, `[PreservesCover]` и `CoverReach`. Roslyn-диагностики `FOSYNC001`–`FOSYNC007` и `FOSYNC009` находят неверные targets, пропущенное распространение, entry declarations, покрытые collections и locks, пересекающие `await`.
+- Server cover объявляется и проверяется через `[RequiresCover]`, `[ProvidesCover]`, `[PreservesCover]` и `CoverReach`. Действующие Roslyn-диагностики `FOSYNC001`–`FOSYNC005` и `FOSYNC009` проверяют declarations, propagation и cover после `await`; `FOSYNC006`/`FOSYNC007` удалены. Используйте `using GameLock scope = GameLock.Acquire();`: `ref struct` освобождает lock на всех путях и не может пережить `await`.
 - Cover обычно не переживает `await`. Сохраняйте его только через явный `[PreservesCover]` contract поддерживаемой операции; иначе после resumption заново разрешите mutable state и получите полный cover.
 - Named invocation требует `[CallableByName]`. Allowlist административных и внутренних named calls — разные границы; не расширяйте одну ради другой.
 - Delegates, сохраняемые после вызова, являются GC roots managed backend. Для отписки timer нужна та же identity delegate. Native reference objects, удерживаемые managed-кодом, следуют generated-контракту владения `__AddRef` / `__Release`.
@@ -372,13 +373,13 @@ Suspended continuation может пережить gameplay assumptions, при 
 4. Получите один полный cover для операции и не удерживайте `Game.Lock` во время его получения.
 5. Разместите mutable state на владельце его lifecycle; документируйте любое исключение mutable-global.
 6. После suspension или re-entry повторно проверяйте состояние и получайте cover.
-7. Добавьте узкий script/compiler/runtime test и выполните script bake подключающего проекта.
+7. Выполните compile/bake затронутых ролей проекта и самый узкий существующий dispatcher/application path. Не добавляйте автоматизированные тесты и инфраструктуру без явного запроса.
 
 ## Маршруты проверки
 
-Выбирайте самый узкий gate, доказывающий изменённый контракт:
+Используйте `CompileAngelScript` или `CompileManagedScripts` затронутых ролей, реальный resource bake и существующий application route для scheduling, event lifetime, synchronization mode и shutdown. Собственные unit suites форка удалены. Таблица ниже сохраняет только прежнюю карту suites: её `Test_*` и managed-suite names не являются исполняемыми prerequisites. Не восстанавливайте suites. Укажите, какие runtime boundaries реально установлены нынешними compile/bake/application observations.
 
-| Изменение | Минимальная проверка |
+| Изменение | Историческая карта suites (удалены; не текущие инструкции) |
 |---|---|
 | Callback attribute или правило прямого вызова AngelScript | `Test_AngelScriptAttributes` и project `CompileAngelScript`/bake. |
 | Managed callback, named call или async signature | `Test_ManagedScriptBaker`, managed core tests и project `CompileManagedScripts`/bake. |

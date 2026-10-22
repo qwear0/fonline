@@ -5,7 +5,7 @@ document_id: prototype-format-guide
 locale: ru
 permalink: /Docs/ru/how-to/content/prototype-format.html
 ---
-<!-- docs-translation: {"document_id":"prototype-format-guide","locale":"ru","source_path":"Docs/en/how-to/content/prototype-format.md","source_sha256":"5e9d397d33b2182ee574cccb7da47507485dd0c299a29a9660a35c38b378f55a"} -->
+<!-- docs-translation: {"document_id":"prototype-format-guide","locale":"ru","source_path":"Docs/en/how-to/content/prototype-format.md","source_sha256":"83416e3112a50fc07e5aae34ed7a78c5ebfeb48674bea14349f27b9bae83d390"} -->
 # Формат прототипов
 
 Прототипы FOnline представляют собой именованные наборы свойств, основанные на метаданных и отдельно запекаемые для сервера, клиента и Mapper. Они задают переиспользуемые значения сущностей по умолчанию и фиксированные определения проекта, но не являются runtime-записями сохранения, записями размещения на карте или игровой таксономией контента.
@@ -52,13 +52,6 @@ permalink: /Docs/ru/how-to/content/prototype-format.html
 - `Source/Scripting/ServerItemScriptMethods.cpp`
 - `Source/Scripting/ServerLocationScriptMethods.cpp`
 - `Source/Scripting/ServerMapScriptMethods.cpp`
-- `Source/Tests/Test_ConfigFile.cpp`
-- `Source/Tests/Test_Properties.cpp`
-- `Source/Tests/Test_EntityProtos.cpp`
-- `Source/Tests/Test_ProtoManager.cpp`
-- `Source/Tests/Test_ProtoBaker.cpp`
-- `Source/Tests/Test_ServerMapOperations.cpp`
-- `Source/Tests/Test_AngelScriptServerMapOperations.cpp`
 
 ## От исходного файла до запечённого прототипа
 
@@ -268,12 +261,14 @@ AngelScript связывает те же правила с `T&inout` и `const D
 Для изменения движка:
 
 ```bash
-python BuildTools/tests/test_docs_prototype_format.py
 python BuildTools/docs_prototype_format.py --check
 python BuildTools/docs_contract_diff.py --baseline-git-ref origin/master --allow-missing-baseline --write --enforce
 ```
 
-Также запустите focused native tests для изменённой границы parser, метаданных, свойства или baker.
+Собственные unit suites движка удалены. Соберите затронутую native/script-роль,
+запеките представительные прототипы, проверьте диагностику и typed properties
+в потребляющем приложении. Оба prototype baker явно отклоняют циклы наследования;
+проектная политика по-прежнему требует собственной семантической проверки.
 
 Для изменения проектного контента:
 

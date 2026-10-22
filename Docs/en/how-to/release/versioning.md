@@ -39,12 +39,11 @@ Each first-parent master commit owns one minor increment and dated bilingual not
 4. Freeze the preceding `## Current - <date>` heading with its old `VERSION` identifier, then add `## Current - <UTC date>` in both changelog locales. The validator resolves only this newest entry from `VERSION`; historical headings keep their exact identifiers. Date each master note by the UTC commit date. Every entry has a non-empty `### Migration` / `### Миграция` section; explicitly say when no project migration is required and why. `Unreleased` is a drafting area, not a substitute for the dated published-step entry. Retain preceding entries so skipped versions can be migrated in order.
 5. For every removal/replacement, write the exhaustive migration record below and bind any required generated-contract disposition to its exact base/current digests. Review semantic changes even when the static diff is empty.
 6. Update each owning guide, examples, both locales, and `AGENTS.md` routing in the same change. Regenerate affected source-owned models/references, diagrams/screenshots, snippets, translation state, site/search/routes, AI evaluation, and AI delivery in dependency order. [Documentation maintenance](../../contributing/documentation/) owns the complete route.
-7. Run affected native/script/configuration/content/package checks plus negative old-usage and positive unaffected/new-usage tests. Run version/changelog and full relevant documentation/site gates. Record exact results, compatibility/ABI/resource decisions, and residual limits; a version bump alone never changes runtime compatibility.
-8. Before an authorized commit/publication run the update validator against the actual baseline. CI validates each incoming master step, not only the final version. Publish only with the owner's authorization and retain the published tip as an ancestor.
+7. Run affected existing native/script/configuration/content/package checks and direct application probes for rejected old usage and preserved unaffected/new usage. This fork has no own unit suites; new automated tests or test infrastructure require an explicit request under [Testing](../../contributing/testing/). Run version/changelog and full relevant documentation/site gates. Record exact results, compatibility/ABI/resource decisions, and residual limits; a version bump alone never changes runtime compatibility.
+8. Before an authorized commit/publication run the update validator against the actual baseline. Validate each incoming master step, not only the final version; this fork's workflows are archived, so the authorized publisher runs the range check locally. Publish only with the owner's authorization and retain the published tip as an ancestor.
 
 ```bash
 python BuildTools/docs_engine_version.py --check --branch master --baseline-git-ref HEAD
-python BuildTools/tests/test_engine_version.py
 ```
 
 For committed publication-range evidence:
@@ -101,8 +100,8 @@ An upgrade without project migration either preserves all used contracts or fail
 
 ## Source ownership
 
-- `VERSION`, `BuildTools/engine_version.py`, `BuildTools/docs_engine_version.py`, `BuildTools/tests/test_engine_version.py`
+- `VERSION`, `BuildTools/engine_version.py`, `BuildTools/docs_engine_version.py`
 - `BuildTools/cmake/helpers/EngineVersion.cmake`, `BuildTools/cmake/stages/Codegen.cmake`, `BuildTools/codegen.py`, `Source/Frontend/ApplicationInit.cpp`
-- `.github/workflows/validate.yml`, `AGENTS.md`, `Docs/documentation-manifest.json`, `BuildTools/docs_site.py`, `BuildTools/docs_ai_delivery.py`
+- `.github/disabled-workflows/validate.yml` (historical workflow, not active CI), `AGENTS.md`, `Docs/documentation-manifest.json`, `BuildTools/docs_site.py`, `BuildTools/docs_ai_delivery.py`
 
-CMake uses file-only Git dependencies; `CONFIGURE_DEPENDS` detects packed-to-loose refs, tested by `test_engine_version.py`.
+CMake uses file-only Git dependencies; `CONFIGURE_DEPENDS` detects packed-to-loose refs. Verify the affected configure/codegen path when changing version dependencies; an archived test result is not current execution evidence.

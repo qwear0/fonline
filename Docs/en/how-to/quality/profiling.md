@@ -456,7 +456,6 @@ project-owned. They must not be copied into this Engine guide as defaults.
 After changing profiling configurations, instrumentation, or this guide, run:
 
 ```bash
-python BuildTools/tests/test_docs_profiling.py
 python BuildTools/docs_snippets.py --check --external
 python BuildTools/docs_validate.py
 ```

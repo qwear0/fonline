@@ -7,7 +7,7 @@ permalink: /Docs/ru/how-to/release/versioning.html
 ---
 
 # Версия движка и заметки о выпусках
-<!-- docs-translation: {"document_id":"engine-versioning","locale":"ru","source_path":"Docs/en/how-to/release/versioning.md","source_sha256":"fb65f6210df102c41e330f3ecafca86bb0276ec7046a0754a5b3092dc1be06b3"} -->
+<!-- docs-translation: {"document_id":"engine-versioning","locale":"ru","source_path":"Docs/en/how-to/release/versioning.md","source_sha256":"e7d714ba5e4921489d862a0408c35a90d0bc9bf0ad2eceaead6c59b6693098fa"} -->
 Корневой [VERSION](https://github.com/cvet/fonline/blob/master/VERSION) задаёт идентификатор движка. Эта политика CalVer с календарным годом, [ADR-0002](../../contributing/decisions/0002-public-api-stability-contract.md) и [процедура изменения контрактов](../../contributing/contract-change-management.md) обязательны для каждого обновления master. Перед обновлением игры прочитайте [историю изменений](../../reference/changelog.md).
 
 Навигация, маршруты и данные для ИИ ссылаются на `VERSION`, не копируя значение. Шаблон Jekyll включает корневой файл напрямую при сборке.
@@ -39,12 +39,11 @@ permalink: /Docs/ru/how-to/release/versioning.html
 4. Замените заголовок предыдущей записи `## Current - <дата>` её прежним идентификатором из `VERSION`, затем добавьте `## Current - <дата UTC>` в оба чейнджлога. Валидатор берёт из `VERSION` номер только этой новой записи; исторические заголовки сохраняют точные идентификаторы. Дата заметки master — дата коммита по UTC. Каждая запись содержит непустой раздел `### Migration` / `### Миграция`; явно пишите, если миграция проекта не нужна, и почему. `Unreleased` — место для черновика, а не замена датированной записи опубликованного шага. Сохраняйте предыдущие записи, чтобы пропущенные версии мигрировались последовательно.
 5. Для каждого удаления/замены заполните исчерпывающую запись миграции ниже и привяжите обязательное решение генерируемого контракта к точным исходному/целевому хешам. Проверяйте семантику даже при пустом статическом diff.
 6. В том же изменении обновите ответственные руководства, примеры, оба языка и маршрутизацию `AGENTS.md`. Через владельцев перегенерируйте затронутые модели/справочники, диаграммы/скриншоты, сниппеты, состояние переводов, сайт/поиск/маршруты, оценку ИИ и данные для ИИ в порядке зависимостей. Полный маршрут задаёт [ведение документации](../../contributing/documentation/).
-7. Выполните затронутые проверки native/скриптов/конфигурации/контента/пакетов, отрицательные тесты старого использования и положительные тесты неизменённого/нового использования. Проверьте версии/чейнджлоги и всю необходимую документацию/сайт. Запишите точные результаты, решения по совместимости/ABI/ресурсам и ограничения; номер версии сам по себе не меняет совместимость выполнения.
-8. Перед разрешённым коммитом/публикацией выполните валидатор обновления относительно фактической исходной ревизии. CI проверяет каждый входящий шаг master, а не только конечный номер. Публикуйте только по разрешению владельца и сохраняйте опубликованный tip предком.
+7. Выполните затронутые существующие проверки native/скриптов/конфигурации/контента/пакетов и прямые пробы приложения для отказа старому использованию и сохранения неизменённого/нового. Собственные unit suites форка удалены; новые автоматизированные тесты и их инфраструктура требуют явного запроса по [политике проверок](../../contributing/testing/). Проверьте версии/чейнджлоги и всю необходимую документацию/сайт. Запишите точные результаты, решения по совместимости/ABI/ресурсам и ограничения; номер версии сам по себе не меняет совместимость выполнения.
+8. Перед разрешённым коммитом/публикацией выполните валидатор обновления относительно фактической исходной ревизии. Проверяйте каждый входящий шаг master, а не только конечный номер; workflows форка архивированы, поэтому уполномоченный издатель запускает проверку диапазона локально. Публикуйте только по разрешению владельца и сохраняйте опубликованный tip предком.
 
 ```bash
 python BuildTools/docs_engine_version.py --check --branch master --baseline-git-ref HEAD
-python BuildTools/tests/test_engine_version.py
 ```
 
 Для проверки диапазона уже оформленных коммитов:
@@ -101,8 +100,8 @@ Engine поддерживает только актуальный API выбра
 
 ## Владение исходными данными
 
-- `VERSION`, `BuildTools/engine_version.py`, `BuildTools/docs_engine_version.py`, `BuildTools/tests/test_engine_version.py`
+- `VERSION`, `BuildTools/engine_version.py`, `BuildTools/docs_engine_version.py`
 - `BuildTools/cmake/helpers/EngineVersion.cmake`, `BuildTools/cmake/stages/Codegen.cmake`, `BuildTools/codegen.py`, `Source/Frontend/ApplicationInit.cpp`
-- `.github/workflows/validate.yml`, `AGENTS.md`, `Docs/documentation-manifest.json`, `BuildTools/docs_site.py`, `BuildTools/docs_ai_delivery.py`
+- `.github/disabled-workflows/validate.yml` (исторический workflow, не активный CI), `AGENTS.md`, `Docs/documentation-manifest.json`, `BuildTools/docs_site.py`, `BuildTools/docs_ai_delivery.py`
 
-CMake использует файловые Git-зависимости; `CONFIGURE_DEPENDS` обнаруживает packed-to-loose refs, проверенные в `test_engine_version.py`.
+CMake использует файловые Git-зависимости; `CONFIGURE_DEPENDS` обнаруживает packed-to-loose refs. При изменении version dependencies проверьте затронутый configure/codegen path; архивный результат теста не доказывает текущее выполнение.

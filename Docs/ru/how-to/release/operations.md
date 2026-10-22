@@ -7,7 +7,7 @@ permalink: /Docs/ru/how-to/release/operations.html
 ---
 
 # Эксплуатация релиза
-<!-- docs-translation: {"document_id":"release-operations","locale":"ru","source_path":"Docs/en/how-to/release/operations.md","source_sha256":"ec945927453961a6037102c286b49560bb69d76cff2924c818bf7883d131fa7b"} -->
+<!-- docs-translation: {"document_id":"release-operations","locale":"ru","source_path":"Docs/en/how-to/release/operations.md","source_sha256":"2c511f05940aaa650048327d126eb2779e2c2538c4050b17f9f70cbe079602a5"} -->
 Это руководство описывает переиспользуемый жизненный цикл сервера FOnline: готовность, развёртывание, остановку и откат. [Упаковка и выпуск](packaging.md) владеет артефактами; [Persistence](../../explanation/persistence/) — механикой базы данных; [резервное копирование и восстановление](backup-and-recovery.md) — нейтральной к провайдеру процедурой восстановления. Игра владеет инфраструктурой, политикой данных, целевыми показателями и инцидентами.
 
 ## Решение о rollout
@@ -150,4 +150,4 @@ Engine не предоставляет HTTP endpoint для health/drain и не
 
 ## Проверенные пути исходников
 
-`Source/Applications/Server{App,HeadlessApp,ServiceApp,DaemonApp}.cpp`, `Source/Frontend/Application{Init,Headless}.cpp`, `Source/Essentials/Platform.cpp`, `Source/Server/Server.cpp`, `Source/Common/Settings.inc`, `BuildTools/cmake/stages/Applications.cmake`, `BuildTools/package.py`, `BuildTools/tests/test_docs_release_operations.py` и `Examples/PackagingMatrix`.
+`Source/Applications/Server{App,HeadlessApp,ServiceApp,DaemonApp}.cpp`, `Source/Frontend/Application{Init,Headless}.cpp`, `Source/Essentials/Platform.cpp`, `Source/Server/Server.cpp`, `Source/Common/Settings.inc`, `BuildTools/cmake/stages/Applications.cmake`, `BuildTools/package.py` и `Examples/PackagingMatrix`. Прежняя release-operations unit suite удалена; существующие CLI/package/application readiness и shutdown probes остаются маршрутом проверки.

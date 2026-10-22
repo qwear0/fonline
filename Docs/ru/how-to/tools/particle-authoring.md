@@ -5,7 +5,7 @@ locale: ru
 document_id: particle-authoring-tools
 permalink: /Docs/ru/how-to/tools/particle-authoring.html
 ---
-<!-- docs-translation: {"document_id":"particle-authoring-tools","locale":"ru","source_path":"Docs/en/how-to/tools/particle-authoring.md","source_sha256":"9dbc060c7f534201f014e8fe86db20133ec83a55bf01eda4a437a2401535dc8c"} -->
+<!-- docs-translation: {"document_id":"particle-authoring-tools","locale":"ru","source_path":"Docs/en/how-to/tools/particle-authoring.md","source_sha256":"c82f0b272b8845164eaf2be20b85ed3e74967118ebca08e65258c1ffc42999da"} -->
 # Инструменты авторинга частиц
 
 > Принадлежащий Engine workflow для Particle Preview, встроенного редактора
@@ -28,7 +28,7 @@ permalink: /Docs/ru/how-to/tools/particle-authoring.html
 3. Повторно запеките ресурс, затем закрепите backend, resource, seed, prewarm,
    direction и состояние replay перед сравнением focused preview и runtime routes.
 4. Для свидетельства ревью захватите видимое окно приложения Mapper platform
-   screenshot tool. Храните это UI-свидетельство отдельно от map-only TGA,
+   screenshot tool. Храните это UI-свидетельство отдельно от map-only PNG,
    создаваемого `Game.SaveMapperScreenshot`.
 
 ## Выберите backend до авторинга
@@ -80,7 +80,8 @@ Preview:
 нажмите **Remove**, чтобы старые системы не накладывались.
 
 Средняя кнопка мыши вращает направление preview в контексте карты. Текущее направление
-также показано в Controls. Размещение на карте полезно для проверки occlusion, depth,
+также показано в Controls. Это поддерживается SPARK; Effekseer отклоняет ненулевой
+look direction, поэтому оставляйте для него ноль и проверяйте логи. Размещение на карте полезно для проверки occlusion, depth,
 освещения и scale, которые изолированный viewer не доказывает.
 
 ### Воспроизводимый preview при запуске
@@ -322,7 +323,7 @@ Particle Viewer может работать standalone или внутри Mappe
 - Используйте фиксированные seeds только для воспроизводимых evidence; сохраняйте намеренную runtime-случайность там, где она нужна игре.
 - Проверяйте cleanup при выгрузке карт, исчезновении сущностей, перезапуске viewer и закрытии окон редактора.
 - Храните небольшой свободно лицензируемый пример эффекта независимо от любого игрового проекта. Эту роль выполняет fixture minimal multiplayer.
-- Согласовывайте руководство Particle Format, это руководство, сфокусированные тесты, примеры и снимки при каждом изменении particle/editor source или перемещении Engine pin.
+- Согласовывайте руководство Particle Format, это руководство, существующие bake/runtime checks, примеры и снимки при каждом изменении particle/editor source или перемещении Engine pin.
 
 ## Граница владения
 

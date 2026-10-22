@@ -25,8 +25,7 @@ documentation.
   client, map loading, and a server-authoritative interaction.
 - [First Content Change](tutorials/first-content.md) follows localized prototype
   data through baking and runtime lookup.
-- [First Automated Test](tutorials/first-test.md) adds metadata, server-content,
-  and client-visible checks.
+- [First Automated Test](tutorials/first-test.md) explains the retained metadata, server-content and client-visible application checks and their evidence limits; it does not require restoring unit suites or adding tests.
 - [Minimal Project](../../Examples/MinimalProject/README.md) and
   [Minimal Multiplayer](../../Examples/MinimalMultiplayer/README.md) are the
   engine-owned runnable sources behind the tutorials.
@@ -160,11 +159,7 @@ corpus is appropriate.
   [Third-Party Maintenance](contributing/third-party/) own low-level contributor
   conventions.
 
-The active production roadmap and verification history remain in
-[`Docs/ProductionDocumentationPlan.md`](https://github.com/cvet/fonline/blob/master/Docs/ProductionDocumentationPlan.md),
-[`Docs/_meta/DocumentationBacklog.md`](https://github.com/cvet/fonline/blob/master/Docs/_meta/DocumentationBacklog.md), and
-[`Docs/_meta/DocumentationVerificationReport.md`](https://github.com/cvet/fonline/blob/master/Docs/_meta/DocumentationVerificationReport.md)
-until their planned `_meta/` migration has durable redirects.
+Use the local [production roadmap](../ProductionDocumentationPlan.md) as planning/history, not an upstream deployment guarantee. The earlier [expansion plan](../_meta/DocumentationExpansionPlan.md), [backlog](../_meta/DocumentationBacklog.md) and [verification history](../_meta/DocumentationVerificationReport.md) already live under `Docs/_meta/`, with durable pointers from their former flat paths. These records and upstream public URLs do not establish current fork deployment or corpus acceptance; use recorded results for the exact revision.
 
 ## Ownership boundary
 

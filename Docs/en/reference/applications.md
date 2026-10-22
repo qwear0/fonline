@@ -60,7 +60,7 @@ final target names.
   is composed as a library.
 - `Source/Applications/ASCompilerApp.cpp` - AngelScript compiler entry point.
 - `Source/Applications/ManagedScriptBakerApp.cpp` - standalone Managed C# API generation and compilation entry point used by `CompileManagedScripts`.
-- `Source/Applications/TestingApp.cpp` - test runner application entry point.
+- The former `Source/Applications/TestingApp.cpp` test-runner entry point is removed; there is no Engine-owned unit/coverage executable.
 
 ## CMake wiring
 
@@ -126,8 +126,7 @@ client index.
 - Particle inspection: `ParticleViewerApp.cpp`,
   `Source/Tools/ParticleViewer.*`, [Viewer Tools](../how-to/tools/animation-particle-viewers.md), and
   [Particle Format](../how-to/content/particle-format.md).
-- Tests: `TestingApp.cpp`, [Source/Tests README](../../../Source/Tests/README.md),
-  and [Testing](../../Testing.md).
+- Verification policy: [Testing](../contributing/testing/). The former `TestingApp.cpp` runner and Engine-owned unit/coverage targets are removed; use existing affected application/build/bake routes.
 
 ## Documentation rule
 

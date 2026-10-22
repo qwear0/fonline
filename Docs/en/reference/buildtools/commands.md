@@ -11,7 +11,7 @@ generated: true
 
 [Reference index](index.md) | [Commands](commands.md) | [Canonical JSON model](../../../generated/cli.json) | [Generation contract](../metadata/)
 
-Run commands from the engine repository root with `python BuildTools/buildtools.py <command>`. The exact usage and help blocks below are emitted by the executable parser.
+Run project build commands from the embedding project root with `python Engine/BuildTools/buildtools.py <command>`; project discovery defaults to the current directory. The exact usage and help blocks below are emitted by the executable parser.
 
 <a id="entry-cli-buildtools-command-env-947ff38c97"></a>
 ## `env`
@@ -57,7 +57,7 @@ usage: buildtools.py build [-h] platform target [config]
 | Stable ID | Argument | Kind | Required | Values | Choices | Default | Description |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | <a id="entry-cli-buildtools-command-build-argument-platform-1bd10776e8"></a><code>cli.buildtools.command.build.argument.platform</code> | <code>platform</code> | <code>positional</code> | yes | <code>1</code> | - | - | engine platform key, such as linux, win64, web, or android-arm64 |
-| <a id="entry-cli-buildtools-command-build-argument-target-54402fb830"></a><code>cli.buildtools.command.build.argument.target</code> | <code>target</code> | <code>positional</code> | yes | <code>1</code> | - | - | BuildTools target profile, such as client, server, baker, or unit-tests |
+| <a id="entry-cli-buildtools-command-build-argument-target-54402fb830"></a><code>cli.buildtools.command.build.argument.target</code> | <code>target</code> | <code>positional</code> | yes | <code>1</code> | - | - | BuildTools target profile, such as client, server, mapper, or baker |
 | <a id="entry-cli-buildtools-command-build-argument-config-f6fde5057e"></a><code>cli.buildtools.command.build.argument.config</code> | <code>config</code> | <code>positional</code> | no | <code>?</code> | - | <code>Release</code> | CMake build configuration |
 
 ### Exact `--help` output
@@ -67,7 +67,7 @@ usage: buildtools.py build [-h] platform target [config]
 
 positional arguments:
   platform    engine platform key, such as linux, win64, web, or android-arm64
-  target      BuildTools target profile, such as client, server, baker, or unit-tests
+  target      BuildTools target profile, such as client, server, mapper, or baker
   config      CMake build configuration
 
 options:

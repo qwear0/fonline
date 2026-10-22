@@ -5,7 +5,7 @@ locale: ru
 document_id: particle-format-guide
 permalink: /Docs/ru/how-to/content/particle-format.html
 ---
-<!-- docs-translation: {"document_id":"particle-format-guide","locale":"ru","source_path":"Docs/en/how-to/content/particle-format.md","source_sha256":"0c18b98c371f2e22f83ace80ae794918a37f9817785b64e2d6cf7d019a9b482a"} -->
+<!-- docs-translation: {"document_id":"particle-format-guide","locale":"ru","source_path":"Docs/en/how-to/content/particle-format.md","source_sha256":"84636a43e54736f66d22fce4aed202ad4f4c0005e8ed394bb0612d8e1f366b65"} -->
 # Авторинг и runtime частиц
 
 FOnline предоставляет два опциональных backend частиц за единым
@@ -224,6 +224,19 @@ Effekseer сейчас использует direct-scene rendering. SPARK мож
 или direct-scene route. Оба маршрута всё равно зависят от состояния эффекта, image resources,
 настроек камеры и draw order встраивающего проекта.
 
+`Render.Animation3dFPS` ограничивает допустимую частоту обновления через
+`NeedDraw()`, а не задаёт фиксированный шаг simulation. `Update()` независимо
+продвигает backend на прошедшее время; ноль снимает draw throttle. При forced
+draw без прошедшего времени используется шаг не меньше миллисекунды. Обновление
+атласа и прямой draw — разные маршруты; настройка не обещает общей для backends
+частоты simulation.
+
+`ParticleSprite.SetDir` передаёт угол направления в runtime setup, а не выбирает
+кадры. SPARK это поддерживает; Effekseer явно отказывает при ненулевом look
+direction. Для Effekseer оставляйте направление preview нулевым и проверяйте
+логи после манипуляций направлением/камерой. `Stop` и `SetTime` — no-op;
+`Play` перезапускает систему, `IsPlaying` следует активности backend.
+
 ## Интеграция
 
 `ParticleSpriteFactory` предоставляет все включённые runtime-расширения обобщённому
@@ -271,13 +284,12 @@ Model baker проверяет наличие запечённой частиц�
 
 ```powershell
 python BuildTools\docs_particle_format.py --write
-python -m unittest BuildTools.tests.test_docs_particle_format
-python BuildTools\docs_contract_diff.py --base-ref <base>
+python BuildTools\docs_contract_diff.py --baseline-dir <baseline-dir> --check
 ```
 
-После изменения native-кода частиц сконфигурируйте обе соответствующие feature lane
-и запустите сфокусированные native-тесты, включая `Test_ParticleBaker.cpp`, а для
-изменений runtime Effekseer — `Test_EffekseerParticleRuntime.cpp`.
+После изменений native-кода соберите затронутые профили включённых backends и
+перезапеките представительные ресурсы. Собственные unit suites движка удалены;
+проверки модели не исполняют simulation или callback rendering.
 
 Затем встраивающий проект должен:
 

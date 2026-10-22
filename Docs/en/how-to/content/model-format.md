@@ -591,14 +591,10 @@ After changing model assets or descriptions:
    ```powershell
    python BuildTools\docs_model_format.py --write
    python BuildTools\docs_model_format.py --check
-   python -m unittest BuildTools.tests.test_docs_model_format
    ```
 
-2. Run focused Engine model tests:
-
-   ```powershell
-   .\Binaries\Tests-Windows-win64\LF_UnitTests.exe "ModelBaker*"
-   ```
+2. Build the affected embedding-project native/script roles. Engine-owned unit
+   suites are retired; documentation checks do not execute mesh/rig conversion.
 
 3. Rebake the embedding project:
 
@@ -626,8 +622,8 @@ A clean bake proves grammar, asset closure, enum/range validity, and baked seria
 
 When changing:
 
-- `.fo3d` tokens, parser state, include behavior, path rules, or validation: update this guide, `BuildTools/ModelFormatInterface.json`, generated model-format outputs, and focused tests;
-- `.fbx` / `.obj` import, skinning, material extraction, animation-stack conversion, or model limits: update the asset and limit contract and run native mesh-baker tests;
+- `.fo3d` tokens, parser state, include behavior, path rules, or validation: update this guide, `BuildTools/ModelFormatInterface.json`, generated model-format outputs, and the relevant bake/runtime checks;
+- `.fbx` / `.obj` import, skinning, material extraction, animation-stack conversion, or model limits: update the asset and limit contract and bake representative mesh assets and inspect conversion diagnostics;
 - model layers, attachments, particles, transforms, textures, effects, cuts, batching, or rendering flags: update composition/runtime sections and validate a visible client scene;
 - animation tuples, aliases, speed, duration, or script lookups: update [Model Animation](model-animation.md);
 - 2D frame offsets or walk/run sprite phase: update [Sprite Root Motion](sprite-root-motion.md);

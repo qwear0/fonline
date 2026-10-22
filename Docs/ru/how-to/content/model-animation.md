@@ -7,7 +7,7 @@ permalink: /Docs/ru/how-to/content/model-animation.html
 ---
 
 # Метаданные и длительность анимаций моделей
-<!-- docs-translation: {"document_id":"model-animation","locale":"ru","source_path":"Docs/en/how-to/content/model-animation.md","source_sha256":"87210fa5e304b04865797e03928507322f11ac2dd143fea378d35c4e81a41886"} -->
+<!-- docs-translation: {"document_id":"model-animation","locale":"ru","source_path":"Docs/en/how-to/content/model-animation.md","source_sha256":"b79ee46a532f9c98b338394217259b4157754c62436ca3307a49b9972da1db04"} -->
 Это руководство описывает переиспользуемый контракт FOnline, который преобразует исходные анимации моделей и пары `(state, action)` в клиентский runtime rig и общие метаданные эффективного цикла. Оно следует текущим реализациям source loader, converter, `ModelInfoBaker`, клиентского lookup, регистрации общих метаданных, script exports и тестов движка. Подключающий проект может определять свои имена моделей, правила использования animation enum, игровое время и fallback policy, но не должен повторно реализовывать lookup движка или разбирать приватные baked payloads.
 
 ## Статус контракта
@@ -123,7 +123,7 @@ Generated metadata file содержит по одной section на кажды
 
 Поведение не ветвится по resource `PackName`: любой resource pack, выбирающий `ModelInfo`, может создать таблицу. Размещайте результирующий pack на каждой runtime side, вызывающей общий duration API. Распространённая конфигурация отправляет metadata моделей серверу и клиенту, но оставляет mesh, texture и rendering assets только в client packs.
 
-Если в выбранном source set нет конкретных `.fo3d`, duration metadata file не записывается. Concrete model без animation tuples с положительной длительностью не получает duration section, хотя его model-info output всё равно содержит обязательный проверенный rig payload текущей schema.
+Если в выбранном source set нет конкретных `.fo3d`, duration metadata file не записывается. Concrete model без animation tuples с положительной длительностью всё равно получает bounds-only metadata section; опускаются только duration arrays. Model-info output также содержит обязательный проверенный rig payload.
 
 ## Runtime и script lookup
 
@@ -148,8 +148,8 @@ timespan cycle = Game.GetModelAnimDuration(
 
 | Слой | Что проверять | Обязательное доказательство |
 |---|---|---|
-| Authored tuple | Named state/action, выбранные source и clip, speed и intentional aliases | Focused source test и model bake |
-| Baked metadata | Exact effective milliseconds, deterministic aliases, bounds и pack distribution | Model-baker tests и проверка через typed common API |
+| Authored tuple | Named state/action, выбранные source и clip, speed и intentional aliases | Проверка исходников и model bake |
+| Baked metadata | Exact effective milliseconds, deterministic aliases, bounds и pack distribution | Model bake и проверка через typed common API |
 | Client pose | Converted rig, sampled pose, attachments, substitutions и visual cycle | Видимая representative client или viewer scene |
 | Gameplay timing | Attack windows, movement cadence, effects и zero-duration fallback | Project-owned gameplay или integration test на каждой authoritative side |
 
@@ -169,7 +169,8 @@ timespan cycle = Game.GetModelAnimDuration(
 | Geometry exception является duplicate, невыбранным, duplicate-resolved или устаревшим | Model bake завершается ошибкой; сузьте или удалите исключение. |
 | Source clip duration неположительна или не является конечной | Source/model validation завершается ошибкой до output. |
 | Alias expansion создаёт duplicate output tuple | Model bake завершается ошибкой. |
-| Нет concrete model или положительного tuple | File или model section пропускается. |
+| Нет concrete model | Metadata file не записывается. |
+| Concrete model без положительных duration tuples | Записывается bounds-only section без duration arrays. |
 | `ModelAnimationInfo.foinfo` отсутствует при startup | Engine пишет informational message; общие lookups возвращают ноль. |
 | Metadata arrays malformed, non-positive или duplicated | Runtime startup registration завершается ошибкой. |
 | Model-info или rig payload отсутствует, старый, truncated, inconsistent либо имеет trailing data | Client loading завершается ошибкой; legacy runtime fallback отсутствует. |
@@ -205,7 +206,7 @@ Engine владеет token parsing, проверкой source/dependencies и c
 
 ## Триггеры сопровождения
 
-Обновляйте это руководство, его focused test, documentation manifest и external evidence в одном change при изменении любой из следующих surfaces:
+Обновляйте это руководство, владеющие model/generator, documentation manifest и external evidence в одном change при изменении любой из следующих surfaces:
 
 - parsing animation tokens `.fo3d`, enum resolution, duplicate handling, source selection или validation `AnimSpeed`;
 - source loading, skeleton compatibility, Ozz conversion, wire contracts rig или model-info;
@@ -220,7 +221,6 @@ Engine владеет token parsing, проверкой source/dependencies и c
 Для изменений документации:
 
 ```bash
-python BuildTools/tests/test_docs_model_animation.py
 python BuildTools/docs_external_evidence.py --check --verify-sources --last-frontier-root ../ --tla-root ../Workspace/fonline-tla
 python BuildTools/docs_api.py --check
 python BuildTools/docs_reference.py --check
@@ -229,6 +229,10 @@ python BuildTools/docs_ai_delivery.py --check
 python BuildTools/docs_validate.py
 ```
 
-Для behavior движка соберите engine unit-test target подключающего проекта. Запустите focused cases model baker, mesh data, source loader, animation data/converter/runtime, procedural pose, skeleton compatibility, Ozz, client engine и `ModelAnimationInfoLookup`, затем полный unit-test target перед интеграцией revision Engine.
+Собственные unit suites движка удалены. Соберите затронутые native/script-роли
+проекта, запеките реальные модели и запросите typed duration API на каждой
+потребляющей стороне. Для pose, bounds, attachments, aliases, speed и procedural
+animation используйте видимый viewer/client; генерация документации не исполняет
+model converter или runtime.
 
 После изменения animation declarations `.fo3d`, enum metadata, model sources, wire contracts mesh/rig, source loading/conversion, `ModelInfoBaker`, metadata registration или любого script method выполните force rebake затронутого подключающего проекта, а затем incremental bake. Выполните project path, использующий animation или duration: успешный resource bake доказывает syntax/conversion/assets, а visible gameplay или integration testing доказывает pose, attachments, timing и presentation.

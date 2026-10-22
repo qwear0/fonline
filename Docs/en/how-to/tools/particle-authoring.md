@@ -28,7 +28,7 @@ standalone Particle Viewer.
 3. Re-bake, then pin the backend, resource, seed, prewarm, direction, and replay
    state before comparing the focused preview and runtime routes.
 4. For review evidence, capture the visible Mapper application window with a
-   platform screenshot tool. Keep that UI proof separate from the map-only TGA
+   platform screenshot tool. Keep that UI proof separate from the map-only PNG
    produced by `Game.SaveMapperScreenshot`.
 
 ## Choose the backend before authoring
@@ -80,7 +80,8 @@ Scale, offset, seed, and prewarm changes take effect on **Play** or
 **Remove** before comparing unrelated effects so old systems do not overlap.
 
 Middle-click rotates the preview direction in the map context. Controls also
-shows the current preview direction. Map placement is useful for occlusion,
+shows the current preview direction. This is supported for SPARK; Effekseer
+rejects nonzero look direction, so keep its direction at zero and inspect logs. Map placement is useful for occlusion,
 depth, lighting, and scale checks that an isolated viewer cannot provide.
 
 ### Reproducible startup preview
@@ -334,7 +335,7 @@ readability, overdraw, platform performance, correct ownership, or cleanup.
   editor windows close.
 - Keep a small permissively licensed example effect independent of any game
   project. The minimal multiplayer fixture serves that role.
-- Reconcile the Particle Format guide, this manual, focused tests, examples, and
+- Reconcile the Particle Format guide, this manual, existing bake/runtime checks, examples, and
   screenshots whenever particle/editor source changes or an Engine pin moves.
 
 ## Ownership boundary

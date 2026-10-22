@@ -103,9 +103,13 @@ Section properties use the receiver selected by the section:
 | --- | --- | --- |
 | `[ProtoMap]` | `Map` | `Size`, `WorkHex`, `DayTime`, `DayColor` |
 | `[$Name/Critter]` or `[MapId/Critter]` | `Critter` | `Hex`, `Dir`, `Condition`, `InitScript` |
-| `[$Name/Item]` or `[MapId/Item]` | `Item` | `Hex`, `Ownership`, `Static`, `Hidden`, `Count`, `PicMap` |
+| `[$Name/Item]` or `[MapId/Item]` | `Item` | `Hex`, `Ownership`, `Static`, `Hidden`, `PicMap` |
 
 The generated [property catalog](../../reference/map-format/properties.md) is authoritative for built-in metadata at the pinned revision. It records type, runtime sides, flags, source, and whether text authoring is accepted. Project metadata can add more properties; document those in the project repository instead of extending this engine guide with one game's declarations.
+
+Quantity and stacking are project-owned; `Item.Count` is not a built-in Engine
+property. Declare any quantity metadata in the embedding project before using
+it in map overrides.
 
 Unknown, virtual, temporary, malformed, or invalid-for-the-current-side properties fail during property loading or validation. Side-specific properties can be skipped from the opposite output. Resource-valued properties are validated by `MapBaker`, so a syntactically valid map can still fail because an image, model, script, sound, or prototype dependency is absent.
 

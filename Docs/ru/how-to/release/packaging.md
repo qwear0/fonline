@@ -7,12 +7,16 @@ permalink: /Docs/ru/how-to/release/packaging.html
 ---
 
 # Упаковка и выпуск
-<!-- docs-translation: {"document_id":"packaging-and-release","locale":"ru","source_path":"Docs/en/how-to/release/packaging.md","source_sha256":"b40a35594e5fefbd33d6f810e7807fdb37f1575faf615b910da799f65332acfb"} -->
+<!-- docs-translation: {"document_id":"packaging-and-release","locale":"ru","source_path":"Docs/en/how-to/release/packaging.md","source_sha256":"1e5c94949b64e35569db884f1638a0c16c5dd67c9ebcf4c8304de101de2134f1"} -->
 Точная текущая grammar, совместимость target/platform, pack tokens, payloads и
 command-line arguments находятся в сгенерированном
 [package interface](../../reference/packages/index.md). Перед тем как
 называть полученный artifact поддерживаемым, сверяйтесь с
 [Матрицей поддержки](../../reference/platforms/support-matrix.md).
+
+## Политика проверок форка
+
+Используйте existing integrity/shape checks упаковщика, configure/build затронутых ролей, real resource bake и isolated installed/application acceptance. Собственные unit/structural suites удалены, workflows архивированы; новые автоматизированные тесты/инфраструктура требуют явного запроса. Historical test/CI references не устанавливают current package qualification; встроенные гарантии validation ниже не меняются.
 
 ## Решение о пакете
 
@@ -440,7 +444,7 @@ packaging host также создаёт исполняемые Linux targets. R
 теряя предыдущие parts. Это gates создания package, а не доказательство
 того, что installer, delivery channel, publication step или installed filesystem
 сохранили результат. Parser package declarations и сгенерированный contract
-детерминированы и проверяются в CI.
+детерминированы; запускайте existing local generation/checks по current owner. Архивный CI не доказывает выполнение.
 
 `FO_RESOURCE_ARCHIVE_CACHE_HELPER` может указывать на принадлежащий проекту
 Python helper с интерфейсом `restore|store|release --key <sha256> --archive
@@ -582,18 +586,11 @@ compatibility или безопасный rollback.
 - `BuildTools/package.py`
 - `BuildTools/cmake/helpers/Build.cmake`
 - `BuildTools/cmake/stages/Packages.cmake`
-- `BuildTools/tests/test_docs_package.py`
-- `BuildTools/tests/validate_package_interface.cmake`
-- `BuildTools/tests/test_package_include.py`
-- `BuildTools/tests/test_package_security.py`
-- `BuildTools/tests/test_package_resource_pack.py`
-- `BuildTools/tests/test_package_zip_helpers.py`
-- `BuildTools/tests/test_packaging_matrix.py`
-- `BuildTools/tests/test_minimal_multiplayer_package.py`
+- Historical package unit/structural suites в `BuildTools/tests/` удалены и не являются current source/check prerequisites.
 - `BuildTools/msicreator/createmsi.py`
 - `BuildTools/check_windows7_imports.py`
 - `BuildTools/SupportMatrix.json`
-- `.github/workflows/validate.yml`
+- `.github/disabled-workflows/validate.yml` (историческая delivery definition, не активный CI)
 - `Examples/PackagingMatrix/`
 - `Examples/MinimalProject/`
 - `Examples/MinimalMultiplayer/`

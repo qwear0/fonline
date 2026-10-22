@@ -16,7 +16,6 @@ Author `.fomain`, resource packs and sub-configs here. [Configuration and Data S
 - `Source/Common/Settings.cpp`
 - `Source/Common/Settings.inc`
 - `Source/Frontend/ApplicationInit.cpp`
-- `Source/Tests/Test_Settings.cpp`
 - `BuildTools/cmake/stages/ScriptsAndBaking.cmake`
 - `Examples/MinimalProject/CMakeLists.txt`
 - `Examples/MinimalProject/FOnlineStarter.fomain`
@@ -52,7 +51,7 @@ Packaged applications replace `.fomain` with generated internal config and a fix
 
 Metadata loads after `BaseEngine` construction. List fully qualified game settings read by `ApplicationInitHook` or earlier startup code in `Baking.BootstrapGameSettings`; config Baker writes their full values into every internal config and rejects unknown/misspelled names. Keep ordinary runtime settings in metadata; exhausting the fixed patch area can break packaging.
 
-Use fully qualified names such as `Server.DbStorage` in authored files and operational commands. The parser accepts short built-in names, but qualified names make ownership and review unambiguous.
+Use fully qualified names such as `Server.DbStorage` in authored files and operational commands. A short name does not identify a built-in setting: it becomes a custom setting, and the config baker reports an undeclared key as `Unknown setting`.
 
 ## Author the root settings
 
@@ -83,7 +82,7 @@ ManagedScript.Dirs = Engine/Source/Scripting/Managed/CoreScripts Scripts
 ManagedScript.Analyzers = Engine/Source/Scripting/Managed/Analyzers/FOnline.Analyzers.csproj
 ```
 
-Unknown names become project custom settings and are available through `GetCustomSetting` / `FindCustomSetting`. That is intentional for game-owned configuration, but a typo in a built-in setting can therefore look valid. Add a focused project test for every content ID, port/profile, prototype name, path, or custom setting that affects startup or gameplay.
+Unknown names become project custom settings and are available through `GetCustomSetting` / `FindCustomSetting`. That is intentional for game-owned configuration, but a typo in a built-in setting can therefore look valid. Check affected content IDs, ports/profiles, prototype names, paths, and custom settings through the existing config baker and consuming application; a parsed custom key alone does not establish intended behavior.
 
 Values beginning with `+` accumulate instead of replacing. String values append with a space, vectors append elements, numeric values add, booleans use logical OR, and enums use bitwise OR; use this deliberately and test the resulting value rather than assuming list-only behavior. `$ENV{NAME}` and `$FILE{path}` resolve while the authored config is read, including during baking, so their concrete values can enter generated internal configs. `$TARGET_ENV{NAME}` and `$TARGET_FILE{path}` remain directives while baking and resolve only when a target application reads them; the current packager does not provide a general target-directive resolver. Keep credentials outside tracked config, use target forms for runtime secrets, and follow [Security and Secrets](../release/security-and-secrets.md) for command-line, logging, signing, CI, rotation, and artifact boundaries.
 

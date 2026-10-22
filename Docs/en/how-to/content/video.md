@@ -212,18 +212,20 @@ void RenderTerminalVideo()
 ```
 
 The exact event subscription syntax belongs to the embedding script module.
-The target width and height must be positive. A non-positive size skips frame
-decode, upload, and drawing, so a hidden instance does not advance through this
-API.
+The target width and height must be positive to decode, upload, and draw. A
+non-positive size or omitted draw does not pause the wall-clock timeline:
+`StartTime` is set at construction, so the next positive draw may decode several
+frames to catch up. Hiding a live instance does not decode it to end-of-stream.
 
 The Engine draws exactly the requested rectangle and does not preserve aspect
 ratio. Compute fit, crop, bars, safe area, and responsive layout in project UI
 code. Passing null or an instance whose resources were released is a no-op.
 
-`VideoPlayback.Stopped` becomes true only when a subsequent
-`Game.DrawVideoPlayback` call observes the stopped clip, clears its resources,
-and updates the field. Continue drawing or polling through a controller until
-that cleanup transition has occurred.
+`VideoPlayback.Stopped` becomes true when `Game.DrawVideoPlayback` observes a
+stopped clip, clears its resources, and updates the field. The check follows
+frame decoding in the same call and is outside the positive-size branch.
+Reading the field alone performs no cleanup. Continue the draw lifecycle to
+natural completion, or release the owning playback object when abandoning it.
 
 ## Looping
 
@@ -258,7 +260,6 @@ Run the source-backed documentation checks:
 
 ```powershell
 python BuildTools\docs_video.py --check
-python -m unittest BuildTools.tests.test_docs_video
 python BuildTools\docs_validate.py
 ```
 
@@ -311,7 +312,7 @@ When video behavior changes:
 1. update `BuildTools/VideoInterface.json` and its source anchors;
 2. run `python BuildTools/docs_video.py --write`;
 3. update this guide when authoring or operational meaning changed;
-4. add or update focused native tests when the decoder becomes testable;
+4. repeat direct playback and cleanup checks for the affected paths;
 5. run the documentation contract diff and disposition workflow;
 6. require embedding projects to repeat visible acceptance for affected assets
    and targets.

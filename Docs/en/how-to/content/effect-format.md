@@ -36,7 +36,6 @@ The owning sources are:
   and script-value APIs;
 - `Source/Frontend/Rendering-*.cpp` for backend shader loading, pipelines,
   descriptor binding, and drawing;
-- `Source/Tests/Test_EffectBaker.cpp` for executable bake and failure examples.
 
 This page is reusable Engine documentation. An embedding project owns its
 effect catalog, resource-pack override order, shader quality profile, art
@@ -461,7 +460,6 @@ For each pass and stage, EffectBaker emits:
 | `spv_sdl` | SDL_GPU Vulkan path |
 | `glsl` | OpenGL desktop (`330`) |
 | `glsl_es` | OpenGL ES/WebGL (`300 es`) |
-| `hlsl` | Intermediate HLSL Shader Model `4.0`, compiled at bake time |
 | `dxbc` | Direct3D 11 bytecode, compiled from HLSL by vendored vkd3d-shader |
 | `msl_mac` | SDL_GPU Metal on macOS |
 | `msl_ios` | SDL_GPU Metal on iOS |
@@ -470,6 +468,9 @@ With `Baking.Direct3DLevel9Shaders = True`, the baker also embeds an `Aon9`
 level-9.3 bytecode chunk in non-model effects. A shader that exceeds that
 profile fails baking; 3D-model effects do not receive it. The default is off.
 This is an opt-in for 2D-only Direct3D builds, not support for 9.1/9.2.
+
+HLSL Shader Model `4.0` exists only as transient compiler input to DXBC;
+there is no persisted `hlsl` flavor.
 
 Naming is:
 
@@ -541,14 +542,14 @@ effect:
 
 ```powershell
 python BuildTools\docs_effect_format.py --write
-python BuildTools\tests\test_docs_effect_format.py
 python BuildTools\docs_effect_format.py --check
 python BuildTools\docs_contract_diff.py --help
 ```
 
-Run the focused native baker tests through the configured embedding-project
-unit-test target. `Source/Tests/Test_EffectBaker.cpp` is the owning test file.
-Renderer state changes also need the relevant backend and visible scene.
+Engine-owned unit suites are retired. Bake representative effects and inspect
+all persisted flavors and reflection metadata. Renderer state changes also need
+the relevant backend and a visible scene; source-backed generation is not a
+shader or driver execution check.
 
 For an embedding project:
 
@@ -567,8 +568,6 @@ When the Engine contract changes, update together:
 - `BuildTools/EffectFormatInterface.json`;
 - `Docs/en/how-to/content/effect-format.md`;
 - generated `Docs/generated/effect-format.json` and reference pages;
-- `BuildTools/tests/test_docs_effect_format.py`;
-- `Source/Tests/Test_EffectBaker.cpp` or the owning renderer/runtime test;
 - [Baking Pipeline](../../explanation/content-pipeline/baking.md) when output/compiler behavior changes;
 - [Frontend and Rendering](../../explanation/rendering/) when runtime/backend
   behavior changes;

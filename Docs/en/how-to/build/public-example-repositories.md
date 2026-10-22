@@ -38,7 +38,7 @@ The program intentionally uses several small repositories instead of one sample 
 | 1 | `cvet/fonline-project-template` | Canonical project bootstrap and first successful headless smoke | Source-ready and pushed to a private staging repository; not published |
 | 2 | `cvet/fonline-minimal-multiplayer` | Small playable server/client/content/tutorial slice | Source-ready in `Examples/MinimalMultiplayer`, including a locally green Windows package lane; private repository reserved and not yet staged or published |
 | 3 | `cvet/fonline-content-showcase` | Rendering, Mapper, asset, capture, and Web presentation | Source-ready in `Examples/ContentShowcase`; native Windows smoke, Direct3D 11 capture, complete Web package validation, and an isolated Chromium WebGL 2 runtime/capture are locally green, while Linux runtime/OpenGL and remote publication evidence remain unobserved |
-| 4 | `cvet/fonline-native-extension-sample` | Advanced project-native C++ hook/export/test path | Source-ready in `Examples/NativeExtensionSample`; the focused native test and complete hook/export runtime route are locally Windows-green, while the private repository remains reserved and unpublished |
+| 4 | `cvet/fonline-native-extension-sample` | Advanced project-native C++ hook/export/runtime-smoke path | Source-ready in `Examples/NativeExtensionSample`; retains lifecycle/export smoke, not the removed unit executable. Historical Windows evidence does not establish current fork or remote acceptance; the private repository remains reserved and unpublished |
 
 Remote existence, source readiness, and public release are separate states. `remote.visibility = private` records an administrator-created staging repository without exposing it as documentation; `remote.state = reserved` means only the repository shell exists, while `source-staged` means reviewed candidate source has been pushed. Do not publish links for a repository while its registry status is `planned`, `blocked`, or `source-ready`. Change both lifecycle and remote state to `published`, and visibility to `public`, only after its protected default branch, security configuration, required checks, first tag, and public artifact have been verified.
 
@@ -163,6 +163,8 @@ Updater protocol generation 2 and client host/runtime ABI 3 reject older unsafe 
 
 ## CI lanes
 
+These are the prospective external-example governance requirements, not active CI guarantees for this fork. The Engine workflow archive neither enables external repository automation nor verifies remote protections, advisories, deployments, or retained artifacts.
+
 `pinned-engine` runs on every pull request and protected-branch update. It checks repository governance, gitlink/metadata identity, the primary example behavior, and all repository-specific platform gates. The project template and minimal multiplayer source both require Windows and Linux smoke jobs; Minimal Multiplayer additionally requires Windows/Linux package acceptance and retained commit-addressed package evidence.
 
 Linux jobs prepare host dependencies through the checked-out revision's `Engine/BuildTools/prepare-workspace.sh linux-packages linux` command. Do not copy an apt package list into example workflows: the Engine-owned command is the versioned platform contract and keeps pinned and compatibility lanes on the same prerequisites.
@@ -177,7 +179,7 @@ Additional gates come from the registry entry:
 
 - tutorial repositories replay every lesson tag or fixture;
 - the content showcase validates provenance, performance budgets, and capture reproduction;
-- the native extension sample runs focused native tests and the generated extension contract checks.
+- the native extension sample runs its retained lifecycle/export runtime smoke and the generated extension contract checks; the fork removed its unit executable.
 
 An example that publishes native client/server archives must add a project-owned package lane modeled on `Examples/PackagingMatrix`: force-baked embedded config, archive/payload inventory parity, packaged updater handshake, exact Engine revision, SHA-256 manifest, and commit-addressed CI artifact. `Examples/MinimalMultiplayer` contains this source lane and has local Windows proof; its Linux job, immutable external artifact, and public tag still require observation. The shared Engine fixture proves package mechanics only; it does not silently qualify an example repository's release artifact.
 

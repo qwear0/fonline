@@ -261,8 +261,9 @@ with Effekseer enabled it normally includes `.efk`. Authored `.spark` and
    the same review case.
 4. Compare `Prewarm` off and on. Off exposes startup emission; on advances the
    system before the first displayed frame.
-5. Rotate with `Direction` or held left-button drag. This reproduces the
-   facing that a critter attachment can pass to the effect.
+5. For SPARK, rotate with `Direction` or held left-button drag. Effekseer
+   rejects nonzero look direction: keep it at zero, and treat a resulting load
+   or setup diagnostic as an unsupported capability, not a camera-only change.
 6. Pan with held right-button drag and zoom with the wheel. Panning rebases
    world-space particles so the review behaves like a moving emitter rather
    than sliding an unchanged bitmap.
@@ -372,12 +373,12 @@ Update this guide in the same change when:
 - Mapper embeds, renames, or removes either viewer;
 - a stable automation or screenshot-capture interface is added.
 
-Run the focused documentation test, build both viewer targets, launch each
+Check the owning documentation model, build both viewer targets, launch each
 against a current project, and perform the smallest affected visible workflow.
 Particle backend changes also require [Particle Format](../content/particle-format.md)
-tests and a representative client scene. Model/animation changes also require
+bake checks and a representative client scene. Model/animation changes also require
 [Model Format](../content/model-format.md), [Model Animation](../content/model-animation.md), and the
-owning model tests.
+owning model bake and typed metadata checks.
 
 ## See also
 

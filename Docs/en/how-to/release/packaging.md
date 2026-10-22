@@ -12,6 +12,10 @@ This guide turns an embedding project's compiled FOnline applications and baked 
 
 Use the generated [package interface](../../reference/packages/index.md) for the exact current grammar, target/platform compatibility, pack tokens, payloads, and command-line arguments. Use the [Support Matrix](../../reference/platforms/support-matrix.md) before calling any resulting artifact supported.
 
+## Fork verification policy
+
+Use the existing packager's integrity/shape checks, affected-role configure/build, real resource bake and isolated installed/application acceptance. Engine-owned unit/structural suites were removed and workflows archived; new automated tests/infrastructure require an explicit request. Historical test/CI references do not establish current package qualification, and built-in validation guarantees below remain unchanged.
+
 ## Package decision
 
 For each declared application variant, build the exact target, run
@@ -305,7 +309,7 @@ checks also verify thread-flag restoration and preservation of the process mode.
 
 Resource archives are sequential by default. `package.py -resource-pack-jobs N` overrides `FO_RESOURCE_PACK_JOBS` (default `1`); both accept only positive integers. Independent `.fores` work runs in at most `N` spawned processes on every host. Tasks sharing a pack name or physical destination stay ordered on one worker, preserving local reuse and preventing concurrent writes. Groups are balanced by source bytes, largest first. Every worker retains the complete writer, cache protocol and payload validation; optional-cache unavailability persists within its batch, bounding failed probes by the worker count. The parent adopts validated archive identities and waits for workers before runtime-specific pack rewriting or failure cleanup. Embedded resources and final distribution bundles are outside this worker lane. Choose the limit for available CPU and memory; it is not a format change or a measured speedup guarantee.
 
-FOnline writes each non-Embedded resource pack as a deterministic `.fores` base from sorted normalized paths, without serialized timestamps. The [Resource Pack Format](../../../ResourcePackFormat.md) specifies the version-2 header, content and physical hashes, complete catalog, optional writable patch, and validation rules. `Baking.ResourcePackCompressLevel` and `Baking.ResourcePackMinCompressGain` govern per-blob deflate; `Baking.BundleCompressLevel` governs outer distribution bundles and the executable's Embedded ZIP. `package.py` accepts separate `-resource-pack-compress-level` and `-bundle-compress-level` overrides. It verifies every produced resource payload, including decoded length and content hash, before packaging succeeds. Embedded ZIP remains sorted with fixed timestamps and permissions and is CRC-checked from its in-memory bytes before binary patching. Outer ZIP and TAR packages use the target's logical file modes rather than the host filesystem's modes, so a Windows packaging host still emits executable Linux targets. Raw package parts merge their mode records into one package-root `.lf-package-modes.json` handoff instead of losing earlier parts. These are package-construction gates, not proof that the installer, delivery channel, publication step, or installed filesystem preserved the result. The package declaration parser and generated contract are deterministic and checked in CI.
+FOnline writes each non-Embedded resource pack as a deterministic `.fores` base from sorted normalized paths, without serialized timestamps. The [Resource Pack Format](../../../ResourcePackFormat.md) specifies the version-2 header, content and physical hashes, complete catalog, optional writable patch, and validation rules. `Baking.ResourcePackCompressLevel` and `Baking.ResourcePackMinCompressGain` govern per-blob deflate; `Baking.BundleCompressLevel` governs outer distribution bundles and the executable's Embedded ZIP. `package.py` accepts separate `-resource-pack-compress-level` and `-bundle-compress-level` overrides. It verifies every produced resource payload, including decoded length and content hash, before packaging succeeds. Embedded ZIP remains sorted with fixed timestamps and permissions and is CRC-checked from its in-memory bytes before binary patching. Outer ZIP and TAR packages use the target's logical file modes rather than the host filesystem's modes, so a Windows packaging host still emits executable Linux targets. Raw package parts merge their mode records into one package-root `.lf-package-modes.json` handoff instead of losing earlier parts. These are package-construction gates, not proof that the installer, delivery channel, publication step, or installed filesystem preserved the result. The package declaration parser and generated contract are deterministic; run existing local generation/checks against their current owner. Archived CI is not execution evidence.
 
 `FO_RESOURCE_ARCHIVE_CACHE_HELPER` may name a project-owned Python helper implementing `restore|store|release --key <sha256> --archive <path>`. The key covers the deterministic entry names and contents plus resource compression level and minimum gain. A hit still passes full `.fores` payload validation; a miss or explicitly unavailable optional cache falls back to local construction, while malformed hits and unexpected helper failures stop packaging. The helper's storage, credentials, claims, retention, and service availability remain project-owned.
 
@@ -397,18 +401,11 @@ Promote a package row to project-qualified only when the named lane is versioned
 - `BuildTools/package.py`
 - `BuildTools/cmake/helpers/Build.cmake`
 - `BuildTools/cmake/stages/Packages.cmake`
-- `BuildTools/tests/test_docs_package.py`
-- `BuildTools/tests/validate_package_interface.cmake`
-- `BuildTools/tests/test_package_include.py`
-- `BuildTools/tests/test_package_security.py`
-- `BuildTools/tests/test_package_resource_pack.py`
-- `BuildTools/tests/test_package_zip_helpers.py`
-- `BuildTools/tests/test_packaging_matrix.py`
-- `BuildTools/tests/test_minimal_multiplayer_package.py`
+- Historical package unit/structural suites under `BuildTools/tests/` are removed, not current source/check prerequisites.
 - `BuildTools/msicreator/createmsi.py`
 - `BuildTools/check_windows7_imports.py`
 - `BuildTools/SupportMatrix.json`
-- `.github/workflows/validate.yml`
+- `.github/disabled-workflows/validate.yml` (historical delivery definition, not active CI)
 - `Examples/PackagingMatrix/`
 - `Examples/MinimalProject/`
 - `Examples/MinimalMultiplayer/`

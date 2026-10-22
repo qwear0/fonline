@@ -33,8 +33,6 @@ This document explains how to approach FOnline builds without hard-coding assump
 - `../BuildTools/cmake/stages/Packages.cmake`
 - `../BuildTools/cmake/stages/Finalize.cmake`
 - `../BuildTools/cmake/helpers/*.cmake`
-- `../Source/Applications/TestingApp.cpp`
-- `../Source/Tests/README.md`
 
 ## Use the embedding project as the build root
 
@@ -76,7 +74,7 @@ python3 validate.py
 Both routes configure and build the baker plus headless server, bake the
 minimal AngelScript project, run the server with networking disabled and an
 in-memory database, and require the lifecycle markers documented in
-[First FOnline Headless Project](../../tutorials/first-project.md). Pinned Windows and Linux CI lanes are verified.
+[First FOnline Headless Project](../../tutorials/first-project.md). These are opt-in local routes; archived workflows do not provide current fork CI evidence.
 
 The next Engine-owned route builds the desktop client, headless client,
 headless server, and baker, then tests metadata, content, login, map loading,
@@ -179,9 +177,9 @@ For a library, SDK, framework, or runtime payload owned by the game repository, 
 
 When `BuildTools/buildtools.py::create_parser()` changes, regenerate and check the CLI model/pages before validating the affected command in an embedding project.
 
-When package declarations or payload behavior change, update `BuildTools/PackageInterface.json`, regenerate/check its model/pages, run `validate_package_interface.cmake` and `test_packaging_matrix.py`, then build `RunPackagingChecks`, `RunTutorialPackageChecks`, or the narrower affected product package target from the owning example/project. These example targets are opt-in and are not part of the required Engine validation registry. The Engine fixtures prove native raw/archive/config/updater mechanics; they do not replace a game's signing, install, deployment, or rollback lane.
+When package declarations or payload behavior change, update `BuildTools/PackageInterface.json`, regenerate/check its model/pages, inspect the package declaration against the executable parser, then build `RunPackagingChecks`, `RunTutorialPackageChecks`, or the narrower affected product package target from the owning example/project. These example targets are opt-in and are not part of the required Engine validation registry. The Engine fixtures prove native raw/archive/config/updater mechanics; they do not replace a game's signing, install, deployment, or rollback lane.
 
-- **Runtime C++:** build and run the project unit-test target; use [Testing](../../contributing/testing/) to choose focused suites and understand generated test targets.
+- **Runtime C++:** configure and build the smallest affected application target, then exercise its changed CLI/API/UI behavior; follow [Verification and tests](../../contributing/testing/).
 - **CMake/BuildTools:** reconfigure from a clean or relevant build directory and run the affected build/package target; use [BuildTools Pipeline](../../reference/cmake-and-buildtools/pipeline.md) for stage ownership.
 - **Generated API:** rebuild generation targets, verify scripts compile, and consult [Generated API and Metadata](../../reference/metadata/index.md).
 - **Project config/resource packs:** follow [Configure a Game Project](project-configuration.md), compile scripts, bake normally, force-bake when the input graph changed, and execute the consuming sub-config.
@@ -196,7 +194,7 @@ When package declarations or payload behavior change, update `BuildTools/Package
 - **Managed C# source/refactor:** follow [Managed C# Scripting](../scripting/managed-csharp.md), run the configured formatter and Roslyn analyzer, build `CompileManagedScripts`, then bake and execute the narrowest affected callback, async, synchronization, or packaging test.
 - **Nullability/script boundary:** follow [Scripting](../../explanation/scripting-runtime/), [Script Methods Map](../../reference/script-api/method-ownership.md), and [Nullability](../../contributing/coding-contracts/nullability.md).
 - **Configuration/resources:** follow [Configuration and Data Sources](../../reference/settings/configuration-and-data-sources.md) and [Baking Pipeline](../../explanation/content-pipeline/baking.md).
-- **Essentials/low-level utilities:** follow [Essentials](../../reference/native/essentials.md) and run the matching essentials tests from [Testing](../../contributing/testing/).
+- **Essentials/low-level utilities:** follow [Essentials](../../reference/native/essentials.md), compile affected consumers, and use existing diagnostics or direct application checks.
 
 ## Keep build docs maintainable
 
@@ -206,7 +204,7 @@ Do not copy a full preset list into engine docs. Presets change per game and per
 
 1. Confirm the command or preset belongs to the embedding project before documenting exact names in engine docs.
 2. For BuildTools changes, reconfigure the smallest affected preset and run the generated target that exercises the changed stage.
-3. For runtime changes, run focused tests first and then the project `RunUnitTests` target when practical.
+3. For runtime changes, build the affected application and directly check the changed behavior; no engine unit-test target is generated.
 4. For package/platform changes, validate the owning package/debug doc in the same change.
 5. Update [BuildTools Pipeline](../../reference/cmake-and-buildtools/pipeline.md), [Testing](../../contributing/testing/), or platform docs when the build workflow itself changes.
 6. Run the matching starter smoke when a BuildTools, baking, scripting, application-startup, or embedding-boundary change can affect the canonical minimal project.

@@ -7,7 +7,7 @@ permalink: /Docs/ru/how-to/quality/profiling.html
 ---
 
 # Профилирование
-<!-- docs-translation: {"document_id":"profiling","locale":"ru","source_path":"Docs/en/how-to/quality/profiling.md","source_sha256":"48df563bb4623c9b5ac88b45d8c6bdeb169aaa6e339d259bb8e5a346f342cd16"} -->
+<!-- docs-translation: {"document_id":"profiling","locale":"ru","source_path":"Docs/en/how-to/quality/profiling.md","source_sha256":"a79c9c2e96b6e23cd4234b45d960652beb158f123e4ee15eca25fba6fd62fe66"} -->
 > Документация движка о переиспользуемой интеграции Tracy, границах захвата
 > и сопоставимых измерениях производительности. Рабочие сцены, оркестрация
 > процессов и критерии приемки конкретной игры принадлежат игровому проекту.
@@ -461,7 +461,6 @@ database fixtures, renderer policy и report destinations принадлежат
 выполните:
 
 ```bash
-python BuildTools/tests/test_docs_profiling.py
 python BuildTools/docs_snippets.py --check --external
 python BuildTools/docs_validate.py
 ```

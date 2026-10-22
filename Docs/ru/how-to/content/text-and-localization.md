@@ -5,7 +5,7 @@ locale: ru
 document_id: text-and-localization-guide
 permalink: /Docs/ru/how-to/content/text-and-localization.html
 ---
-<!-- docs-translation: {"document_id":"text-and-localization-guide","locale":"ru","source_path":"Docs/en/how-to/content/text-and-localization.md","source_sha256":"5aed7e56ef6d40d41146231ac6c670d340eeb21d61356019e4ce330d42db33f2"} -->
+<!-- docs-translation: {"document_id":"text-and-localization-guide","locale":"ru","source_path":"Docs/en/how-to/content/text-and-localization.md","source_sha256":"e9d516df22138e4fef95ce660ea3cc60010881ce793f0503256d6eec783f4559"} -->
 # Текст и локализация
 
 Engine определяет формат исходных `.fotxt`, поля `$Text` прототипов, запекание
@@ -110,9 +110,11 @@ adult overlay. Значение Engine по умолчанию — `engl`; по�
 переопределяют его в своём `.fomain`.
 
 Для изменившегося исходного пакета `TextBaker` собирает все настроенные
-языковые файлы этого пакета. Исходник базового языка обязателен. Суффиксы
-файлов для неподдерживаемых языков сопровождаются предупреждением и
-пропускаются.
+языковые файлы этого пакета. Проверка базового языка агрегатная для выбранных
+исходников, а не гарантия наличия исходника в каждом пакете. Пакет, имеющийся
+только у child и отсутствующий у fallback, может быть удалён нормализацией даже
+при успешном запекании. Полноту исходников каждого пакета проверяет проект.
+Суффиксы неподдерживаемых языков сопровождаются предупреждением и пропускаются.
 
 Затем `TextPack::FixPacks` нормализует каждый небазовый язык относительно его
 явного parent либо первого языка, если parent не задан:
@@ -267,13 +269,12 @@ $Text [Language] [Key2] [Key3] = Value
 ```powershell
 python BuildTools\docs_text_format.py --write
 python BuildTools\docs_text_format.py --check
-python -m unittest BuildTools.tests.test_docs_text_format
 ```
 
-При изменении поведения запускайте сфокусированные native-тесты `TextPack`,
-`TextBaker` и `ProtoTextBaker`. Изменения цветового парсера проверяйте ближайшими
-тестами рендеринга и видимым клиентом. Затем повторно запеките подключаемый
-проект. Проектные каталоги пакетов, проверки переводов, formatter-ы lexem и
+Собственные unit suites движка удалены. Перезапеките представительные raw и
+prototype text packs и проверьте результаты typed lookup API. Цветовые теги
+проверяйте в видимом клиенте; генерация документации не исполняет text parsers
+и не доказывает полноту переводов каждого пакета. Проектные каталоги пакетов, проверки переводов, formatter-ы lexem и
 обновление GUI требуют тестов проекта, а не fixtures Engine.
 
 ## Маршрутизация сопровождения

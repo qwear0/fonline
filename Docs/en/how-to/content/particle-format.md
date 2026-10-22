@@ -222,6 +222,18 @@ Effekseer currently uses direct-scene rendering. SPARK may use either atlas or
 direct-scene rendering. Both routes still depend on the embedding project's
 effect state, image resources, camera settings, and draw order.
 
+`Render.Animation3dFPS` throttles `NeedDraw()` refresh eligibility, not a fixed
+simulation timestep. `Update()` advances by elapsed time independently; zero
+removes the draw throttle. A forced draw with no elapsed time uses at least a
+one-millisecond simulation step. Atlas refresh and direct-scene drawing are
+different routes; neither setting is a cross-backend simulation-rate promise.
+
+`ParticleSprite.SetDir` passes a look-direction angle to runtime setup rather
+than selecting a frame sheet. SPARK supports it; Effekseer explicitly fails on
+nonzero look direction. Keep Effekseer previews at direction zero and inspect
+logs after any direction/camera manipulation. `Stop` and `SetTime` are no-ops;
+`Play` respawns and `IsPlaying` follows backend activity.
+
 ## Integration
 
 `ParticleSpriteFactory` exposes all enabled runtime extensions to the generic
@@ -272,13 +284,12 @@ After changing the particle contract or documentation:
 
 ```powershell
 python BuildTools\docs_particle_format.py --write
-python -m unittest BuildTools.tests.test_docs_particle_format
-python BuildTools\docs_contract_diff.py --base-ref <base>
+python BuildTools\docs_contract_diff.py --baseline-dir <baseline-dir> --check
 ```
 
-After changing native particle code, configure both relevant feature lanes and
-run the focused native tests, including `Test_ParticleBaker.cpp` and, for
-Effekseer runtime changes, `Test_EffekseerParticleRuntime.cpp`.
+After native particle changes, build the affected enabled-backend profiles and
+rebake representative resources. Engine-owned unit suites are retired; model
+checks do not execute simulation or callback rendering.
 
 An embedding project must then:
 

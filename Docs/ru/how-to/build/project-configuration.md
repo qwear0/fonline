@@ -7,7 +7,7 @@ permalink: /Docs/ru/how-to/build/project-configuration.html
 ---
 
 # Конфигурация игрового проекта
-<!-- docs-translation: {"document_id":"project-configuration","locale":"ru","source_path":"Docs/en/how-to/build/project-configuration.md","source_sha256":"c80a2b5bbc5acb08c7a94d2685e61aea709301fa510ddc3d156270e700021d0c"} -->
+<!-- docs-translation: {"document_id":"project-configuration","locale":"ru","source_path":"Docs/en/how-to/build/project-configuration.md","source_sha256":"39781140c881a2234ae27fb378f3e2e16c4531fbf17d9ec71765722e0b204597"} -->
 Руководство показывает, как embedding project должен создавать `.fomain`,
 resource packs и именованные sub-configs. Точная runtime model описана в
 [Конфигурация и источники данных](../../reference/settings/configuration-and-data-sources.md), а
@@ -20,7 +20,6 @@ resource packs и именованные sub-configs. Точная runtime model
 - `Source/Common/Settings.cpp`
 - `Source/Common/Settings.inc`
 - `Source/Frontend/ApplicationInit.cpp`
-- `Source/Tests/Test_Settings.cpp`
 - `BuildTools/cmake/stages/ScriptsAndBaking.cmake`
 - `Examples/MinimalProject/CMakeLists.txt`
 - `Examples/MinimalProject/FOnlineStarter.fomain`
@@ -77,8 +76,8 @@ Config baker запишет такой setting полностью в кажды�
 сорвать packaging.
 
 В authored files и operational commands используйте fully qualified names,
-например `Server.DbStorage`. Parser принимает короткие имена встроенных
-settings, но qualified names делают ownership и review однозначными.
+например `Server.DbStorage`. Короткое имя не обозначает встроенную настройку:
+оно становится custom setting, а config baker сообщает `Unknown setting` для необъявленного ключа.
 
 ## Корневые settings
 
@@ -112,9 +111,9 @@ ManagedScript.Analyzers = Engine/Source/Scripting/Managed/Analyzers/FOnline.Anal
 Неизвестные имена становятся project custom settings и доступны через
 `GetCustomSetting` / `FindCustomSetting`. Это намеренное поведение для
 game-owned configuration, но опечатка в имени built-in setting поэтому может
-выглядеть допустимой. Добавляйте focused project test для каждого content ID,
-port/profile, prototype name, path или custom setting, влияющего на startup или
-gameplay.
+выглядеть допустимой. Проверяйте затронутые content IDs, ports/profiles, prototype names,
+paths и custom settings существующим config baker и потребляющим приложением;
+разобранный custom key сам по себе не доказывает требуемое поведение.
 
 Значения с начальным `+` накапливаются вместо замены. Strings добавляются через
 пробел, vectors получают новые elements, числовые значения складываются,

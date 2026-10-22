@@ -123,7 +123,7 @@ The generated metadata file uses one section per concrete model path. Parallel `
 
 The behavior does not branch on resource `PackName`: any resource pack that selects `ModelInfo` can produce the table. Put the resulting pack on every runtime side that calls the common duration API. A common setup ships model metadata to server and client while keeping client-only mesh, texture, and rendering assets in client packs.
 
-If the selected source set contains no concrete `.fo3d` files, no duration metadata file is written. A concrete model with no positive-duration animation tuples has no duration section, although its model-info output still contains the required validated rig payload for the current schema.
+If the selected source set contains no concrete `.fo3d` files, no duration metadata file is written. A concrete model with no positive-duration animation tuples still gets a bounds-only metadata section; only its duration arrays are omitted. Its model-info output also contains the required validated rig payload.
 
 ## Runtime and script lookup
 
@@ -148,8 +148,8 @@ The client/mapper-only `Critter.GetModelAnimDuration(state, action)` is a differ
 
 | Layer | What to verify | Required evidence |
 |---|---|---|
-| Authored tuple | Named state/action, selected source and clip, speed, and intentional aliases | Focused source test plus model bake |
-| Baked metadata | Exact effective milliseconds, deterministic aliases, bounds, and pack distribution | Model-baker tests and inspection through the typed common API |
+| Authored tuple | Named state/action, selected source and clip, speed, and intentional aliases | Source review plus model bake |
+| Baked metadata | Exact effective milliseconds, deterministic aliases, bounds, and pack distribution | Model bake and inspection through the typed common API |
 | Client pose | Converted rig, sampled pose, attachments, substitutions, and visual cycle | Visible representative client or viewer scene |
 | Gameplay timing | Attack windows, movement cadence, effects, and zero-duration fallback | Project-owned gameplay or integration test on every authoritative side |
 
@@ -169,7 +169,8 @@ A successful bake proves grammar, source compatibility, conversion, and metadata
 | Geometry exception is duplicate, non-selected, duplicate-resolved, or stale | Model bake fails; narrow or remove the exception. |
 | Source clip duration is not positive or finite | Source/model validation fails before output. |
 | Alias expansion would produce a duplicate output tuple | Model bake fails. |
-| No concrete model or no positive tuple | File or model section is omitted. |
+| No concrete model | Metadata file is not written. |
+| Concrete model without positive-duration tuples | Bounds-only section is written; duration arrays are omitted. |
 | `ModelAnimationInfo.foinfo` is absent at startup | Engine logs an informational message; common lookups return zero. |
 | Metadata arrays are malformed, non-positive, or duplicated | Runtime startup registration fails. |
 | Model-info or rig payload is missing, old, truncated, inconsistent, or has trailing data | Client loading fails; no legacy runtime fallback is attempted. |
@@ -205,7 +206,7 @@ The embedding project owns concrete model paths and assets, state/action selecti
 
 ## Maintenance triggers
 
-Update this guide, its focused test, the documentation manifest, and external evidence in the same change when any of these surfaces change:
+Update this guide, the owning model/generator, documentation manifest, and external evidence in the same change when any of these surfaces change:
 
 - `.fo3d` animation token parsing, enum resolution, duplicate handling, source selection, or `AnimSpeed` validation;
 - source loading, skeleton compatibility, Ozz conversion, rig or model-info wire contracts;
@@ -220,7 +221,6 @@ Re-run the source-derived checks before editing prose. An incoming project commi
 For documentation changes:
 
 ```bash
-python BuildTools/tests/test_docs_model_animation.py
 python BuildTools/docs_external_evidence.py --check --verify-sources --last-frontier-root ../ --tla-root ../Workspace/fonline-tla
 python BuildTools/docs_api.py --check
 python BuildTools/docs_reference.py --check
@@ -229,6 +229,10 @@ python BuildTools/docs_ai_delivery.py --check
 python BuildTools/docs_validate.py
 ```
 
-For engine behavior, build the embedding project's engine unit-test target. Run the focused model baker, mesh-data, source-loader, animation-data/converter/runtime, procedural-pose, skeleton-compatibility, Ozz, client-engine, and `ModelAnimationInfoLookup` cases, then run the complete unit-test target before integrating an engine revision.
+Engine-owned unit suites are retired. Build the affected embedding-project
+native/script roles, bake the real model assets, and query the typed duration
+API on each consuming side. Use a visible viewer/client for pose, bounds,
+attachments, aliases, speed, and procedural animation; documentation generation
+does not execute the model converter or runtime.
 
 After changing `.fo3d` animation declarations, enum metadata, model sources, mesh/rig wire contracts, source loading/conversion, `ModelInfoBaker`, metadata registration, or either script method, force-rebake an affected embedding project and then rerun its incremental bake. Exercise the project path that consumes the animation or duration; a successful resource bake proves syntax/conversion/assets, while visible gameplay or integration testing proves pose, attachments, timing, and presentation.

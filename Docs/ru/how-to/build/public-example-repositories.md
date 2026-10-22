@@ -7,7 +7,7 @@ permalink: /Docs/ru/how-to/build/public-example-repositories.html
 ---
 
 # Публичные репозитории с примерами
-<!-- docs-translation: {"document_id":"public-example-repositories","locale":"ru","source_path":"Docs/en/how-to/build/public-example-repositories.md","source_sha256":"faae854133e244465ed0758c64b7d03a90bbe342ca2a9eccf17247ffd699e1cc"} -->
+<!-- docs-translation: {"document_id":"public-example-repositories","locale":"ru","source_path":"Docs/en/how-to/build/public-example-repositories.md","source_sha256":"4346e39fe5724844de382f669825bc57ec887af9632cc4894c3b6b77bca714c4"} -->
 Это руководство определяет, как создаются, проверяются, подготавливаются, выпускаются и поддерживаются совместимыми репозитории с примерами FOnline. Машиночитаемый первоисточник находится в [Examples/PublicRepositories.json](../../../../Examples/PublicRepositories.json), а его проверяемая проекция находится в [сгенерированном реестре](../../reference/public-examples/index.md).
 
 ## Статус контракта
@@ -38,7 +38,7 @@ permalink: /Docs/ru/how-to/build/public-example-repositories.html
 | 1 | `cvet/fonline-project-template` | Канонический стартовый проект и первый успешный headless smoke | Исходный код готов и отправлен в приватный staging-репозиторий; не опубликован |
 | 2 | `cvet/fonline-minimal-multiplayer` | Небольшой игровой срез с сервером, клиентом, контентом и руководством | Исходный код готов в `Examples/MinimalMultiplayer`, включая локально зелёную Windows-линию упаковки; приватный репозиторий зарезервирован, но исходный код ещё не размещён и не опубликован |
 | 3 | `cvet/fonline-content-showcase` | Демонстрация рендера, Mapper, материалов, захвата и Web | Исходный код готов в `Examples/ContentShowcase`; native smoke в Windows, захват Direct3D 11, полная проверка Web-пакета и изолированный Chromium WebGL 2 runtime со снимком локально зелёные, а Linux runtime/OpenGL и удалённая публикация ещё не наблюдались |
-| 4 | `cvet/fonline-native-extension-sample` | Расширенный путь проектного C++ hook/export/test | Исходный код готов в `Examples/NativeExtensionSample`; focused native-тест и полный runtime-маршрут hook/export локально прошли в Windows, а приватный репозиторий остаётся зарезервированным и неопубликованным |
+| 4 | `cvet/fonline-native-extension-sample` | Расширенный путь проектного C++ hook/export/runtime-smoke | Исходный код готов в `Examples/NativeExtensionSample`; сохранён lifecycle/export smoke, не удалённый unit-бинарник. Историческое Windows-свидетельство не подтверждает текущую приёмку форка или remote; приватный репозиторий остаётся зарезервированным и неопубликованным |
 
 Существование удалённого репозитория, готовность исходного кода и публичный выпуск являются разными состояниями. `remote.visibility = private` означает созданный администратором staging-репозиторий, который ещё нельзя представлять как публичную документацию. `remote.state = reserved` означает, что существует только оболочка репозитория, а `source-staged` означает, что проверенный кандидат исходного кода уже отправлен. Не публикуйте ссылки на репозиторий, пока его статус в реестре равен `planned`, `blocked` или `source-ready`. Состояния жизненного цикла и remote меняются на `published`, а видимость на `public` только после проверки защищённой основной ветки, настроек безопасности, обязательных checks, первого тега и публичного артефакта.
 
@@ -163,6 +163,8 @@ python Engine/BuildTools/docs_examples.py --verify-repository . --engine-mode pi
 
 ## Линии CI
 
+Это перспективные требования к управлению внешними примерами, не гарантии активного CI этого форка. Архив workflows Engine не включает автоматизацию внешнего репозитория и не подтверждает remote protections, advisories, deployments или сохранённые артефакты.
+
 `pinned-engine` запускается для каждого pull request и обновления защищённой ветки. Она проверяет управление репозиторием, идентичность gitlink и metadata, основное поведение примера и все специфичные для репозитория платформенные шлюзы. Шаблон проекта и исходный код Minimal Multiplayer требуют smoke-задачи Windows и Linux; Minimal Multiplayer дополнительно требует приёмку пакетов Windows/Linux и сохраняемые доказательства пакетов, адресованные commit.
 
 Linux-задачи подготавливают системные зависимости командой `Engine/BuildTools/prepare-workspace.sh linux-packages linux` из полученной ревизии. Не копируйте список apt-пакетов в workflow примеров: принадлежащая Engine команда является версионируемым платформенным контрактом и удерживает prerequisites pinned- и compatibility-линий одинаковыми.
@@ -177,7 +179,7 @@ Content Showcase использует `web-packages web` для принадле
 
 - репозитории руководств воспроизводят каждый тег урока или fixture;
 - content showcase проверяет происхождение, бюджеты производительности и воспроизведение захватов;
-- пример native-расширения запускает сфокусированные native-тесты и сгенерированные проверки контракта расширений.
+- пример native-расширения запускает сохранённый lifecycle/export runtime smoke и сгенерированные проверки контракта; unit-бинарник в форке удалён.
 
 Пример, публикующий архивы native-клиента или сервера, должен добавить принадлежащую проекту package-линию по образцу `Examples/PackagingMatrix`: force-bake встроенной конфигурации, равенство инвентаря архива и payload, packaged updater handshake, точную ревизию Engine, SHA-256 manifest и адресованный commit CI-артефакт. `Examples/MinimalMultiplayer` содержит исходный код такой линии и локальное Windows-доказательство; Linux job, неизменяемый внешний артефакт и публичный тег ещё требуют наблюдения. Общий fixture Engine доказывает только механику упаковки и не квалифицирует автоматически артефакт выпуска отдельного примера.
 

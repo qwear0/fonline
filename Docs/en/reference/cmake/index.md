@@ -20,13 +20,13 @@ This reference describes the project-facing CMake surface consumed by an embeddi
 | Stability | <code>experimental</code> |
 | Since | Not declared |
 | Support policy | No versioned support line is declared yet; embedding projects should pin an engine revision. |
-| Source manifest | [BuildTools/cmake/ProjectInterface.json](https://github.com/cvet/fonline/blob/master/BuildTools/cmake/ProjectInterface.json) |
+| Source manifest | [BuildTools/cmake/ProjectInterface.json](https://github.com/qwear0/fonline/blob/master/BuildTools/cmake/ProjectInterface.json) |
 
 ## Coverage
 
 | Reference | Entries | Purpose |
 | --- | --- | --- |
-| [Project options](options.md) | 58 | Required inputs, defaults, and override precedence. |
+| [Project options](options.md) | 56 | Required inputs, defaults, and override precedence. |
 | [Stages and hooks](stages.md) | 10 | Strict project-generation order and extension boundaries. |
 | [Project helpers](helpers.md) | 7 | Selected commands intended for embedding projects. |
 

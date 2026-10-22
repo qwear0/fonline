@@ -7,7 +7,7 @@ permalink: /Docs/ru/reference/cmake-and-buildtools/pipeline.html
 ---
 
 # Конвейер BuildTools
-<!-- docs-translation: {"document_id":"buildtools-pipeline","locale":"ru","source_path":"Docs/en/reference/cmake-and-buildtools/pipeline.md","source_sha256":"4048b63e7bc7ff1c9f898fba37ac5b8378ce1283260a59758c2eea96cc9477ed"} -->
+<!-- docs-translation: {"document_id":"buildtools-pipeline","locale":"ru","source_path":"Docs/en/reference/cmake-and-buildtools/pipeline.md","source_sha256":"f57d004994195de0d51fc13927bd6c50c6a7f37da5d8907446cb454c7ee586c6"} -->
 Этот документ объясняет поэтапный CMake-конвейер в `BuildTools/cmake/`. Он
 дополняет основанное на исходниках руководство [Build Workflow](../../how-to/build/):
 в нём описан пользовательский подход к сборке, а здесь — владение реализацией.
@@ -74,10 +74,7 @@ revision-pinned implementation interfaces: автоматизация обяза
 - `BuildTools/docs_cmake.py`
 - `BuildTools/PackageInterface.json`
 - `BuildTools/docs_package.py`
-- `BuildTools/tests/validate_package_interface.cmake`
-- `BuildTools/tests/validate_project_interface.cmake`
 - `BuildTools/package.py`
-- `BuildTools/tests/test_package_include.py`
 - `BuildTools/msicreator/createmsi.py`
 
 Важные следствия:
@@ -246,7 +243,7 @@ platform flags и включённые build modes.
 
 В зависимости от options здесь подключаются client, client runtime library,
 headless variants client, server variants, Mapper, viewers анимаций и частиц,
-baker, AngelScript compiler, Managed script baker и testing app. Универсального приложения Editor и
+baker, AngelScript compiler и Managed script baker. Универсального приложения Editor и
 соответствующей validation target нет.
 
 Effekseer Editor намеренно отсутствует в этой стадии и application target
@@ -254,12 +251,10 @@ graph. Его отдельный entrypoint `BuildTools/EffekseerEditor/build.ps
 конфигурирует и собирает upstream sources независимо от CMake-конфигурации
 FOnline во встраивающем проекте.
 
-Для Visual Studio/MSBuild test targets стадия запускает test executable через
-`BuildTools/cmake/helpers/RunAndLog.cmake`. Helper сохраняет stdout и stderr в
-`<build-dir>/<target>.log` и завершает CMake command с реальным process exit
-code. Так ожидаемая диагностика negative tests сохраняется, а MSBuild не
-трактует строки со словом `error` как build failures. Другие generators
-запускают executable напрямую.
+Форк не создаёт unit-test и coverage-приложения; включение удалённых options
+завершается ошибкой в Init. `AddEngineSources` принимает только COMMON, SERVER,
+CLIENT, MAPPER и BAKER, отклоняя TESTS и неизвестные роли до регистрации
+исходников/метаданных.
 
 Native-конфигурации Windows, Linux и macOS без cross-compilation также собирают
 `FOnlineResourcePackHash` перед baker и CMake package targets. Эта host-only
@@ -298,10 +293,9 @@ C ABI library не зависит от Engine allocator, profiling и sanitizer 
 
 Локальные wrappers `package-web-debug` и `package-android-debug` передают
 `-resource-pack-compress-level 1` для Raw payloads; сжатие distribution bundles
-по-прежнему берётся из project config. `test_buildtools_debug_packaging.py`
-проверяет сформированные команды настоящим parser упаковщика для Web и всех
-поддерживаемых Android architectures, нескольких debug configurations и путей
-с пробелами.
+по-прежнему берётся из project config. Проверяйте изменённый wrapper исполняемым
+parser упаковщика и осматривайте затронутый результат; удалённый Python-набор
+не подтверждает команду.
 
 Создаёт package targets из `FO_PACKAGES` и вызывает `BuildTools/package.py` с
 project context: main config, build hash, developer name, nice name,
@@ -313,8 +307,8 @@ targets/platforms/architectures, pack tokens, support status и payload effects
 моделируются в `BuildTools/PackageInterface.json` и выводятся в
 [сгенерированном справочнике пакетов](../packages/index.md). Manifest является
 данными документации и проверки; runtime authority остаётся у `DefinePackage`,
-`Packages.cmake` и `package.py`. Focused и структурные тесты сопоставляют
-смоделированные grammar и dimensions с этими реализациями. Встраивающий проект
+`Packages.cmake` и `package.py`. Существующий генератор сверяет модель grammar
+с anchors реализации; для подтверждения поведения конфигурируйте и упаковывайте затронутых потребителей. Встраивающий проект
 всё равно владеет выбором допустимых комбинаций.
 
 `POSTFIX <value>` следует за одной clause `BINARY` и не наследуется соседними
@@ -421,8 +415,8 @@ duplicate ZIP names.
 `INCLUDE <source-path-glob> <target-path-in-pack>`. Source glob задаётся
 относительно `FO_OUTPUT_PATH`. После сборки обычных binary parts generic
 packager заменяет included target tree и обновляет существующий `SingleZip`
-без duplicate или stale entries. Этот путь покрыт
-`BuildTools/tests/test_package_include.py`.
+без duplicate или stale entries. При изменениях выполните затронутую упаковку
+и проверьте и included tree, и archive entries.
 
 При изменении wiring package target начинайте в `Packages.cmake`. При изменении
 declaration vocabulary, поддерживаемых комбинаций, payload layout, artifact
@@ -455,11 +449,8 @@ diagnostics, а не для source ownership или проверки build featu
   перечитывает Git HEAD и не выбирает новую случайную идентичность. Поэтому
   маркеры совпадают с идентичностью, встроенной в native applications при
   конфигурации, в том числе для исходных архивов без Git и путей с пробелами.
-  `BuildTools/tests/test_cmake_build_hash.py` проверяет реальные скомпилированные
-  приложения и обе стандартные цели baking до и после смены Git revision.
-  Во временное дерево исходников копируются неизменённые helpers из checkout
-  Engine, поэтому fixture работает и тогда, когда Windows хранит checkout и
-  временные файлы на разных дисках.
+  Проверяйте изменённый build-hash wiring по настроенному native-приложению и
+  маркерам ресурсов после настоящей сборки/запечки; устаревший маркер не является доказательством.
 
 Если стадии нужно переиспользуемое поведение, добавляйте helper здесь вместо
 копирования логики между stages.
@@ -527,11 +518,8 @@ configure-time authority остаётся у `BuildTools/Init.cmake`.
 
 Для изменений BuildTools:
 
-1. Выполните `cmake -P BuildTools/tests/validate_project_interface.cmake` при
-   изменениях project interface.
-2. После регенерации CMake reference выполните
-   `python BuildTools/tests/test_docs_cmake.py` и
-   `python BuildTools/docs_cmake.py --check`.
+1. Сверьте объявления project interface с реализацией.
+2. После регенерации CMake reference выполните `python BuildTools/docs_cmake.py --check`.
 3. Выполните configure из корня реального встраивающего проекта.
 4. Используйте самый узкий preset, затрагивающий изменённую stage.
 5. При изменении source lists проверьте сборку затронутой target.
@@ -544,14 +532,8 @@ configure-time authority остаётся у `BuildTools/Init.cmake`.
 9. Для package changes выполните затронутую package target и проверьте output
    layout; для WiX/MSI также проверьте generated installer
    config/registry values или соберите installer на host с WiX/wixl.
-10. Для изменений package interface выполните
-    `python BuildTools/tests/test_docs_package.py`,
-    `cmake -P BuildTools/tests/validate_package_interface.cmake` и после
-    регенерации `python BuildTools/docs_package.py --check`.
-11. Для изменений native extension interface выполните
-    `python BuildTools/tests/test_docs_native_extension.py`,
-    `cmake -P BuildTools/tests/validate_native_extension_interface.cmake` и
-    после регенерации `python BuildTools/docs_native_extension.py --check`.
+10. Для изменений package interface после регенерации выполните `python BuildTools/docs_package.py --check` и осмотрите настоящий затронутый пакет.
+11. Для изменений native extension interface после регенерации выполните `python BuildTools/docs_native_extension.py --check` и соберите затронутую зарегистрированную роль.
 12. Сравните все регенерированные модели
     API/CMake/main-CLI/package/helper-CLI/native-extension с выбранной base
     через `BuildTools/docs_contract_diff.py` и заполните необходимую

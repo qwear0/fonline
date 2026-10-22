@@ -52,13 +52,6 @@ The generated property catalog says whether the engine parser can load a key. It
 - `Source/Scripting/ServerItemScriptMethods.cpp`
 - `Source/Scripting/ServerLocationScriptMethods.cpp`
 - `Source/Scripting/ServerMapScriptMethods.cpp`
-- `Source/Tests/Test_ConfigFile.cpp`
-- `Source/Tests/Test_Properties.cpp`
-- `Source/Tests/Test_EntityProtos.cpp`
-- `Source/Tests/Test_ProtoManager.cpp`
-- `Source/Tests/Test_ProtoBaker.cpp`
-- `Source/Tests/Test_ServerMapOperations.cpp`
-- `Source/Tests/Test_AngelScriptServerMapOperations.cpp`
 
 ## From source file to baked prototype
 
@@ -270,12 +263,14 @@ AngelScript binds the same rules with `T&inout` and `const DatabaseDocument&inou
 For an engine change:
 
 ```bash
-python BuildTools/tests/test_docs_prototype_format.py
 python BuildTools/docs_prototype_format.py --check
 python BuildTools/docs_contract_diff.py --baseline-git-ref origin/master --allow-missing-baseline --write --enforce
 ```
 
-Also run the focused native tests for the changed parser, metadata, property, or baker boundary.
+Engine-owned unit suites are retired. Build the affected native/script role,
+bake representative prototypes, and inspect diagnostics and typed properties
+through the consuming application. Both prototype bakers reject inheritance
+cycles explicitly; project policy still needs its own semantic validation.
 
 For a project content change:
 

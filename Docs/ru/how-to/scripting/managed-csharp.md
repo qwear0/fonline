@@ -7,7 +7,7 @@ permalink: /Docs/ru/how-to/scripting/managed-csharp.html
 ---
 
 # Скрипты Managed C#
-<!-- docs-translation: {"document_id":"managed-csharp-scripting","locale":"ru","source_path":"Docs/en/how-to/scripting/managed-csharp.md","source_sha256":"bbe5e488d2f60b2475670251ba3536edb60d23bc26ed6985b2405a2b3c8bdddd"} -->
+<!-- docs-translation: {"document_id":"managed-csharp-scripting","locale":"ru","source_path":"Docs/en/how-to/scripting/managed-csharp.md","source_sha256":"dbe68655eabe4f2e3b7de262caca49cb72e7899dac850672dc40968e13800f66"} -->
 > Принадлежащее движку руководство Managed C#; игровые модули и политика принадлежат подключающему проекту.
 
 ## Статус контракта
@@ -40,7 +40,7 @@ Managed C# встраивает Mono и компилирует скрипты н
 
 ## Настройка backend
 
-`FO_MANAGED_SCRIPTING` включает runtime, backend, baker, тесты CoreScripts и wiring приложений. Он независим от `FO_NATIVE_SCRIPTING` и `FO_ANGELSCRIPT_SCRIPTING`. Production-проекты выбирают один gameplay backend; тесты cross-backend invocation могут включать несколько.
+`FO_MANAGED_SCRIPTING` включает runtime, backend, baker и wiring приложений. Он независим от `FO_NATIVE_SCRIPTING` и `FO_ANGELSCRIPT_SCRIPTING`. Production-проекты выбирают один gameplay backend; инструменты могут включать несколько. Собственные unit suites форка удалены.
 
 Immutable startup settings группы `ManagedScript` определяют generated project:
 
@@ -106,7 +106,7 @@ patches. Ограничивайте `unchecked` выражениями, чей �
 
 Используйте пространство имён проекта и импортируйте `FOnline` для сгенерированных типов. CoreScripts используют file-scoped `namespace FOnline;`; игровые domain types принадлежат другому пространству.
 
-Сгенерированные reference/entity API различают nullable значения как часть script/native контракта. Ожидаемое отсутствие обрабатывайте веткой; нарушение инварианта — через `Game.Verify` или `Game.VerifyNotNull`. Managed-ссылки на сущности не владеют их persistence или lifetime.
+Сгенерированные reference/entity API различают nullable значения как часть script/native контракта. Ожидаемое отсутствие обрабатывайте веткой; нарушение инварианта — через `Invariant.Verify` или `Invariant.VerifyNotNull`. Для недостижимого return path пишите `throw Invariant.Unreachable("Fixed message", context)`; helper возвращает исключение, чтобы C# распознал завершение. Managed-ссылки на сущности не владеют их persistence или lifetime.
 
 У каждого backend изолированный load context, но gameplay state требует явного per-engine owner: `Game`, entity, property или ref type. Static constants и immutable type metadata допустимы; mutable caches, registries, timer gates и collections не получают владение от C# static fields.
 
@@ -142,9 +142,9 @@ Entity-only post-set реакции могут возвращать `Task`; valu
 
 Inbound remote-call handlers могут возвращать `void`, `Task` или `Task<T>`. У remote call нет wire result, поэтому незавершённые tasks наблюдаются без блокировки network/client pump; значение `Task<T>` игнорируется. Named script function с non-generic `Task` использует ту же async boundary. `Task<T>` named function остаётся synchronous, когда native code нужен `T`.
 
-Аргументы callback и remote call сохраняют форму metadata: native `any[]` поступает как `List<any>`, а `string=>any` — как `Dictionary<string, any>`. Bridge не превращает их в `List<object>` или строковый словарь; указывайте точные generated types.
+Аргументы callback сохраняют форму metadata: native `any[]` поступает как `List<any>`, а `string=>any` — как `Dictionary<string, any>`. Callback bridge не превращает их в `List<object>` или строковый словарь. У remote calls более узкий serializer: только поддерживаемые scalars/arrays, причём ref types только dynamic managed; dictionaries, dictionaries of arrays и native-only ref wrappers отклоняются. Поддержка callback не означает поддержку RPC.
 
-Методы `[CallableFromNative]` регистрируются под именем `TypeName::MethodName`. Аргументы и результаты `List<T>` и `Dictionary<K,V>` используют Engine descriptors массивов и словарей, когда типы элементов, ключей и значений относятся к поддерживаемым простым типам Engine. Native-регистрация разрешает `K=>V` до синтаксиса массива; словари со значениями-коллекциями остаются за пределами этого callback bridge. Регистрация аргументов по ссылке сейчас поддерживает встроенные delegates `(Critter, Critter, ref string)`. `Test_ManagedScriptRuntime.cpp` проверяет эти вызовы через настоящие скомпилированные assemblies, включая аргументы и возвращаемые значения словарей.
+Методы `[CallableFromNative]` регистрируются под именем `TypeName::MethodName`. Аргументы и результаты `List<T>` и `Dictionary<K,V>` используют Engine descriptors массивов и словарей, когда типы элементов, ключей и значений относятся к поддерживаемым простым типам Engine. Native-регистрация разрешает `K=>V` до синтаксиса массива; словари со значениями-коллекциями остаются за пределами этого callback bridge. Регистрация аргументов по ссылке сейчас поддерживает встроенные delegates `(Critter, Critter, ref string)`. Проверяйте callback marshalling через фактически скомпилированную роль и native dispatcher; поддержка словарей не расширяет Managed RPC.
 
 ## Async и планирование continuations
 
@@ -160,7 +160,7 @@ Synchronous native-result callbacks и module initialization использую�
 
 ## Серверная синхронизация сущностей
 
-Контракт server cover не зависит от backend: script caller должен покрыть все существующие сущности, которые native call graph может читать или изменять. `await` завершает прежний cover; перед повторным использованием заново найдите или проверьте сохранённую сущность и снова получите cover.
+При `Server.SingleThreadedLogic = False` контракт cover не зависит от backend: script caller покрывает все существующие сущности, которые native call graph может читать или изменять. `await` завершает старый cover; перед использованием повторно найдите/проверьте сущности и получите cover. При `Server.SingleThreadedLogic = True` логика выполняется одним worker, runtime cover validation/acquisition обходится и скриптам не нужна entity synchronization. Suspension по-прежнему делает прежние решения о мире неактуальными. Managed compile-time analyzers настраиваются отдельно; runtime switch не доказывает отключение их diagnostics.
 
 Нативный bridge проверяет managed entity receiver до вызова экспортированного instance method или события через оба ABI; подписка на событие также проверяет target. Поэтому uncovered receiver сообщает ошибку cover на границе скрипта, а не доходит до `noexcept` accessor свойства с завершением процесса. Проверка не приобретает cover: caller по-прежнему должен выполнить объявленные требования.
 
@@ -260,7 +260,7 @@ Generated entity properties имеют native backing. Dynamic ref types — man
 
 Все результаты подготавливаются до изменения документа. Исключение оставляет документ и очередь записи БД нетронутыми. Успешный перенос ставит только изменённые канонические поля в штатный путь коммита БД. Эта граница применяется к Game, Player, обычным сущностям, пакетной загрузке предметов и постоянным пользовательским сущностям до загрузки свойств. Это атомарная подготовка одного документа, не транзакция всей БД. Проект определяет типы ссылок, условия, коллизии и идемпотентность; движок не угадывает тип прототипа по произвольному `hstring` или `any`.
 
-Переименование имени свойства объявляется как `///@ MigrationRule Property Critter Rename MyPropOld MyPropNew`. Новое имя обязано существовать. Исторические источники указывают на текущее имя; его `Transform`, если задан, обрабатывает и значение под старым именем. Текущий ключ выигрывает у старых. Устаревшие top-level ключи могут оставаться в хранилище, поскольку коммит обновляет отдельные поля. Формы `Enum`, `Entity`, `EntityHolder` и `Version` не меняются. Пользовательские сущности только серверной роли и их правила не включаются в другие роли метаданных. Автоматическое связывание `Transform` реализовано в обоих действующих backend; несвязанная функция отвергает перенос документа, а не пропускается молча. Для удалённого свойства задайте `///@ MigrationRule Property Critter Remove MyPropOld` без замены. Финализация метаданных и bake отклоняют свойство, всё ещё объявленное под этим именем у того же владельца, включая поля RefType. Загрузка документа и текста свойств пропускает его старое значение; исторический ключ верхнего уровня может оставаться в БД. Правило сохраняется как постоянный запрет имени. Property и Proto имеют общую грамматику действий: Rename/Transform содержат пять частей, Remove — четыре; лишний аргумент Remove отклоняется.
+Переименование имени свойства объявляется как `///@ MigrationRule Property Critter Rename MyPropOld MyPropNew`. Новое имя обязано существовать. Исторические источники указывают на текущее имя; его `Transform`, если задан, обрабатывает и значение под старым именем. Текущий ключ выигрывает у старых. Устаревшие top-level ключи могут оставаться в хранилище, поскольку коммит обновляет отдельные поля. Native declaration parser принимает только kinds `Version`, `Property`, `Proto`, `Component`, `Remove` и `Enum`; generic metadata проекта не добавляет native migration forms `Entity`/`EntityHolder`. Пользовательские сущности только серверной роли и их правила не включаются в другие роли метаданных. Автоматическое связывание `Transform` реализовано в обоих действующих backend; несвязанная функция отвергает перенос документа, а не пропускается молча. Для удалённого свойства задайте `///@ MigrationRule Property Critter Remove MyPropOld` без замены. Финализация метаданных и bake отклоняют свойство, всё ещё объявленное под этим именем у того же владельца, включая поля RefType. Загрузка документа и текста свойств пропускает его старое значение; исторический ключ верхнего уровня может оставаться в БД. Правило сохраняется как постоянный запрет имени. Property и Proto имеют общую грамматику действий: Rename/Transform содержат пять частей, Remove — четыре; лишний аргумент Remove отклоняется.
 
 Для изолированных фикстур используется собственный `DatabaseDocument(entityType, originalValues)` и `Migrate<T>(property, ref value)`. Это вызывает зарегистрированную типизированную функцию без создания сущности; метод не коммитит документ и не имитирует запись в БД. Постоянное сохранение проверяется отдельно настоящей загрузкой БД и перезапуском процесса.
 
@@ -392,24 +392,15 @@ Managed backend передаёт фиксированный native context, mana
 
 | Изменение | Обязательные доказательства |
 | --- | --- |
-| Managed CoreScripts или backend | C#-стиль из `Source/.clang-format` (включая фикстуры), CoreScripts tests, generated project build и native unit tests. |
-| Динамические сборки или live compiler | `test_managed_dynamic_assemblies.py`, `test_managed_script_compiler.py`, проверка target package/closure и проектная runtime-проверка авторизации и выполнения. |
-| Patch-point weaving или live patches | `test_managed_patch_points.py`, входы managed baker/incremental build, bake точного target и проектные проверки применения, отката и авторизации каждой включённой стороны; производительность каждого runtime измеряется отдельно. |
-| Ошибки синхронизации | `FOnline.Sync.Tests.csproj`, тесты анализатора и поведение проектных подписчиков/журналов. |
-| Generated API shape или native export | Codegen, managed baker, generated diff, API contract diff и tests обоих backend для общего контракта. |
-| Attribute, event, callback, timer или named call | Managed reflection/registration test и owning native/runtime dispatch. |
-| Изменяемые коллекции аргументов событий | `test_managed_event_collections.py` с настоящими native-входами, unit-тесты нативных прокси коллекций и затронутое событие инструмента/игры. |
-| Async scheduler | `test_managed_async_callbacks.py`, tests isolation/frame pump и awaited gameplay path подключающего проекта. |
-| Entity-cover contract | Tests Roslyn analyzer, warning-free managed build и owning synchronized server behavior. |
-| Runtime/cache/thread attachment | Native tests baker/backend и повторный multi-instance startup/shutdown. |
-| Владение нативными RefType или финализация | `test_managed_ref_type_lifetime.py`, сгенерированные конструкторы и адаптеры ссылок в `Test_ManagedScriptBaker`, компиляция каждой роли и runtime-приёмка holder с остановкой backend. |
-| Indexed ABI, callback adapters или wrapper caches | `Test_ManagedScriptBaker`, aligned-frame/native backend tests, `InteropProbe.VerifyTransports`, allocation counters и runtime точного target. |
-| Package или updater | Tests runtime payload/packaging, проверка точного target package, startup из artifact и update replacement. |
-| Platform claim | Configure/build, target payload, process/device/browser smoke и project acceptance этой платформы. |
+| Managed CoreScripts или backend | Существующий C# formatter, build затронутой native роли, generated project compile и `CompileManagedScripts`/bake. |
+| Dynamic assemblies/live compiler/patches | Bake/package closure точного target, существующие разрешённые runtime execution, authorization и apply/revert routes; производительность target измеряется отдельно. |
+| Generated API/ABI или native export | Codegen, generated/API-contract diff, compile/bake каждого затронутого backend/role, early ABI bind и реальный call path. |
+| Attributes/events/collections/timers | Точная generated signature, compile/bake, owning dispatcher interaction, writeback/следующий subscriber и cleanup, где затронуты. |
+| Async/cover/runtime ownership | Diagnostics настроенного analyzer, warning-free compile, реальная suspension/resumption, entity access согласно режиму, изолированные multi-instance startup/shutdown. |
+| Lifetime native RefType | Generated constructor/reference adapters, exact-role compile, использование holder до последнего draw, disposal и runtime shutdown. |
+| Package/updater/platform claim | Проверка payload точного target, startup из этого package и update replacement на заявленном process/device/browser. |
 
-Необязательная проба `test_managed_event_collections.py` собирает обе сборки, entry и host, из исходников Engine и компилирует полный production backend на входах существующей unit-сборки GCC/Clang с генератором Ninja. Задайте `FO_MANAGED_EVENT_BUILD` для этой сборки с включённым Managed и `FO_MANAGED_EVENT_RUNTIME` для её подготовленного runtime хоста, включая `runtime.manifest`; `FO_MANAGED_EVENT_CONFIG` выбирает конфигурацию multi-config сборки, по умолчанию `RelWithDebInfo`. Запустите `python -m pytest -q BuildTools/tests/test_managed_event_collections.py` из корня Engine. Без выбранной сборки native-тесты пропускаются; неполные явно заданные входы сборки/runtime не проходят квалификацию. Один поведенческий тест проверяет замену списков и словарей, следующего подписчика, очистку, нативный порядок, запрет записи в const, принудительный GC, внешний context `BaseEngine` и чистый shutdown. Временная копия backend без обратной записи коллекций обязана дать отказ. Проба покрывает целочисленные списки и словари строк/целых чисел; entity payload, серверная синхронизация и другие платформенные toolchain требуют своих runtime-тестов.
-
-Как минимум запустите focused Python suites `BuildTools/tests/test_managed_*.py`, test project analyzer, CoreScripts tests, `Test_ManagedScriptBaker.cpp`, generated unit-test target подключающего проекта, `CompileManagedScripts` и затронутый bake/package/runtime path. Dry-run marker baker, успешный `dotnet build` и native process-start smoke доказывают разные слои и должны отчитываться отдельно.
+Прежние managed/native/Python/analyzer unit suites и optional probes удалены в этом форке. Не запускайте, не восстанавливайте их и не добавляйте новые автоматизированные тесты без явного запроса. Используйте существующие compilation, bake, package и direct application routes выше. Dry-run marker baker, успешный `dotnet build`, запуск процесса и наблюдаемое gameplay доказывают разные слои; указывайте точные результаты и непроверенные границы отдельно.
 
 ## Миграция с AngelScript
 
@@ -459,5 +450,3 @@ Engine guide задаёт reusable behavior; документация проек
 - `BuildTools/cmake/stages/Packages.cmake`
 - `BuildTools/managed_runtime_payload.py`
 - `BuildTools/package.py`
-- `BuildTools/tests/test_managed_*.py`
-- `Source/Tests/Test_ManagedScriptBaker.cpp`

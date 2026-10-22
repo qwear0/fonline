@@ -11,7 +11,7 @@ generated: true
 
 [Reference index](index.md) | [Canonical JSON model](../../../generated/cmake.json) | [Generation contract](../metadata/)
 
-Options are declared during `StartProjectGeneration()` from the interface manifest. All values are CMake cache values after declaration.
+Options are declared by `BuildTools/cmake/stages/Init.cmake` during `StartProjectGeneration()`; the interface manifest documents them. All values are CMake cache values after declaration.
 
 See the [reference index](index.md#option-override-precedence) for override order.
 
@@ -73,5 +73,3 @@ See the [reference index](index.md#option-override-precedence) for override orde
 | <a id="entry-cmake-option-fo-build-mapper-a545c784ff"></a><code>cmake.option.FO_BUILD_MAPPER</code> | <code>FO_BUILD_MAPPER</code> | <code>BOOL</code> / <code>boolean</code> | No | No | <code>OFF</code> | - | <code>target</code> | Generate mapper application targets. |
 | <a id="entry-cmake-option-fo-build-ascompiler-5ca22226b8"></a><code>cmake.option.FO_BUILD_ASCOMPILER</code> | <code>FO_BUILD_ASCOMPILER</code> | <code>BOOL</code> / <code>boolean</code> | No | No | <code>OFF</code> | - | <code>target</code> | Generate the AngelScript compiler application target. |
 | <a id="entry-cmake-option-fo-build-baker-bd941dc509"></a><code>cmake.option.FO_BUILD_BAKER</code> | <code>FO_BUILD_BAKER</code> | <code>BOOL</code> / <code>boolean</code> | No | No | <code>OFF</code> | - | <code>target</code> | Generate baker application targets. |
-| <a id="entry-cmake-option-fo-unit-tests-d9ccad8a5d"></a><code>cmake.option.FO_UNIT_TESTS</code> | <code>FO_UNIT_TESTS</code> | <code>BOOL</code> / <code>boolean</code> | No | No | <code>OFF</code> | - | <code>quality</code> | Generate engine unit-test targets. |
-| <a id="entry-cmake-option-fo-code-coverage-30381a9ffe"></a><code>cmake.option.FO_CODE_COVERAGE</code> | <code>FO_CODE_COVERAGE</code> | <code>BOOL</code> / <code>boolean</code> | No | No | <code>OFF</code> | - | <code>quality</code> | Generate the code-coverage configuration; this mode cannot be combined with application or unit-test build modes. |

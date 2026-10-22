@@ -16,6 +16,17 @@ Developer-visible FOnline changes and migration notes are maintained here in Eng
 
 ### Documentation
 
+- Correct paired build/content/scripting/operations guides and audio, AI, CMake and effect references. Clarify engine/game ownership, supported native and managed contracts, media validation limits, release evidence and the replacement verification workflow without restoring unit suites.
+
+### Migration
+
+- Base `477c108c422b6f501b2664fb8decb8992ae2eb82` (`2026.1.60-dev`) → `2026.1.61-dev`. Follow the corrected command paths and use existing application, compiler, baker and documentation checks; archived CI and historical test reports are not current acceptance. DXBC/HLSL and active-frame GUI descriptions reflect existing implementation, not new backend support.
+- Documentation only: no runtime API, setting value, save/resource format, wire `0.0.75` or Managed ABI `9` change, and no data conversion. Finish the coordinated reference/generated updates before publication. Rollback restores matching documentation and source artifacts.
+
+## 2026.1.60-dev - 2026-10-22
+
+### Documentation
+
 - Reconcile documentation ownership, manifests, diagrams, translation descriptions, native coding contracts and runtime explanations with current source. Distinguish archived upstream/site evidence from fork publication and preserve actual updater/persistence limitations.
 - Complete retirement of owned Python/build-tool fixtures and remove their validation-project registration. Existing production documentation checks remain available.
 

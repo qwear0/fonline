@@ -149,4 +149,4 @@ Run [Examples/PackagingMatrix](../../../../Examples/PackagingMatrix/) plus proje
 
 ## Source paths inspected
 
-`Source/Applications/Server{App,HeadlessApp,ServiceApp,DaemonApp}.cpp`, `Source/Frontend/Application{Init,Headless}.cpp`, `Source/Essentials/Platform.cpp`, `Source/Server/Server.cpp`, `Source/Common/Settings.inc`, `BuildTools/cmake/stages/Applications.cmake`, `BuildTools/package.py`, `BuildTools/tests/test_docs_release_operations.py`, and `Examples/PackagingMatrix`.
+`Source/Applications/Server{App,HeadlessApp,ServiceApp,DaemonApp}.cpp`, `Source/Frontend/Application{Init,Headless}.cpp`, `Source/Essentials/Platform.cpp`, `Source/Server/Server.cpp`, `Source/Common/Settings.inc`, `BuildTools/cmake/stages/Applications.cmake`, `BuildTools/package.py`, and `Examples/PackagingMatrix`. The former release-operations unit suite is removed; existing CLI/package/application readiness and shutdown probes remain the verification route.

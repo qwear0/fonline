@@ -5,7 +5,7 @@ locale: ru
 document_id: documentation-home
 permalink: /Docs/ru/
 ---
-<!-- docs-translation: {"document_id":"documentation-home","locale":"ru","source_path":"Docs/en/index.md","source_sha256":"17a1640c76a8e35cd809bf887b801ada2dd3dc4f80c7e8dbed6f64a0ed767853"} -->
+<!-- docs-translation: {"document_id":"documentation-home","locale":"ru","source_path":"Docs/en/index.md","source_sha256":"cbe40875bcc1aced061d21fb9bfa966ecd42eb02577b3b9b7cb1d9cc5a61bfc5"} -->
 # Документация движка FOnline
 
 [Правила версий движка](how-to/release/versioning.md) и [история изменений](reference/changelog.md) определяют выпуски и обязательную работу по миграции.
@@ -26,8 +26,7 @@ FOnline. Она предназначена для разработчиков и�
   настольный клиент, загрузку карты и управляемое сервером взаимодействие.
 - [Первое изменение контента](tutorials/first-content.md) проводит
   локализованные данные прототипа через запекание и runtime-поиск.
-- [Первый автоматизированный тест](tutorials/first-test.md) добавляет проверки
-  метаданных, серверного контента и результата, видимого клиенту.
+- [Первый автоматизированный тест](tutorials/first-test.md) объясняет сохранённые metadata/server-content/client-visible application checks и пределы их evidence; восстановления unit suites или добавления тестов не требует.
 - [Минимальный проект](../../Examples/MinimalProject/README.ru.md) и
   [минимальный многопользовательский проект](../../Examples/MinimalMultiplayer/README.ru.md)
   являются принадлежащими движку исполняемыми исходниками учебных материалов.
@@ -168,11 +167,7 @@ FOnline. Она предназначена для разработчиков и�
   [сопровождение сторонних библиотек](contributing/third-party/) определяют
   низкоуровневые правила для разработчиков движка.
 
-Активный production-план и история проверок остаются в
-[`Docs/ProductionDocumentationPlan.md`](https://github.com/cvet/fonline/blob/master/Docs/ProductionDocumentationPlan.md),
-[`Docs/_meta/DocumentationBacklog.md`](https://github.com/cvet/fonline/blob/master/Docs/_meta/DocumentationBacklog.md) и
-[`Docs/_meta/DocumentationVerificationReport.md`](https://github.com/cvet/fonline/blob/master/Docs/_meta/DocumentationVerificationReport.md)
-до запланированного переноса в `_meta/` с долговечными редиректами.
+Используйте локальный [production roadmap](../ProductionDocumentationPlan.md) как планирование/историю, не upstream deployment guarantee. Прежние [expansion plan](../_meta/DocumentationExpansionPlan.md), [backlog](../_meta/DocumentationBacklog.md) и [verification history](../_meta/DocumentationVerificationReport.md) уже находятся в `Docs/_meta/` с durable pointers из старых flat paths. Эти записи и upstream public URLs не доказывают current fork deployment или corpus acceptance; используйте результаты точной ревизии.
 
 ## Граница ответственности
 

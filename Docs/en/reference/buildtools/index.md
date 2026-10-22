@@ -20,8 +20,8 @@ This reference is generated from the same `argparse.ArgumentParser` used by the 
 | Stability | <code>internal</code> |
 | Since | Not declared |
 | Support policy | No versioned CLI support line is declared; pin an engine revision in automation. |
-| Source parser | [BuildTools/buildtools.py](https://github.com/cvet/fonline/blob/master/BuildTools/buildtools.py) |
-| Contract digest | <code>fe4230108f54098166ceb508251225ab910d03b975cd7bd5267b7c212341d27d</code> |
+| Source parser | [BuildTools/buildtools.py](https://github.com/qwear0/fonline/blob/master/BuildTools/buildtools.py) |
+| Contract digest | <code>1e4dda702d6f4d465a27e7a326e5742b779df6ee668dba4415c39f782ba21a73</code> |
 
 ## Coverage
 

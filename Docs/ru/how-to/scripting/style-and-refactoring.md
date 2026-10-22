@@ -5,7 +5,7 @@ locale: ru
 document_id: angelscript-style
 permalink: /Docs/ru/how-to/scripting/style-and-refactoring.html
 ---
-<!-- docs-translation: {"document_id":"angelscript-style","locale":"ru","source_path":"Docs/en/how-to/scripting/style-and-refactoring.md","source_sha256":"2dfcab0adc40347a72b0f9dea4c9867ff226e9b159217a0854f86b889fbf2e44"} -->
+<!-- docs-translation: {"document_id":"angelscript-style","locale":"ru","source_path":"Docs/en/how-to/scripting/style-and-refactoring.md","source_sha256":"b646a5794f2d3e63e8e34de2a5b4b34c0ad7f4dabcdc3e0652345adce6b47c39"} -->
 # Стиль AngelScript и рефакторинг
 
 > Документация движка. Это руководство определяет переиспользуемый контракт исходного кода, форматирования, модулей и рефакторинга AngelScript, поддержанный текущими compiler, formatter wrapper, публичными examples и тестами FOnline. Проект игры владеет своей предметной лексикой, каталогом модулей, конкретным formatter layout, генерируемыми форматами проекта, игровой архитектурой и политикой миграций.
@@ -38,7 +38,7 @@ permalink: /Docs/ru/how-to/scripting/style-and-refactoring.html
 - сохраняйте авторитетную мутацию на владеющей стороне, а изменяемое состояние на владеющем объекте движка или сущности;
 - используйте точные атрибуты функций и объявлений, которые требует dispatcher или generator;
 - входите в принадлежащие dispatcher функции с атрибутами через маршрут dispatcher;
-- по умолчанию оставляйте module globals только const: `Script.MutableGlobalsAllowedNamespaces` является узким compatibility escape hatch для явно владеемых legacy namespaces, а не разрешением на mutable state без владельца;
+- по умолчанию оставляйте module globals только const: `AngelScript.MutableGlobalsAllowedNamespaces` является узким compatibility escape hatch для явно владеемых legacy namespaces, а не разрешением на mutable state без владельца;
 - записывайте nullable handles как `T?`, сужайте перед использованием и применяйте non-null тип, когда отсутствие не входит в контракт;
 - изменяйте авторские входы и регенерируйте производные `.fos`, не исправляя сгенерированный результат вручную;
 - классифицируйте изменение как mechanical, structural, behavioral или contract work; используйте небольшие узкие batches и добавляйте migration/compatibility proof для contract work;
@@ -110,7 +110,7 @@ Cross-namespace вызовы должны называть владельца. �
 
 ### Поддерживаемая команда и версия
 
-После переноса high-level CoreScripts движок не владеет одним универсальным `.clang-format` layout проектного AngelScript. Проект обязан закрепить свой layout и версию clang-format. Переиспользуемый wrapper `BuildTools/buildtools.py format-source` требует clang-format 20, сохраняет BOM и line-ending convention файла и исправляет специфичные для FOnline пробелы nullable suffix, cast, array и named arguments, не меняя literals и comments.
+После переноса high-level CoreScripts движок не владеет одним универсальным `.clang-format` layout проектного AngelScript. Проект обязан закрепить свой layout и версию clang-format. Переиспользуемый wrapper `BuildTools/buildtools.py format-source` требует clang-format 20, удаляет UTF-8 BOM и сохраняет выбор LF/CRLF файла и исправляет специфичные для FOnline пробелы nullable suffix, cast, array и named arguments, не меняя literals и comments.
 
 Из репозитория движка выполните:
 
@@ -121,7 +121,7 @@ git diff --exit-code
 
 `format-source` форматирует поддерживаемые файлы внутри Engine `Source`; он не обнаруживает отдельное script tree использующего движок проекта. Проект должен применять документированный formatter к собственным `.fos` и отдельно запускать команду движка, когда изменён исходный код submodule.
 
-BuildTools использует `FO_CLANG_FORMAT`, если он задан, иначе ищет `clang-format-20`, затем `clang-format`, и отклоняет binary, major version которого не равен 20. CI движка повторно запускает wrapper и требует пустой diff.
+BuildTools использует `FO_CLANG_FORMAT`, если он задан, иначе ищет `clang-format-20`, затем `clang-format`, и отклоняет binary, major version которого не равен 20. Запускайте wrapper локально и проверяйте diff; workflows этого форка архивированы и не являются активным CI.
 
 ### Что исправляет wrapper
 
@@ -166,7 +166,7 @@ Wrapper читает и записывает UTF-8, удаляет UTF-8 BOM, с
 
 ### Изменяемое состояние и globals
 
-После module build backend отклоняет каждый изменяемый module-level global, namespace которого не совпадает с настроенным префиксом в `Script.MutableGlobalsAllowedNamespaces`. Const globals принимаются. Поэтому пустой список по умолчанию требует const-only module globals.
+После module build backend отклоняет каждый изменяемый module-level global, namespace которого не совпадает с настроенным префиксом в `AngelScript.MutableGlobalsAllowedNamespaces`. Const globals принимаются. Поэтому пустой список по умолчанию требует const-only module globals.
 
 Предпочитайте состояние, которым владеет engine instance, entity или явный lifecycle object. Если legacy project временно требует mutable globals, разрешайте только самый узкий namespace prefix, фиксируйте владельца и условие удаления и тестируйте startup на каждой стороне. Prefix matching означает, что широкая запись может разрешить больше namespaces, чем рассчитывал автор.
 
@@ -195,7 +195,7 @@ Attributes являются контрактами compiler и dispatcher, а н
 
 Встроенный direct-call-blocking набор включает `Event`, `TimeEvent`, `AnimCallback`, `PropertyGetter`, `PropertySetter`, `PropertyMigrator`, `ProtoMigrator`, `ServerRemoteCall`, `ClientRemoteCall`, `AdminRemoteCall`, `ItemTrigger`, `ItemStatic`, `ModuleInit` и `InvokeEntry`. Script function с одним из этих attributes должна вызываться через владеющий dispatcher или API, а не как обычный helper.
 
-Проекты могут добавлять dispatcher-owned attributes через `Script.ExtraDirectCallBlockingAttributes`. `Script.AttributedFunctionDirectCallAllowedNamespaces` может по префиксу освободить caller namespaces ради совместимости. Сохраняйте оба списка узкими и временными; когда поведению действительно нужны direct и dispatched entry, предпочтительнее выделить обычный helper.
+Проекты могут добавлять dispatcher-owned attributes через `AngelScript.ExtraDirectCallBlockingAttributes`. `AngelScript.AttributedFunctionDirectCallAllowedNamespaces` может по префиксу освободить caller namespaces ради совместимости. Сохраняйте оба списка узкими и временными; когда поведению действительно нужны direct и dispatched entry, предпочтительнее выделить обычный helper.
 
 Validator также проверяет ownership callback API, включая event subscription, time-event APIs, animation callbacks и регистрацию property getter/setter. Attribute с правильным написанием, но неправильным маршрутом всё равно нарушает контракт.
 
@@ -353,7 +353,7 @@ Callback обязан использовать смысловые селекто
 
 | Изменение | Необходимое свидетельство |
 | --- | --- |
-| Исходный код Engine CoreScript | Engine `format-source`, чистый diff, компиляция затронутых scripts, focused Engine test |
+| Принадлежащий Engine пример `.fos` | Engine `format-source`, проверенный diff, compile/bake затронутых scripts, соответствующий application path примера |
 | Авторский `.fos` проекта | Project formatter, `CompileAngelScript` или эквивалент для всех ролей, focused project test |
 | Side guard или sort directive | Компиляция каждой затронутой стороны, startup или initialization test, когда важен порядок |
 | Политика mutable globals | Startup compile/bake с точными namespace settings, lifecycle test, документированное условие удаления исключения |
@@ -362,7 +362,7 @@ Callback обязан использовать смысловые селекто
 | Persisted, reflected, remote или content identifier | Contract disposition или migration и runtime tests producer/consumer |
 | Широкий рефакторинг | Повторять применимые gates для каждого малого пакета; завершить aggregate validation проекта |
 
-CI движка запускает `buildtools.py format-source` и `git diff --exit-code`. `BuildTools/tests/test_docs_angelscript_style.py` закрепляет маршрут документации, compiler ordering и side macros, настройки mutable globals и attributes, правила namespace/guard/encoding публичных examples, formatter repairs, external evidence, localization и включение в workflow.
+Используйте существующие formatter, compile/bake затронутых ролей и прямые проверки приложения. Собственные unit и structural suites форка удалены; не восстанавливайте их и не добавляйте новые автоматизированные тесты без явного запроса. Архивированные workflows не подтверждают текущую проверку.
 
 ## Диагностика отказов
 
@@ -399,13 +399,13 @@ CI движка запускает `buildtools.py format-source` и `git diff --
 
 - script discovery, first-line sorting, side macros, module construction или bytecode pipeline в `AngelScriptBackend.cpp`;
 - direct-call blockers, marker propagation, callback validation или special attributes в `AngelScriptAttributes.*`;
-- `Script.MutableGlobalsAllowedNamespaces`, `Script.AttributedFunctionDirectCallAllowedNamespaces` или `Script.ExtraDirectCallBlockingAttributes`;
+- `AngelScript.MutableGlobalsAllowedNamespaces`, `AngelScript.AttributedFunctionDirectCallAllowedNamespaces` или `AngelScript.ExtraDirectCallBlockingAttributes`;
 - `.fos` patterns, discovery/version checks clang-format, repair logic, encoding, line-ending или EOF behavior в `BuildTools/buildtools.py`;
 - переиспользуемого formatter wrapper, проектного `.clang-format` или сопровождаемого layout публичных examples;
 - владения generated declarations или связанных с этим руководством контрактов lifecycle/nullability;
 - external project evidence, используемых для отделения переиспользуемых правил от политики проекта.
 
-Запустите focused documentation test, localization check, snippet check, site generation check и standalone documentation validator. Если изменилось поведение Engine `.fos`, также запустите formatter, скомпилируйте каждую затронутую сторону и выполните владеющие native/script tests.
+После регенерации затронутых результатов запустите соответствующие проверки генераторов документации, localization check, snippet check и standalone documentation validator. Если изменилось поведение `.fos`, также запустите существующий formatter, compile/bake каждой затронутой роли и проверьте путь приложения; одна компиляция не доказывает игровое поведение.
 
 ## Проверенные исходные пути
 
@@ -420,5 +420,3 @@ CI движка запускает `buildtools.py format-source` и `git diff --
 - `Source/Scripting/AngelScript/AngelScriptDocumentMigrations.cpp`
 - `Source/Tests/Test_AngelScriptDocumentMigrations.cpp`
 - `Source/Tests/Test_AngelScriptAttributes.cpp`
-- `Source/Tests/Test_AngelScriptBaker.cpp`
-- `BuildTools/tests/test_docs_angelscript_style.py`

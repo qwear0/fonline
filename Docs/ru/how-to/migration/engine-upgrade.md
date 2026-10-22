@@ -7,7 +7,7 @@ permalink: /Docs/ru/how-to/migration/engine-upgrade.html
 ---
 
 # Обновление Engine во встраивающем проекте
-<!-- docs-translation: {"document_id":"engine-upgrade-guide","locale":"ru","source_path":"Docs/en/how-to/migration/engine-upgrade.md","source_sha256":"5a01d1ee9502f61fbff2bda02a5b2ef378835034922a0fe593e1c86606616374"} -->
+<!-- docs-translation: {"document_id":"engine-upgrade-guide","locale":"ru","source_path":"Docs/en/how-to/migration/engine-upgrade.md","source_sha256":"41d7dc4edfde68fede472ffa37332426c924238c9617cd86273f033f72b2a95f"} -->
 Это руководство задаёт повторяемую процедуру обновления Engine в игровом
 репозитории. Она охватывает интеграцию исходников, сгенерированные контракты,
 контент, сохранения, сеть, client runtime и документацию.
@@ -205,7 +205,7 @@ deployment, readiness, graceful stop и rollback по
 
 Сначала выполните самые узкие проверки, затем всю заявленную матрицу проекта:
 
-- Engine unit tests для изменённых native domains;
+- affected-role native builds и existing CLI/application checks изменённых native domains; собственные unit suites/coverage targets удалены, workflows архивированы, новые автоматизированные тесты/инфраструктура требуют явного запроса;
 - configure и compile каждым поддерживаемым host compiler;
 - `CompileAngelScript` и/или `CompileManagedScripts` для каждого включённого проектом scripting backend;
 - `ForceBakeResources` при изменении data graph;

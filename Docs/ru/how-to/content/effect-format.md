@@ -5,7 +5,7 @@ locale: ru
 document_id: effect-format-guide
 permalink: /Docs/ru/how-to/content/effect-format.html
 ---
-<!-- docs-translation: {"document_id":"effect-format-guide","locale":"ru","source_path":"Docs/en/how-to/content/effect-format.md","source_sha256":"dce3f7ec64a38feb365c46e8fb1a36c0fd1b89ddc976d03d7720b6437b6da145"} -->
+<!-- docs-translation: {"document_id":"effect-format-guide","locale":"ru","source_path":"Docs/en/how-to/content/effect-format.md","source_sha256":"c30c10f4875aeaafdd129ea9a4f619f3340204581bb53eb8a8903aff569c0986"} -->
 # Формат эффектов и runtime шейдеров
 
 FOnline использует файлы `.fofx` для авторских GPU-эффектов. Один исходный файл
@@ -38,7 +38,6 @@ FOnline использует файлы `.fofx` для авторских GPU-э
   и API script value;
 - `Source/Frontend/Rendering-*.cpp`: загрузка шейдеров backend-ов, pipeline-ы,
   привязка дескрипторов и отрисовка;
-- `Source/Tests/Test_EffectBaker.cpp`: исполняемые примеры запекания и ошибок.
 
 Эта страница является переиспользуемой документацией Engine. Подключаемый
 проект владеет каталогом эффектов, порядком переопределения resource pack,
@@ -474,7 +473,6 @@ Game.ClearEffectScriptValues(effectType, effectSubtype);
 | `spv_sdl` | путь SDL_GPU Vulkan |
 | `glsl` | desktop OpenGL (`330`) |
 | `glsl_es` | OpenGL ES/WebGL (`300 es`) |
-| `hlsl` | Промежуточный HLSL Shader Model `4.0`, компилируемый при запекании |
 | `dxbc` | Bytecode Direct3D 11, собранный из HLSL через vendored vkd3d-shader |
 | `msl_mac` | SDL_GPU Metal на macOS |
 | `msl_ios` | SDL_GPU Metal на iOS |
@@ -484,6 +482,9 @@ Game.ClearEffectScriptValues(effectType, effectSubtype);
 в этот профиль, запекание завершается ошибкой; эффекты 3D-моделей его не
 получают. Настройка по умолчанию выключена. Это opt-in для 2D-only Direct3D,
 а не поддержка 9.1/9.2.
+
+HLSL Shader Model `4.0` существует только как временный вход компилятора DXBC;
+сохранённого варианта `hlsl` нет.
 
 Схема имён:
 
@@ -560,15 +561,14 @@ Engine предоставляет эффекты минимального про
 
 ```powershell
 python BuildTools\docs_effect_format.py --write
-python BuildTools\tests\test_docs_effect_format.py
 python BuildTools\docs_effect_format.py --check
 python BuildTools\docs_contract_diff.py --help
 ```
 
-Запустите focused нативные тесты baker-а через настроенную unit-test цель
-подключаемого проекта. Владеющий файл тестов:
-`Source/Tests/Test_EffectBaker.cpp`. Изменения состояния renderer-а также
-требуют проверки соответствующего backend-а и видимой сцены.
+Собственные unit suites движка удалены. Запеките представительные эффекты и
+проверьте все сохраняемые варианты и reflection metadata. Изменения состояния
+renderer требуют соответствующего backend и видимой сцены; генерация по
+исходникам не исполняет shader и не проверяет драйвер.
 
 Для подключаемого проекта:
 
@@ -588,8 +588,6 @@ python BuildTools\docs_contract_diff.py --help
 - `BuildTools/EffectFormatInterface.json`;
 - `Docs/en/how-to/content/effect-format.md`;
 - сгенерированные `Docs/generated/effect-format.json` и страницы справочника;
-- `BuildTools/tests/test_docs_effect_format.py`;
-- `Source/Tests/Test_EffectBaker.cpp` или владеющий тест renderer/runtime;
 - [Baking Pipeline](../../explanation/content-pipeline/baking.md), когда меняется поведение
   выходов/компилятора;
 - [Frontend и рендеринг](../../explanation/rendering/), когда меняется

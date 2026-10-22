@@ -5,7 +5,7 @@ locale: ru
 generated: true
 ---
 
-<!-- docs-translation: {"document_id":"generated-cli-commands","locale":"ru","source_path":"Docs/en/reference/buildtools/commands.md","source_sha256":"e05ca437217ff4b3889c5acf6f821df66f5fe08ffb95b44d15ad9c98162bbd62"} -->
+<!-- docs-translation: {"document_id":"generated-cli-commands","locale":"ru","source_path":"Docs/en/reference/buildtools/commands.md","source_sha256":"f25f521f7b765553b5278db34f7698dc80d4dfc664b1ba66e1355ef638707b00"} -->
 
 # Команды BuildTools
 
@@ -13,7 +13,7 @@ generated: true
 
 [Индекс справочника](index.md) | [Команды](commands.md) | [Каноническая JSON-модель](../../../generated/cli.json) | [Контракт генерации](../metadata/)
 
-Запускайте команды из корня репозитория движка через `python BuildTools/buildtools.py <command>`. Точные блоки usage и справки ниже созданы исполняемым парсером.
+Запускайте команды сборки проекта из корня подключающего проекта через `python Engine/BuildTools/buildtools.py <command>`; по умолчанию проект ищется в текущем каталоге. Точные блоки usage и справки ниже созданы исполняемым парсером.
 
 <a id="entry-cli-buildtools-command-env-947ff38c97"></a>
 ## `env`
@@ -59,7 +59,7 @@ usage: buildtools.py build [-h] platform target [config]
 | Стабильный ID | Аргумент | Вид | Обязателен | Значения | Варианты | По умолчанию | Описание |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | <a id="entry-cli-buildtools-command-build-argument-platform-1bd10776e8"></a><code>cli.buildtools.command.build.argument.platform</code> | <code>platform</code> | <code>positional</code> | да | <code>1</code> | - | - | Ключ платформы движка, например linux, win64, web или android-arm64. |
-| <a id="entry-cli-buildtools-command-build-argument-target-54402fb830"></a><code>cli.buildtools.command.build.argument.target</code> | <code>target</code> | <code>positional</code> | да | <code>1</code> | - | - | Профиль цели BuildTools, например client, server, baker или unit-tests. |
+| <a id="entry-cli-buildtools-command-build-argument-target-54402fb830"></a><code>cli.buildtools.command.build.argument.target</code> | <code>target</code> | <code>positional</code> | да | <code>1</code> | - | - | Профиль цели BuildTools, например client, server, mapper или baker |
 | <a id="entry-cli-buildtools-command-build-argument-config-f6fde5057e"></a><code>cli.buildtools.command.build.argument.config</code> | <code>config</code> | <code>positional</code> | нет | <code>?</code> | - | <code>Release</code> | Конфигурация сборки CMake. |
 
 ### Точный вывод `--help`
@@ -69,7 +69,7 @@ usage: buildtools.py build [-h] platform target [config]
 
 positional arguments:
   platform    engine platform key, such as linux, win64, web, or android-arm64
-  target      BuildTools target profile, such as client, server, baker, or unit-tests
+  target      BuildTools target profile, such as client, server, mapper, or baker
   config      CMake build configuration
 
 options:

@@ -29,8 +29,6 @@ stable IDs, source anchors, or machine-readable values matter.
   and callback synchronization. `ApplicationHeadless.cpp` defines the no-audio
   headless boundary.
 - `Source/Common/Settings.inc` owns immutable audio startup settings.
-- `Source/Tests/Test_AudioBaker.cpp`, `Test_AudioBakerAcm.cpp` and `Test_AudioManager.cpp` execute the
-  focused native contract.
 - `BuildTools/AudioInterface.json` is the checked documentation contract.
 
 ## Supported resources
@@ -66,8 +64,10 @@ Bakers = Audio
 
 Audio is no longer a `RawCopy` resource family. WAV is converted according to
 `Baking.AudioVorbisQuality`; authored Ogg is validated before passthrough.
-All routes verify that the output opens as Vorbis. The baker reports encoded
-and passthrough counts plus input/output byte totals.
+Only authored Ogg takes the pre-write `ov_test_callbacks` probe; that probe
+recognizes Vorbis headers, not a full decode. Generated WAV/ACM output is encoded
+and written without reopening it. The baker reports encoded and passthrough
+counts plus input/output byte totals.
 
 `AudioManager.IndexFiles()` records paths with suffixes listed by
 `Audio.SoundFileExtensions` (normally `wav ogg`). The catalog is an inspection
@@ -105,9 +105,9 @@ uint sound = Game.PlaySound("Sfx/Generator.wav", attenuation, pan);
 ```
 
 - attenuation at or below zero returns handle zero before file I/O;
-- pan is clamped to `-1..1`; negative values attenuate the right channel and
-  positive values attenuate the left;
-- the near channel remains at unity, so panning does not boost into clipping.
+- supply pan in `-1..1`; the API forwards it without clamping;
+- within that intended range, negative values attenuate the right channel,
+  positive values attenuate the left, and the near channel remains at unity.
 
 When the source or listener moves, update the existing instance:
 
@@ -149,8 +149,10 @@ that includes the track duration.
 bounds, and respects odd-byte padding. It requires one usable `fmt ` chunk and
 a non-empty `data` chunk. Supported formats are PCM (`1`) at 8/16/24/32 bits
 and IEEE float (`3`) at 32 bits. Channel count and sample rate must be positive;
-block alignment must match the declared frame shape; truncated frames fail the
-bake.
+block alignment must match the declared frame shape. Chunk data is clamped to
+available bytes, and the whole-frame count is rounded down: a partial trailing
+frame is discarded; no whole frame is an error. A successful bake is not proof
+that an export was untruncated.
 
 Every accepted sample is normalized to signed 16-bit PCM before Vorbis
 encoding. Test the exact source export: metadata layout and malformed format
@@ -184,7 +186,8 @@ concurrently.
 
 ### Ogg Vorbis runtime
 
-Authored Ogg and generated output are opened with libvorbisfile during baking.
+Only authored Ogg is probed with libvorbisfile during baking; generated output
+is not reopened and the passthrough probe does not fully decode the stream.
 At runtime `AudioManager` opens every audio resource as Vorbis and decodes an
 initial portion of 64 KiB on native targets or 128 KiB on Web. Short files
 become resident; longer files retain `OggStream` and continue decoding from the
@@ -210,9 +213,10 @@ device lock. Native extensions must not mutate mixer storage from callbacks.
 frontends leave audio inactive. In that state `PlayMusic` is a successful no-op
 and `PlaySound` returns handle zero.
 
-These results are not a resource-existence check. Baking proves that a path and
-payload are valid; a visible client with an active device proves conversion,
-callback scheduling, mixing, and audible output.
+These results are not a resource-existence check. A bake exercises input parsing,
+encoding or passthrough delivery, but does not prove full output decoding. Use a
+visible client with an active device for conversion, callback scheduling,
+mixing, and audible evidence for the assets actually played.
 
 ## Recommended project practice
 
@@ -240,19 +244,14 @@ replace the baker gate.
 
 ## Validation workflow
 
-Run documentation and focused native checks:
+Run the source-backed documentation check:
 
 ```powershell
 python BuildTools\docs_audio.py --check
-python -m pytest BuildTools\tests\test_docs_audio.py
-cmake --build <build-dir> --config RelWithDebInfo --target RunUnitTests
 ```
 
-`Test_AudioBaker` covers PCM/float WAV conversion, native Ogg passthrough, and
-invalid inputs, plus optional ACM output and disabled requests.
-`Test_AudioBakerAcm` pins unpacker samples, truncated-body padding, rejection
-diagnostics and the Fallout channel convention. `Test_AudioManager` covers decoder/mixer output, pan, placed
-starts, live updates, handle expiry, and synchronization-relevant behavior.
+This fork's engine-owned unit suites are retired. Documentation checks inspect
+source contracts; they do not execute encoders, decoders, or mixer callbacks.
 
 Then bake the embedding project's real pack. Confirm preserved paths, inspect
 baker counters, and open every output as Vorbis. In a visible client, play a
@@ -274,5 +273,5 @@ Changes to accepted inputs, baker conversion, preserved paths, Vorbis
 streaming, handles, placement, repeat timing, script signatures, live volume,
 device conversion, package delivery, or headless behavior are
 documentation-bearing. Update `BuildTools/AudioInterface.json` and this guide,
-regenerate the reference, run focused tests and the aggregate contract diff,
+regenerate the reference, repeat the relevant bake/playback checks and contract diff,
 and include migration guidance for public behavior changes.

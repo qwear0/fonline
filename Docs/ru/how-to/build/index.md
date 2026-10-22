@@ -7,7 +7,7 @@ permalink: /Docs/ru/how-to/build/
 ---
 
 # Процесс сборки
-<!-- docs-translation: {"document_id":"build-workflow","locale":"ru","source_path":"Docs/en/how-to/build/index.md","source_sha256":"91f5eb4f89c9119fe681f12cd3df4355e4915d7ae8f935d792512f7c2170a7e8"} -->
+<!-- docs-translation: {"document_id":"build-workflow","locale":"ru","source_path":"Docs/en/how-to/build/index.md","source_sha256":"54a91e4a49f779ddafbd3fcb8e02fd936e532cea08f03798e57673d647057c6e"} -->
 Этот документ объясняет, как работать со сборками FOnline, не перенося
 предположения одного проекта в другой.
 
@@ -34,8 +34,6 @@ permalink: /Docs/ru/how-to/build/
 - `../BuildTools/cmake/stages/Packages.cmake`
 - `../BuildTools/cmake/stages/Finalize.cmake`
 - `../BuildTools/cmake/helpers/*.cmake`
-- `../Source/Applications/TestingApp.cpp`
-- `../Source/Tests/README.md`
 
 ## Используйте игровой проект как корень сборки
 
@@ -83,7 +81,7 @@ python3 validate.py
 минимального AngelScript-проекта, запускают сервер без networking с in-memory
 database и требуют lifecycle markers из руководства
 [Первый headless-проект FOnline](../../tutorials/first-project.md). Закрепленные
-Windows- и Linux-lanes проверены в CI.
+Windows- и Linux-маршруты запускаются локально по выбору; архивные workflows не дают текущего CI-свидетельства для форка.
 
 Следующий маршрут движка собирает desktop client, headless client, headless
 server и baker, затем проверяет metadata, content, login, загрузку карты,
@@ -220,16 +218,14 @@ runtime state.
 
 Если меняются package declarations или payload behavior, обновите
 `BuildTools/PackageInterface.json`, перегенерируйте и проверьте model/pages,
-запустите `validate_package_interface.cmake` и `test_packaging_matrix.py`, затем
+сверьте объявление пакета с исполняемым parser, затем
 соберите `RunPackagingChecks`, `RunTutorialPackageChecks` или более узкий product
 package target из владеющего примера или проекта. Эти example targets являются
 необязательными и не входят в обязательный реестр проверок Engine. Engine
 fixtures доказывают native raw/archive/config/updater mechanics, но не заменяют
 signing, install, deployment или rollback lane игры.
 
-- **Runtime C++:** соберите и запустите project unit-test target; выбрать
-  focused suites и понять generated test targets поможет
-  [Тестирование](../../contributing/testing/).
+- **Runtime C++:** сконфигурируйте и соберите минимальную затронутую цель приложения, затем проверьте изменённое поведение через CLI/API/UI; следуйте [правилам проверки](../../contributing/testing/).
 - **CMake/BuildTools:** повторите configure из чистого или подходящего build
   directory и выполните затронутый build/package target; stage ownership
   описан в [конвейере BuildTools](../../reference/cmake-and-buildtools/pipeline.md).
@@ -263,8 +259,7 @@ signing, install, deployment или rollback lane игры.
 - **Configuration/resources:**
   [Конфигурация и источники данных](../../reference/settings/configuration-and-data-sources.md) и
   [Baking Pipeline](../../explanation/content-pipeline/baking.md).
-- **Essentials/low-level utilities:** [Essentials](../../reference/native/essentials.md) и
-  соответствующие tests из [Тестирования](../../contributing/testing/).
+- **Essentials/low-level utilities:** следуйте [Essentials](../../reference/native/essentials.md), компилируйте затронутых потребителей и используйте существующую диагностику или непосредственную проверку приложения.
 
 ## Поддерживаемость документации сборки
 
@@ -278,8 +273,7 @@ signing, install, deployment или rollback lane игры.
    игровому проекту.
 2. Для BuildTools changes повторите configure самого узкого preset и выполните
    generated target, использующий измененный stage.
-3. Для runtime changes сначала выполните focused tests, затем project
-   `RunUnitTests`, когда это практично.
+3. При изменении runtime соберите затронутое приложение и непосредственно проверьте поведение; unit-test-цель движка не создаётся.
 4. Для package/platform changes обновите владеющий package/debug document в том
    же изменении.
 5. При изменении самого build workflow обновите

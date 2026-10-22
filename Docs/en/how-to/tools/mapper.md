@@ -127,6 +127,10 @@ The catalog is refreshed when Mapper regains focus. Changed source files or depe
 
 The optional `Mapper.ParticlePreviewEffect`, `Mapper.ParticlePreviewSeed`, `Mapper.ParticlePreviewScale`, and `Mapper.ParticlePreviewPrewarm` settings exercise the same path during startup. They are useful for reproducible smoke tests without making a project-specific launch profile part of the engine contract.
 
+Direction changes are backend-limited: SPARK accepts look direction, while
+Effekseer rejects a nonzero angle. Keep Effekseer direction at zero in map and
+focused previews and inspect setup diagnostics.
+
 ### SPARK source editor
 
 Open **Windows -> SPARK particle editor** to browse raw `.spark` sources and open one graph/preview window per asset. Saving writes through the raw-resource filesystem, reindexes baked resources, and invalidates the saved asset's `.spk` sprite cache. Closing a modified window offers Save, Discard, and Cancel.

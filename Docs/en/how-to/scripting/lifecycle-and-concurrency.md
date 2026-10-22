@@ -29,7 +29,9 @@ does not prove that another event, setter, callback, or direct script entry
 starts empty or carries the same cover. Inspect its owning native dispatcher
 before stating an initial cover.
 
-Use this decision for every server entry point that accesses an entity:
+First choose the runtime mode. With `Server.SingleThreadedLogic = True`, logic runs on one worker and entity-cover validation/acquisition is bypassed: scripts need no synchronization. Suspension still invalidates mutable-state assumptions. The cover/lock requirements below apply to multithreaded mode (`False`); compiler `[[Async]]` propagation and separately configured managed analyzers remain distinct from this runtime exemption.
+
+Use this decision for every multithreaded server entry point that accesses an entity:
 
 `ServerEngine::RunScriptContext()` creates the nested `SyncContext` that can
 hold an entity cover; it does not itself cover any entity. The owning native
@@ -149,7 +151,7 @@ The runtime indexes valid init functions, stores their priorities, and uses a st
 3. abort startup if any invocation fails;
 4. freeze globals after all functions complete.
 
-`Game.SetConstGlobalVar(...)` is therefore an initialization-only operation. It throws after the freeze boundary. The baker also rejects mutable module-level globals unless their namespace is explicitly allowed by `Script.MutableGlobalsAllowedNamespaces`.
+`Game.SetConstGlobalVar(...)` is therefore an initialization-only operation. It throws after the freeze boundary. The baker also rejects mutable module-level globals unless their namespace is explicitly allowed by `AngelScript.MutableGlobalsAllowedNamespaces`.
 
 Prefer module init for registration and immutable lookup construction. Do not start gameplay work that assumes the world, current player, map, or network session already exists. The client fires `Game.OnStart` after module initialization; the server fires its initialization lifecycle events after `InitModules()` in the server startup sequence.
 
@@ -248,7 +250,7 @@ Identifiers are often safer continuation state than an assumed-valid entity snap
 
 ## Server entity synchronization
 
-Server callbacks can run concurrently. The engine validates authoritative entity access against the current thread's `SyncContext`; an uncovered read or write is a contract error, not a benign race to ignore.
+In multithreaded mode, server callbacks can run concurrently. The engine validates authoritative entity access against the current thread's `SyncContext`; an uncovered read or write is a contract error, not a benign race to ignore.
 
 `Game.Sync(...)` is the script-visible acquisition boundary:
 
@@ -307,7 +309,7 @@ resolve entity -> Game.Sync(entity) -> read/mutate -> Yield(...)
 resolve or revalidate entity -> Game.Sync(entity) -> re-read -> decide/mutate
 ```
 
-Native extension code has an additional `EnsureEntitySynced(...)` expansion helper for engine-owned operations that pull a covered descendant or freshly created entity into the current context. It is not a replacement for the script-visible `Game.Sync(...)` contract and must not be exposed as a project workaround for an incorrectly scoped operation.
+Native extension code may use `EnsureEntitySynced(...)` only to retain the own lock of an already-covered entity without releasing caller cover. Fresh unpublished entities use the private trusted `EnsureFreshEntitySynced()` registration boundary; neither operation acquires an omitted existing dependency. It is not a replacement for the script-visible `Game.Sync(...)` contract and must not be exposed as a project workaround for an incorrectly scoped operation.
 
 ## Mutable state ownership
 
@@ -333,7 +335,7 @@ Managed C# enters the same backend-neutral `ScriptSystem`, entity, property, eve
 - Event, timer, remote-call, property, and other engine-dispatched handlers use their managed attributes from `CoreScripts/Attributes.cs`. A dispatcher-owned attributed method is entered through its dispatcher, not invoked directly merely because C# can name it.
 - `async void` is rejected. Awaitable handlers and named calls return `Task`; use `Task<T>` only where the caller contract consumes a result. Inbound remote-call return values are ignored by the wire even when the managed handler is awaitable.
 - `Game.YieldAsync(milliseconds)` schedules the continuation on the backend's `ScriptSynchronizationContext`. Each backend has its own queue, pumped by engine frames. Work moved to `ThreadPool` or continued through `ConfigureAwait(false)` is outside that context and must not call Engine APIs.
-- Server cover is declared and checked with `[RequiresCover]`, `[ProvidesCover]`, `[PreservesCover]`, and `CoverReach`. Roslyn diagnostics `FOSYNC001` through `FOSYNC007` and `FOSYNC009` catch invalid targets, missing propagation, entry declarations, covered collections, and locks crossing `await`.
+- Server cover is declared and checked with `[RequiresCover]`, `[ProvidesCover]`, `[PreservesCover]`, and `CoverReach`. Active Roslyn diagnostics `FOSYNC001`–`FOSYNC005` and `FOSYNC009` check declarations, propagation and cover after `await`; `FOSYNC006`/`FOSYNC007` are retired. Use `using GameLock scope = GameLock.Acquire();`: its `ref struct` scope releases on all paths and cannot survive `await`.
 - Cover normally does not survive `await`. Preserve it only through the explicit `[PreservesCover]` contract supported by the called operation; otherwise re-resolve mutable state and reacquire the complete cover after resumption.
 - Named invocation requires `[CallableByName]`. Administrative and internal named-call allowlists are separate boundaries; do not widen one to satisfy the other.
 - Delegates retained past a call are GC roots owned by the managed backend. Timer unsubscription needs the same delegate identity. Native reference objects retained by managed code must follow the generated `__AddRef` / `__Release` ownership contract.
@@ -370,13 +372,13 @@ When adding or changing a callback:
 4. Acquire one complete cover for that operation and do not hold `Game.Lock` while acquiring it.
 5. Put mutable state on its lifecycle owner; document any mutable-global exception.
 6. Revalidate and reacquire after suspension or re-entry.
-7. Add a focused script/compiler/runtime test and run the embedding project's script bake.
+7. Compile/bake the affected project roles and exercise the smallest existing dispatcher/application path. Do not add automated tests or infrastructure without an explicit request.
 
 ## Validation routes
 
-Choose the narrowest gate that proves the changed contract:
+Use affected-role `CompileAngelScript` or `CompileManagedScripts`, the real resource bake and the existing application route for scheduling, event lifetime, synchronization mode and shutdown. This fork removed its own unit suites. The table below records the former suite mapping only; none of its `Test_*` or managed-suite names is a runnable prerequisite. Do not recreate those suites. Report which runtime boundaries the current compile/bake/application observations actually establish.
 
-| Change | Minimum validation |
+| Change | Historical suite mapping (removed; not current instructions) |
 |---|---|
 | AngelScript callback attribute or direct-call rule | `Test_AngelScriptAttributes` and project `CompileAngelScript`/bake. |
 | Managed callback, named-call, or async signature | `Test_ManagedScriptBaker`, managed core tests, and project `CompileManagedScripts`/bake. |

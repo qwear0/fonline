@@ -65,14 +65,13 @@ AddEngineSources(
     SERVER SourceExt/ServerExtension.cpp
     CLIENT SourceExt/ClientExtension.cpp
     MAPPER SourceExt/MapperExtension.cpp
-    BAKER SourceExt/BakerExtension.cpp
-    TESTS SourceExt/Test_ProjectExtension.cpp)
+    BAKER SourceExt/BakerExtension.cpp)
 
 RegisterEngineSources()
 SetupCodeGeneration()
 ```
 
-Paths and globs resolve against the embedding project's contribution root. Arguments are role/path pairs, and an odd argument count is a configure-time error. The current helper does not reject an unknown role token: it creates an `FO_<ROLE>_SOURCE` list and still adds the file to metadata inputs, but no Engine target consumes that source list unless the role is one of the six documented below. There are no consumed `EDITOR`, `ANIMATION_VIEWER`, or `PARTICLE_VIEWER` source roles. Mapper, both focused viewers, Baker, and ASCompiler link `BakerLib`, so reusable authoring/baking support normally belongs in `BAKER`; code that is truly shared by all applications belongs in `COMMON`. Project-native Catch2 translation units belong in `TESTS`, which compiles them directly into enabled unit-test and coverage executables without adding them to runtime libraries.
+Paths and globs resolve against the embedding project's contribution root. Arguments are role/path pairs, and an odd argument count is a configure-time error. The current helper does not reject an unknown role token: it creates an `FO_<ROLE>_SOURCE` list and still adds the file to metadata inputs, but no Engine target consumes that source list unless the role is one of the five consumed roles documented below. There are no consumed `EDITOR`, `ANIMATION_VIEWER`, or `PARTICLE_VIEWER` source roles. Mapper, both focused viewers, Baker, and ASCompiler link `BakerLib`, so reusable authoring/baking support normally belongs in `BAKER`; code that is truly shared by all applications belongs in `COMMON`. The former `TESTS` role has no consumer in this fork: unit-test and coverage executables were removed. Merely registering such a source as metadata does not compile it.
 
 Every resolved file is appended to both its role source list and `FO_SOURCE_META_FILES`. A header registered as `COMMON` is also added to generated common-header inputs. Register only files intended for codegen inspection: a vendored source tree belongs in a dedicated library target, not in a broad extension glob.
 
@@ -87,7 +86,6 @@ Choose the narrowest role that owns the behavior:
 | Rendering/input/client networking/client script methods | `CLIENT` | Compiles into `ClientLib`; mapper also receives client registrations through `ClientLib`. |
 | Mapper-only automation or mapper script methods | `MAPPER` | Compiles into `MapperLib`. |
 | Custom resource bakers and authoring support shared by Mapper/viewers/ASCompiler | `BAKER` | Compiles into `BakerLib`; `BAKER` is not a script export target. |
-| Project-native Catch2 regression translation units | `TESTS` | Compiles directly into enabled unit-test and coverage executables; it has no runtime or script export target. |
 
 Do not use `COMMON` merely to make a missing symbol link. Move the dependency to its owning role or split a small common interface from role-specific implementations.
 
@@ -168,7 +166,7 @@ Hook bodies run at lifecycle or policy boundaries. They must preserve engine inv
 
 - shutdown hooks are called through guarded shutdown paths and should release resources without throwing;
 - visibility hooks execute on authoritative server paths and must not introduce unsynchronized mutable global state;
-- configuration hooks run while parsing settings and must return the documented changed/not-changed signal;
+- configuration hooks return `void` and modify the supplied `GlobalSettings&` only during startup construction; there is no changed/not-changed return signal;
 - baker setup should append only requested project bakers and retain shared baking context ownership correctly.
 
 ## State and lifetime
@@ -210,11 +208,11 @@ Never put credentials, API keys, signing material, or private service URLs into 
 
 Use the smallest route that proves the affected boundary:
 
-- CMake registration/role changes: `cmake -P BuildTools/tests/validate_native_extension_interface.cmake`.
+- CMake registration/role changes: configure/build the smallest affected embedding-project target and check the native-extension model/reference against its current owner; the former structural suite is removed.
 - Hook/metadata/codegen changes: regenerate and check the native-extension/API references, then run `BakeResources` in a real embedding project.
 - Reusable minimal server hook: run `python validate.py` from `Examples/MinimalProject`.
 - Complete native lifecycle, role-link, script-export, and focused-test path: run `python validate.py` from `Examples/NativeExtensionSample`.
-- Script export: add a script compile/bake assertion and a focused runtime test that calls the generated method on the correct side.
+- Script export: compile/bake the affected role and call the generated method through the existing application route on the correct side; new tests require an explicit request.
 - Client-visible extension: build/run a real standalone client path; a server-only or headless smoke cannot prove rendering, input, dynamic-library, or package behavior.
 - External SDK/platform bridge: exercise enabled, disabled, and packaged-runtime paths on the owning platform.
 
@@ -238,7 +236,7 @@ Treat an Engine gitlink change as an extension compatibility event:
 3. Per-engine state has an instance owner; process globals have an explicit process-wide lifecycle justification.
 4. Dependencies, platform guards, disabled stubs, and package payloads match the compiled feature.
 5. Generated API/native-extension references and the aggregate contract diff are current.
-6. Structural CMake, codegen/bake, focused native/script tests, and the smallest real runtime path pass without warnings.
+6. Existing affected-role configure/build, codegen/compile/bake and the smallest real runtime path finish without warnings; removed suites are not prerequisites.
 7. Project documentation records any settings, persistence, service, security, or release behavior that the engine guide intentionally excludes.
 
 ## See also
