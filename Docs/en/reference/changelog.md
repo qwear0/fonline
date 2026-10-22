@@ -16,6 +16,18 @@ Developer-visible FOnline changes and migration notes are maintained here in Eng
 
 ### Changed
 
+- Complete the remaining owner-authorized native suite removals and add the canonical engine documentation-maintainer skill with ownership, translation, verification and audit procedures. Local skill discovery is separate from runtime/build/site acceptance.
+- Complete the coordinated `2026.1.58-dev`–`2026.1.65-dev` source/documentation update; publish this complete range rather than the intermediate path-bounded snapshots.
+
+### Migration
+
+- Base `e5649f7bdeffe4dfbf1d4f5a198a6d760b7617d5` (`2026.1.64-dev`) → `2026.1.65-dev`; coordinated range starts at `aafc7fe74bb8fa35e6395e04d8c6d2a66a91831a` (`2026.1.57-dev`). Read the preceding seven entries, keep unit/coverage flags off, remove obsolete TESTS/runner calls, and use current starter options and production verification routes. The skill does not authorize new tests, engine/game boundary changes or deployment.
+- No additional runtime API, setting value, save/resource format, wire `0.0.75` or Managed ABI `9` change; no data conversion. Regenerate/validate documentation, reconfigure/rebuild matching applications and rebake game resources. HTML rendering still requires its separate dependency/setup and acceptance checks. Rollback restores the matching pre-range source/build/documentation artifacts, not a mixture of retired wiring and removed suites.
+
+## 2026.1.64-dev - 2026-10-22
+
+### Changed
+
 - Continue owner-authorized removal of inactive native unit suites and their local helpers across core, content, rendering, networking and server subsystems. Production implementation and vendored tests are unchanged.
 
 ### Migration

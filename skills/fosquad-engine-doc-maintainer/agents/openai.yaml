@@ -1,0 +1,4 @@
+interface:
+  display_name: "FOSquad Engine Doc Maintainer"
+  short_description: "Source-grounded engine contracts and bilingual documentation"
+  default_prompt: "Use $fosquad-engine-doc-maintainer to assess documentation impact in the independent engine checkout, verify source and generated ownership, and reconcile the smallest correct EN/RU and contract surface. Respect the owner's testing policy and report actual audit coverage."
