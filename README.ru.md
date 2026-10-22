@@ -5,8 +5,10 @@ locale: ru
 document_id: repository-home
 permalink: /README.ru.html
 ---
-<!-- docs-translation: {"document_id":"repository-home","locale":"ru","source_path":"README.md","source_sha256":"ec338d2f81253883deb5a743d14e9c58d6ae34063137214f29be92977fc06ba9"} -->
+<!-- docs-translation: {"document_id":"repository-home","locale":"ru","source_path":"README.md","source_sha256":"b0f9d7d22f4b14dbfbd722eaef11e883785c50ccacbaa4ede45ea7600713ef1d"} -->
 # FOnline Engine
+
+**Форк FOSquad:** по запросу владельца собственные unit-тесты движка удалены. Действуют [правила проверки изменений](Docs/ru/contributing/testing/index.md): минимально достаточные существующие проверки или работа с приложением; новые автотесты — только по явному запросу. Workflows перенесены в `.github/disabled-workflows/`. Импортированная документация может сохранять исторические ссылки на тесты.
 
 [Правила версий движка](Docs/ru/how-to/release/versioning.md) · [История изменений](Docs/ru/reference/changelog.md)
 
@@ -27,7 +29,7 @@ RPG сообщества. Актуальный пример — [Last Frontier](
   добавленной впоследствии сетью: авторитетный сервер, реплицируемое состояние
   сущностей и разделение клиента и сервера заложены в основу модели сущностей.
 - **Полный вертикальный стек.** Сервер, клиент, mapper, редактор, resource baker,
-  компилятор скриптов, runner тестов и автообновление собираются из одних
+  компилятор скриптов и автообновление собираются из одних
   исходников единым конвейером CMake.
 - **Чистое разделение движка и игры.** Движок остаётся переиспользуемым
   подмодулем; игра владеет контентом, скриптами, конфигурацией, брендом и
@@ -98,8 +100,6 @@ RPG сообщества. Актуальный пример — [Last Frontier](
 
 ### Инженерное качество
 
-- Unit-тесты Catch2 со сгенерированными целями отдельных suite, запусками
-  sanitizer и покрытием кода.
 - Clang Thread Safety Analysis применяется как `-Werror` на каждом Clang
   toolchain; строгие словари smart pointer и nullability проверяются во всей
   кодовой базе.
@@ -144,9 +144,9 @@ GameProject/
 ## Начало работы
 
 - **Запустите первый проект движка:** [Первый headless-проект FOnline](Docs/ru/tutorials/first-project.md) — сконфигурируйте, соберите, запеките, запустите, проверьте и остановите минимальный headless-сервер.
-- **Изучите канонический scaffold:** [Examples/MinimalProject/README.ru.md](Examples/MinimalProject/README.ru.md) — полный проект и контракт smoke-проверки CI.
+- **Изучите канонический scaffold:** [Examples/MinimalProject/README.ru.md](Examples/MinimalProject/README.ru.md) — полный проект и контракт opt-in локальной smoke-проверки.
 - **Изучите исполняемую галерею контента:** [Examples/ContentShowcase/README.ru.md](Examples/ContentShowcase/README.ru.md) — исходные материалы, baking, native/Web-проверки, происхождение, бюджеты и воспроизводимые доказательства захвата.
-- **Соберите первый игровой срез:** [первый игровой клиент](Docs/ru/tutorials/first-client.md), [первое изменение контента](Docs/ru/tutorials/first-content.md) и [первый автоматизированный тест](Docs/ru/tutorials/first-test.md) — подключите клиент, измените локализованный контент и расширьте исполняемые проверки.
+- **Соберите первый игровой срез:** [первый игровой клиент](Docs/ru/tutorials/first-client.md), [первое изменение контента](Docs/ru/tutorials/first-content.md) и [первый автоматизированный тест](Docs/ru/tutorials/first-test.md) — подключите клиент, измените локализованный контент и изучите существующие исполняемые проверки. Создание и изменение автотестов по-прежнему требует явного запроса по политике форка.
 - **Настройте и сопровождайте проект:** [Конфигурация игрового проекта](Docs/ru/how-to/build/project-configuration.md), [Generated Content Workflow](Docs/ru/how-to/build/generated-content.md) и [руководство по обновлению Engine](Docs/ru/how-to/migration/engine-upgrade.md) — владение `.fomain`, пакетами ресурсов, сгенерированными результатами, миграциями и обновлениями Engine.
 - **Доказательно выбирайте release-цели:** [матрица поддержки](Docs/ru/reference/platforms/support-matrix.md) и [сгенерированная матрица](Docs/ru/reference/platforms/generated-matrix.md) — различайте возможности исходников, обязательные сборки, process smoke и квалификацию проекта или устройства.
 - **Планируйте и проверяйте публичные примеры:** [Публичные репозитории с примерами](Docs/ru/how-to/build/public-example-repositories.md) и [сгенерированный реестр](Docs/ru/reference/public-examples/index.md) — владение, точные Engine pin, compatibility lane, шаблон репозитория, поддержка и происхождение ресурсов.
@@ -162,7 +162,7 @@ GameProject/
 - **Безопасно добавляйте нативный C++ проекта:** [Нативные расширения](Docs/ru/how-to/native-extensions.md) — роли исходников, хуки, экспорт в скрипты, владение состоянием, совместимость и исполняемая проверка.
 - **Просматривайте сгенерированный интерфейс CMake:** [Docs/ru/reference/cmake/index.md](Docs/ru/reference/cmake/index.md) — опции проекта, строгие стадии и hook, выбранные helper, значения по умолчанию и ссылки на исходники.
 - **Измеряйте производительность клиента и сервера:** [Профилирование](Docs/ru/how-to/quality/profiling.md) — режимы сборки Tracy, изолированные границы capture, воспроизводимые нагрузки и сопоставимый анализ результатов.
-- **Публикуйте документацию:** [руководство по публикации сайта](Docs/ru/contributing/documentation/site-publication.md) — сгенерированные navigation/search/route, rolling version и locale policy, локальный Jekyll preview, проверка rendered route и доступности, артефакты CI и существующий GitHub Pages маршрут `fonline.ru`.
+- **Публикуйте документацию:** [руководство по публикации сайта](Docs/ru/contributing/documentation/site-publication.md) — сгенерированные navigation/search/route, rolling version и locale policy, локальный Jekyll preview, проверка rendered route и доступности, локальные артефакты ревью и унаследованная конфигурация URL `fonline.ru`. Источник Pages и владение доменом для форка не проверены.
 - **Используйте документацию сайта для AI:** [llms.txt](https://fonline.ru/llms.txt), [llms-full.txt](https://fonline.ru/llms-full.txt) и [docs-manifest.json](https://fonline.ru/docs-manifest.json) — сгенерированные маршруты, ограниченный контекст, canonical/source URL, provenance и хэши контента из того же Markdown-манифеста.
 - **Если вы впервые знакомитесь с движком:** [Начало работы](Docs/ru/tutorials/getting-started.md) — первый маршрут: что читать, что собирать и кому что принадлежит.
 - **Если вы начинаете или изучаете игровой проект:** [Встраивание FOnline в игровой проект](Docs/ru/how-to/build/embedding-project.md) — ожидаемая структура репозитория и правила владения.
@@ -179,7 +179,7 @@ WebAssembly, но поддержка ограничена доказательс
 - [`Source/`](Source/) — исходники движка: точки входа `Applications/`, runtime
   клиента и сервера, общая модель `Common/`, платформенный и render-слой
   `Frontend/`, bridge скриптов, baker и редакторы `Tools/`, низкоуровневое ядро
-  `Essentials/`, unit-тесты `Tests/`.
+  `Essentials/`.
 - [`BuildTools/`](BuildTools/) — стадийный конвейер CMake, генерация кода,
   платформенные toolchain, подготовка workspace и пакетов.
 - [`Resources/`](Resources/) — принадлежащие движку runtime и build resources.
@@ -210,6 +210,7 @@ WebAssembly, но поддержка ограничена доказательс
 
 ## Проект и сообщество
 
-- Сайт: <https://fonline.ru>
-- GitHub: <https://github.com/cvet/fonline>
+- Сайт upstream: <https://fonline.ru> (не подтверждён как deployment форка)
+- Форк: <https://github.com/qwear0/fonline>
+- Upstream: <https://github.com/cvet/fonline>
 - Лицензия: [MIT](LICENSE)

@@ -391,7 +391,6 @@
         "SourceExt/NativeExtensionCore.cpp",
         "SourceExt/NativeExtensionCore.h",
         "SourceExt/ServerExtension.cpp",
-        "Tests/NativeExtensionCoreTest.cpp",
         "assets/provenance.json",
         "run_native_extension_smoke.py",
         "validate.py"
@@ -399,23 +398,23 @@
       "depends_on": [
         "project-template"
       ],
-      "purpose": "Advanced minimal example of project-native C++ composition, lifecycle hooks, script exports, tests, and ABI review.",
+      "purpose": "Advanced minimal example of project-native C++ composition, lifecycle hooks, script exports, runtime smoke, and ABI review.",
       "capabilities": [
         "lifecycle-hook",
         "script-export",
         "role-specific-source",
-        "focused-native-test",
+        "native-runtime-smoke",
         "abi-and-compatibility-review"
       ],
       "required_checks": [
         "governance-contract",
         "pinned-engine",
         "current-engine",
-        "native-unit-test",
+        "native-runtime-smoke",
         "native-extension-contract"
       ],
       "required_artifacts": [
-        "native-test-report",
+        "native-smoke-report",
         "headless-server",
         "compatibility-report"
       ],

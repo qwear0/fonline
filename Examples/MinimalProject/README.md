@@ -30,7 +30,7 @@ cd Examples/MinimalProject
 python validate.py
 ```
 
-The local validator configures/builds the headless server and baker, bakes resources, then runs `RunStarterSmoke`. The current required Engine workflow does not execute this route.
+The local validator configures/builds the headless server and baker, bakes resources, then runs `RunStarterSmoke`. This is an opt-in local route; the fork's workflow definitions are archived.
 
 Success requires the server log to reach every marker and exit with code zero:
 
@@ -40,7 +40,7 @@ starter_server_started
 starter_smoke_passed
 ```
 
-The native marker proves that a `SERVER` source was compiled into `ServerLib`, its `ExportMethod` declaration entered codegen, and baked AngelScript called the generated `Game.NativeStarterValue()` binding at runtime. The same translation unit requires `FO_STARTER_PROJECT_DEPENDENCY=1`, so compilation also proves that the server-role `INTERFACE` target propagated through `FO_SERVER_LIBS`. The visibility hook proves optional hook discovery and fallback suppression during code generation. The self-contained runner also rejects a process that hangs for more than 60 seconds, exits without every marker, or produces inconsistent `Metadata.fometa-server` / `Metadata.fometa-client` contracts. The baked outputs must contain `script.remote-call.server.StarterPing` and `script.remote-call.client.StarterNotice`; this exercises the same `MetadataBaker` format consumed by the richer Engine-side `BuildTools/docs_metadata.py` catalog generator without making the standalone example depend on that documentation tool. The Windows x64 route was run successfully on 2026-07-31. These standalone build routes are opt-in local evidence; the current Engine validation workflow does not execute them.
+The native marker proves that a `SERVER` source was compiled into `ServerLib`, its `ExportMethod` declaration entered codegen, and baked AngelScript called the generated `Game.NativeStarterValue()` binding at runtime. The same translation unit requires `FO_STARTER_PROJECT_DEPENDENCY=1`, so compilation also proves that the server-role `INTERFACE` target propagated through `FO_SERVER_LIBS`. The visibility hook proves optional hook discovery and fallback suppression during code generation. The self-contained runner also rejects a process that hangs for more than 60 seconds, exits without every marker, or produces inconsistent `Metadata.fometa-server` / `Metadata.fometa-client` contracts. The baked outputs must contain `script.remote-call.server.StarterPing` and `script.remote-call.client.StarterNotice`; this exercises the same `MetadataBaker` format consumed by the richer Engine-side `BuildTools/docs_metadata.py` catalog generator without making the standalone example depend on that documentation tool. The Windows x64 route was run successfully on 2026-07-31. These standalone build routes are opt-in local evidence, not current fork CI. The scaffold leaves removed unit-test and coverage modes disabled.
 
 `FO_SERVER_LIBS` is current revision-pinned integration state, not a helper declared by `BuildTools/cmake/ProjectInterface.json`. Re-audit it whenever the Engine pin changes.
 
@@ -75,7 +75,7 @@ cmake --preset linux
 cmake --build --preset linux-smoke
 ```
 
-The repository workflows run the same Engine-owned Linux preparation command before validation, so their system package set stays aligned with the pinned revision rather than being duplicated in example YAML.
+The external example governance template prescribes the same Engine-owned Linux preparation command. That prospective policy is not active CI in this fork; its workflow definitions are archived.
 
 The Windows preset deliberately leaves generator selection to CMake, which chooses the newest installed Visual Studio; pinning `Visual Studio 17 2022` would reject otherwise compatible newer installations. The presets build only the headless server and baker required by `RunStarterSmoke`; project-specific client, mapper, editor, packaging, and deployment presets belong in later examples. Do not rename source/config identifiers one at a time. Change `FO_DEV_NAME`, `FO_NICE_NAME`, the `.fomain` filename, and any package/application identity together as one project-bootstrap operation.
 

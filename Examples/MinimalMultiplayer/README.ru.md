@@ -3,7 +3,7 @@ permalink: /Examples/MinimalMultiplayer/README.ru.html
 locale: ru
 document_id: minimal-multiplayer-readme
 ---
-<!-- docs-translation: {"document_id":"minimal-multiplayer-readme","locale":"ru","source_path":"Examples/MinimalMultiplayer/README.md","source_sha256":"ad90b82633801cdc08ce4ac47dcd8ca34b2497da81a3d371b7aa12c004d6258d"} -->
+<!-- docs-translation: {"document_id":"minimal-multiplayer-readme","locale":"ru","source_path":"Examples/MinimalMultiplayer/README.md","source_sha256":"3a8015e71012c09a75b0ea1520e5e9aa81785f37a90733ca27e94bdec0c0fb16"} -->
 # Минимальный многопользовательский проект FOnline
 
 Отдельный первый игровой проект после
@@ -151,31 +151,30 @@ Package verifier использует тот же runner после провер
 
 ## Зафиксируйте рабочий процесс частиц Mapper
 
-Соберите fixture исходника, запечённые ресурсы, Mapper и отдельный viewer:
+Из корня примера повторно настройте существующий preset с включёнными optional targets Mapper и отдельного viewer (обычный tutorial preset их не включает), затем соберите ресурсы и инструменты:
 
 ```powershell
+cmake --preset windows -DFO_BUILD_MAPPER=ON -DFO_BUILD_PARTICLE_VIEWER=ON
 cmake --build Build\windows --config Release --target ForceBakeResources FOMM_Mapper FOMM_ParticleViewer
 ```
 
-Запустите один из детерминированных профилей документации:
+Из корня примера перейдите в build output directory и запустите один из детерминированных профилей, чтобы relative baked resources разрешались оттуда:
 
 ```powershell
-Build\windows\Binaries\Mapper-Windows-win64\FOMM_Mapper.exe `
-  -ApplyConfig FOnlineMinimalMultiplayer.fomain `
+cd Build\windows
+.\Binaries\Mapper-Windows-win64\FOMM_Mapper.exe `
+  -ApplyConfig ..\..\FOnlineMinimalMultiplayer.fomain `
   -ApplySubConfig MapperDocumentationCapture
 
-Build\windows\Binaries\Mapper-Windows-win64\FOMM_Mapper.exe `
-  -ApplyConfig FOnlineMinimalMultiplayer.fomain `
+.\Binaries\Mapper-Windows-win64\FOMM_Mapper.exe `
+  -ApplyConfig ..\..\FOnlineMinimalMultiplayer.fomain `
   -ApplySubConfig MapperDocumentationSparkEditorCapture
 ```
 
-Оба профиля открывают `TutorialMap`, фиксируют viewport `1280x800`, ждут
-стабилизации UI, запрашивают полный кадр Mapper и завершаются после отложенного
-capture. Первый выбирает `Documentation.spk` с фиксированными seed, scale и
+Оба профиля выбирают `TutorialMap` и viewport `1280x800`. Они задают воспроизводимую сцену, не автоматическую screenshot/exit command. Дождитесь стабилизации UI и используйте full-window capture workflow руководства инструмента. Первый выбирает `Documentation.spk` с фиксированными seed, scale и
 prewarm; второй напрямую открывает авторский исходник `Documentation.spark`
 через `Mapper.SparkEditorSource`, не перекрывая его окном Particle Preview.
-Результат TGA
-`MapperDocumentationCapture.tga` находится рядом с запущенным процессом.
+Native `Game.SaveMapperScreenshot(path)` пишет PNG bytes по точному переданному пути, не меняя расширение; явно выбирайте `.png`. Этот map-only helper не заменяет full-window UI evidence документационного capture workflow.
 Добавленные в репозиторий PNG документации, точные шаги взаимодействия, хэши
 исходников и триггеры повторного capture находятся в
 [`BuildTools/DocumentationScreenshots.json`](../../BuildTools/DocumentationScreenshots.json).

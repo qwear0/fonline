@@ -44,9 +44,7 @@
     "Source/Tools/ModelInfoBaker.cpp",
     "Source/Client/ModelInstance.cpp",
     "Source/Scripting/ClientGlobalScriptMethods.cpp",
-    "Source/Scripting/ClientCritterScriptMethods.cpp",
-    "Source/Tests/Test_ParticleBaker.cpp",
-    "Source/Tests/Test_EffekseerParticleRuntime.cpp"
+    "Source/Scripting/ClientCritterScriptMethods.cpp"
   ],
   "outputs": {
     "authored_extensions": [
@@ -2429,12 +2427,6 @@
             "ReadEffekseerBoundsTrailer",
             "Baked Effekseer binary is missing its mandatory bounds trailer magic"
           ]
-        },
-        {
-          "path": "Source/Tests/Test_ParticleBaker.cpp",
-          "anchors": [
-            "ContinuousEmitterBoundsIgnoreEarlierBakes"
-          ]
         }
       ]
     },
@@ -2532,8 +2524,8 @@
       "id": "particle-format.runtime.update-cadence",
       "name": "Update cadence",
       "stability": "experimental",
-      "requirement": "Render.Animation3dFPS sets the millisecond particle update threshold; zero leaves the threshold at zero and therefore permits an update every frame.",
-      "rationale": "Particle simulation cadence shares the 3D animation setting rather than owning an independent particle FPS.",
+      "requirement": "Render.Animation3dFPS sets the NeedDraw render-refresh threshold, not a fixed simulation cadence. Update advances the backend by elapsed time; zero removes the draw throttle. A forced draw with no elapsed time uses at least a one-millisecond simulation step.",
+      "rationale": "ParticleSprite calls Update independently of NeedDraw. Atlas refresh is throttled, while the direct-scene route draws through its scene callback.",
       "source": [
         {
           "path": "Source/Client/VisualParticles.cpp",
@@ -2595,8 +2587,8 @@
       "id": "particle-format.runtime.sprite-semantics",
       "name": "ParticleSprite animation semantics",
       "stability": "experimental",
-      "requirement": "ParticleSprite is non-copyable and never hit-tests; Play respawns, Stop is a no-op, SetTime and SetDir are ignored, and IsPlaying mirrors SPARK active state.",
-      "rationale": "Generic Sprite animation controls do not map to SPARK timeline or direction selection.",
+      "requirement": "ParticleSprite is non-copyable and never hit-tests; Play respawns, Stop and SetTime are no-ops, SetDir stores the facing angle used by runtime Setup, and IsPlaying mirrors backend activity. Effekseer rejects nonzero look direction.",
+      "rationale": "Direction is an orientation input, not a directional frame selector. SPARK supports it; Effekseer reports look-direction oriented particles as unsupported.",
       "source": [
         {
           "path": "Source/Client/ParticleSprites.h",
@@ -2780,31 +2772,32 @@
     },
     {
       "id": "particle-format.validation.baker-tests",
-      "name": "Particle baker tests",
+      "name": "Particle bake checks",
       "stability": "experimental",
-      "requirement": "Run the ParticleBaker unit tests after changing source formats, transforms, path checks, compiler output, or dependency invalidation.",
-      "rationale": "The native suite exercises both backend bake boundaries.",
+      "requirement": "Rebake representative resources for each enabled backend after changing formats, transforms, path checks, compiler output, or dependency invalidation; inspect diagnostics and runtime output.",
+      "rationale": "Engine-owned unit suites are retired. Documentation checks do not execute the backend bake boundaries.",
       "source": [
         {
-          "path": "Source/Tests/Test_ParticleBaker.cpp",
+          "path": "Source/Tools/ParticleBaker.cpp",
           "anchors": [
-            "TEST_CASE(\"ParticleBaker\""
+            "ParticleBaker",
+            "SimulateEffekseerBounds"
           ]
         }
       ]
     },
     {
       "id": "particle-format.validation.effekseer-runtime",
-      "name": "Effekseer runtime tests",
+      "name": "Effekseer runtime verification",
       "stability": "experimental",
-      "requirement": "Run the focused Effekseer runtime tests after changing compiler/runtime geometry, sorting, batching, textures, seed, or scale.",
-      "rationale": "The suite checks deterministic callback geometry and supported runtime behavior.",
+      "requirement": "Inspect a baked effect in Mapper or ParticleViewer and a representative client scene after changing geometry, sorting, batching, textures, seed, or scale. Keep Effekseer look direction at zero.",
+      "rationale": "The authoring editor and source checks do not exercise FOnline callback rendering or prove gameplay integration.",
       "source": [
         {
-          "path": "Source/Tests/Test_EffekseerParticleRuntime.cpp",
+          "path": "Source/Client/EffekseerExtension.cpp",
           "anchors": [
-            "Effekseer particle runtime produces deterministic FOnline callback geometry",
-            "Particle facade reapplies scale"
+            "EffekseerParticleRuntimeSystem::Setup",
+            "look-direction oriented particles are unsupported"
           ]
         }
       ]
@@ -2868,14 +2861,8 @@
       "name": "Model attachment route",
       "stability": "experimental",
       "requirement": "For AttachParticles or Critter.RunParticle changes, visibly verify the target bone, offset, active layer lifetime, animation, and FO_ENABLE_3D profile.",
-      "rationale": "ParticleSprite tests do not exercise model-bone ownership or projection.",
+      "rationale": "An isolated particle preview does not exercise model-bone ownership or gameplay projection.",
       "source": [
-        {
-          "path": "Source/Tests/Test_ModelBaker.cpp",
-          "anchors": [
-            "AttachParticles"
-          ]
-        },
         {
           "path": "Source/Client/ModelInstance.cpp",
           "anchors": [
@@ -2904,5 +2891,5 @@
       "stable": 4
     }
   },
-  "contract_digest": "79904fb9d0de9219cd484d56cf8d55888aba00a61172f1cb62ab44b1990bf44f"
+  "contract_digest": "41bf555340cf7cd3c7167ae86ae3483883eed07f47d2513f910fd698007910de"
 }

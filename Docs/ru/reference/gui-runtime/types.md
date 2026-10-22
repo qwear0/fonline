@@ -9,4 +9,4 @@ permalink: /Docs/ru/reference/gui-runtime/types.html
 
 # Типы GUI Runtime (выведен из эксплуатации)
 
-Принадлежавшая Engine GUI library AngelScript и этот generated reference выведены из эксплуатации после переноса высокоуровневых script libraries в подключающие проекты. Используйте [границу интеграции GUI](../../../en/how-to/runtime/gui.md); текущие types и behavior документирует проект-владелец реализации GUI.
+Принадлежавшая Engine GUI library AngelScript и этот generated reference выведены из эксплуатации после переноса высокоуровневых script libraries в подключающие проекты. Используйте [границу интеграции GUI](../../how-to/runtime/gui.md); текущие types и behavior документирует проект-владелец реализации GUI.

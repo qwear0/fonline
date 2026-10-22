@@ -39,11 +39,7 @@
     "vulkan_backend": "Source/Frontend/Rendering-Vulkan.cpp",
     "sdl_gpu_backend": "Source/Frontend/Rendering-SDLGpu.cpp",
     "core_effect": "Resources/Core/Effects/2D_Default.fofx",
-    "model_effect": "Resources/Core/Effects/3D_Skinned.fofx",
-    "tests": [
-      "Source/Tests/Test_EffectBaker.cpp",
-      "Source/Tests/Test_Rendering.cpp"
-    ]
+    "model_effect": "Resources/Core/Effects/3D_Skinned.fofx"
   },
   "outputs": {
     "source_extension": ".fofx",
@@ -59,7 +55,7 @@
       "spv_sdl",
       "glsl",
       "glsl_es",
-      "hlsl",
+      "dxbc",
       "msl_mac",
       "msl_ios"
     ],
@@ -859,7 +855,7 @@
     {
       "id": "effect-format.baking.native-flavors",
       "name": "Native and cross-compiled flavors",
-      "requirement": "Each stage emits native Vulkan SPIR-V, desktop GLSL 330, GLSL ES 300, HLSL Shader Model 4.0, and Metal source for macOS and iOS.",
+      "requirement": "Each stage persists native Vulkan SPIR-V, SDL SPIR-V, desktop GLSL 330, GLSL ES 300, compiled Direct3D DXBC, and Metal source for macOS and iOS. HLSL Shader Model 4.0 is transient compiler input, not a persisted flavor.",
       "rationale": "One source effect supports the active renderer backends without project-side shader forks.",
       "stability": "experimental",
       "source": [
@@ -1180,12 +1176,11 @@
       "stability": "experimental",
       "source": [
         {
-          "path": "Source/Tests/Test_EffectBaker.cpp",
+          "path": "Source/Tools/EffectBaker.cpp",
           "anchors": [
-            "RejectsInvalidEffects",
-            "Effects/NoEffect.fofx",
-            "Effects/NoVertex.fofx",
-            "Effects/NoFragment.fofx"
+            "EffectBaker",
+            "VertexShader",
+            "FragmentShader"
           ]
         }
       ]
@@ -1197,13 +1192,6 @@
       "rationale": "Build logs remain machine-readable while preserving the shader compiler message.",
       "stability": "experimental",
       "source": [
-        {
-          "path": "Source/Tests/Test_EffectBaker.cpp",
-          "anchors": [
-            "ShaderCompilerDiagnosticsStayOnOneLogLine",
-            "Shader compiler diagnostic:"
-          ]
-        },
         {
           "path": "Source/Tools/EffectBaker.cpp",
           "anchors": [
@@ -1219,13 +1207,6 @@
       "rationale": "All backends upload fixed native structures without per-shader layout adaptation.",
       "stability": "experimental",
       "source": [
-        {
-          "path": "Source/Tests/Test_EffectBaker.cpp",
-          "anchors": [
-            "RejectsMismatchedKnownUniformBuffer",
-            "EFFECT_WITH_BAD_PROJ_BUFFER"
-          ]
-        },
         {
           "path": "Source/Tools/EffectBaker.cpp",
           "anchors": [
@@ -1256,16 +1237,18 @@
     {
       "id": "effect-format.validation.output-flavors",
       "name": "Baked flavor completeness",
-      "requirement": "Verify source, metadata, native SPIR-V, SDL SPIR-V, GLSL, GLSL ES, HLSL, and both MSL outputs for every stage/pass.",
+      "requirement": "Verify source, metadata, native SPIR-V, SDL SPIR-V, GLSL, GLSL ES, DXBC, and both MSL outputs for every stage/pass. Do not require persisted HLSL.",
       "rationale": "A resource can pass one backend and still be incomplete for another package.",
       "stability": "experimental",
       "source": [
         {
-          "path": "Source/Tests/Test_EffectBaker.cpp",
+          "path": "Source/Tools/EffectBaker.cpp",
           "anchors": [
-            "EffectBakerBakesSdlGpuFlavors",
-            "Effects/Test.fofx-1-vert-spv_sdl",
-            "Effects/Test.fofx-1-frag-spv_sdl"
+            "{}-spv_sdl",
+            "{}-dxbc",
+            "{}-glsl",
+            "{}-msl_mac",
+            "{}-msl_ios"
           ]
         }
       ]
@@ -1278,10 +1261,9 @@
       "stability": "experimental",
       "source": [
         {
-          "path": "Source/Tests/Test_EffectBaker.cpp",
+          "path": "Source/Tools/EffectBaker.cpp",
           "anchors": [
-            "EffectBakerBakesExplicitBindings",
-            "EffectBakerBakesAuxiliaryBindings",
+            "EffectInfo",
             "EffectInfoSdl"
           ]
         }
@@ -1357,5 +1339,5 @@
       "experimental": 53
     }
   },
-  "contract_digest": "bd50466bab9291d7b04d119f6fb9b613bc6507b1c771cef1605c7d7e7184aea0"
+  "contract_digest": "f497f9b9472413ec062f9f61c7bbc9e3e5b5419a86117fc7a9d16e8e1a6d7d7d"
 }

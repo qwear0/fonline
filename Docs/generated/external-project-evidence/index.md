@@ -2,7 +2,7 @@
 
 # External Project Evidence And Promotion Inventory
 
-External project usage is discovery and compatibility evidence only. Engine source, tests, manifests, generated contracts, and Engine-owned examples remain normative.
+External project usage is discovery and compatibility evidence only, bounded to the exact snapshot revisions below. Snapshot paths, test results, CI lanes, and Windows-green statements describe that historical evidence, not the current dirty fork or current external checkouts. Engine source, manifests, generated contracts, and retained examples define current capabilities; engine-owned unit suites and active CI are retired. Re-run the relevant local build, bake, protocol or application route before claiming current acceptance.
 
 This internal audit records discovery material, ownership decisions, and promotion gates. It is not a substitute for the Engine sources and tests named by the resulting Engine-owned guides.
 
@@ -39,20 +39,20 @@ This internal audit records discovery material, ownership decisions, and promoti
 | `font-audio-and-video` Fonts, audio, and video presentation | `promoted` | `P0` | `frontend` | `Docs/en/how-to/content/font-format.md`<br>`Docs/en/how-to/content/audio.md`<br>`Docs/en/how-to/content/video.md`<br>`Docs/en/reference/font-format/index.md`<br>`Docs/en/reference/audio/index.md`<br>`Docs/en/reference/video/index.md` | `frontend`<br>`content-data`<br>`platform`<br>`quality` |
 | `mapper-and-focused-viewers` Mapper, AnimationViewer, and ParticleViewer | `promoted` | `P0` | `tooling` | `Docs/en/how-to/tools/mapper-interactive.md`<br>`Docs/en/how-to/tools/mapper.md`<br>`Docs/en/how-to/tools/animation-particle-viewers.md` | `tooling`<br>`frontend`<br>`content-data`<br>`quality` |
 | `profiling-practice` Client and server profiling | `promoted` | `P1` | `quality` | `Docs/en/how-to/quality/profiling.md` | `quality`<br>`runtime`<br>`frontend`<br>`build-release` |
-| `gameplay-test-harness` Reusable gameplay and integration test harness | `promoted` | `P1` | `quality` | `Docs/en/contributing/testing/index.md`<br>`Docs/en/how-to/testing/gameplay-and-integration.md`<br>`BuildTools/gameplay_test_runner.py`<br>`BuildTools/tests/test_gameplay_test_runner.py`<br>`Examples/GameplayTestHarness`<br>`Examples/MinimalMultiplayer` | `quality`<br>`scripting`<br>`runtime`<br>`documentation` |
+| `gameplay-test-harness` Reusable gameplay and integration test harness | `promoted` | `P1` | `quality` | `Docs/en/contributing/testing/index.md`<br>`Docs/en/how-to/testing/gameplay-and-integration.md`<br>`BuildTools/gameplay_test_runner.py`<br>`Examples/GameplayTestHarness`<br>`Examples/MinimalMultiplayer` | `quality`<br>`scripting`<br>`runtime`<br>`documentation` |
 | `native-analyzers` Native and script safety analyzers | `promoted` | `P0` | `quality` | `Docs/en/contributing/coding-contracts/nullability.md`<br>`Docs/en/contributing/coding-contracts/smart-pointers.md`<br>`Docs/en/contributing/coding-contracts/exception-safety.md`<br>`Docs/en/contributing/coding-contracts/thread-safety-analysis.md`<br>`Docs/en/contributing/coding-contracts/local-variables.md` | `quality`<br>`runtime`<br>`scripting` |
 | `project-generators-formatters-and-audits` Project generators, formatters, and content audits | `boundary-owned` | `P2` | `tooling` | `Docs/en/how-to/build/generated-content.md`<br>`Docs/en/how-to/build/embedding-project.md` | `tooling`<br>`content-data`<br>`quality`<br>`documentation` |
 | `dialog-tree-stack` Dialog tree parser, baker, runtime, editor, and audit | `project-owned` | `P3` | `content-data` | `last-frontier:Docs/Dialogs.md`<br>`last-frontier:Tools/DialogAudit`<br>`fonline-tla:Dialogs` | `content-data`<br>`scripting`<br>`tooling` |
 | `declarative-gui-authoring` Declarative GUI authoring and screen generation | `boundary-owned` | `P3` | `frontend` | `Docs/en/how-to/runtime/gui.md`<br>`Docs/en/reference/gui-runtime/index.md` | `frontend`<br>`tooling`<br>`scripting` |
-| `ai-control-bridge` AI observation and control bridge | `promoted` | `P2` | `tooling` | `Docs/en/how-to/build/embedding-project.md`<br>`Docs/en/how-to/ai-control-protocol.md`<br>`Docs/en/reference/ai-control-protocol/index.md`<br>`BuildTools/ai_control_client.py`<br>`BuildTools/tests/test_ai_control_protocol.py`<br>`Examples/AiControlSample` | `tooling`<br>`runtime`<br>`networking`<br>`quality`<br>`documentation` |
+| `ai-control-bridge` AI observation and control bridge | `promoted` | `P2` | `tooling` | `Docs/en/how-to/build/embedding-project.md`<br>`Docs/en/how-to/ai-control-protocol.md`<br>`Docs/en/reference/ai-control-protocol/index.md`<br>`BuildTools/ai_control_client.py`<br>`Examples/AiControlSample` | `tooling`<br>`runtime`<br>`networking`<br>`quality`<br>`documentation` |
 | `packaging-platform-and-release` Cross-platform packaging and release evidence | `promotion-candidate` | `P1` | `build-release` | `Docs/en/how-to/build/index.md`<br>`Docs/en/how-to/release/packaging.md`<br>`Docs/en/reference/platforms/support-matrix.md`<br>`Docs/en/reference/packages/index.md`<br>`Docs/en/how-to/platforms/web-debugging.md`<br>`Docs/en/how-to/platforms/android-debugging.md`<br>`Examples/PackagingMatrix`<br>`Examples/MinimalMultiplayer` | `build-release`<br>`platform`<br>`quality`<br>`documentation` |
 | `updater-secrets-security-and-recovery` Updater, secrets, signing, security, and recovery operations | `promoted` | `P1` | `build-release` | `Docs/en/explanation/runtime/client-updater.md`<br>`Docs/en/how-to/release/packaging.md`<br>`Docs/en/how-to/release/security-and-secrets.md`<br>`Docs/en/how-to/release/operations.md`<br>`Docs/en/how-to/release/backup-and-recovery.md`<br>`Docs/en/how-to/migration/engine-upgrade.md`<br>`Docs/en/contributing/third-party/index.md` | `build-release`<br>`platform`<br>`runtime`<br>`networking`<br>`quality` |
 | `persistence-and-migration` Persistence, save migration, and compatibility | `promoted` | `P0` | `runtime` | `Docs/en/explanation/persistence/index.md`<br>`Docs/en/explanation/entity-and-property-model/index.md`<br>`Docs/en/how-to/release/backup-and-recovery.md`<br>`Docs/en/how-to/migration/engine-upgrade.md`<br>`Docs/en/explanation/authority-and-networking/index.md` | `runtime`<br>`networking`<br>`scripting`<br>`quality` |
 | `gameplay-systems-and-content-policy` Gameplay systems, content catalogs, and balance policy | `project-owned` | `P3` | `scripting` | `last-frontier:Docs/GameSystems.md`<br>`last-frontier:Docs/ContentWorkflow.md`<br>`fonline-tla:Scripts` | `scripting`<br>`content-data`<br>`quality` |
 | `analytics-liveops-and-support` Analytics, live operations, support, and product services | `project-owned` | `P3` | `runtime` | `last-frontier:Docs/Analytics.md`<br>`last-frontier:Docs/Ops/AGENTS.md` | `runtime`<br>`networking`<br>`build-release` |
-| `angelscript-style-and-refactoring` AngelScript style, refactoring, and change batching | `promoted` | `P2` | `scripting` | `Docs/en/how-to/scripting/style-and-refactoring.md`<br>`Docs/en/explanation/scripting-runtime/index.md`<br>`Docs/en/contributing/documentation/index.md`<br>`BuildTools/buildtools.py`<br>`BuildTools/tests/test_docs_angelscript_style.py` | `scripting`<br>`quality`<br>`documentation` |
+| `angelscript-style-and-refactoring` AngelScript style, refactoring, and change batching | `promoted` | `P2` | `scripting` | `Docs/en/how-to/scripting/style-and-refactoring.md`<br>`Docs/en/explanation/scripting-runtime/index.md`<br>`Docs/en/contributing/documentation/index.md`<br>`BuildTools/buildtools.py` | `scripting`<br>`quality`<br>`documentation` |
 | `documentation-localization-governance` Documentation localization and terminology governance | `promoted` | `P0` | `localization` | `Docs/en/contributing/documentation/translation.md`<br>`Docs/en/contributing/decisions/0006-documentation-version-locale-routing.md`<br>`Docs/translation-glossary.json` | `localization`<br>`documentation`<br>`quality` |
-| `native-debugging-workflows` Native, mixed-stack, and AngelScript debugging workflows | `promoted` | `P0` | `quality` | `Docs/en/troubleshooting/debugging.md`<br>`BuildTools/tests/test_docs_debugging.py` | `quality`<br>`platform`<br>`networking`<br>`documentation` |
+| `native-debugging-workflows` Native, mixed-stack, and AngelScript debugging workflows | `promoted` | `P0` | `quality` | `Docs/en/troubleshooting/debugging.md` | `quality`<br>`platform`<br>`networking`<br>`documentation` |
 | `asset-provenance-and-public-examples` Tutorial assets, provenance, and public examples | `promoted` | `P0` | `build-release` | `Docs/en/how-to/build/public-example-repositories.md`<br>`Examples/PublicRepositories.json`<br>`Examples/PublicRepositoryTemplate` | `build-release`<br>`content-data`<br>`documentation`<br>`quality` |
 
 ## Decisions and gates
@@ -83,7 +83,7 @@ This internal audit records discovery material, ownership decisions, and promoti
 - Sources: `last-frontier:Docs/Scripts.md`, `last-frontier:Docs/Events.md`, `last-frontier:Docs/Properties.md`, `last-frontier:Docs/Multithreading.md`, `fonline-tla:AGENTS.md`, `fonline-tla:Docs/ScriptStyle.md`
 - Reusable claim: Module initialization, callback side, entity covers, async/yield invalidation, events, properties, and generated bindings need explicit ownership and validation.
 - Decision: Engine lifecycle and binding mechanics are promoted; game module maps, events, remotes, properties, and lock groups remain project-owned.
-- Promotion gate: Claims are tied to Engine callback/export source and focused lifecycle or synchronization tests.
+- Promotion gate: Tie claims to current callback/export source and direct lifecycle or synchronization observations; removed suites are not a gate.
 
 ### Script and native nullability
 
@@ -111,7 +111,7 @@ This internal audit records discovery material, ownership decisions, and promoti
 - Sources: `last-frontier:Docs/MapAuthoring.md`, `last-frontier:Docs/ContentWorkflow.md`, `fonline-tla:README.md`, `fonline-tla:Maps`
 - Reusable claim: Map sections, placement identity, ownership, mapper round-trip, side-specific baking, and runtime materialization need one parser-backed contract.
 - Decision: Format and tool mechanics are Engine-owned; map kits, quests, encounters, and level-design policy stay external. Last Frontier's edge detention bands, four-hex arrival gap, global/local exit separation and preview layouts are project policy; their map/tool/gameplay and owner-visual acceptance remain distinct from reusable format proof.
-- Promotion gate: Mapper, baker, loader, and materialization sources agree with generated reference and focused tests.
+- Promotion gate: Mapper, baker, loader, and materialization sources must agree with the generated reference; rebake and exercise the affected application path for current evidence.
 
 ### Text packs, languages, and runtime lookup
 
@@ -125,7 +125,7 @@ This internal audit records discovery material, ownership decisions, and promoti
 - Sources: `last-frontier:Docs/ContentWorkflow.md`, `last-frontier:Docs/CharacterGenerator.md`, `last-frontier:Docs/DocumentationMaintenance.md`, `last-frontier:Resources/CrittersArt/Critters/TEMPLATE_HumanAnimations.fo3d`, `last-frontier:Resources/CrittersArt/Critters/CR_HumanMaleNormal.fo3d`, `last-frontier:Resources/CrittersArt/Critters/VH_Jagger.fo3d`, `last-frontier:Resources/CrittersArt/Critters/VH_Snowmobile.fo3d`, `fonline-tla:Docs/Animation.md`, `fonline-tla:Resources/VanBuren/art/critters/_VBMob.fo3d`, `fonline-tla:Resources/VanBuren/art/critters/_VBWeapon.fo3d`, `fonline-tla:Resources/VanBuren/art/critters/_VBHuman.fo3d`, `fonline-tla:Resources/VanBuren/art/critters/VbDog.fo3d`
 - Reusable claim: Current model grammar, named animation tuples, include templates, tuple AnimSpeed, one-step aliases, exact temporary geometry exceptions, typed durations, 2D frame offsets, movement phase, and stop-time offset normalization must be re-derived from Engine bakers and runtime rather than legacy assets or historical documentation names.
 - Decision: Engine mechanics are promoted. Last Frontier's named-template composition is current project evidence; its 3D *_RM import boundary does not prove 2D offset values. TLA's bare AnimEqual, model-level Speed, raw_ptr, and LoadAnimation names are explicit legacy migration evidence, not current alias, tuple-speed, pointer, or loader contracts. No current authored 2D root-motion asset was observed in either pinned project snapshot, so project offset values and gait-quality claims stay non-normative.
-- Promotion gate: Current parser/baker/runtime sources, focused duration and geometry tests, and visible representative assets replace historical token and implementation-name assumptions.
+- Promotion gate: Current parser/baker/runtime source, real model bakes, typed duration queries, and visible representative assets replace historical token and implementation-name assumptions.
 
 ### Effects, images, sprites, and shader resources
 
@@ -146,7 +146,7 @@ This internal audit records discovery material, ownership decisions, and promoti
 - Sources: `last-frontier:Docs/GuiSystem.md`, `last-frontier:Docs/ContentWorkflow.md`, `fonline-tla:Resources`
 - Reusable claim: Font descriptors/layout, supported audio decoders/playback, and Ogg/Theora video paths require separate Engine contracts and visible or audible project acceptance.
 - Decision: Engine formats/runtime are promoted; catalogs, typography, mastering, subtitles, licensing, and acceptance stay external.
-- Promotion gate: Source and native fixtures back capability claims; each project validates shipped assets on every claimed platform.
+- Promotion gate: Source-backed models delimit capability claims; actual bake and visible/audible client observations qualify shipped assets on each claimed platform. Removed native fixtures are not a current gate.
 
 ### Mapper, AnimationViewer, and ParticleViewer
 
@@ -167,7 +167,7 @@ This internal audit records discovery material, ownership decisions, and promoti
 - Sources: `last-frontier:Docs/Testing.md`, `last-frontier:Tools/PipelineTests`, `fonline-tla:Docs/ReanimationPlan.md`, `fonline-tla:AGENTS.md`
 - Reusable claim: Games benefit from deterministic fixture setup, boundary-based test selection, narrow-first execution, timeout/log contracts, and cross-layer integration evidence.
 - Decision: Engine now owns boundary-based test selection plus process readiness, marker, deadline, cleanup, and report semantics. Script test registries, game fixtures/assertions, filters, content, persistence backends, platform labs, and acceptance thresholds stay project-owned. Linux automatic-range port selection and the exact Anchor run-variable/retired-property process-stop oracle are project harness policy, not new Engine transport or persistence guarantees.
-- Promotion gate: The project-neutral runner has deterministic positive/failure/timeout coverage, a synthetic fixture, and real baked headless server/client proof in Minimal Multiplayer.
+- Promotion gate: Inspect the retained runner and process manifests, then exercise the existing headless server/client route in Minimal Multiplayer for current readiness, marker, deadline, cleanup, and report evidence. Historical unit-suite results are not a current gate.
 
 ### Native and script safety analyzers
 
@@ -202,7 +202,7 @@ This internal audit records discovery material, ownership decisions, and promoti
 - Sources: `last-frontier:Docs/AiControl.md`, `last-frontier:SourceExt/ClientAiBridge.cpp`, `last-frontier:Scripts/AiControl.cs`, `last-frontier:Tools/AiControlMcp/ai_control_mcp.py`, `fonline-tla:Docs/AiControl.md`, `fonline-tla:SourceExt/ClientAiBridge.cpp`, `fonline-tla:Scripts/AiControl.fos`, `fonline-tla:Tools/AiControlMcp/ai_control_mcp.py`
 - Reusable claim: Two projects expose AI observation/action bridges, but their schemas, QA commands, MCP adapters, and content semantics are still independently project-owned.
 - Decision: Promote only the transport envelope, authorization, bounded command/event lifecycle, reference client, and protocol sample; keep every project's observation schema, action catalog, administrator tools, and MCP namespace project-owned.
-- Promotion gate: Keep the generated experimental contract, loopback threat boundary, reference client, malformed-peer tests, protocol smoke, and runnable sample current; a native core listener still requires a separate runtime and security promotion.
+- Promotion gate: Keep the generated experimental contract, loopback threat boundary, reference client rejection paths, retained protocol smoke, and runnable sample current. Removed Python suites are not a prerequisite; a native core listener still requires separate runtime and security review.
 
 ### Cross-platform packaging and release evidence
 
@@ -230,21 +230,21 @@ This internal audit records discovery material, ownership decisions, and promoti
 - Sources: `last-frontier:Docs/GameSystems.md`, `last-frontier:Docs/ContentWorkflow.md`, `last-frontier:Docs/Crafting.md`, `last-frontier:Docs/Survival.md`, `last-frontier:Scripts/Craft.MaterialSources.cs`, `last-frontier:Scripts/Deterioration.cs`, `last-frontier:Scripts/BagSystem.cs`, `fonline-tla:Docs/ReanimationPlan.md`, `fonline-tla:Scripts`
 - Reusable claim: Quest, combat, economy, AI, faction, survival, and other gameplay systems exercise Engine surfaces but do not define reusable Engine behavior.
 - Decision: Keep all gameplay semantics, catalogs, balance, quests, and content acceptance in their game repositories. Last Frontier's nearby paid personal-storage crafting, inventory-first exact material plans, master repair fees/faction access, lazy empty-container restock and guaranteed open metal salvage are current project policies, not Engine recipes, storage authorization, economic durability or visual/production acceptance guarantees.
-- Promotion gate: Promote only a minimal reusable primitive with Engine-owned source/tests; never generalize a game's rule set into Engine documentation.
+- Promotion gate: Promote only a minimal reusable primitive with Engine-owned source and reproducible verification; never generalize a game's rule set into Engine documentation.
 
 ### Analytics, live operations, support, and product services
 
 - Sources: `last-frontier:Docs/Analytics.md`, `last-frontier:Docs/Ops/AGENTS.md`, `fonline-tla:README.md`
 - Reusable claim: Analytics schemas, support operations, commerce, communications, service providers, and live-ops policy are product concerns rather than Engine contracts.
 - Decision: Do not add game operations or service-provider procedures to Engine documentation.
-- Promotion gate: Only a provider-neutral Engine primitive with source/tests can be promoted; schemas, credentials, KPIs, and procedures remain product-owned.
+- Promotion gate: Only a provider-neutral Engine primitive with source and reproducible verification can be promoted; schemas, credentials, KPIs, and procedures remain product-owned.
 
 ### AngelScript style, refactoring, and change batching
 
 - Sources: `last-frontier:AGENTS.md`, `last-frontier:Docs/Scripts.md`, `last-frontier:LastFrontier.fomain`, `last-frontier:Tools/Formatter/format_project.py`, `fonline-tla:Docs/ScriptStyle.md`, `fonline-tla:Docs/Refactoring.md`, `fonline-tla:TLA.fomain`, `fonline-tla:Tools/Formatter/format_project.py`
 - Reusable claim: Module ownership, generated-file discipline, narrow change batches, formatter use, and validation-after-refactor recur across projects, but style rules still mix project policy and migration state.
 - Decision: Engine owns the enforceable namespace, side/module, formatter, generated-source, mutable-global, attributed-call, batching, and validation baseline. Last Frontier's Test_-only mutable-global/direct-call exceptions and broader project formatter are positive current evidence. TLA's broad production mutable-global allowlist is negative migration evidence, not a reusable default. Project comment language, domain vocabulary, generated formats, migration policy, quality thresholds, and gameplay acceptance remain external.
-- Promotion gate: The compact Engine convention is derived from compiler/formatter behavior and Engine CoreScripts, with examples and automated checks independent of project migration plans.
+- Promotion gate: Derive the compact Engine convention from current compiler/formatter behavior and Engine CoreScripts. Compile changed script roles and use the existing formatter; deleted documentation tests are not a gate.
 
 ### Documentation localization and terminology governance
 
@@ -257,8 +257,8 @@ This internal audit records discovery material, ownership decisions, and promoti
 
 - Sources: `last-frontier:.vscode/launch.json`, `last-frontier:.vscode/tasks.json`, `last-frontier:LastFrontier.fomain`, `last-frontier:Docs/BuildAndLaunch.md`, `last-frontier:Docs/Testing.md`, `last-frontier:Tools/CiChecks/check_debug_workflows.py`, `last-frontier:Tools/CiChecks/test_check_debug_workflows.py`, `last-frontier:Tools/PipelineTests/test_crash_diagnostics_linux.py`, `fonline-tla:.vscode/launch.json`, `fonline-tla:.vscode/tasks.json`, `fonline-tla:TLA.fomain`, `fonline-tla:README.md`
 - Reusable claim: A production debugging route separates native symbols and debugger semantics, crash-to-log and dump ownership, mixed script/native traces, explicitly enabled loopback AngelScript attach, multi-process selection, live transport capabilities, and focused regression evidence.
-- Decision: Last Frontier supplies a strong Windows/Linux native plus AngelScript profile pattern with explicit endpoint enablement, loopback base bind, static validation, and a Linux crash-diagnostic lane. TLA supplies independent compatibility evidence, but its compounds do not explicitly enable the endpoint while its base config disables debugging and uses a wildcard bind; this is negative evidence and not a security or launch template. Engine source and tests remain normative, project target names and incident policy remain external, and the absence of current live endpoint CI is explicit.
-- Promotion gate: Every reusable claim is re-derived from Engine source and native tests; project profiles remain exact pinned evidence, and a static editor profile is never promoted to live endpoint qualification.
+- Decision: Last Frontier supplies a strong Windows/Linux native plus AngelScript profile pattern with explicit endpoint enablement, loopback base bind, static validation, and a Linux crash-diagnostic lane. TLA supplies independent compatibility evidence, but its compounds do not explicitly enable the endpoint while its base config disables debugging and uses a wildcard bind; this is negative evidence and not a security or launch template. Current Engine source defines the native contract; historical test results do not establish this fork's behavior, project target names and incident policy remain external, and the absence of current live endpoint CI is explicit.
+- Promotion gate: Re-derive reusable claims from current Engine source and direct debugger/application checks. Project profiles remain exact pinned evidence, and a static editor profile is never promoted to live endpoint qualification.
 
 ### Tutorial assets, provenance, and public examples
 

@@ -36,11 +36,7 @@
     "raw_copy_baker": "Source/Tools/RawCopyBaker.cpp",
     "updater": "Source/Client/Updater.cpp",
     "file_reader_header": "Source/Common/FileSystem.h",
-    "font_resources": "Resources/Core/Fonts",
-    "tests": [
-      "Source/Tests/Test_MapperHelpers.h",
-      "Source/Tests/Test_ClientServerIntegrationHelpers.h"
-    ]
+    "font_resources": "Resources/Core/Fonts"
   },
   "outputs": {
     "runtime_extensions": [
@@ -325,7 +321,7 @@
       "syntax": "Letter '<UTF-8-codepoint>'",
       "stability": "experimental",
       "requirement": "Start each glyph record with Letter and one valid UTF-8 codepoint after the first apostrophe.",
-      "rationale": "The parser decodes exactly one codepoint to select the glyph map entry; later duplicate records overwrite earlier metrics.",
+      "rationale": "The parser decodes exactly one codepoint to select the glyph map entry; duplicate records reuse the same glyph: only encountered fields are updated, so omitted fields retain earlier values.",
       "source": [
         {
           "path": "Source/Client/FontManager.cpp",
@@ -564,7 +560,7 @@
       "name": "Twenty-byte character records",
       "stability": "experimental",
       "requirement": "Encode each Chars record in the 20-byte BMFont v3 layout. The format defines signed xoffset, yoffset, and xadvance fields, but the current loader reads all three as unsigned little-endian uint16 values; avoid negative metrics until that runtime defect is fixed separately.",
-      "rationale": "Bundled fonts contain negative bearings, so this source-backed limitation must remain visible instead of being documented as correct signed decoding.",
+      "rationale": "Bundled fonts contain negative bearings, so the unsigned-read limitation must remain visible. Duplicate character IDs reuse the same glyph and later full records overwrite the mapped metrics; there is no duplicate-ID rejection.",
       "source": [
         {
           "path": "Source/Client/FontManager.cpp",
@@ -1189,23 +1185,17 @@
     },
     {
       "id": "font-format.validation.engine-tests",
-      "name": "Engine regression gates",
+      "name": "Source and runtime checks",
       "stability": "experimental",
-      "requirement": "Run the focused documentation test and the full generated Engine unit-test target after FontManager or font descriptor changes.",
-      "rationale": "Structural checks pin source-derived contracts while native tests cover resource and client construction paths.",
+      "requirement": "Check the generated font reference after descriptor or FontManager changes, then bind the baked descriptor and image in an actual client; engine-owned unit suites are retired.",
+      "rationale": "Source-derived checks do not execute descriptor loading, font binding, layout, or rendering.",
       "source": [
         {
-          "path": "Source/Tests/Test_MapperHelpers.h",
+          "path": "Source/Client/FontManager.cpp",
           "anchors": [
-            "AddMinimalFont",
-            "Version 2",
-            "MakeMinimalBakedSprite"
-          ]
-        },
-        {
-          "path": "Source/Tests/Test_ClientServerIntegrationHelpers.h",
-          "anchors": [
-            "Default.fofnt"
+            "BindFoFont",
+            "BindBmfFont",
+            "StoreFont"
           ]
         }
       ]
@@ -1250,5 +1240,5 @@
       "internal": 2
     }
   },
-  "contract_digest": "692f92b10e1d76357c3dc9372a342693e754ac83b3cea32f302f88b40ba3d0dc"
+  "contract_digest": "b51b9e755abe5abba4b43050572a497e1c3f1335db124f5105a2aa8cad9f6cb8"
 }

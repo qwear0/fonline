@@ -3,7 +3,7 @@ permalink: /Examples/MinimalProject/README.ru.html
 locale: ru
 document_id: minimal-project-readme
 ---
-<!-- docs-translation: {"document_id":"minimal-project-readme","locale":"ru","source_path":"Examples/MinimalProject/README.md","source_sha256":"799fea6770f5d2181da542f6fb7487ba088c594b8c22e9b636c4dbcce6e13631"} -->
+<!-- docs-translation: {"document_id":"minimal-project-readme","locale":"ru","source_path":"Examples/MinimalProject/README.md","source_sha256":"76da24f8b901fee0adcd69eb387ae65532e8c802c18f8de1cf70626e5b3788b2"} -->
 # Минимальный проект FOnline
 
 Это принадлежащий движку исполняемый starter и opt-in проект проверки. Он
@@ -42,7 +42,7 @@ python validate.py
 
 Локальный validator использует инициализированный `Engine/`, конфигурирует и
 собирает headless server и baker, запекает ресурсы, а затем запускает
-`RunStarterSmoke`. Текущий обязательный workflow Engine этот маршрут не запускает.
+`RunStarterSmoke`. Это opt-in локальный маршрут; workflows форка архивированы.
 
 Для успеха журнал сервера должен дойти до каждого маркера, а процесс —
 завершиться с нулевым кодом:
@@ -69,7 +69,7 @@ server target `INTERFACE` через `FO_SERVER_LIBS`. Visibility hook
 `BuildTools/docs_metadata.py` на стороне движка, не создавая зависимости
 отдельного примера от этого инструмента документации. Маршрут Windows x64 был
 успешно выполнен 31 июля 2026 года. Эти standalone build routes являются
-opt-in local evidence и не входят в текущий обязательный workflow Engine.
+opt-in local evidence, а не текущим CI форка. Scaffold оставляет удалённые unit-test и coverage-режимы выключенными.
 
 `FO_SERVER_LIBS` является текущим привязанным к ревизии integration state, а не
 helper-командой, объявленной в `BuildTools/cmake/ProjectInterface.json`.
@@ -114,9 +114,9 @@ cmake --preset linux
 cmake --build --preset linux-smoke
 ```
 
-Workflows репозитория запускают ту же принадлежащую движку команду подготовки
-Linux перед проверкой, поэтому набор системных пакетов соответствует
-зафиксированной ревизии и не дублируется в YAML примера.
+Шаблон управления внешним примером предписывает ту же принадлежащую движку команду
+подготовки Linux. Это перспективная политика, а не активный CI форка;
+его workflows архивированы.
 
 Пресет Windows намеренно оставляет выбор генератора CMake: CMake выбирает самую
 новую установленную Visual Studio, тогда как фиксация `Visual Studio 17 2022`

@@ -35,8 +35,7 @@
     "sprite_manager": "Source/Client/SpriteManager.cpp",
     "settings": "Source/Common/Settings.inc",
     "raw_copy_baker": "Source/Tools/RawCopyBaker.cpp",
-    "third_party": "BuildTools/cmake/stages/ThirdParty.cmake",
-    "native_test_directory": "Source/Tests"
+    "third_party": "BuildTools/cmake/stages/ThirdParty.cmake"
   },
   "outputs": {
     "resource_extension": "ogv",
@@ -56,8 +55,7 @@
     "fullscreen_path_separator": "|",
     "fullscreen_stretches_to_target": true,
     "script_draw_event": "RenderIface",
-    "runtime_side": "client",
-    "native_test_files": []
+    "runtime_side": "client"
   },
   "formats": [
     {
@@ -548,10 +546,10 @@
     },
     {
       "id": "video.embedded.positive-size",
-      "name": "Positive target size advances",
+      "name": "Positive target size decodes",
       "stability": "experimental",
-      "requirement": "Pass a positive width and height every frame; zero or negative size skips frame decode, texture upload, and drawing.",
-      "rationale": "RenderFrame is called only inside the positive-size branch.",
+      "requirement": "Pass a positive width and height to decode, upload, and draw. A hidden instance or non-positive target does not pause its wall-clock timeline; the next positive draw can catch up.",
+      "rationale": "RenderFrame runs only in the positive-size branch, while StartTime was established at construction. The stopped-state cleanup check remains outside that branch.",
       "source": [
         {
           "path": "Source/Scripting/ClientGlobalScriptMethods.cpp",
@@ -583,8 +581,8 @@
       "id": "video.embedded.stopped",
       "name": "Stopped field lifecycle",
       "stability": "experimental",
-      "requirement": "Poll VideoPlayback.Stopped only after continuing to draw the instance; the flag becomes true when DrawVideoPlayback observes that the clip stopped.",
-      "rationale": "The draw method clears resources and sets the exported field after the stop check.",
+      "requirement": "VideoPlayback.Stopped is updated only when DrawVideoPlayback observes the clip's stopped state. A decode that stops the clip is cleaned up in the same call, including when later called with a non-positive target.",
+      "rationale": "The stop check follows decoding and lies outside the positive-size branch. Merely reading Stopped or hiding a live instance neither decodes to end-of-stream nor releases playback resources.",
       "source": [
         {
           "path": "Source/Scripting/ClientGlobalScriptMethods.cpp",
@@ -657,15 +655,16 @@
     },
     {
       "id": "video.validation.no-native-fixture",
-      "name": "Missing native video fixture",
+      "name": "Runtime evidence boundary",
       "stability": "experimental",
-      "requirement": "Treat the lack of Test_*Video* or Test_*Theora* as a coverage gap and keep visible regression evidence mandatory.",
-      "rationale": "The current native test inventory contains no focused video decoder/playback source.",
+      "requirement": "Use direct visible playback for decoder, queue, cleanup, and loop evidence; this fork has no engine-owned unit suites.",
+      "rationale": "Source anchors and documentation generation do not execute Theora decoding or texture presentation.",
       "source": [
         {
-          "path": "Source/Tests/README.md",
+          "path": "Source/Client/VideoClip.cpp",
           "anchors": [
-            "Catch2"
+            "VideoClip::RenderFrame",
+            "th_decode_packetin"
           ]
         }
       ]
@@ -717,5 +716,5 @@
       "experimental": 34
     }
   },
-  "contract_digest": "e71428249d2e234edc19b825ca4b70363179c0570a9b8dccf304bea729c04d29"
+  "contract_digest": "f0e71247017da195525dd04e6f3c4913832963fb0e3f0dd196d59d261d39a10c"
 }

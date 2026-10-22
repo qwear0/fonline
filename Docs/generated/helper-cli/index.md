@@ -17,9 +17,6 @@ Continue with the [canonical reference](../../en/reference/helper-cli/index.md).
 <a id="entry-helper-cli-codegen-60abdf415d"></a>
 - [`entry-helper-cli-codegen-60abdf415d`](../../en/reference/helper-cli/index.md#entry-helper-cli-codegen-60abdf415d)
 
-<a id="entry-helper-cli-codecoverage-b014400e5e"></a>
-- [`entry-helper-cli-codecoverage-b014400e5e`](../../en/reference/helper-cli/index.md#entry-helper-cli-codecoverage-b014400e5e)
-
 <a id="entry-helper-cli-gameplay-test-runner-b34ed8deb4"></a>
 - [`entry-helper-cli-gameplay-test-runner-b34ed8deb4`](../../en/reference/helper-cli/index.md#entry-helper-cli-gameplay-test-runner-b34ed8deb4)
 

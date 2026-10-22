@@ -150,31 +150,31 @@ parity. Package grammar and the release evidence boundary are documented in
 
 ## Capture the Mapper particle workflow
 
-Build the source fixture, baked resources, Mapper, and the focused viewer:
+From the example root, reconfigure the existing preset to enable the optional Mapper and focused viewer targets (the normal tutorial preset does not enable them), then build the resources and tools:
 
 ```powershell
+cmake --preset windows -DFO_BUILD_MAPPER=ON -DFO_BUILD_PARTICLE_VIEWER=ON
 cmake --build Build\windows --config Release --target ForceBakeResources FOMM_Mapper FOMM_ParticleViewer
 ```
 
-Launch either deterministic documentation profile:
+From the example root, enter the build output directory before launching either deterministic documentation profile so relative baked resources resolve there:
 
 ```powershell
-Build\windows\Binaries\Mapper-Windows-win64\FOMM_Mapper.exe `
-  -ApplyConfig FOnlineMinimalMultiplayer.fomain `
+cd Build\windows
+.\Binaries\Mapper-Windows-win64\FOMM_Mapper.exe `
+  -ApplyConfig ..\..\FOnlineMinimalMultiplayer.fomain `
   -ApplySubConfig MapperDocumentationCapture
 
-Build\windows\Binaries\Mapper-Windows-win64\FOMM_Mapper.exe `
-  -ApplyConfig FOnlineMinimalMultiplayer.fomain `
+.\Binaries\Mapper-Windows-win64\FOMM_Mapper.exe `
+  -ApplyConfig ..\..\FOnlineMinimalMultiplayer.fomain `
   -ApplySubConfig MapperDocumentationSparkEditorCapture
 ```
 
-Both profiles open `TutorialMap`, fix a `1280x800` viewport, wait for the UI to
-settle, request the full Mapper frame, and exit after the deferred capture.
+Both profiles select `TutorialMap` and a `1280x800` viewport. They configure a reproducible scene, not an automatic screenshot/exit command. Let the UI settle, then use the full-window capture workflow in the tool guide.
 The first selects `Documentation.spk` with fixed seed, scale, and prewarm; the
 second opens the authored `Documentation.spark` source directly through
 `Mapper.SparkEditorSource` without covering it with Particle Preview.
-The TGA output is `MapperDocumentationCapture.tga` beside the launched
-process. The checked-in documentation PNGs, exact interaction steps, source
+Native `Game.SaveMapperScreenshot(path)` writes PNG bytes to the exact supplied path (it does not replace the extension); choose a `.png` filename explicitly. That map-only helper is not a substitute for the full-window UI evidence required by the documentation capture workflow. The checked-in documentation PNGs, exact interaction steps, source
 hashes, and recapture triggers live in
 [`BuildTools/DocumentationScreenshots.json`](../../BuildTools/DocumentationScreenshots.json).
 

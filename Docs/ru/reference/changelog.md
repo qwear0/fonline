@@ -7,12 +7,24 @@ permalink: /Docs/ru/reference/changelog.html
 ---
 
 # История изменений движка
-<!-- docs-translation: {"document_id":"engine-changelog","locale":"ru","source_path":"Docs/en/reference/changelog.md","source_sha256":"3f955f57450f4fc82569a442a6208e0fd7464b401aabbf56d5a29da58e0ba129"} -->
+<!-- docs-translation: {"document_id":"engine-changelog","locale":"ru","source_path":"Docs/en/reference/changelog.md","source_sha256":"fe65992973e3c813110035da2605ed0275b0bf8adfcb61165bd7f26a3316fde8"} -->
 Здесь ведутся значимые для разработчиков изменения FOnline и заметки о миграции на русском и английском. Текущую версию разработки задаёт [VERSION](https://github.com/qwear0/fonline/blob/master/VERSION). [Правила версий и выпусков](../how-to/release/versioning.md) определяют CalVer, даты выпусков, неизменяемые теги и границы совместимости.
 
 ## Unreleased
 
 ## Current - 2026-10-22
+
+### Изменено
+
+- Согласованы остальные generated-модели контента/native/support/examples и русские перенаправления GUI. Исправлены CMake-опции начальных проектов и парные руководства корня/source/resources/examples с сохранением границ движок/игра.
+- Удалены отдельное тестовое приложение, тест NativeExtensionSample, собственные managed-наборы и первая группа native-тестов. Их потребители сборки уже удалены ранее в этом согласованном диапазоне.
+
+### Миграция
+
+- База `68b82f222405bf9b2a8851fe7cbe7fcc309419f0` (`2026.1.62-dev`) → `2026.1.63-dev`. Начальные проекты используют `FO_MANAGED_SCRIPTING`, а не устаревший `FO_MONO_SCRIPTING`; удалите обращения к упразднённым sample/testing-целям и runners. Перегенерируйте документацию из её владельцев; русские перенаправления GUI теперь остаются на русском.
+- Runtime API, значения настроек, форматы сохранений/ресурсов, сетевой маркер `0.0.75` и Managed ABI `9` не меняются; преобразования данных нет. После полного диапазона повторите конфигурацию существующих сборок и пересоберите соответствующие приложения. Откат возвращает предыдущие согласованные исходники, конфигурацию и generated-артефакты.
+
+## 2026.1.62-dev - 2026-10-22
 
 ### Документация
 

@@ -14,7 +14,6 @@ The sample proves:
 - `ServerInitHook` installs state owned by one `ServerEngine` instance and releases it through the engine allocator;
 - `Server_Game_NativeExtensionValue` becomes `Game.NativeExtensionValue()` in server AngelScript;
 - `NativeExtensionCore` is linked through the current revision-pinned `FO_SERVER_LIBS` list, with a compile-time check for the propagated usage requirement;
-- `FONATIVE_NativeExtensionCoreTest` tests the engine-independent fixed-width value boundary;
 - `run_native_extension_smoke.py` proves the lifecycle hook, generated script binding, state read, and clean server shutdown.
 
 ## Run The Checks
@@ -43,10 +42,9 @@ Linux hosts first install the prerequisites owned by the pinned Engine revision:
 Engine/BuildTools/prepare-workspace.sh linux-packages linux
 ```
 
-Success requires both the focused native marker and the runtime markers:
+Success requires the runtime markers:
 
 ```text
-native_extension_core_test_passed
 native_extension_hook_initialized
 native_extension_value=42
 native_extension_smoke_passed
@@ -56,7 +54,7 @@ native_extension_smoke_passed
 
 The project compiles the extension and Engine from source in one build. It does not promise a stable binary ABI across Engine revisions. Update the Engine gitlink, reconfigure, rebuild, rebake, and rerun both pinned/current compatibility lanes as one review.
 
-`NativeExtensionCore` exposes only fixed-width values to its focused test. Engine handles stay in the registered extension translation unit and use `ptr<T>` borrows. Per-server state lives in `ServerEngine.UserData`; there is no file-scope mutable state. A real project with several native subsystems should place one project-owned aggregate in that slot instead of letting independent extensions compete for it.
+`NativeExtensionCore` exposes an engine-independent fixed-width value boundary. Engine handles stay in the registered extension translation unit and use `ptr<T>` borrows. Per-server state lives in `ServerEngine.UserData`; there is no file-scope mutable state. A real project with several native subsystems should place one project-owned aggregate in that slot instead of letting independent extensions compete for it.
 
 `FO_SERVER_LIBS` is current revision-pinned integration state, not a helper declared by `BuildTools/cmake/ProjectInterface.json`; re-audit it whenever the Engine pin changes.
 

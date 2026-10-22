@@ -39,14 +39,7 @@
     "server_loader": "Source/Server/MapManager.cpp",
     "client_loader": "Source/Client/MapView.cpp",
     "api_model_generator": "BuildTools/docs_api.py",
-    "api_model": "Docs/generated/api.json",
-    "tests": [
-      "Source/Tests/Test_MapLoader.cpp",
-      "Source/Tests/Test_MapBaker.cpp",
-      "Source/Tests/Test_ProtoBaker.cpp",
-      "Source/Tests/Test_Mapper.cpp",
-      "Source/Tests/Test_ServerMapOperations.cpp"
-    ]
+    "api_model": "Docs/generated/api.json"
   },
   "outputs": {
     "source_selection": "Baking.ProtoFileExtensions plus at least one [ProtoMap] anchor",
@@ -3592,5 +3585,5 @@
       "Map": 15
     }
   },
-  "contract_digest": "392d71251c8adee84804318c782e78dc1496f13e8a45f5645d8640e1b7d1e426"
+  "contract_digest": "e1ed47ca22c23f0ef67204bbaf0e3fb7b43fe42b60eafb971fd1f1ca88625587"
 }

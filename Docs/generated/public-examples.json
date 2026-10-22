@@ -1,5 +1,5 @@
 {
-  "contract_digest": "e8623467586bebf8c0e4c02370c42fe99aa722d23f7d6cf1f252a163e3eee16d",
+  "contract_digest": "a84406dc298688162564e271c9fa71a627da66fa821a8139f315cb6fe3856552",
   "generated_by": "BuildTools/docs_examples.py",
   "program": {
     "compatibility": {
@@ -355,7 +355,7 @@
         "lifecycle-hook",
         "script-export",
         "role-specific-source",
-        "focused-native-test",
+        "native-runtime-smoke",
         "abi-and-compatibility-review"
       ],
       "depends_on": [
@@ -366,7 +366,7 @@
       "id": "native-extension-sample",
       "owner": "runtime",
       "primary_check": "python validate.py",
-      "purpose": "Advanced minimal example of project-native C++ composition, lifecycle hooks, script exports, tests, and ABI review.",
+      "purpose": "Advanced minimal example of project-native C++ composition, lifecycle hooks, script exports, runtime smoke, and ABI review.",
       "remote": {
         "created_on": "2026-07-20",
         "default_branch": "main",
@@ -378,7 +378,7 @@
       },
       "repository": "cvet/fonline-native-extension-sample",
       "required_artifacts": [
-        "native-test-report",
+        "native-smoke-report",
         "headless-server",
         "compatibility-report"
       ],
@@ -386,7 +386,7 @@
         "governance-contract",
         "pinned-engine",
         "current-engine",
-        "native-unit-test",
+        "native-runtime-smoke",
         "native-extension-contract"
       ],
       "sequence": 4,
@@ -415,7 +415,6 @@
         "SourceExt/NativeExtensionCore.cpp",
         "SourceExt/NativeExtensionCore.h",
         "SourceExt/ServerExtension.cpp",
-        "Tests/NativeExtensionCoreTest.cpp",
         "assets/provenance.json",
         "run_native_extension_smoke.py",
         "validate.py"

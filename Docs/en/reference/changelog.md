@@ -14,6 +14,18 @@ Developer-visible FOnline changes and migration notes are maintained here in Eng
 
 ## Current - 2026-10-22
 
+### Changed
+
+- Synchronize remaining generated content/native/support/example records and Russian GUI redirect destinations. Correct starter CMake options and paired root/source/resource/example guides, preserving engine/game ownership.
+- Retire the standalone testing application, native-extension sample test, owned managed suites and the first native suite group. Their build consumers were removed earlier in this coordinated range.
+
+### Migration
+
+- Base `68b82f222405bf9b2a8851fe7cbe7fcc309419f0` (`2026.1.62-dev`) → `2026.1.63-dev`. Starter projects use `FO_MANAGED_SCRIPTING`, not obsolete `FO_MONO_SCRIPTING`; remove retired sample/testing targets and runners. Regenerate documentation from its owners; Russian GUI forwarders now stay in Russian.
+- Runtime APIs, settings values, save/resource formats, wire `0.0.75` and Managed ABI `9` remain unchanged; no data conversion. Reconfigure existing builds and rebuild matching applications after the complete range. Rollback restores the preceding matching sources, configuration and generated artifacts.
+
+## 2026.1.62-dev - 2026-10-22
+
 ### Documentation
 
 - Reconcile paired native, scripting, content/media and platform references and getting-started tutorials. Correct setting groups, supported RPC/migration kinds, text fallback, font/image/particle behavior and practical validation boundaries.

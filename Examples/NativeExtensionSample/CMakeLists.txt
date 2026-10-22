@@ -36,11 +36,6 @@ else()
         -Wall -Wextra -Wpedantic -Werror)
 endif()
 
-add_executable(FONATIVE_NativeExtensionCoreTest
-    Tests/NativeExtensionCoreTest.cpp)
-target_link_libraries(FONATIVE_NativeExtensionCoreTest PRIVATE
-    NativeExtensionCore)
-
 # Current revision-pinned project-library integration point.
 list(APPEND FO_SERVER_LIBS NativeExtensionCore)
 AddEngineSources(SERVER SourceExt/ServerExtension.cpp)
@@ -55,13 +50,11 @@ if(FO_BUILD_SERVER AND FO_BUILD_BAKER)
     find_package(Python3 REQUIRED COMPONENTS Interpreter)
 
     add_custom_target(RunNativeExtensionChecks
-        COMMAND $<TARGET_FILE:FONATIVE_NativeExtensionCoreTest>
         COMMAND ${Python3_EXECUTABLE}
             "${CMAKE_CURRENT_SOURCE_DIR}/run_native_extension_smoke.py"
             $<TARGET_FILE:FONATIVE_ServerHeadless>
             "${CMAKE_CURRENT_SOURCE_DIR}/${FO_MAIN_CONFIG}"
         DEPENDS
-            FONATIVE_NativeExtensionCoreTest
             FONATIVE_ServerHeadless
             BakeResources
         WORKING_DIRECTORY ${FO_OUTPUT_PATH}

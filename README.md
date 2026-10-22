@@ -8,6 +8,8 @@ permalink: /
 
 # FOnline Engine
 
+**FOSquad fork:** the owner removed the engine's own unit suites. Follow the [verification policy](Docs/en/contributing/testing/index.md): use proportionate existing checks or direct application use; do not create automated tests without an explicit request. Workflows are archived under `.github/disabled-workflows/`; imported documentation can retain historical test references.
+
 [Engine versioning](Docs/en/how-to/release/versioning.md) · [Changelog](Docs/en/reference/changelog.md)
 
 **FOnline** is an open-source (MIT) C++20 engine for building online multiplayer RPGs in the classic isometric style of Fallout 1/2/Tactics and Arcanum. One codebase gives you the authoritative server, the game client, the map editor, the content pipeline, and packaging for desktop, mobile, and the browser — you bring the game: content, scripts, and rules live in your own repository that embeds the engine.
@@ -17,7 +19,7 @@ In continuous development since 2006, the engine powers community multiplayer RP
 ## Why FOnline?
 
 - **Multiplayer first.** Not a single-player engine with networking bolted on: an authoritative server, replicated entity state, and client/server separation are the core design, all the way down to the entity model.
-- **Complete vertical.** Server, client, mapper, editor, resource baker, script compiler, test runner, auto-updater — all built from the same sources by one CMake pipeline.
+- **Complete vertical.** Server, client, mapper, editor, resource baker, script compiler, auto-updater — all built from the same sources by one CMake pipeline.
 - **Engine/game split that stays clean.** The engine is a reusable submodule; your game owns content, scripts, configuration, branding, and release policy. Engine updates don't drag game policy with them.
 - **Data-driven content.** Prototypes, maps, dialogs, localization, and GUI are authored as plain-text assets and baked into runtime packs — friendly to diffs, reviews, and tooling.
 - **Runs where players are.** Native Windows/Linux/macOS, Android and iOS, and a WebAssembly client that plays in the browser over WebSockets.
@@ -59,7 +61,6 @@ In continuous development since 2006, the engine powers community multiplayer RP
 
 ### Engineering quality
 
-- Unit tests (Catch2) with generated per-suite targets, sanitizer runs, and code coverage.
 - Clang Thread Safety Analysis enforced as `-Werror` on every Clang toolchain; strict smart-pointer and nullability vocabularies audited across the codebase.
 - Always-on stack traces, deterministic exception-safety rules, and a terminate-on-OOM allocation model instead of half-mutated states.
 - Tracy profiler integration for client and server captures.
@@ -96,9 +97,9 @@ GameProject/
 ## Getting started
 
 - **Run the first engine-owned project:** [First FOnline Headless Project](Docs/en/tutorials/first-project.md) - configure, build, bake, start, verify, and stop the minimal headless server.
-- **Inspect the canonical scaffold:** [Examples/MinimalProject/README.md](Examples/MinimalProject/README.md) - the complete project and CI smoke contract.
+- **Inspect the canonical scaffold:** [Examples/MinimalProject/README.md](Examples/MinimalProject/README.md) - the complete project and opt-in local smoke contract.
 - **Inspect the executable content gallery:** [Examples/ContentShowcase/README.md](Examples/ContentShowcase/README.md) - source assets, baking, native/Web checks, provenance, budgets, and reproducible capture evidence.
-- **Build the first playable slice:** [first playable client](Docs/en/tutorials/first-client.md), [first content change](Docs/en/tutorials/first-content.md), and [first automated test](Docs/en/tutorials/first-test.md) - connect a client, change localized content, and extend executable checks.
+- **Build the first playable slice:** [first playable client](Docs/en/tutorials/first-client.md), [first content change](Docs/en/tutorials/first-content.md), and [first automated test](Docs/en/tutorials/first-test.md) - connect a client, change localized content, and inspect existing executable checks. Creating or changing automated tests still requires an explicit request under this fork's verification policy.
 - **Configure and maintain a project:** [Project Configuration](Docs/en/how-to/build/project-configuration.md), [Generated Content Workflow](Docs/en/how-to/build/generated-content.md), and [Engine Upgrade Guide](Docs/en/how-to/migration/engine-upgrade.md) - own `.fomain`, resource packs, generated outputs, migrations, and Engine updates.
 - **Choose release targets truthfully:** [Support Matrix](Docs/en/reference/platforms/support-matrix.md) and its [generated matrix](Docs/en/reference/platforms/generated-matrix.md) - distinguish source capability, required builds, process smoke tests, and project/device qualification.
 - **Plan and validate public examples:** [Public Example Repositories](Docs/en/how-to/build/public-example-repositories.md) and its [generated registry](Docs/en/reference/public-examples/index.md) - ownership, exact Engine pins, compatibility lanes, repository template, support, and asset provenance.
@@ -114,7 +115,7 @@ GameProject/
 - **Add project-native C++ safely:** [Native Extensions](Docs/en/how-to/native-extensions.md) - source roles, hooks, script exports, state ownership, compatibility, and executable validation.
 - **Browse the generated CMake interface:** [Docs/en/reference/cmake/index.md](Docs/en/reference/cmake/index.md) - project options, strict stages and hooks, selected helpers, defaults, and source links.
 - **Measure client and server performance:** [Profiling](Docs/en/how-to/quality/profiling.md) - Tracy build modes, isolated capture boundaries, reproducible workloads, and comparable result analysis.
-- **Publishing documentation:** [documentation site publication](Docs/en/contributing/documentation/site-publication.md) - generated navigation/search/route data, rolling version and locale policy, local Jekyll preview, rendered-route/accessibility validation, CI artifacts, and the existing `fonline.ru` GitHub Pages route.
+- **Publishing documentation:** [documentation site publication](Docs/en/contributing/documentation/site-publication.md) - generated navigation/search/route data, rolling version and locale policy, local Jekyll preview, rendered-route/accessibility validation, local review artifacts, and inherited `fonline.ru` URL configuration. This fork's Pages source and domain ownership are unverified.
 - **Website AI retrieval:** [llms.txt](https://fonline.ru/llms.txt), [llms-full.txt](https://fonline.ru/llms-full.txt), and [docs-manifest.json](https://fonline.ru/docs-manifest.json) - generated routes, bounded context, canonical/source URLs, provenance, and content hashes from the same Markdown manifest.
 - **New to the engine:** [Getting Started](Docs/en/tutorials/getting-started.md) - the first route: what to read, what to build, what belongs where.
 - **Starting or inspecting a game project:** [Embedding Project](Docs/en/how-to/build/embedding-project.md) — expected repository shape and ownership rules.
@@ -125,7 +126,7 @@ FOnline has build profiles for Windows, Linux, macOS, Android, iOS, and WebAssem
 
 ## Repository layout
 
-- [`Source/`](Source/) — engine source: `Applications/` entry points, `Client/` and `Server/` runtimes, `Common/` shared model, `Frontend/` platform/render layer, `Scripting/` bridge, `Tools/` bakers and editors, `Essentials/` low-level core, `Tests/` unit tests.
+- [`Source/`](Source/) — engine source: `Applications/` entry points, `Client/` and `Server/` runtimes, `Common/` shared model, `Frontend/` platform/render layer, `Scripting/` bridge, `Tools/` bakers and editors, `Essentials/` low-level core.
 - [`BuildTools/`](BuildTools/) — staged CMake pipeline, code generation, platform toolchains, workspace and package preparation.
 - [`Resources/`](Resources/) — engine-owned runtime and build resources.
 - [`ThirdParty/`](ThirdParty/) — vendored dependencies (SDL, AngelScript, Asio, ImGui, glslang, SPIRV-Cross, Tracy, and more); maintenance workflow in [ThirdParty Maintenance](Docs/en/contributing/third-party/).
@@ -150,6 +151,7 @@ When behavior changes in a noticeable way, the owning document is updated in the
 
 ## Project and community
 
-- Site: <https://fonline.ru>
-- GitHub: <https://github.com/cvet/fonline>
+- Upstream site: <https://fonline.ru> (not verified as this fork's deployment)
+- Fork: <https://github.com/qwear0/fonline>
+- Upstream: <https://github.com/cvet/fonline>
 - License: [MIT](LICENSE)
