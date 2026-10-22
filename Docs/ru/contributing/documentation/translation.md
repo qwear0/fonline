@@ -5,7 +5,7 @@ locale: ru
 document_id: documentation-translation-workflow
 permalink: /Docs/ru/contributing/documentation/translation.html
 ---
-<!-- docs-translation: {"document_id":"documentation-translation-workflow","locale":"ru","source_path":"Docs/en/contributing/documentation/translation.md","source_sha256":"7990dbf6bb8fe32901b442dbd41fbce54bf75ecd79a02e855d0e74f501a058ad"} -->
+<!-- docs-translation: {"document_id":"documentation-translation-workflow","locale":"ru","source_path":"Docs/en/contributing/documentation/translation.md","source_sha256":"0f5cd7ba5ecd91486c6aecb0363dca9ed2ef9eff650e134b58a60bde62fb48c0"} -->
 # Процесс перевода документации
 
 В документации FOnline английский язык служит каноническим источником, а
@@ -29,16 +29,14 @@ permalink: /Docs/ru/contributing/documentation/translation.html
 - один хэш канонического английского содержимого в сгенерированной модели
   состояния переводов.
 
-Все 194 обязательных русских соответствий присутствуют, а
-`localization.enforcement` имеет значение `complete`. Каждая страница должна
-оставаться полной, соответствовать текущему хэшу, сохранять код и иметь
-правильную пару. Authoritative-инвентарём является сгенерированный отчёт;
-добавление новой обязательной английской страницы без русского соответствия
-немедленно проваливает проверку.
+`localization.enforcement` имеет значение `complete`: каждой обязательной странице
+нужно полное русское соответствие с текущим хэшем, сохранённым кодом и правильной
+парой. Авторитетный перечень даёт свежий сгенерированный отчёт, а не скопированное
+количество; отсутствие или устаревание перевода проваливает проверку.
 
 Текущий машинный отчёт: [docs-manifest.json#/translation_status](https://fonline.ru/docs-manifest.json#/translation_status).
 
-Результат 194/194 доказывает физический паритет страниц. Русские генерируемые
+Успешный отчёт паритета доказывает структурную полноту и актуальность, но не качество перевода. Русские генерируемые
 страницы также могут содержать обращённый к читателю текст из машинных моделей,
 а не из Markdown-шаблона. Для этого семантического слоя существуют отдельные
 каталог и gate, описанные ниже; физический паритет нельзя представлять как
@@ -94,8 +92,8 @@ BuildTools/README.ru.md
    метаданных, значения перечислений и fenced code blocks.
 8. Ссылайтесь на русское соответствие. Gate полного паритета отклоняет
    отсутствующую страницу вместо production fallback на английский маршрут.
-9. Запустите snippet gate для канонических английских fences, затем генератор
-   локализации и фокусные тесты.
+9. Запустите snippet gate для канонических английских fences, затем генерацию
+   и проверку статуса локализации.
 
 Вспомогательный инструмент может вывести точный хэш через сгенерированную модель
 состояния. Не вычисляйте и не редактируйте хэши независимо во втором формате.
@@ -117,12 +115,11 @@ SHA-256 по полному каноническому английскому и
 
 ```bash
 python BuildTools/docs_localization.py --write
-python BuildTools/tests/test_docs_localization.py
 python BuildTools/docs_localization.py --check --enforce-complete
 ```
 
 Manifest также включает этот production gate по умолчанию; явный флаг делает
-намерение локального и CI-запуска очевидным:
+намерение локальной приёмки очевидным; архивные workflows не являются активными проверками:
 
 ```bash
 python BuildTools/docs_localization.py --check --enforce-complete
@@ -150,10 +147,10 @@ inline-code записи и создаёт
 английский Markdown не меняются, а русский Markdown получает переведённые
 описания до локализации фиксированных подписей и заголовков.
 
-Каталог использует режим `complete`: все 4 811 обращённых к читателю значений
-во всех 19 генерируемых доменах, включая native API, имеют актуальные
-проверенные записи. CI и локальная проверка отклоняют отсутствующие,
-неизвестные, устаревшие, меняющие тип, форму списка или inline-code записи.
+Каталог использует режим `complete`: каждому обращённому к читателю значению
+в инвентаризируемых моделях, включая native API, нужна актуальная проверенная запись.
+Локальная проверка отклоняет отсутствующие, неизвестные, устаревшие, меняющие тип,
+форму списка или inline-code записи; точное покрытие берите из свежего отчёта.
 Если генератор начинает выводить новое обращённое к читателю значение,
 добавьте проверенный перевод в том же изменении; неполный каталог не считается
 допустимым промежуточным состоянием.
@@ -172,7 +169,6 @@ Translation memory по точному source позволяет не дубли
 
 ```bash
 python BuildTools/docs_description_translations.py --write --enforce-complete
-python BuildTools/tests/test_docs_description_translations.py
 python BuildTools/docs_description_translations.py --check --enforce-complete
 ```
 
@@ -224,7 +220,7 @@ python BuildTools/docs_description_translations.py --check --enforce-complete
 
 ## Контрольный список ревью
 
-- Поведение всё ещё соответствует текущим исходникам и тестам Engine.
+- Поведение соответствует текущим исходникам Engine и соразмерным существующим проверкам.
 - Не пропущены ни одно требование, предупреждение, ограничение, шаг
   восстановления, строка таблицы или альтернативный текст.
 - Команды и fenced code не изменены и проходят тот же snippet harness, что и
@@ -276,7 +272,7 @@ python BuildTools/docs_description_translations.py --check --enforce-complete
    `translation: required`;
 2. проверенные глоссарий и полный каталог генерируемых описаний;
 3. `README.ru.md` и парные README подсистем и примеров;
-4. режим полной проверки в manifest и CI;
+4. режим полной проверки в manifest и успешная локальная проверка;
 5. двуязычные навигация и поиск, а также сохраняющие язык ссылки;
 6. ревью носителем языка, автоматический русский 200-percent reflow profile и
    representative assistive-technology review;

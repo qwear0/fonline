@@ -13,6 +13,10 @@ permalink: /Docs/en/contributing/decisions/0006-documentation-version-locale-rou
 - Amended: 2026-08-01 after the reviewed physical EN/RU migration groups
 - Owners: documentation, build-release
 
+## Fork applicability
+
+The rolling-channel, stable-ID and durable-route design remains current. Upstream site and Actions artifacts below are historical, not proof of this fork's deployment. Local workflows are archived and own unit suites removed. Current authored pages have EN/RU pairs under complete localization enforcement; the generated status, not this ADR's adoption narrative, owns coverage. Logical root delivery files live in ignored `Workspace/Documentation/`, rendered output in `Workspace/DocumentationSite/`.
+
 ## Context
 
 FOnline publishes repository Markdown through GitHub Pages/Jekyll at `https://fonline.ru`. ADR-0001 selected the future `Docs/en` and `Docs/ru` layout, ADR-0003 made the same corpus available to AI clients, and ADR-0004 added manifest-backed navigation and search. Those decisions did not yet define one executable contract for:
@@ -32,11 +36,7 @@ Moving files or beginning translation without that contract would make redirects
 - `BuildTools/docs_ai_delivery.py`
 - `BuildTools/docs_site.py`
 - `BuildTools/docs_validate.py`
-- `BuildTools/tests/test_docs_ai_delivery.py`
-- `BuildTools/tests/test_docs_site.py`
-- `BuildTools/tests/test_docs_site_layout.py`
-- `BuildTools/tests/test_docs_validate.py`
-- `_config.yml`
+- `Docs/Site/_config.yml`
 - `Docs/Site/Layouts/default.html`
 - `Docs/en/contributing/documentation/site-publication.md`
 - `Docs/ProductionDocumentationPlan.md`
@@ -51,7 +51,7 @@ Moving files or beginning translation without that contract would make redirects
 2. `current` follows the rolling `master` branch and is labeled `Current`, not `Stable`.
 3. Current public URLs remain unversioned and stable while their content follows the latest published `master` revision.
 4. Source links use the same `master` ref as the displayed documentation.
-5. Historical review uses commit-addressable GitHub Actions `_site` artifacts and repository revisions.
+5. Historical review uses exact repository revisions and retained revision-bound local artifacts; upstream GitHub Actions artifacts remain historical evidence only.
 
 The [Engine CalVer](../../how-to/release/versioning.md) from root `VERSION` is displayed alongside this rolling channel and links to the locale's [changelog](../../reference/changelog.md). It identifies Engine development/release metadata, not a supported documentation snapshot. Source links continue to use the channel's `master` ref.
 
@@ -70,7 +70,7 @@ The [Engine CalVer](../../how-to/release/versioning.md) from root `VERSION` is d
 4. Repository and subsystem README entry points use manifest-declared paired paths such as `README.md` and `README.ru.md`.
 5. Stable document IDs, not translated titles, join English and Russian pages.
 6. Translation freshness uses a normalized SHA-256 hash of canonical English content. Existing translations are checked for current hashes, identical fenced code, explicit locale metadata, and language-preserving links; complete parity becomes mandatory at production bilingual launch.
-7. `translation-pending` is allowed only before production bilingual launch.
+7. The current manifest enforces complete translation parity; the old pre-launch `translation-pending` allowance is historical, not a way to publish stale mirrors.
 
 ### Stable routes and migration
 
@@ -111,18 +111,12 @@ The [Engine CalVer](../../how-to/release/versioning.md) from root `VERSION` is d
 
 ## Verification
 
-- `python BuildTools/tests/test_docs_ai_delivery.py`
-- `python BuildTools/tests/test_docs_site.py`
-- `python BuildTools/tests/test_docs_site_layout.py`
-- `python BuildTools/tests/test_docs_site_artifact.py`
-- `python BuildTools/tests/test_docs_browser.py`
-- `python BuildTools/tests/test_docs_validate.py`
 - `python BuildTools/docs_site.py --check`
 - `python BuildTools/docs_ai_delivery.py --check`
 - `python BuildTools/docs_localization.py --check`
 - `python BuildTools/docs_validate.py`
 
-The tests reject version/source-ref drift, malformed locale policy, missing README locale pairs, route collisions, ambiguous canonical targets, stale route output, and layout drift.
+Existing local generators/checks reject version/source-ref drift, malformed locale policy, missing README pairs, route collisions, ambiguous owners and stale outputs. Rendered/browser behavior requires separate existing artifact/browser checks; removed suites and archived CI are not current evidence.
 
 ## Related Documents
 

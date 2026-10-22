@@ -7,7 +7,7 @@ permalink: /Docs/ru/contributing/coding-contracts/smart-pointers.html
 ---
 
 # Умные указатели
-<!-- docs-translation: {"document_id":"smart-pointers","locale":"ru","source_path":"Docs/en/contributing/coding-contracts/smart-pointers.md","source_sha256":"00127de2f7ad8dc83ae4397bee91938e88a859e61e5d4d9ce1f581f7dff69a4e"} -->
+<!-- docs-translation: {"document_id":"smart-pointers","locale":"ru","source_path":"Docs/en/contributing/coding-contracts/smart-pointers.md","source_sha256":"999857da6063d34656866f066e95ec8d1218b134ec642ca098ac1a2cb7e67829"} -->
 > Документация движка. Эта страница определяет словарь native C++-указателей
 > из `Source/Essentials/SmartPointers.h`: владение, nullability, правила
 > миграции и требования к проверке.
@@ -170,17 +170,15 @@ static void Cleanup(sentry_options_t* raw_options) noexcept {
 только ради префикса. После `!= nullptr` связывайте raw pointer сразу с
 `ptr<T>`, без промежуточного `nptr<T>`.
 
-Заведомо non-null значение, например `std::string::data()` /
-`string_view::data()`, `&object` или уже non-null результат, связывайте прямо с
-`ptr<T>` без проверки и `nptr<T>`. Не создавайте wrapper для локального pointer,
+Заведомо non-null значение, например `data()` живого объекта string, `&object` или уже non-null результат, связывайте прямо с `ptr<T>` без проверки и `nptr<T>`. У пустого `string_view`, в том числе созданного по умолчанию, `data()` может быть null: сохраняйте отсутствие через `nptr<T>` либо передавайте сам view/span, если операция принимает пустой диапазон. Не создавайте wrapper для локального pointer,
 который не покидает функцию и нужен только для address arithmetic; достаточно
 `ptr<T>` или raw pointer для чистой математики:
 
 ```cpp
-ptr<const char> view_begin = _sv.data();        // data() is never null — no nptr, no check
+auto view_begin = make_nptr(_sv.data());       // An empty view may have null data
 ptr<const char> storage_begin = _s.data();
 ptr<const char> storage_end = storage_begin.get() + _s.size();
-if (view_begin < storage_begin || !(view_begin < storage_end)) { ... }
+if (!view_begin) { /* Handle the empty view before address arithmetic. */ }
 ```
 
 Исключение: exported/ABI parameter с именем, закреплённым внешним контрактом или
@@ -429,9 +427,7 @@ rg "^\s*(mutable\s+)?unique_ptr<[^\n;]+>\s+\w+[^;{}]*\{\}\s*;" Source SourceExt
 rg "^\s*(mutable\s+)?refcount_ptr<[^\n;]+>\s+\w+[^;{}]*\{\}\s*;" Source SourceExt
 ```
 
-После pointer-layer изменений запускайте generated engine unit-test target
-подключающего проекта. При изменении native bindings или exported signatures
-дополнительно выполняйте script compilation/baking validation проекта.
+После pointer-layer изменений соберите минимальную затронутую роль проекта и проверьте её существующий ownership/lifetime application path. Прежний Engine unit target удалён; новые автоматизированные тесты требуют явного запроса. При изменении native bindings/exported signatures также выполните compile/bake затронутых script roles.
 
 Engine пока не поставляет whole-tree textual/AST smart-pointer checker.
 Подключающий проект может хранить migration guards, но его commands, task names,

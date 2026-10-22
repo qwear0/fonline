@@ -13,6 +13,10 @@ permalink: /Docs/en/contributing/decisions/0004-manifest-backed-site-navigation-
 - Amended: 2026-08-01 for locale-aware navigation, bounded per-locale search, and rendered-browser validation
 - Owners: documentation, tooling
 
+## Fork applicability
+
+This retains the upstream site design, not proof that this fork publishes `fonline.ru`. Workflows are archived, own unit suites removed, and remote settings unchanged by local archival. Generate navigation/search/routes locally; inspect rendered artifacts and run the existing browser audit only when authorized with its dependencies already available. Neither source checks nor historical artifacts establish a current deployment.
+
 ## Context
 
 FOnline documentation is published from repository Markdown through GitHub Pages/Jekyll at `https://fonline.ru`. At adoption, the publication route and AI delivery were source-owned, but the rendered site still presented the basic Slate repository page: readers had no persistent documentation map, integrated search, current-version identity, mobile documentation navigation, or page-local table of contents.
@@ -50,7 +54,7 @@ Hand-authored Jekyll menus would duplicate `Docs/documentation-manifest.json`. H
 
 - Adding, translating, or reclassifying public documentation may require assigning its stable ID to a navigation group and regenerating both locale indexes, routes, navigation, localization status, and AI artifacts.
 - Client-side search is current-revision document search, not a versioned symbol service or semantic retrieval system.
-- Layout changes require both source-level interaction tests and an inspected Jekyll artifact because local static tests cannot prove Liquid rendering.
+- Layout changes require the existing rendered-artifact/browser checks and visual inspection because source checks cannot prove Liquid rendering. New tests or infrastructure need explicit authorization.
 - Unmigrated flat English paths remain visible during the locale-tree migration. Reviewed migration groups prove canonical EN/RU pages, stable-ID switching, Russian search, and durable legacy pointer routes; ADR-0006, localization status, and the generated route catalog own the current coverage and remaining paths.
 
 ## Rejected alternatives
@@ -63,16 +67,11 @@ Hand-authored Jekyll menus would duplicate `Docs/documentation-manifest.json`. H
 
 ## Verification
 
-- `python BuildTools/tests/test_docs_site.py`
-- `python BuildTools/tests/test_docs_site_layout.py`
-- `python BuildTools/tests/test_docs_site_artifact.py`
-- `python BuildTools/tests/test_docs_browser.py`
 - `python BuildTools/docs_site.py --check`
 - `python BuildTools/docs_site_artifact.py --site-dir Workspace/DocumentationSite`
 - `npm --prefix BuildTools/docs-browser run audit`
-- `python BuildTools/tests/test_docs_validate.py`
 - `python BuildTools/docs_validate.py`
-- GitHub Actions `Build documentation site` artifact inspection at desktop and mobile widths
+- Inspect the exact locally rendered site at desktop/mobile widths; archived GitHub Actions do not supply current artifacts.
 
 ## Related documents
 

@@ -23,7 +23,7 @@
   <rect x="38" y="258" width="404" height="88" rx="6" fill="#e7f0fa" stroke="#2d5e91" stroke-width="2"/>
   <text class="node-title" x="240" y="287" text-anchor="middle">Applications</text>
   <text class="node-line" x="240" y="311" text-anchor="middle">client, server, mapper</text>
-  <text class="node-line" x="240" y="329" text-anchor="middle">baker, tests, platforms</text>
+  <text class="node-line" x="240" y="329" text-anchor="middle">baker, viewers, platforms</text>
   <rect x="38" y="362" width="404" height="88" rx="6" fill="#e7f0fa" stroke="#2d5e91" stroke-width="2"/>
   <text class="node-title" x="240" y="391" text-anchor="middle">Build and tools</text>
   <text class="node-line" x="240" y="415" text-anchor="middle">CMake stages, codegen</text>

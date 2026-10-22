@@ -5,13 +5,17 @@ locale: ru
 document_id: adr-manifest-backed-ai-documentation-delivery
 permalink: /Docs/ru/contributing/decisions/0003-manifest-backed-ai-documentation-delivery.html
 ---
-<!-- docs-translation: {"document_id":"adr-manifest-backed-ai-documentation-delivery","locale":"ru","source_path":"Docs/en/contributing/decisions/0003-manifest-backed-ai-documentation-delivery.md","source_sha256":"0197db71f175600c52d2482a034b3fcc66435634c360a64c15fa298a95232bc1"} -->
+<!-- docs-translation: {"document_id":"adr-manifest-backed-ai-documentation-delivery","locale":"ru","source_path":"Docs/en/contributing/decisions/0003-manifest-backed-ai-documentation-delivery.md","source_sha256":"93b66f01e9affb3ccd106e9e3ec51ca868daa87f04f8a12046c605656468c5a1"} -->
 # ADR-0003: доставка документации для ИИ на основе манифеста
 
 - Статус: принято
 - Дата: 2026-07-15
 - Изменено: 2026-08-01 для локализованной доставки и владения детерминированной оценкой
 - Владельцы: документация, инструменты
+
+## Применимость к форку
+
+Архитектура доставки сохраняется; публичный домен и датированные budget/publication records ниже описывают upstream history, не deployment форка. Локальные generated delivery files находятся в ignored `Workspace/Documentation/` через `documentation_metadata.py`, rendering экспортирует logical root endpoints в `Workspace/DocumentationSite/`. Архивные workflows не выполняются. Используйте существующие локальные generators/checks; удалённые unit suites не являются prerequisites, публикация требует отдельных полномочий.
 
 ## Контекст
 
@@ -28,7 +32,7 @@ permalink: /Docs/ru/contributing/decisions/0003-manifest-backed-ai-documentation
 ## Решение
 
 1. `Docs/documentation-manifest.json` является единственным источником состава доставки для ИИ, стабильных идентификаторов документов, аудиторий, состояния, владения, политики локалей, URL публикации и происхождения исходников.
-2. `BuildTools/docs_ai_delivery.py` детерминированно генерирует три статических файла в корне:
+2. `BuildTools/docs_ai_delivery.py` детерминированно генерирует три logical public-root endpoints, локально хранящиеся в `Workspace/Documentation/`:
    - `llms.txt`: маршрут публичных актуальных страниц, сгруппированных по виду Diataxis, с явно упорядоченным начальным разделом и ссылками на чистый Markdown, закреплёнными на source ref;
    - `llms-full.txt`: ограниченный по размеру context bundle публичного актуального Markdown;
    - `docs-manifest.json`: публичную машиночитаемую проекцию исходного манифеста.
@@ -54,7 +58,7 @@ permalink: /Docs/ru/contributing/decisions/0003-manifest-backed-ai-documentation
 9. `Docs/ai-evaluation.json` и его детерминированный сгенерированный отчёт измеряют актуальность retrieval и source evidence, не заявляя корректность ответов модели. Запуски семейств моделей следуют отдельно проверенному протоколу в `Docs/en/contributing/documentation/ai-evaluation.md`.
 10. Английский остаётся каноническим, а проверенные русские записи сохраняют те же стабильные идентификаторы с вариантами, квалифицированными локалью, и metadata актуальности перевода. Доставка для ИИ публикует только актуальные записи локалей и никогда не выдаёт отсутствующее или устаревшее зеркало за актуальное.
 11. Сгенерированные файлы являются поверхностями обнаружения и передачи, а не новыми нормативными владельцами. Исходный код и тесты движка, канонический Markdown и сгенерированные модели контрактов сохраняют приоритет, объявленный исходным манифестом.
-12. Фокусные тесты, самостоятельная проверка и GitHub Actions проверяют схему, фильтры, URL, хеши, детерминированный результат, лимит размера, подключение workflow и актуальность.
+12. Существующие локальные generation и standalone checks проверяют schema, filters, URLs, hashes, deterministic output, byte budget и freshness. Прежние focused tests и GitHub Actions wiring исторические; они не выполняются в этом форке.
 
 ## Последствия
 
@@ -83,11 +87,9 @@ permalink: /Docs/ru/contributing/decisions/0003-manifest-backed-ai-documentation
 
 ## Проверка
 
-- `python BuildTools/tests/test_docs_ai_delivery.py`
 - `python BuildTools/docs_ai_delivery.py --check`
-- `python BuildTools/tests/test_docs_validate.py`
 - `python BuildTools/docs_validate.py`
-- совместимый с GitHub Pages рендеринг в существующем задании `Build documentation site`
+- отдельно разрешённые local GitHub Pages-compatible rendering и artifact inspection; архивный `Build documentation site` не является active check
 
 ## Связанные документы
 

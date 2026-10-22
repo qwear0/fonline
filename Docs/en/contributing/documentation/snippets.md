@@ -16,7 +16,7 @@ generated current inventory and result is
 
 ## Contract status
 
-The report is an ignored build output. `BuildTools/docs_prepare.py` recreates it from a clean checkout; CI prepares the report, then runs `docs_snippets.py --check --external` with real shell parsers. Keep the reviewed policy and fenced Markdown in Git. Missing local reports require preparation, not a generated-file commit.
+The report is an ignored build output. `BuildTools/docs_prepare.py` recreates it from a clean checkout; run `docs_snippets.py --check --external` locally with installed real shell parsers. The fork's workflows are archived, not active checks. Keep the reviewed policy and fenced Markdown in Git. Missing local reports require preparation, not a generated-file commit.
 
 Every fenced block in a public, current, human document from
 [`documentation-manifest.json`](../../../documentation-manifest.json) belongs to the
@@ -55,26 +55,24 @@ tested concrete command.
 
 The C-family harness proves lexical structure, not C++, C#, or AngelScript type
 correctness. A snippet that claims to compile, bake, launch, or produce a
-runtime result still needs the owning source/example test named by its guide.
+runtime result still needs the owning compile, bake, or direct application check named by its guide.
 The snippet gate prevents malformed documentation from landing; it does not
 turn an isolated fragment into semantic build evidence.
 
 ## Run the gate
 
 From the Engine root, run `python BuildTools/docs_snippets.py --write
---external` after changing fenced content or policy. Run `python
-BuildTools/tests/test_docs_snippets.py` for focused regressions and `python
-BuildTools/docs_snippets.py --check --external` for the exact CI gate.
+--external` after changing fenced content or policy, then run `python
+BuildTools/docs_snippets.py --check --external` against the same final inputs.
 
 `--write` updates only the deterministic report. `--check` rejects missing or
 stale output. `--external` requires both real shell parsers; use `DOCS_BASH`
 or `DOCS_POWERSHELL` only to select an installed parser executable, never to
 replace the harness with a wrapper that executes commands.
 
-The main documentation job runs the focused tests and static freshness check.
-The separate `documentation-snippets` job runs the external parsers without a
-native Engine build. This keeps quick source validation portable while making
-the production parser evidence mandatory in CI.
+The static freshness check requires no native Engine build. The external parser
+mode additionally requires Bash and PowerShell; an unavailable parser is a real
+prerequisite failure, not a reason to replace it or report the external gate passed.
 
 ## Author or change a snippet
 
@@ -108,8 +106,8 @@ targets, revisions, and expected success signals through an Engine-owned
 example or a tagged public repository.
 
 `text` evidence is checked for transport safety only. When prose claims exact
-output, the owning smoke/unit/integration test remains the evidence source and
-must be updated in the same change if that output changes.
+output, the owning application observation remains the evidence source and
+must be repeated in the same change if that output changes.
 
 ## Failure handling
 

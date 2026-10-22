@@ -24,7 +24,7 @@ This applies symmetrically on both sides of the script-engine boundary.
 
 Generated Managed sources enable nullable reference types and map the same metadata nullable bit to C# `?` on entity, string, and ref-type references. Value types never carry that bit. A native `ptr<T>` becomes a non-null C# reference contract; `nptr<T>`, a nullable property flag, or a nullable event/remote-call tag becomes `T?`. Generated methods, properties, events, delegates, and remote-call caller methods preserve the spelling so Roslyn can diagnose an unchecked dereference or an incompatible assignment at compile time.
 
-C# annotations are not a runtime ownership guarantee. A managed entity wrapper remains borrowed, may refer to an entity destroyed after an `await`, and must be re-resolved/revalidated together with server cover. Narrow an expected absence with an ordinary `is null` / `is not null` branch. For an invariant, use `Game.VerifyNotNull(value, message)` or `Game.Verify(...)` and keep the narrowed non-null value; do not suppress a warning with `!` unless an external API has made the proof invisible to the compiler.
+C# annotations are not a runtime ownership guarantee. A managed entity wrapper remains borrowed, may refer to an entity destroyed after an `await`, and must be re-resolved/revalidated together with server cover. Narrow an expected absence with an ordinary `is null` / `is not null` branch. For an invariant, use `Invariant.VerifyNotNull(value, message)` or `Invariant.Verify(...)` and keep the narrowed non-null value; do not suppress a warning with `!` unless an external API has made the proof invisible to the compiler.
 
 Metadata declarations remain authoritative across backends. A nullable `///@ Event` or `///@ RemoteCall` argument generates a nullable C# parameter, and the attributed `[Event]`, `[ServerRemoteCall]`, or `[ClientRemoteCall]` handler must preserve the same semantic contract. Managed build validation consists of the generated project compile with nullable diagnostics enabled, configured Roslyn analyzers, and a runtime callback/serialization test where null is legitimate. See [Managed C# Scripting](../../how-to/scripting/managed-csharp.md) for generation, async lifetime, analyzers, and packaging.
 
@@ -39,7 +39,7 @@ Location? GetCritterLocation(Critter cr)
     if (cr.MapId == ZERO_IDENT) {
         return null;
     }
-    Map map = cr.GetMap();
+    Map? map = cr.GetMap();
     return map != null ? map.GetLocation() : null;
 }
 
@@ -389,7 +389,7 @@ The Engine no longer ships the former AngelScript `Core.fos` library. An embeddi
 
 When a project provides it, it states an **invariant**: a condition that holds whenever its own server and client logic behaves correctly. A failure means a bug, so it throws, and the project must keep it enabled in every configuration rather than treating it as a debug-only assertion.
 
-Managed C# has the Engine-owned equivalents `Game.Verify`, `Game.VerifyNotNull`, and `Game.Unreachable` in `Source/Scripting/Managed/CoreScripts/Verify.cs`; their nullable-flow annotations and throwing behavior are documented in [Managed C# Scripting](../../how-to/scripting/managed-csharp.md).
+Managed C# has the Engine-owned helpers `Invariant.Verify`, `Invariant.VerifyNotNull`, and `Invariant.Failed` in `Source/Scripting/Managed/CoreScripts/Invariant.cs`. Use `throw Invariant.Unreachable(message, context...)` when C# must also recognize structural termination of a return path; `Unreachable` returns an exception rather than throwing it. Their nullable-flow annotations and throwing behavior are documented in [Managed C# Scripting](../../how-to/scripting/managed-csharp.md).
 
 #### Verify vs. graceful recovery
 
@@ -426,7 +426,7 @@ Marking `?` on a primitive value type (`int`, `bool`, `mpos`, `hstring`, …) is
 
 ### Migration note
 
-The change is **source-incompatible** for any AS code that assigned `null`, or a value that might be null at runtime, to a bare handle. After this change, those scripts must mark the destination `T?`. Inline test scripts embedded in `Source/Tests/Test_*.cpp` were updated in lock-step and are the engine-owned regression coverage.
+The change is **source-incompatible** for any AS code that assigned `null`, or a value that might be null at runtime, to a bare handle. After this change, those scripts must mark the destination `T?`. Compile the affected project script roles with the current nullable contract; the fork no longer ships the former inline native test suites.
 
 The strict compile-time variant (`asEP_DISALLOW_NULLABLE_TO_NON_NULLABLE`) catches more shapes at build time and should be enabled by projects that have completed the nullable migration. Any remaining runtime *"Null assignment to non-nullable handle"* indicates a missing marker or an invalid non-null contract. Common shapes that the smart-cast or compile-time checker cannot see through, and therefore require an explicit `T?` on the destination or a guarding recovery path, include `dict<K,V>.get(key, null)`, output-reference parameters (`Map& out`), and class fields assigned across method boundaries.
 

@@ -7,7 +7,7 @@ permalink: /Docs/ru/how-to/ai-control-protocol.html
 ---
 
 # Протокол AiControl
-<!-- docs-translation: {"document_id":"ai-control-protocol-guide","locale":"ru","source_path":"Docs/en/how-to/ai-control-protocol.md","source_sha256":"d7b627419e6d15d24243a1d65a3b677b90b15b409a7d9ad0fb5a2d95945d39c7"} -->
+<!-- docs-translation: {"document_id":"ai-control-protocol-guide","locale":"ru","source_path":"Docs/en/how-to/ai-control-protocol.md","source_sha256":"c704a2462e9dbe2f7d7fc109eb40773d4d1e460c040ce34bfd0d00c0055edc98"} -->
 Проекты FOnline могут предоставлять клиент разработки автоматизированным
 QA-агентам, локальным инструментам или MCP-адаптеру, не превращая команды
 отдельной игры в часть Engine. Эта страница определяет такую переиспользуемую
@@ -53,8 +53,8 @@ QA-агентам, локальным инструментам или MCP-ада
 - требования к ограниченным размеру строки, очереди команд и истории событий;
 - sequence id принятых команд и терминальное событие `command_completed`;
 - политику безопасности с loopback по умолчанию;
-- эталонный клиент на стандартной библиотеке, пример протокола,
-  сгенерированный контракт, сфокусированные тесты и политику compatibility diff.
+- эталонный клиент на стандартной библиотеке, исполняемый protocol smoke,
+  сгенерированный контракт и политику compatibility diff.
 
 Это контракт протокола и интеграции, а не listener в основном runtime FOnline.
 Эталонный сервер намеренно заменяет цикл проектного клиента.
@@ -98,7 +98,7 @@ Last Frontier и TLA имеют клиентские bridges, но различ�
 Поток listener не должен хранить или изменять script-объекты, сущности, узлы
 GUI либо состояние Engine. Передавайте через ограниченную очередь простые
 скопированные значения. Роли и жизненный цикл расширений описаны в
-[NativeExtensions.md](../../NativeExtensions.md), владение потоками скриптов —
+[Нативных расширениях](native-extensions.md), владение потоками скриптов —
 в [Жизненном цикле скриптов и конкурентности](scripting/lifecycle-and-concurrency.md),
 а native/script handles — в
 [Nullability.md](../contributing/coding-contracts/nullability.md).
@@ -268,8 +268,8 @@ Listener AiControl является поверхностью удалённог�
 native-расширение:
 
 1. Добавьте проектную опцию CMake, которая включает всю реализацию listener и
-   по умолчанию соответствует политике разработки проекта. Принудительно
-   выключайте её во всех release/package workflows.
+   по умолчанию выключена. Включайте её только в явных development-профилях;
+   принудительно выключайте во всех release/package workflows.
 2. Храните в native bridge только простые скопированные значения команд,
    событий, статуса и наблюдений. Защитите все общие контейнеры явными locks и
    положительными пределами.
@@ -328,8 +328,6 @@ FOnline. Небольшой проект может предоставлять �
 
 ```powershell
 python Examples\AiControlSample\run_protocol_smoke.py
-python BuildTools\tests\test_ai_control_protocol.py
-python BuildTools\tests\test_docs_ai_control_protocol.py
 python BuildTools\docs_ai_control_protocol.py --check
 ```
 
@@ -337,10 +335,12 @@ Smoke-тест запускает временный loopback listener и про
 неверного token, отдельную для соединения авторизацию, liveness, поля status,
 начальное наблюдение, неверные параметры, неизвестные методы, принятие
 действия, асинхронное завершение, обновлённое наблюдение и исключающие event
-cursors. Сфокусированные тесты malformed peer также отклоняют несовпадающие
-id, неоднозначные ответы, неверный JSON и слишком длинные строки.
+cursors. Исходник эталонного клиента также отклоняет несовпадающие id,
+неоднозначные ответы, неверный JSON и слишком длинные строки. Это исходные
+проверки, а не дополнительные выполненные сценарии smoke; прежние Python
+unit suites удалены.
 
-Эталонный `AiControlClient` требует, чтобы `timeout` был конечным положительным числом, представимым как Python float. Конструктор отклоняет `NaN`, обе бесконечности, переполнение, логические и нечисловые значения с `ValueError("timeout must be a finite positive number")` до любого подключения сокета. Узкие тесты конструктора проверяют ошибочные значения и допустимые положительные целые и дробные таймауты без открытия сокетов.
+Эталонный `AiControlClient` требует, чтобы `timeout` был конечным положительным числом, представимым как Python float. Конструктор отклоняет `NaN`, обе бесконечности, переполнение, логические и нечисловые значения с `ValueError("timeout must be a finite positive number")` до любого подключения сокета. Это исходный контракт конструктора, а не свидетельство запуска unit suite.
 
 Этот пример — **не доказательство runtime FOnline**. Проектная интеграция также
 обязана:

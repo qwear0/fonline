@@ -5,7 +5,7 @@ locale: ru
 document_id: source-tree
 permalink: /Docs/ru/contributing/source-tree/
 ---
-<!-- docs-translation: {"document_id":"source-tree","locale":"ru","source_path":"Docs/en/contributing/source-tree/index.md","source_sha256":"49a8653055a51a5d40b29594769050eba87426b1296ed00a03f121ead56c4e22"} -->
+<!-- docs-translation: {"document_id":"source-tree","locale":"ru","source_path":"Docs/en/contributing/source-tree/index.md","source_sha256":"06d93c95c99c141ae2a3b03d713f2a0a63faf2e329ffda639a9be64272feeca6"} -->
 # Руководство по дереву исходного кода
 
 Это руководство объясняет, откуда начинать навигацию по `Source/`. Оно дополняет краткий [Source README](../../../../Source/README.ru.md).
@@ -20,7 +20,7 @@ permalink: /Docs/ru/contributing/source-tree/
 - Изменение scripting integration или видимых скриптам native methods: `Source/Scripting/`.
 - Изменение developer tools, baking, Mapper или editors: `Source/Tools/`.
 - Изменение абстракции application/window/rendering: `Source/Frontend/`.
-- Поиск примеров поведения или regression coverage: `Source/Tests/`.
+- Поиск исполняемых примеров интеграции: `Examples/`; выбирайте соразмерные проверки по [правилам проверки](../testing/).
 
 Сначала переходите в каталог-владелец. Перед указанием конкретного файла,
 helper или target проверяйте его точное написание в текущем inventory исходного
@@ -102,9 +102,10 @@ Particle authoring имеет отдельный `ParticleBaker`: работу �
 
 Этот слой относится к запуску native client, headless modes, testing, Web и Android platform notes.
 
-## `Source/Tests/`
+<a id="sourcetests"></a>
+## Источники проверки
 
-Тесты являются исполняемой базой знаний для многих подсистем движка. Имена файлов сгруппированы по подсистеме (`Test_Geometry.cpp`, `Test_NetBuffer.cpp`, `Test_DataBase.cpp`, `Test_AngelScript*.cpp`, `Test_ManagedScriptBaker.cpp` и т. д.). При добавлении новых категорий расширяйте [Source/Tests README](../../../../Source/Tests/README.ru.md) и сверяйте [Testing](../../../Testing.md) с текущим runner и generated targets.
+В форке удалены собственные native-, managed-, Python- и debugger-unit-наборы. Текущие свидетельства дают реализация владельца, существующие валидаторы исходников/контента, компиляция, запечка и непосредственное использование приложения. В `Examples/` сохранены запускаемые маршруты интеграции; сторонние тесты и runtime-диагностика отделены от них. Не восстанавливайте удалённые наборы ради унаследованного руководства.
 
 ## Антипаттерны навигации
 

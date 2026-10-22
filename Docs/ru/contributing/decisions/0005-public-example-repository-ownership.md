@@ -5,18 +5,22 @@ locale: ru
 document_id: adr-public-example-repository-ownership
 permalink: /Docs/ru/contributing/decisions/0005-public-example-repository-ownership.html
 ---
-<!-- docs-translation: {"document_id":"adr-public-example-repository-ownership","locale":"ru","source_path":"Docs/en/contributing/decisions/0005-public-example-repository-ownership.md","source_sha256":"33a49ed21b04fa813cf401b487191fd844c8bf6bb38879593bb509168e26c462"} -->
+<!-- docs-translation: {"document_id":"adr-public-example-repository-ownership","locale":"ru","source_path":"Docs/en/contributing/decisions/0005-public-example-repository-ownership.md","source_sha256":"59a74e37c75613575602cb821c00502b6d90505e1f91d4e984e7b5f3a5a968c8"} -->
 # ADR-0005: владение публичными репозиториями примеров
 
 - Статус: принято
 - Дата: 2026-07-15
 - Владельцы: документация, сборка и выпуск, runtime, content, администраторы репозиториев
 
+## Применимость к форку
+
+Портфель внешних repositories и protected/scheduled CI lanes ниже — будущая governance отдельно разрешённых опубликованных примеров, не доказательство, что форк создал их или включил CI. Собственные workflows архивированы, unit suites удалены. Проверяйте текущие локальные registry/scaffolds существующими checks и application routes; не создавайте неявно tests, repositories, remote settings или releases.
+
 ## Контекст
 
 FOnline нужны исполняемые публичные примеры, которые меньше и понятнее производственных игр. Один крупный пример смешал бы bootstrap, gameplay, assets, нативную интеграцию, выпуски и проектную политику. Незакреплённые примеры расходились бы с Engine `master`; копирование материалов Last Frontier или TLA поставило бы повторно используемую документацию в зависимость от кода и лицензий другого проекта.
 
-Движок уже владеет исполняемым headless scaffold в `Examples/MinimalProject`, сгенерированными справочниками контрактов, самостоятельным сайтом документации и CI smoke routes. До этого решения у него не было машиночитаемого портфеля внешних репозиториев, общих governance files, проверки точных pins, политики scheduled compatibility, контракта provenance ресурсов или границы полномочий публикации.
+Движок уже владеет исполняемым headless scaffold в `Examples/MinimalProject`, сгенерированными справочниками контрактов, самостоятельным сайтом документации и историческими upstream CI smoke routes. При принятии этого решения у него не было машиночитаемого портфеля внешних репозиториев, общих governance files, проверки точных pins, политики scheduled compatibility, контракта provenance ресурсов или границы полномочий публикации.
 
 ## Решение
 
@@ -60,10 +64,9 @@ FOnline нужны исполняемые публичные примеры, к�
 
 ## Проверка
 
-- `python BuildTools/tests/test_docs_examples.py`
 - `python BuildTools/docs_examples.py --check`
 - `python BuildTools/docs_validate.py`
-- оба compatibility lane в каждом репозитории со статусом `published`
+- отдельно проверяйте оба обязательных compatibility lanes каждого действительно опубликованного external repository; local registry entry или template не доказывают их выполнение
 
 ## Связанные документы
 

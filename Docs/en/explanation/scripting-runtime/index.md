@@ -158,7 +158,7 @@ The sole opt-out is `///@ ExportMethod ... AllowDestroyedEntityArgs`, emitted as
 
 `Source/Scripting/AngelScript/AngelScriptAttributes.cpp` parses engine-specific script attributes and declaration tags. Important contracts include:
 
-- nullable `T?` suffix stripping and propagation into metadata;
+- native AngelScript frontend parsing of `T?` and metadata propagation of nullable declarations (not preprocessor suffix stripping);
 - `///@ Event` declarations and matching `[[Event]]` handlers;
 - `///@ RemoteCall` declarations, optional structural `MaxBytes N` / `MaxCollectionSize N` limits, and matching `[[ServerRemoteCall]]` or `[[ClientRemoteCall]]` implementations;
 - the separate `[[AdminRemoteCall]]` command entry point;
@@ -229,7 +229,7 @@ context is reprepared.
 Text lookup follows the same side ownership. Client/mapper scripts can retrieve
 strings and change language; server scripts expose only text presence and
 variant counts. The complete behavioral contract and missing-data semantics are
-in [Text and Localization](../../how-to/content/text-and-localization.md).
+in [Text and Localization](../../how-to/content/text-and-localization.md). Text baking enforces aggregate base-language presence, not a base source in every pack; normalization removes packs absent from the selected fallback. A successful bake therefore does not prove project-wide per-pack/key translation coverage.
 
 Client render helpers such as `Game.DrawSprite`, `Game.DrawSpritePattern`, and `Game.DrawSpriteRegion` are valid only during render-facing script callbacks (`RenderIface` / GUI draw callbacks). `Game.DrawSpriteRegion(sprId, uv0, uv1, pos, size, color)` draws a normalized `[0, 1]` sub-rectangle of the sprite's original logical image into a destination rectangle; polygon-cropped atlas frames are remapped through their source offset and transparent cropped margins remain transparent in the destination. `Game.DrawSpritePattern` follows the same logical-image contract for every complete or partial tile. Region drawing is intended for reusable GUI composition such as script-side 9-slice panels, and returns `false` when the sprite cannot provide atlas-region drawing.
 
@@ -286,9 +286,13 @@ Script compilation and resource baking are adjacent but not identical. Script co
 
 `Source/Scripting/Native/` currently contains only `.keepalive`, marking the reserved source-root location for future native scripting integration. Do not document it as implemented until runtime, build, tests, and an authoring contract exist.
 
-## Tests to inspect
+<a id="tests-to-inspect"></a>
 
-Script behavior is covered by focused tests:
+## Historical test inventory
+
+The suites listed below were removed from this fork and are not current prerequisites. Use the existing role compile/bake and native dispatcher/application routes; do not create new tests without an explicit request.
+
+Former focused coverage included:
 
 - `Source/Tests/Test_AngelScriptAttributes.cpp` — attribute parsing, nullable suffix handling, events, remote calls, and callback rules.
 - `Source/Tests/Test_AngelScriptBaker.cpp` — AngelScript bytecode/resource baking path.
@@ -326,7 +330,7 @@ Use these tests as executable documentation when changing script registration, g
 
 1. If signatures or annotations changed, regenerate code and inspect generated metadata/wrapper diffs.
 2. Compile every enabled backend: `CompileAngelScript` for AngelScript and `CompileManagedScripts` for Managed C#.
-3. Run the smallest affected script tests. For AngelScript start with `Test_AngelScriptAttributes`, `Test_AngelScriptBaker`, and `Test_AngelScriptCall`; for Managed C# start with `Test_ManagedScriptBaker`, managed core/analyzer tests, and affected `BuildTools/tests/test_managed_*.py`. Run shared method/entity tests for backend-neutral changes.
+3. Bake affected resources and exercise the smallest existing application path through the actual callback/remote-call/lifetime boundary for every selected backend; compilation alone does not prove runtime behavior.
 4. For nullable changes, run the nullability analyzers described in [Nullability.md](../../../Nullability.md).
 5. For server/client/mapper method changes, validate the owning runtime path; do not rely only on compilation.
 6. Update [Script Methods Map](../../reference/script-api/method-ownership.md) when exported method files are added, removed, or materially regrouped.

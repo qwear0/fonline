@@ -5,7 +5,7 @@ locale: ru
 document_id: adr-github-pages-markdown-publication
 permalink: /Docs/ru/contributing/decisions/0001-github-pages-markdown-publication.html
 ---
-<!-- docs-translation: {"document_id":"adr-github-pages-markdown-publication","locale":"ru","source_path":"Docs/en/contributing/decisions/0001-github-pages-markdown-publication.md","source_sha256":"93cba6d894fdf8dac7f9febb1542885b0f48ae7010ae5d612cfe8a02403859f1"} -->
+<!-- docs-translation: {"document_id":"adr-github-pages-markdown-publication","locale":"ru","source_path":"Docs/en/contributing/decisions/0001-github-pages-markdown-publication.md","source_sha256":"496d1cc8fd30a2f376c55d86929049af564a8086b3f8149255db21a974d21424"} -->
 # ADR-0001: публикация Markdown через GitHub Pages и структура локалей
 
 - Статус: принято
@@ -13,9 +13,13 @@ permalink: /Docs/ru/contributing/decisions/0001-github-pages-markdown-publicatio
 - Изменено: 2026-08-01 после внедрения локализованного сайта и проверок собранных страниц в браузере
 - Владельцы: документация, сборка и выпуск
 
+## Применимость к форку
+
+ADR сохраняет историю upstream-публикации и проект Markdown/Jekyll, но не доказывает deployment форка. Локальные workflows архивированы в `.github/disabled-workflows/`; архивирование само по себе не меняло remote Pages, DNS или repository settings. Текущие локальные входы — `Docs/Site/_config.yml` и manifest-derived files в ignored `Workspace/Documentation/`; rendering создаёт `Workspace/DocumentationSite/`. Deployment требует отдельного разрешения и проверки издателя.
+
 ## Контекст
 
-FOnline уже публикует сайт репозитория через GitHub Pages, использует конфигурацию Jekyll из `_config.yml` и привязывает производственный домен корневым файлом `CNAME = fonline.ru`. Исходником документации служит Markdown в репозитории движка. Он должен оставаться читаемым как в интерфейсе репозитория GitHub, так и на публичном сайте.
+При принятии upstream-решения FOnline уже публиковал сайт репозитория через GitHub Pages, использует конфигурацию Jekyll из `_config.yml` и привязывает производственный домен корневым файлом `CNAME = fonline.ru`. Исходником документации служит Markdown в репозитории движка. Он должен оставаться читаемым как в интерфейсе репозитория GitHub, так и на публичном сайте.
 
 Программа вывода документации на производственный уровень также требует:
 
@@ -29,11 +33,11 @@ FOnline уже публикует сайт репозитория через Git
 
 ## Решение
 
-**Обновление публикации 2026-10-09:** владелец переключил Pages на GitHub Actions. Это заменяет исходные ограничения корневых файлов и сборки из ветки ниже: конфигурация теперь находится в `Docs/Site/_config.yml`, файлы зависимостей/домена генерируются из исходного manifest в `Workspace/Documentation/`, публикуется проверенный артефакт `Workspace/DocumentationSite/`. Markdown, Jekyll, домен и публичные URL сохраняются. [Публикация сайта](../documentation/site-publication.md) задаёт текущий порядок сборки и проверок.
+**Историческое обновление upstream-публикации, 2026-10-09:** upstream-владелец переключил Pages на GitHub Actions. Это заменяет исходные ограничения корневых файлов и сборки из ветки ниже: конфигурация теперь находится в `Docs/Site/_config.yml`, файлы зависимостей/домена генерируются из исходного manifest в `Workspace/Documentation/`, публикуется проверенный артефакт `Workspace/DocumentationSite/`. Markdown, Jekyll, домен и публичные URL сохраняются. [Публикация сайта](../documentation/site-publication.md) задаёт текущий порядок сборки и проверок.
 
 1. GitHub Pages остаётся производственным издателем, а Jekyll остаётся рендерером.
 2. Канонический источник документации для людей представляет собой Markdown, зафиксированный в этом репозитории.
-3. Корневые `_config.yml` и `CNAME` остаются частью проверяемого контракта публикации. `Docs/documentation-manifest.json` задаёт провайдера, генератор, формат исходников, домен и владеющие пути.
+3. Прежнее размещение `_config.yml`/`CNAME` в корне историческое; текущие локальные пути следуют publication update выше. `Docs/documentation-manifest.json` задаёт провайдера, генератор, формат исходников, домен и владеющие пути.
 4. Не вводить Docusaurus, параллельное дерево содержимого `website/` или зафиксированный в репозитории сгенерированный HTML.
 5. Макеты, include-файлы, данные, поддерживаемые плагины, переопределения темы и статические ресурсы Jekyll могут обеспечивать представление и навигацию, но должны оставаться тонким слоем рендеринга поверх Markdown.
 6. Целевая публичная структура локалей:
@@ -51,7 +55,7 @@ FOnline уже публикует сайт репозитория через Git
 9. Актуальность перевода отслеживается по хешу канонического содержимого. Производственная публикация не должна выдавать устаревшую русскую страницу за актуальную.
 10. До перемещения исходных файлов существующие публичные URL получают совместимые с GitHub Pages перенаправления либо долговечные маршрутные страницы Markdown.
 11. Реструктуризация документации не меняет существующую ветку и папку-источник Pages. Перед производственной миграцией администраторы репозитория должны проверить и записать эту настройку и владельца DNS.
-12. Pull request выполняют быстрые проверки Markdown, манифеста и ссылок, а на этапе сайта также совместимую с GitHub Pages сборку Jekyll, которая сохраняет `Workspace/DocumentationSite` как артефакт для проверки. Production продолжает развёртываться через существующий маршрут Pages.
+12. Запускайте existing Markdown/manifest/link checks локально; при разрешённом rendering и наличии зависимостей собирайте/проверяйте точный Jekyll artifact. Сохраняйте evidence отдельно от publication. Архивные pull-request/deployment jobs в этом форке не выполняются.
 
 ## Последствия
 
@@ -84,7 +88,7 @@ FOnline уже публикует сайт репозитория через Git
 - `python BuildTools/docs_site.py --check` проверяет локализованную навигацию и ограниченный по размеру поиск, полученные из манифеста.
 - `python BuildTools/docs_site_artifact.py --site-dir Workspace/DocumentationSite` проверяет собранные маршруты Jekyll и статические endpoint.
 - `npm --prefix BuildTools/docs-browser run audit` проверяет страницы в desktop/mobile-профилях, взаимодействия, скриншоты и результаты axe-core.
-- Задания `Validate documentation` и `Build documentation site` выполняются без подключающего проекта и нативной сборки и сохраняют `Workspace/DocumentationSite` как артефакт проверки.
+- Архивные `Validate documentation` и `Build documentation site` описывают upstream delivery history, а не текущее выполнение. Записывайте реальные локальные check/build results; установка и публикация не подразумеваются.
 - Самостоятельное отображение Markdown в GitHub остаётся обязательным маршрутом наряду с Jekyll.
 
 ## Связанные документы

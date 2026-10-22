@@ -5,13 +5,17 @@ locale: ru
 document_id: adr-documentation-version-locale-routing
 permalink: /Docs/ru/contributing/decisions/0006-documentation-version-locale-routing.html
 ---
-<!-- docs-translation: {"document_id":"adr-documentation-version-locale-routing","locale":"ru","source_path":"Docs/en/contributing/decisions/0006-documentation-version-locale-routing.md","source_sha256":"a3b72c2c424eebbff3a405cdf88954a7cb9bfdfdd91b021d52885c13c6bec39f"} -->
+<!-- docs-translation: {"document_id":"adr-documentation-version-locale-routing","locale":"ru","source_path":"Docs/en/contributing/decisions/0006-documentation-version-locale-routing.md","source_sha256":"2ed3458592842fcb94f03d9c3c8838ae54604d28bc77c596cdbe02e0f479add9"} -->
 # ADR-0006: версия, локали и стабильные маршруты документации
 
 - Статус: принято
 - Дата: 2026-07-16
 - Изменено: 2026-08-01 после проверенных групп физической миграции EN/RU
 - Владельцы: документация, сборка и выпуск
+
+## Применимость к форку
+
+Rolling-channel, stable-ID и durable-route design остаётся текущим. Upstream site и Actions artifacts ниже исторические, не доказывают deployment форка. Локальные workflows архивированы, собственные unit suites удалены. Текущие authored pages имеют EN/RU пары при complete localization enforcement; coverage принадлежит generated status, не adoption narrative этого ADR. Logical root delivery files находятся в ignored `Workspace/Documentation/`, rendered output — в `Workspace/DocumentationSite/`.
 
 ## Контекст
 
@@ -32,11 +36,7 @@ FOnline публикует Markdown репозитория через GitHub Pag
 - `BuildTools/docs_ai_delivery.py`
 - `BuildTools/docs_site.py`
 - `BuildTools/docs_validate.py`
-- `BuildTools/tests/test_docs_ai_delivery.py`
-- `BuildTools/tests/test_docs_site.py`
-- `BuildTools/tests/test_docs_site_layout.py`
-- `BuildTools/tests/test_docs_validate.py`
-- `_config.yml`
+- `Docs/Site/_config.yml`
 - `Docs/Site/Layouts/default.html`
 - `Docs/en/contributing/documentation/site-publication.md`
 - `Docs/ProductionDocumentationPlan.md`
@@ -51,7 +51,7 @@ FOnline публикует Markdown репозитория через GitHub Pag
 2. `current` следует за rolling-веткой `master` и обозначается как `Current`, а не `Stable`.
 3. Текущие публичные URL остаются неверсионированными и стабильными, пока их содержимое следует за последней опубликованной ревизией `master`.
 4. Ссылки на исходники используют тот же ref `master`, что и отображаемая документация.
-5. Для исторической проверки используются commit-addressable artifacts `_site` из GitHub Actions и ревизии репозитория.
+5. Для historical review используйте точные repository revisions и сохранённые revision-bound local artifacts; upstream GitHub Actions artifacts остаются только историческими доказательствами.
 
 [CalVer движка](../../how-to/release/versioning.md) из корневого `VERSION` показывается вместе с обновляемым каналом и ведёт в [историю изменений](../../reference/changelog.md) на выбранном языке. Это идентификатор разработки или выпуска Engine, а не поддерживаемый снимок документации. Ссылки на исходники сохраняют `master`, соответствующий каналу.
 
@@ -70,7 +70,7 @@ FOnline публикует Markdown репозитория через GitHub Pag
 4. Точки входа README репозитория и подсистем используют объявленные в манифесте парные пути, например `README.md` и `README.ru.md`.
 5. Английские и русские страницы связываются стабильными идентификаторами документов, а не переведёнными заголовками.
 6. Актуальность перевода использует нормализованный SHA-256 hash канонического английского содержимого. Для существующих переводов проверяются актуальные hashes, идентичные fenced code, явные locale metadata и language-preserving links; полное покрытие становится обязательным при производственном двуязычном запуске.
-7. `translation-pending` разрешён только до производственного двуязычного запуска.
+7. Текущий manifest требует complete translation parity; прежний pre-launch допуск `translation-pending` исторический и не разрешает публикацию stale mirrors.
 
 ### Стабильные маршруты и миграция
 
@@ -111,18 +111,12 @@ FOnline публикует Markdown репозитория через GitHub Pag
 
 ## Проверка
 
-- `python BuildTools/tests/test_docs_ai_delivery.py`
-- `python BuildTools/tests/test_docs_site.py`
-- `python BuildTools/tests/test_docs_site_layout.py`
-- `python BuildTools/tests/test_docs_site_artifact.py`
-- `python BuildTools/tests/test_docs_browser.py`
-- `python BuildTools/tests/test_docs_validate.py`
 - `python BuildTools/docs_site.py --check`
 - `python BuildTools/docs_ai_delivery.py --check`
 - `python BuildTools/docs_localization.py --check`
 - `python BuildTools/docs_validate.py`
 
-Тесты отклоняют drift версии или source ref, некорректную политику локалей, отсутствующие пары README, коллизии маршрутов, неоднозначные canonical targets, устаревшие данные маршрутов и drift layout.
+Существующие local generators/checks отклоняют version/source-ref drift, malformed locale policy, missing README pairs, route collisions, ambiguous owners и stale outputs. Rendered/browser behavior требует отдельных existing artifact/browser checks; удалённые suites и архивный CI не являются текущим evidence.
 
 ## Связанные документы
 

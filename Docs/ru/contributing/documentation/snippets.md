@@ -5,7 +5,7 @@ locale: ru
 document_id: documentation-snippet-validation
 permalink: /Docs/ru/contributing/documentation/snippets.html
 ---
-<!-- docs-translation: {"document_id":"documentation-snippet-validation","locale":"ru","source_path":"Docs/en/contributing/documentation/snippets.md","source_sha256":"478e770d656937869801470c9d68b76a86e67179d84979d0de797d6302b367ca"} -->
+<!-- docs-translation: {"document_id":"documentation-snippet-validation","locale":"ru","source_path":"Docs/en/contributing/documentation/snippets.md","source_sha256":"75e1d6b0962c056cfe5539393dd062b91c5dea577ab4a626bef6c5235f679e2a"} -->
 # Проверка фрагментов документации
 
 Это руководство определяет проверяемый контракт для fenced-примеров в
@@ -16,7 +16,7 @@ permalink: /Docs/ru/contributing/documentation/snippets.html
 
 ## Состояние контракта
 
-Отчёт является игнорируемым результатом сборки. `BuildTools/docs_prepare.py` создаёт его из чистого checkout; CI подготавливает отчёт, затем запускает `docs_snippets.py --check --external` с настоящими shell parsers. В Git остаются проверенные правила и Markdown с примерами. Отсутствующий локальный отчёт требует подготовки, а не коммита generated-файла.
+Отчёт является игнорируемым результатом сборки. `BuildTools/docs_prepare.py` создаёт его из чистого checkout; запускайте `docs_snippets.py --check --external` локально с установленными настоящими shell parsers. Workflows форка архивированы и не являются активными проверками. В Git остаются проверенные правила и Markdown с примерами. Отсутствующий локальный отчёт требует подготовки, а не коммита generated-файла.
 
 Каждый fenced block в публичном актуальном документе для людей из
 [`documentation-manifest.json`](../../../documentation-manifest.json) входит в
@@ -57,17 +57,15 @@ permalink: /Docs/ru/contributing/documentation/snippets.html
 
 C-family harness доказывает лексическую структуру, а не корректность типов C++, C#
 или AngelScript. Если фрагмент обещает компиляцию, baking, запуск или runtime-
-результат, ему всё ещё нужен названный в руководстве владеющий тест исходника
-или примера. Snippet gate не пропускает испорченную документацию, но не
+результат, ему всё ещё нужна указанная в руководстве проверка компиляции,
+запечки или непосредственного использования приложения. Snippet gate не пропускает испорченную документацию, но не
 превращает изолированный фрагмент в семантическое доказательство сборки.
 
 ## Запуск проверки
 
 Из корня Engine запустите `python BuildTools/docs_snippets.py --write
---external` после изменения fenced-содержимого или политики. Для фокусных
-regression-тестов запустите `python BuildTools/tests/test_docs_snippets.py`, а
-для точной CI-проверки — `python BuildTools/docs_snippets.py --check
---external`.
+--external` после изменения fenced-содержимого или политики, затем выполните
+`python BuildTools/docs_snippets.py --check --external` на тех же окончательных входах.
 
 `--write` обновляет только детерминированный отчёт. `--check` отклоняет
 отсутствующий или устаревший результат. `--external` требует оба настоящих
@@ -75,11 +73,9 @@ shell parser; используйте `DOCS_BASH` или `DOCS_POWERSHELL` тол
 установленного исполняемого parser и никогда не подменяйте harness оболочкой,
 которая выполняет команды.
 
-Основная задача документации запускает фокусные тесты и статическую проверку
-актуальности. Отдельная задача `documentation-snippets` запускает внешние
-parser без нативной сборки Engine. Так быстрая проверка исходников остаётся
-переносимой, а production-свидетельство настоящих parser становится
-обязательным в CI.
+Статическая проверка актуальности не требует native-сборки Engine. Внешний режим
+дополнительно требует Bash и PowerShell; отсутствие parser — настоящий сбой
+предпосылки, а не повод заменить его или сообщить об успешной внешней проверке.
 
 ## Создание или изменение фрагмента
 
@@ -114,9 +110,8 @@ release-процедуры должны разрешать шаблоны до �
 публичный репозиторий.
 
 Свидетельство `text` проверяется только на транспортную безопасность. Если
-текст обещает точный вывод, источником доказательства остаётся владеющий
-smoke/unit/integration-тест; при изменении вывода его нужно обновить в том же
-изменении.
+текст обещает точный вывод, источником доказательства остаётся наблюдение
+приложения; при изменении вывода его нужно повторить в том же изменении.
 
 ## Обработка ошибок
 

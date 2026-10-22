@@ -3,7 +3,7 @@ description: Flexible cross-platform isometric game engine
 email: aka.cvet@gmail.com
 url: https://fonline.ru
 baseurl: ""
-repository: cvet/fonline
+repository: qwear0/fonline
 theme: jekyll-theme-slate
 google_analytics: UA-77340151-2
 markdown: kramdown

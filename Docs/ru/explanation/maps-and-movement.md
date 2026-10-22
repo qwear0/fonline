@@ -7,7 +7,7 @@ permalink: /Docs/ru/explanation/maps-and-movement.html
 ---
 
 # Карты, движение и геометрия
-<!-- docs-translation: {"document_id":"maps-movement-geometry","locale":"ru","source_path":"Docs/en/explanation/maps-and-movement.md","source_sha256":"f5858786b53a4f5871a75b8e2c11245dd67a90e98cb5cc7a0317cc3d8c74e86e"} -->
+<!-- docs-translation: {"document_id":"maps-movement-geometry","locale":"ru","source_path":"Docs/en/explanation/maps-and-movement.md","source_sha256":"8967ac8a8970b004eccd0f4e7e30b4d3cdcd8b81980741a734f937c4ce237910"} -->
 Этот документ описывает переиспользуемые примитивы координат карты, движения, поиска пути, трассировки линий и загрузки карт, которыми пользуются клиентская и серверная среды выполнения и инструменты.
 
 Синтаксис разделов `.fomap`, идентичность и владение размещёнными объектами, обратимый цикл Mapper, зависящий от стороны baking и материализацию содержимого в runtime см. в [формате карт](../how-to/content/map-format.md). Эта страница отвечает за семантику геометрии и движения.
@@ -335,7 +335,9 @@ static void Load(
 
 Производство ресурса карты соседствует с baking. О `MapBaker` см. [Baking Pipeline](content-pipeline/baking.md).
 
-## Тесты для проверки
+## Исторический перечень тестов
+
+Suites ниже удалены в этом форке и не являются runnable prerequisites. Соберите затронутую роль и используйте существующие bake, Mapper round-trip и client/server movement paths; новые автоматизированные тесты требуют явного запроса.
 
 Подходящие тесты:
 
@@ -360,7 +362,7 @@ static void Load(
 
 ## Контрольный список проверки
 
-1. Запустите относящиеся к алгоритму тесты движения, пути и загрузчика карт.
+1. Соберите затронутые geometry/movement consumers и проверьте изменённый path/loader behavior существующим application route, включая отвергаемые и граничные входы.
 2. При изменении блокировок проверьте прямое движение и multihex.
 3. При изменении направлений или проекции проверьте предположения `FO_GEOMETRY`.
 4. При изменении парсера проверьте загрузку настоящих baked-ресурсов карт подключающего проекта.

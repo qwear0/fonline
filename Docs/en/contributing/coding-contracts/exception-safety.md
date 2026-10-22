@@ -186,7 +186,7 @@ Per-situation guidance:
 - **Invariant re-check you can still reject** → **`FO_VERIFY_AND_THROW`** (the internal add-to-destroying guards; any "this should already hold" check *before* a mutation that a caller can abort).
 - **Invariant reached too late to recover** → **`FO_STRONG_ASSERT`** (post-mutation registry/graph/lock corruption; non-convergent teardown).
 - **Throw-as-signal (no rollback)** — the operation may legitimately not complete because an event/script changed the world; throw to inform the caller and leave the entity in the valid state the events produced (the lifecycle contract, §3).
-- **Commit-or-rollback (`scope_fail`/`scope_exit`)** — only when a step that genuinely can fail at runtime would otherwise leave **two representations out of sync** with no design intent to keep the partial state, and there is no allocation-only excuse (§1). The rollback body must be `noexcept` (`safe_call`). Confirm with a failing test first.
+- **Commit-or-rollback (`scope_fail`/`scope_exit`)** — only when a step that genuinely can fail at runtime would otherwise leave **two representations out of sync** with no design intent to keep the partial state, and there is no allocation-only excuse (§1). The rollback body must be `noexcept` (`safe_call`). Confirm the actual failure boundary using existing source/application evidence; new automated tests require an explicit request.
 - **Reorder (validate-first, mutate-last)** — do all fallible/validating work before the first irreversible mutation; insert into the authoritative store (with its duplicate guard) before populating any derived cache. (Example: `ProtoManager::AddProto`.)
 
 Persistence note: DB writes (`DbStorage.Insert/Update/Delete`) are **enqueue-only** and never perform synchronous backend I/O; a backend failure is handled asynchronously (recovery op-log + reconnect + panic-shutdown with replay on restart). So a DB write cannot throw a backend error mid-mutation — no write-through rollback is needed. See `Source/Server/DataBase.cpp`.
@@ -201,7 +201,7 @@ Persistence note: DB writes (`DbStorage.Insert/Update/Delete`) are **enqueue-onl
 
 ## 7. Tests
 
-The contracts above are pinned by `Source/Tests/Test_AngelScriptEntityLifecycle.cpp` (init/finish-event destruction, load/unload events, registry collections) and `Source/Tests/Test_AngelScriptServerMapOperations.cpp` (the full map critter in/out/init × may-destroy / may-move-away / may-destroy-map matrix). When changing any lifecycle or invariant behavior, run the embedding project's generated engine unit-test target and extend these suites rather than weakening an assertion.
+The former `Test_AngelScriptEntityLifecycle.cpp` and `Test_AngelScriptServerMapOperations.cpp` suites recorded init/finish/load/unload and reentrant destroy/move behavior; they are removed in this fork, not current runnable guarantees. Keep the lifecycle/invariant contract intact. Build/compile/bake affected roles and use the existing application path to observe the relevant failure and post-event state; do not weaken assertions or create new automated tests without an explicit request.
 
 ## 8. Per-function exception-safety classification (ES levels)
 

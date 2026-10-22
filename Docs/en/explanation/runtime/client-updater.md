@@ -76,11 +76,6 @@ Keep long protocol and host-runtime details here; keep server lifecycle and mana
 - `BuildTools/cmake/helpers/Build.cmake`
 - `BuildTools/package.py`
 - `BuildTools/msicreator/createmsi.py`
-- `BuildTools/tests/test_package_resource_pack.py`
-- `BuildTools/tests/test_package_zip_helpers.py`
-- `Source/Tests/Test_ClientRuntimeApi.cpp`
-- `Source/Tests/Test_DiskFileSystem.cpp`
-- `Source/Tests/Test_Platform.cpp`
 - `Source/Tests/Test_Settings.cpp`
 - `ThirdParty/rpmalloc/rpmalloc/rpmalloc.c`
 
@@ -105,7 +100,7 @@ This is uniform across the regular and headless clients — a standalone headles
 DLL simply lands on the embedded fallback. Setting `Client.ForceEmbeddedRuntime` (read from the command
 line at host startup) forces the embedded path and skips the implicit bundled-DLL load; an explicit
 `--ClientLibPath` still loads a DLL. Whichever module ends up running the game (loaded DLL or embedded
-host) drives a uniform two-stage updater UI:
+host) drives one updater UI whose handshake selects resource or native-binary mode:
 
 Before opening the new run's log, the host renames the existing `<client>.log` to `<client>.prev.log` under the writable root. A crash or hang in the previous run therefore remains available to diagnostics; if another process holds the old file open and the rename fails, the host records a warning and continues with the new log. The retained file is one previous run, not a log archive.
 
@@ -122,10 +117,11 @@ Before opening the new run's log, the host renames the existing `<client>.log` t
     ▼
 <live runtime module>                 ─── the running module (loaded DLL by default; host module on fallback / ForceEmbeddedRuntime)
     │
-    │  RunClientRuntime: InitApp → resource Updater (UI) → ClientEngine → MainLoop
-    │  If resource updater reports compat outdated and platform supports self-update:
-    │     stage 2: binary Updater (UI) writes or verifies the module at `<runtime>-staging` / `<runtime>`
-    │     return ClientRuntimeResult { ReloadRequested, RequestedRuntimePath = <runtime> }
+    │  RunClientRuntime: InitApp → single Updater (UI)
+    │     ResourcesReady → ClientEngine → MainLoop
+    │     BinariesStaged → return ClientRuntimeResult { ReloadRequested, RequestedRuntimePath = <runtime> }
+    │  CompatibilityOutdated selects binary mode in that same updater on supported platforms;
+    │  it writes or verifies `<runtime>-staging` / `<runtime>` and requires a fresh process
     │
     └─► returns ClientRuntimeResult (Shutdown / ReloadRequested / FatalError)
 
@@ -479,7 +475,7 @@ then removed around `createmsi` so the sibling Raw/Zip portable artifacts stay p
 
 Both the bundled runtime library in client packages and the runtime libraries staged for server-side binary updates go through the same package-time patching as ordinary executables: embedded resources, internal config, and packaged mark are written by `package.py`. Variant-specific config is applied to the runtime payload that actually runs the game; for example the Windows OpenGL runtime receives `ForceOpenGL=1`. The embedded-resource zip is produced with pinned entry timestamps and permissions (`make_embedded_pack`), so the bundled-client copy of a runtime and the matching `<Baking.PlatformBinaries>/<target>/<output_name><ext>` payload remain byte-identical across separate Server/Client package runs.
 
-Client `.fores` bases are written from sorted normalized paths with no serialized timestamps. The packager validates the catalog and streams every decoded payload through exact-length and content-hash checks before accepting a resource archive. `Embedded` remains an in-memory ZIP with deterministic metadata and a CRC/readback check before it is patched into the executable. A corrupt artifact therefore fails packaging before it becomes an updater source. [test_package_resource_pack.py](../../../../BuildTools/tests/test_package_resource_pack.py) and [test_package_zip_helpers.py](../../../../BuildTools/tests/test_package_zip_helpers.py) cover the two formats.
+Client `.fores` bases are written from sorted normalized paths with no serialized timestamps. The packager validates the catalog and streams every decoded payload through exact-length and content-hash checks before accepting a resource archive. `Embedded` remains an in-memory ZIP with deterministic metadata and a CRC/readback check before it is patched into the executable. A corrupt artifact therefore fails packaging before it becomes an updater source. Validate the produced package through the existing packager and the affected application route; the former package unit suites are removed.
 
 Packaging may delegate deterministic resource-archive reuse to the project-owned helper named by `FO_RESOURCE_ARCHIVE_CACHE_HELPER`. The helper receives `restore`, `store`, and `release` operations under a content-and-compression key; a miss or explicitly unavailable optional cache falls back to local creation. A restored `.fores` still passes payload validation, so caching cannot weaken updater integrity checks.
 
@@ -614,7 +610,7 @@ instead of looping back to the game which would only reject the connection again
 | Host can't find runtime, no fallback possible, or resource repair cannot complete | client message box `Client update failed. Please install the latest full client package.` |
 | Server is down, restarting, or unreachable | message box `Can't connect to the server. It may be offline or restarting, please try again later.`, log `Client updater: connection failed` followed by terminal result `ConnectionFailed`; deliberately no crash report |
 | Updater protocol mismatch | server log `Connected client X has outdated updater version Y`; generation-1 client message box `Client updater outdated, please update the base client`; generation-2+ wording `Client updater is incompatible with this server. Please install the latest full client package.` |
-| Gameplay version mismatch on a self-update platform | resource updater finishes silently with `WasCompatibilityOutdated() == true`; the runtime opens the binary updater UI, stages the current module, shows the restart prompt, and returns `ReloadRequested`; the host promotes the staged runtime and exits |
+| Gameplay version mismatch on a self-update platform | the same updater selects binary mode, stages or verifies the runtime and finishes `BinariesStaged`; the runtime shows the restart prompt and returns `ReloadRequested`; the host promotes the staged runtime and exits, and only the next process loads it |
 | Gameplay version mismatch on Web / iOS / Android | message box `Client outdated, please update via your app store`, then quit (no in-process self-update on these platforms) |
 | Wrong file index / offset | server log `Wrong file index N, from host '...'` / `Wrong update file offset O, file index N, client host '...'` (both at `LogType::Warning`), client gets disconnected |
 | Client data does not match server data | server log `Connected client X runs metadata version A while the server runs B`; updater log names the local version, server version, and resource directory. Find which directory came from a different bake |
@@ -629,7 +625,7 @@ instead of looping back to the game which would only reject the connection again
 
 Local validation steps:
 
-1. Build the embedding project's generated unit-test target and run it. [Tests/Test_ClientRuntimeApi.cpp](../../../../Source/Tests/Test_ClientRuntimeApi.cpp) exercises the ABI surface plus installed-runtime selector round-trip, validation, live selection, staged recovery, and fallback; [Tests/Test_DiskFileSystem.cpp](../../../../Source/Tests/Test_DiskFileSystem.cpp) covers `fs_hash_file` parity with `fs_hash_data` and `fs_make_writable_path`; [Tests/Test_Platform.cpp](../../../../Source/Tests/Test_Platform.cpp) covers `Platform::GetUserDataBase`; [Tests/Test_Settings.cpp](../../../../Source/Tests/Test_Settings.cpp) covers `UpdateFilesInMemory` sub-config inheritance and the read-only `Common.UserWritablePath`; application-config tests cover CLI/marker resolution, early log/config placement, and fail-safe directory creation.
+1. Use an isolated project-owned package and writable directory. This fork has no generated unit-test target; use the existing build/package commands and the direct application checks below. Check ABI/result handling, selector validation and staging recovery separately from resource integrity and CLI/marker path resolution.
 2. Build the generated client-host target; on native host/runtime platforms its dependency also builds the generated client-runtime target. Confirm the client output directory contains the host plus the host-derived runtime alias (`<client-host>.exe` + `<client-host>.dll` on Windows, `<client-host>` + `<client-host>.so` on Linux). Build the runtime target explicitly when validating it in isolation.
 3. Launch `<client-host>` with the bundled runtime present → normal startup (Case 2 happy path: load DLL, resource updater finishes, game starts).
 4. Launch `<client-host> --ClientLibPath <path>` with a valid alternate runtime → host routes through the loaded library.
@@ -637,7 +633,7 @@ Local validation steps:
 6. Point `--ClientLibPath` to an invalid path, no `--ClientLibCompatibilityVersion` → host falls back to embedded client (Case 1).
 7. Build one project-owned packaged-server profile and confirm `<Settings.PlatformBinaries>/<target>/<name><ext>` (default `PlatformBinaries/`, sibling of the client-resources dir in the package layout) contains the per-target runtime libraries and that the `ClientResources` pack list contains `.fores` bases.
 8. Interrupt a client mid-download (kill the network) and reconnect — the next `GetUpdateFile` resumes from the temp-file size, no full re-download.
-9. Force a Case 2 → restart: package a client against an older `FO_COMPATIBILITY_VERSION`, point it at a server with a newer one, run. The resource updater UI should appear briefly, then the binary updater UI takes over (UI/SplashPic identical). Close the client after the restart prompt; the host renames `<live>-staging` over `<live>` and exits without loading it. The next launch must load the promoted runtime in a fresh process and reach the game.
+9. Force a Case 2 → restart: package a client against an older `FO_COMPATIBILITY_VERSION`, point it at a server with a newer one, run. The single updater UI must select binary mode and finish `BinariesStaged`, not start a second updater. Close the client after the restart prompt; the host renames `<live>-staging` over `<live>` and exits without loading it. The next launch must load the promoted runtime in a fresh process and reach the game.
 10. Crash recovery: kill the host while the binary updater UI is mid-download. Restart `<client-host>`. `ApplyStagedBinaryUpdate` runs at the start of `RunClientFromLibrary`; if `<live>-staging` is fully written it gets promoted, otherwise the runtime's resume logic completes the download in a normal updater session.
 11. Installed-layout smoke: place an `INSTALLED` marker next to the client executable (or build the Windows `Wix` package) and launch without a writable-path CLI override. The resolved writable root should be the per-OS user-data directory plus `FO_NICE_NAME`; cache/log/resource-overlay writes should go there, while install-dir resources remain read-only inputs. Force both a resource-pack update and a native update, close at the restart prompt, and launch again: the host should log `selected installed runtime ... from bootstrap ...`, load the writable-root runtime directly, and gameplay must read the updated writable pack rather than its frozen install-dir counterpart. Delete or corrupt the selector and confirm the host safely falls back to the install-dir runtime.
 

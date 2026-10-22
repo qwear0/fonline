@@ -7,7 +7,7 @@ permalink: /Docs/ru/how-to/build/generated-content.html
 ---
 
 # Работа с генерируемым содержимым
-<!-- docs-translation: {"document_id":"generated-content-workflow","locale":"ru","source_path":"Docs/en/how-to/build/generated-content.md","source_sha256":"6326d838bf3935668f07f13bbe10e30fb9e50d219721ceb641588015293b1c18"} -->
+<!-- docs-translation: {"document_id":"generated-content-workflow","locale":"ru","source_path":"Docs/en/how-to/build/generated-content.md","source_sha256":"fc878cae4d05518c1614cbc4a79a0f0ab20368ac7d7c62d9686bad30b4d7fc58"} -->
 Это руководство объясняет, что нужно перегенерировать после изменения
 исходников Engine или игры, какие данные являются authoritative и как
 проверять generated output, не редактируя его вручную.
@@ -55,7 +55,7 @@ annotation, interface model, project config, generator или authored asset,
 `Source/Common/Settings.inc`. После изменения настроек Engine выполните
 `python generate_config.py` в каждом каталоге и включите полученные изменения
 `.fomain`. Проверьте каждый результат через `python generate_config.py --check`
-и запустите `python BuildTools/tests/test_docs_examples.py` из корня Engine
+и запустите `python BuildTools/docs_examples.py --check` из корня Engine
 перед упаковкой или подготовкой этих примеров.
 
 Embedding project вызывает staged BuildTools pipeline:
@@ -74,7 +74,7 @@ FinalizeProjectGeneration()
 ```
 
 `SetupCodeGeneration()` использует native sources движка и проекта,
-code-generation tags, templates и project options. `ForceCodeGeneration`
+code-generation tags, templates и project options. Значения настроек по умолчанию — полные аргументы macro: кавычки и вложенные скобки защищают внутренние запятые, поэтому `Web.BackgroundColor` сохраняет одну строку `rgb(0, 0, 0)`, а не три обрезанных значения. `ForceCodeGeneration`
 является dependency для script compilation и baking targets, поэтому
 устаревшие native metadata нельзя скрыть за посторонним incremental resource
 bake.

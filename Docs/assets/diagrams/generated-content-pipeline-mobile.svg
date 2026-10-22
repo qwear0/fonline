@@ -18,7 +18,7 @@
   <rect x="38" y="125" width="404" height="88" rx="6" fill="#dff3e9" stroke="#176b55" stroke-width="2"/>
   <text class="node-title" x="240" y="154" text-anchor="middle">Engine inputs</text>
   <text class="node-line" x="240" y="178" text-anchor="middle">source, interface models</text>
-  <text class="node-line" x="240" y="196" text-anchor="middle">generators and tests</text>
+  <text class="node-line" x="240" y="196" text-anchor="middle">generators and validators</text>
   <rect x="38" y="229" width="404" height="88" rx="6" fill="#fff1cf" stroke="#8a5a00" stroke-width="2"/>
   <text class="node-title" x="240" y="258" text-anchor="middle">Game inputs</text>
   <text class="node-line" x="240" y="282" text-anchor="middle">.fomain, scripts, content</text>
@@ -37,7 +37,7 @@
   <text class="band-title" x="240" y="677" text-anchor="middle">3. Prove behavior</text>
   <rect x="38" y="697" width="404" height="88" rx="6" fill="#fbe6e2" stroke="#a33a2b" stroke-width="2"/>
   <text class="node-title" x="240" y="726" text-anchor="middle">Focused validation</text>
-  <text class="node-line" x="240" y="750" text-anchor="middle">unit, parser, gameplay</text>
+  <text class="node-line" x="240" y="750" text-anchor="middle">parser, CLI, gameplay</text>
   <text class="node-line" x="240" y="768" text-anchor="middle">platform smoke routes</text>
   <rect x="38" y="801" width="404" height="88" rx="6" fill="#fbe6e2" stroke="#a33a2b" stroke-width="2"/>
   <text class="node-title" x="240" y="830" text-anchor="middle">Contract review</text>

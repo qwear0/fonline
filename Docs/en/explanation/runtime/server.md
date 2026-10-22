@@ -189,7 +189,7 @@ The callback boundary is exception-safe: scheduling time, game time, the whole-w
 
 `ServerEngine::CreateSnapshot()` is the first storage composition built on that boundary. Inside quiescence it inspects AngelScript context diagnostics, anonymous delayed worker callbacks, runtime time events, and active critter movements. Any retained state produces counted `ServerSnapshotBlockerKind` entries and no payload. A ready world flushes the exact generated-entity id and synchronized time, invokes `DataBase::CreateSnapshot()`, and returns the payload bytes together with a `ServerSnapshotState` carrying compatibility and metadata versions, exact synchronized time, id boundary, and the four generator words. The Engine writes no file and defines no container format: naming, versioning, packaging and atomic publication belong to the embedder. Restoring is the mirror image — `ServerEngine` is constructed with a `ServerSnapshotRestore` pair, loads the payload into storage before anything reads the world, and rejects a state that disagrees with its payload before gameplay hooks run.
 
-`ReadServerSnapshotState()` parses that manifest strictly and requires the SQLite payload. The embedding controller must copy the immutable payload into a separate writable live-session directory before construction. Passing the parsed state to `ServerEngine` validates format/compatibility/metadata synchronously and restores RNG before startup jobs; after the copied database globals load, exact time and id are cross-checked before script module/init hooks run. A corrupt or mismatched pair fails startup rather than combining manifest state with a different database.
+The Engine exposes the typed `ServerSnapshotState`/`ServerSnapshotRestore` pair, not a `ReadServerSnapshotState()` file reader or SQLite-only slot format. The embedder must serialize and validate its container, retain an immutable source and choose isolated writable restore storage. Construction validates state format/compatibility/metadata and restores RNG before startup jobs; restored database globals must match exact time/id before gameplay hooks. Backend byte-snapshot support must be qualified separately; project state, file integrity and publication are not inferred from native state validation.
 
 This is still a staging primitive rather than a player-facing slot/checkpoint system. Version 1 blocks every runtime time event and movement instead of serializing them, cannot classify project-owned state, and does not choose slot names, calculate package integrity, atomically publish/rotate saves, own pause/UI authority, or coordinate network reload and identity. `Lock()` / `Unlock()` retain their existing diagnostic semantics and do not freeze clocks; callers needing only a custom frozen operation use `RunInQuiescence()`, while stable Engine/database capture uses `CreateSnapshot()`. `ServerEngineQuiescenceFreezesAndCleansUp`, `ServerEngineSnapshotEligibilityRejectsRuntimeOnlyState`, `ServerEngineSnapshotRoundTripsThroughFreshSQLiteSession`, `PauseFreezesFrameAndSynchronizedTime`, and `WorkerPoolSchedulingTimeFreezePreservesDelays` pin the source contract.
 
@@ -245,7 +245,7 @@ Typed entity destruction has a single active owner once the target is marked `De
 
 Every frame writes frame-time properties while holding the `Game` entity lock exclusively, then pumps script continuations. A microsecond-scale period therefore adds contention for every reader of `Game` properties without improving movement; tune this cadence as a lock and worker-load setting, not only a clock precision setting.
 
-Managed `Sync` acquisition/restoration helpers publish an externally returned `false` to `Sync.OnFailure` (`Action<Sync.FailureInfo>`). No subscriber means no snapshot, entity-context read, or stack capture. With subscribers, each receives the same immutable operation, caller file/member/line, terminal reason/helper location, entity IDs and lifecycle snapshots, proto IDs, and managed stack. Subscriptions are synchronous and unsampled; an observer must not acquire cover, mutate gameplay state, or use `async void`. Its exception is reported and counted without suppressing other observers or changing the helper's `false`. Successful calls, recovered internal retries, probes, and best-effort cleanup are silent; native acquisition exceptions still propagate. This event proves a particular call refused cover, not that a gameplay transaction failed or rolled back. Validate with `dotnet run --project Source/Scripting/Managed/SyncTests/FOnline.Sync.Tests.csproj` and the embedding project's subscriber route.
+Managed `Sync` acquisition/restoration helpers publish an externally returned `false` to `Sync.OnFailure` (`Action<Sync.FailureInfo>`). No subscriber means no snapshot, entity-context read, or stack capture. With subscribers, each receives the same immutable operation, caller file/member/line, terminal reason/helper location, entity IDs and lifecycle snapshots, proto IDs, and managed stack. Subscriptions are synchronous and unsampled; an observer must not acquire cover, mutate gameplay state, or use `async void`. Its exception is reported and counted without suppressing other observers or changing the helper's `false`. Successful calls, recovered internal retries, probes, and best-effort cleanup are silent; native acquisition exceptions still propagate. This event proves a particular call refused cover, not that a gameplay transaction failed or rolled back. Validate through the existing embedding-project subscriber route; the former managed Sync suite is removed.
 
 `Sync.OnRetry` records reason and caller/retry sites, including nested helpers. External loops use `Sync.ReportRetry(reason)`. No subscriber means no allocation; frequency distinguishes handoffs from later-frame waits.
 
@@ -274,7 +274,7 @@ All three login entrypoints (`LoginPlayerToNewRecord`, `LoginPlayerToExistentRec
 
 `MapManager::Transfer()` emits `OnCritterTransfer` only after the critter transfer, attached-critter transfers, and final visibility refresh finish. Nested event paths may destroy the transferred critter or previous-map argument before that final notification attempt; `ValidateEntityAccess()` accepts that state and event dispatch suppresses script callbacks whose entity arguments are already destroyed. While the transfer lock is held, the critter's target map/global ownership remains an asserted invariant rather than a recoverable branch.
 
-Script event handlers may re-enter item movement while an item is already in its committed add state. Native helpers that report a completed move therefore validate the final ownership after firing the event: `AddItemToCritter()` throws if the committed item no longer belongs to the target critter, `CreateItemOnHex()` / script `Map.AddItem()` throw if the created item no longer belongs to the target map hex, and `MoveItem(..., Map*)` returns it only if it still belongs to the target map. A partial-stack `MoveItem()` splits the source before delivery, and the split's init event can re-enter scripts and destroy the destination; if it does, the helper folds the split count back into the surviving source stack and destroys the undeliverable split item, so a failed split move is lossless rather than leaving an orphaned `Nowhere` item. `ChangeItemSlot()` swap notification still attempts the second `OnCritterItemMoved` after the displaced-item event, even if that handler moves or destroys the original moving item; redundant or stale notifications are handled by the event path and final item ownership. Map-item add, visibility, and property broadcasts snapshot the item's map/hex context; if `OnItemOnMapAppeared`, `OnItemOnMapDisappeared`, or `OnItemOnMapChanged` moves, destroys, or otherwise detaches the item from that context, the outer broadcast stops before notifying more observers or spectators. Removing an item from a holder fires events after the item has already been detached, so handlers can destroy that detached item, but ordinary script movement APIs require a current holder and do not move `Nowhere` items.
+Script event handlers may re-enter item movement while an item is already in its committed add state. Native helpers that report a completed move therefore validate the final ownership after firing the event: `AddItemToCritter()` throws if the committed item no longer belongs to the target critter, `CreateItemOnHex()` / script `Map.AddItem()` throw if the created item no longer belongs to the target map hex, and `MoveItem(..., Map*)` returns it only if it still belongs to the target map. Item quantity, merging and splitting are project-owned policies; native `MoveItem()` transfers one entity and does not implement stack arithmetic. `ChangeItemSlot()` swap notification still attempts the second `OnCritterItemMoved` after the displaced-item event, even if that handler moves or destroys the original moving item; redundant or stale notifications are handled by the event path and final item ownership. Map-item add, visibility, and property broadcasts snapshot the item's map/hex context; if `OnItemOnMapAppeared`, `OnItemOnMapDisappeared`, or `OnItemOnMapChanged` moves, destroys, or otherwise detaches the item from that context, the outer broadcast stops before notifying more observers or spectators. Removing an item from a holder fires events after the item has already been detached, so handlers can destroy that detached item, but ordinary script movement APIs require a current holder and do not move `Nowhere` items.
 
 Walk trigger processing is scoped to the critter's current trigger context. If `OnStaticItemWalk` or an item's `OnCritterWalk` moves, transfers, destroys, or otherwise detaches the critter from that context, `VerifyTrigger()` stops processing the remaining triggers from the old map/hex. A static item the map instance has removed contributes no trigger at all, because `VerifyTrigger()` reads the same per-instance static overlay as the rest of the static queries.
 
@@ -331,7 +331,7 @@ coverage is in `ServerEngineSyncContextWidenAndAncestorCover`,
 
 `DescendantHold` is bookkeeping, not access. It prevents an ancestor writer from cutting underneath active descendant work and prevents taking a descendant below an ancestor owned exclusively by another thread. A pending exclusive writer has priority over new descendant registrations, so sibling traffic cannot starve it.
 
-Waiters are FIFO. A per-waiter atomic state distinguishes waiting, granted, and aborted during shutdown; shared waiters batch until the first exclusive waiter. Multi-lock `Ensure` is all-or-nothing and escalates in global order, restoring any released ancestor recursion and descendant-hold counts exactly. Shutdown aborts parked waiters and rejects new acquisitions.
+Waiters are FIFO. A per-waiter atomic state distinguishes waiting, granted, and aborted during shutdown; shared waiters batch until the first exclusive waiter. `EnsureEntitySynced()` requires an already-covered target and retains its own lock without releasing or reacquiring caller cover. It adds the own lock and intermediate ancestor marks as one all-or-nothing non-blocking state-mutex transaction; transient contention retries the whole batch with bounded back-off, retaining no partial acquisition across that back-off. It throws for missing cover or a corrupt covered-cover invariant, not ordinary contention. Shutdown aborts parked waiters and rejects new acquisitions.
 
 Each active `SyncContext` accumulates only the time its thread is parked in the atomic wait inside `EntityLock::Acquire`, `AcquireShared`, or `RegisterDescendantHold`. The duration is also added to every outer context in the synchronous call chain, because an outer script's wall time includes a nested script callback's wait. Queue insertion, uncontended acquisition, lock bookkeeping, and ordinary native/script execution are not counted as lock wait. `ServerEngine::RunScriptContext()` returns that accumulated duration to the scripting backend so diagnostics can separate contention from execution cost.
 
@@ -453,12 +453,11 @@ The reusable geometry, path finding, blockers, line tracing, and map-loading con
 
 ### `ItemManager`
 
-`ItemManager` owns item creation, splitting, destruction, and movement between holders:
+`ItemManager` owns individual item creation/cloning/destruction and movement between holders:
 
 - create loose items and map items;
 - add items to containers and critters;
-- subtract/set critter item counts;
-- split stacks;
+- clone individual item entities;
 - move items between critters, maps, and containers;
 - remove item-holder relationships.
 
@@ -471,7 +470,7 @@ Server entity classes combine Common-layer property/prototype behavior with serv
 - `Location` groups maps and raises `OnMapAdded` / `OnMapRemoved`.
 - `Map` owns map fields, critter/item presence, spectators, item visibility, manual blocks, trigger verification, and `OnCheckLook` / `OnCheckTrapLook`.
 - `Critter` owns visibility, current map/location/global state, inventory, moving state, player attachment, and broadcast helpers.
-- `Item` owns holder/container relationships, stack/multihex behavior, and `OnCritterWalk`.
+- `Item` owns holder/container relationships, multihex behavior, and `OnCritterWalk`; quantity, stacking, merging and splitting belong to the embedding project.
 - `Player` owns connection/session state and the send surface to one client.
 
 Do not duplicate the Common entity taxonomy here; [Entity Model](../entity-and-property-model/) owns the base entity/property/prototype explanation.
@@ -520,15 +519,17 @@ During server construction, `ServerEngine` can create and load `UpdaterBackend` 
 
 `UpdaterBackend` responsibilities:
 
-- scan client resources and binaries through `LoadFromClientResources(const GlobalSettings&)`;
+- scan client resources and binaries through `LoadFromClientResources(const GlobalSettings&, string_view server_metadata_version)`;
 - build an update descriptor grouped by update targets;
-- serve requested file portions through `ProcessUpdateFile(ServerConnection*, int32_t)`;
+- serve requested file portions through `ProcessUpdateFile(ptr<Player>, int32_t)`;
 - respond with `NetMessage::UpdateFileData` chunks;
 - expose target-specific descriptors selected by binary target name.
 
 The client host/runtime updater flow is documented in [Client Updater](client-updater.md). Keep protocol-level details there and runtime hosting/ownership details here.
 
-## Tests and validation map
+<a id="tests-and-validation-map"></a>
+
+## Historical tests and current validation
 
 Use the smallest relevant test scope when changing server behavior:
 
@@ -547,7 +548,7 @@ Use the smallest relevant test scope when changing server behavior:
 - `Source/Tests/Test_AngelScriptClientServerIntegration.cpp` — script-driven client/server handshake, login and shared map sessions.
 - `Source/Tests/Test_DataBase.cpp` — persistence backend behavior used by server entity storage.
 
-Exact test target names are generated by the embedding project's CMake/BuildTools configuration; do not hard-code one project's target names in engine docs.
+The suites listed above were removed from this fork and are historical coverage notes, not runnable targets or current evidence. Build affected roles, compile/bake selected scripts/resources and exercise the existing server/application route. Do not add new automated tests or infrastructure without an explicit request.
 
 ## Change checklist
 
@@ -558,6 +559,6 @@ When changing server runtime behavior, verify:
 - Client-originated data is validated before mutating authoritative state.
 - New or changed network messages are cross-linked in [Networking](../authority-and-networking/) and [Client Runtime](client.md).
 - Movement changes preserve [Maps, Movement, and Geometry](../maps-and-movement.md) invariants and server blocked-hex behavior.
-- Script-facing events and methods are covered by server tests and the owning scripting documentation.
+- Script-facing events and methods are checked by affected-role compile/bake and the actual dispatcher/application path, with the owning scripting documentation aligned.
 - Updater changes preserve the boundary between `UpdaterBackend` hosting here and client host/runtime behavior in [Client Updater](client-updater.md).
 - Process-host changes preserve the operational lifecycle and evidence boundary in [Release Operations](../../how-to/release/operations.md).

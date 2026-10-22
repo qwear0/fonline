@@ -7,7 +7,7 @@ permalink: /Docs/ru/explanation/authority-and-networking/
 ---
 
 # Сеть и авторитетность
-<!-- docs-translation: {"document_id":"networking","locale":"ru","source_path":"Docs/en/explanation/authority-and-networking/index.md","source_sha256":"994a1b7780bd163853603865d91967b357aceb2a3d3d9b79a5c7cd422f3b4808"} -->
+<!-- docs-translation: {"document_id":"networking","locale":"ru","source_path":"Docs/en/explanation/authority-and-networking/index.md","source_sha256":"12d736433a95ab8e42a4ab54b3db12cf15f89a7bd4a3870f3e187a840ed9c79a"} -->
 Этот документ описывает переиспользуемые сетевые слои движка: защищённый канал, буферы сообщений, обработку хешей, клиентские и серверные соединения и упорядоченный UDP-транспорт.
 
 Используйте его при изменении `Source/Common/SecureChannel.*`, `NoiseProtocol.*`, `NetBuffer.*`, `NetworkUdp.*`, клиентских и серверных соединений или сетевых тестов.
@@ -298,7 +298,7 @@ Socket-соединения сервера Asio и WebSockets выполняют
 - **Состояние закрытия транспорта меняется в его I/O-потоке.** В обоих путях — отключении и уничтожении обёртки — WebSockets ставит `connection->close()` в очередь через `asio::post(connection->get_raw_socket().get_executor(), ...)`. Сейчас backend имеет один выделенный I/O-поток, поэтому close не выполняется одновременно с обработчиками чтения и завершения. Прямой `close()` из потока движка небезопасен: его state-lock не защищает от записи в то же состояние внутри `terminate()` без этого lock. Задача захватывает только слабую ссылку на backend-соединение и блокирует её при выполнении, не удерживая обёртку или сильную ссылку на backend.
 - **Обёртка не должна продлевать lifetime нижележащего соединения за lifetime владеющего io_context.** Asio-таймеры и незавершённые операции backend-соединения привязаны к io_context endpoint. Поэтому обёртка хранит слабую ссылку и блокирует её на каждый вызов. Сохранённая сильная ссылка позволила бы уничтожить backend уже после этого context, создавая use-after-free при остановке.
 
-`Test_NetworkServer.cpp` проверяет каждый транспорт end-to-end: interthread, повторный accept Asio и остановку с принятым TCP-соединением, а также настоящий websocketpp-клиент, отправляющий frame и полагающийся на остановку сервера для отключения. `NetworkServerWebSocketsQueuesCloseAcrossPeerAbortAndRetainedWrapper` дополнительно проверяет обрыв peer, повторный disconnect, однократное уведомление и обёртку, пережившую уничтожение endpoint. Запускайте эти тесты и неизменённый `SecureChannelRunsOverWebSockets` под ThreadSanitizer и AddressSanitizer, отдельно проверяя сериализацию состояния и lifetime.
+`Test_NetworkServer.cpp` проверяет каждый транспорт end-to-end: interthread, повторный accept Asio и остановку с принятым TCP-соединением, а также настоящий websocketpp-клиент, отправляющий frame и полагающийся на остановку сервера для отключения. `NetworkServerWebSocketsQueuesCloseAcrossPeerAbortAndRetainedWrapper` дополнительно проверяет обрыв peer, повторный disconnect, однократное уведомление и обёртку, пережившую уничтожение endpoint. Эти прежние suites, включая `SecureChannelRunsOverWebSockets`, удалены в форке. Соберите затронутый native transport с поддерживаемыми sanitizers и выполните existing connection/shutdown path для отдельной проверки state serialization и lifetime; новый test harness этим не разрешается.
 
 ## Упорядоченный UDP-транспорт
 
@@ -388,7 +388,9 @@ Socket-соединения сервера Asio и WebSockets выполняют
 но не превращают мёртвый порт в приемлемое состояние. Межпоточный транспорт сюда не входит: он не
 занимает ничего, что мог бы держать другой процесс, поэтому отказ там — дефект, а не гонка.
 
-## Тесты для проверки
+## Исторический перечень тестов
+
+Suites ниже удалены в этом форке. Сохраняйте historical coverage notes, но текущие доказательства получайте компиляцией затронутых ролей и существующим isolated client/server transport/application path. Новые автоматизированные тесты требуют явного запроса.
 
 Подходящие тесты:
 
@@ -408,7 +410,7 @@ Socket-соединения сервера Asio и WebSockets выполняют
 
 ## Контрольный список проверки
 
-1. Запустите относящиеся к изменённому транспорту тесты UDP, клиента и сервера.
+1. Соберите затронутые transport roles и проверьте actual connection, handshake, malformed-input rejection и reconnect через существующие isolated application paths.
 2. Проверьте пути connect/accept и disconnect.
 3. При изменении `NetInBuffer` / `NetOutBuffer` проверьте частичные чтения и framing сообщений.
 4. Проверьте разрешение hash и поведение debug hash между клиентской и серверной сборками.

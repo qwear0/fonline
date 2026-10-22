@@ -11,8 +11,6 @@
       "Docs/**/*.md",
       "Source/README.md",
       "Source/README.ru.md",
-      "Source/Tests/README.md",
-      "Source/Tests/README.ru.md",
       "BuildTools/README.md",
       "BuildTools/README.ru.md",
       "Examples/MinimalProject/README.md",
@@ -37,7 +35,7 @@
     "content_format": "markdown",
     "domain": "fonline.ru",
     "production_url": "https://fonline.ru",
-    "repository": "cvet/fonline",
+    "repository": "qwear0/fonline",
     "theme": "jekyll-theme-slate",
     "cname": "Workspace/Documentation/CNAME",
     "config": "Docs/Site/_config.yml",
@@ -45,21 +43,20 @@
     "ruby_version_file": "Workspace/Documentation/.ruby-version",
     "ruby_version": "3.3.4",
     "pages_gem_version": "232",
-    "workflow": ".github/workflows/validate.yml",
+    "workflow": ".github/disabled-workflows/validate.yml",
+    "workflow_status": "archived",
     "site_artifact": "Workspace/DocumentationSite",
     "source": {
-      "status": "verified",
-      "build_type": "workflow",
-      "branch": "master",
-      "folder": "/",
-      "verified_on": "2026-10-09"
+      "status": "pending-admin-verification",
+      "build_type": null,
+      "branch": null,
+      "folder": null
     },
     "dns": {
-      "status": "public-resolution-confirmed",
+      "status": "not-observed",
       "ownership_verification": "not-observed",
-      "challenge_record": "_github-pages-challenge-cvet.fonline.ru",
-      "verified_on": "2026-08-02",
-      "owner": "repository-and-private-domain-administrators"
+      "challenge_record": "_github-pages-challenge-qwear0.fonline.ru",
+      "owner": "fork-repository-and-domain-administrators"
     }
   },
   "versioning": {
@@ -142,10 +139,6 @@
       "source-readme": {
         "en": "Source/README.md",
         "ru": "Source/README.ru.md"
-      },
-      "unit-tests-readme": {
-        "en": "Source/Tests/README.md",
-        "ru": "Source/Tests/README.ru.md"
       }
     }
   },
@@ -413,8 +406,7 @@
         "document_ids": [
                                                 "testing",
                                                 "gameplay-testing",
-                                                "unit-tests-readme",
-                                                "debugging",
+                                                                                                "debugging",
                                                 "profiling",
                                                 "web-debugging",
                                                 "android-debugging",
@@ -564,8 +556,7 @@
         "Docs/generated/cmake/options.md",
         "Docs/generated/cmake/stages.md",
         "Docs/generated/cmake/helpers.md"
-      ],
-      "structural_test": "BuildTools/tests/validate_project_interface.cmake"
+      ]
     },
     "cli_reference": {
       "source_parser": "BuildTools/buildtools.py",
@@ -616,8 +607,7 @@
         "Docs/generated/native-extension/roles.md",
         "Docs/generated/native-extension/hooks.md",
         "Docs/generated/native-extension/bindings.md"
-      ],
-      "structural_test": "BuildTools/tests/validate_native_extension_interface.cmake"
+      ]
     },
     "prototype_format_reference": {
       "source_manifest": "BuildTools/PrototypeFormatInterface.json",
@@ -957,8 +947,7 @@
         "Docs/generated/package/matrix.md",
         "Docs/generated/package/payloads.md",
         "Docs/generated/package/cli.md"
-      ],
-      "structural_test": "BuildTools/tests/validate_package_interface.cmake"
+      ]
     },
     "public_examples_reference": {
       "source_manifest": "Examples/PublicRepositories.json",
@@ -1061,15 +1050,13 @@
       "search": "Docs/Site/Assets/docs-search.json",
       "path": "Docs/generated/ai-evaluation-report.json",
       "generator": "BuildTools/docs_ai_eval.py",
-      "schema_version": 1,
-      "test": "BuildTools/tests/test_docs_ai_eval.py"
+      "schema_version": 1
     },
     "snippet_validation": {
       "source_policy": "BuildTools/SnippetPolicy.json",
       "path": "Docs/generated/snippets.json",
       "generator": "BuildTools/docs_snippets.py",
       "schema_version": 1,
-      "test": "BuildTools/tests/test_docs_snippets.py",
       "external_check": "python3 BuildTools/docs_snippets.py --check --external"
     },
     "site_delivery": {
@@ -1140,8 +1127,7 @@
       "report_outputs": [
         "Workspace/contract-diff.json",
         "Workspace/contract-diff.md"
-      ],
-      "workflow": ".github/workflows/validate.yml"
+      ]
     }
   },
   "source_precedence": [
@@ -1227,14 +1213,16 @@
       "audiences": ["game-developer", "engine-contributor", "release-operator", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "build-release", "state": "current", "disposition": "retain", "target": "Docs/en/how-to/release/versioning.md",
-      "sources": ["VERSION", "BuildTools/engine_version.py", "BuildTools/docs_engine_version.py", ".github/workflows/validate.yml", "AGENTS.md", "BuildTools/cmake/helpers/EngineVersion.cmake", "BuildTools/cmake/stages/Codegen.cmake", "BuildTools/codegen.py", "Source/Frontend/ApplicationInit.cpp", "BuildTools/docs_ai_delivery.py", "BuildTools/docs_site.py", "Docs/documentation-manifest.json", "BuildTools/tests/test_engine_version.py", "Docs/en/reference/changelog.md", "Docs/contract-change-dispositions.json"]
+      "sources": ["VERSION", "BuildTools/engine_version.py", "BuildTools/docs_engine_version.py", ".github/disabled-workflows/validate.yml", "AGENTS.md", "BuildTools/cmake/helpers/EngineVersion.cmake", "BuildTools/cmake/stages/Codegen.cmake", "BuildTools/codegen.py", "Source/Frontend/ApplicationInit.cpp", "BuildTools/docs_ai_delivery.py", "BuildTools/docs_site.py", "Docs/documentation-manifest.json", "Docs/en/reference/changelog.md", "Docs/contract-change-dispositions.json"],
+      "historical_sources": ["BuildTools/tests/test_engine_version.py"]
     },
     "Docs/en/reference/changelog.md": {
       "id": "engine-changelog", "title": "Engine Changelog",
       "audiences": ["game-developer", "engine-contributor", "release-operator", "ai-agent"],
       "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
       "owner": "build-release", "state": "current", "disposition": "retain", "target": "Docs/en/reference/changelog.md",
-      "sources": ["VERSION", "BuildTools/engine_version.py", "BuildTools/docs_engine_version.py", ".github/workflows/validate.yml", "AGENTS.md", "BuildTools/tests/test_engine_version.py", "Docs/en/how-to/release/versioning.md", "BuildTools/cmake/stages/Codegen.cmake", "BuildTools/codegen.py", "Source/Frontend/ApplicationInit.cpp", "BuildTools/docs_ai_delivery.py", "BuildTools/docs_site.py", "Docs/contract-change-dispositions.json"]
+      "sources": ["VERSION", "BuildTools/engine_version.py", "BuildTools/docs_engine_version.py", ".github/disabled-workflows/validate.yml", "AGENTS.md", "Docs/en/how-to/release/versioning.md", "BuildTools/cmake/stages/Codegen.cmake", "BuildTools/codegen.py", "Source/Frontend/ApplicationInit.cpp", "BuildTools/docs_ai_delivery.py", "BuildTools/docs_site.py", "Docs/contract-change-dispositions.json"],
+      "historical_sources": ["BuildTools/tests/test_engine_version.py"]
     },
     "README.md": {
       "id": "repository-home",
@@ -1314,7 +1302,7 @@
       "audiences": ["game-developer", "content-author", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "tutorial", "visibility": "public", "human": true, "translation": "required"},
       "owner": "content-data", "state": "current", "disposition": "retain", "target": "Examples/ContentShowcase/README.md",
-      "sources": ["Examples/ContentShowcase/.gitignore", "Examples/ContentShowcase/CMakeLists.txt", "Examples/ContentShowcase/CMakePresets.json", "Examples/ContentShowcase/FOnlineContentShowcase.fomain", "Examples/ContentShowcase/generate_assets.py", "Examples/ContentShowcase/generate_config.py", "Examples/ContentShowcase/Content/ShowcaseContent.fopro", "Examples/ContentShowcase/Maps/ShowcaseMap.fomap", "Examples/ContentShowcase/Scripts/Showcase.fos", "Examples/ContentShowcase/ShowcaseAssets", "Examples/ContentShowcase/run_showcase_smoke.py", "Examples/ContentShowcase/capture_showcase.py", "Examples/ContentShowcase/verify_showcase.py", "Examples/ContentShowcase/assets/provenance.json", "Examples/ContentShowcase/quality/performance-budget.json", "Examples/ContentShowcase/captures/capture-contract.json", "BuildTools/buildtools.py", ".github/workflows/validate.yml", "Docs/en/how-to/build/public-example-repositories.md"]
+      "sources": ["Examples/ContentShowcase/.gitignore", "Examples/ContentShowcase/CMakeLists.txt", "Examples/ContentShowcase/CMakePresets.json", "Examples/ContentShowcase/FOnlineContentShowcase.fomain", "Examples/ContentShowcase/generate_assets.py", "Examples/ContentShowcase/generate_config.py", "Examples/ContentShowcase/Content/ShowcaseContent.fopro", "Examples/ContentShowcase/Maps/ShowcaseMap.fomap", "Examples/ContentShowcase/Scripts/Showcase.fos", "Examples/ContentShowcase/ShowcaseAssets", "Examples/ContentShowcase/run_showcase_smoke.py", "Examples/ContentShowcase/capture_showcase.py", "Examples/ContentShowcase/verify_showcase.py", "Examples/ContentShowcase/assets/provenance.json", "Examples/ContentShowcase/quality/performance-budget.json", "Examples/ContentShowcase/captures/capture-contract.json", "BuildTools/buildtools.py", ".github/disabled-workflows/validate.yml", "Docs/en/how-to/build/public-example-repositories.md"]
     },
     "Examples/NativeExtensionSample/README.md": {
       "id": "native-extension-sample-readme",
@@ -1322,7 +1310,8 @@
       "audiences": ["game-developer", "native-extension-developer", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "tutorial", "visibility": "public", "human": true, "translation": "required"},
       "owner": "runtime", "state": "current", "disposition": "retain", "target": "Examples/NativeExtensionSample/README.md",
-      "sources": ["Examples/NativeExtensionSample/.gitignore", "Examples/NativeExtensionSample/CMakeLists.txt", "Examples/NativeExtensionSample/CMakePresets.json", "Examples/NativeExtensionSample/FOnlineNativeExtensionSample.fomain", "Examples/NativeExtensionSample/Scripts/NativeExtensionSample.fos", "Examples/NativeExtensionSample/SourceExt/NativeExtensionCore.cpp", "Examples/NativeExtensionSample/SourceExt/NativeExtensionCore.h", "Examples/NativeExtensionSample/SourceExt/ServerExtension.cpp", "Examples/NativeExtensionSample/Tests/NativeExtensionCoreTest.cpp", "Examples/NativeExtensionSample/run_native_extension_smoke.py", "Examples/NativeExtensionSample/validate.py", "BuildTools/NativeExtensionInterface.json", "Docs/en/how-to/native-extensions.md", "Docs/en/how-to/native-extensions/project-dependencies.md"]
+      "historical_sources": ["Examples/NativeExtensionSample/Tests/NativeExtensionCoreTest.cpp"],
+      "sources": ["Examples/NativeExtensionSample/.gitignore", "Examples/NativeExtensionSample/CMakeLists.txt", "Examples/NativeExtensionSample/CMakePresets.json", "Examples/NativeExtensionSample/FOnlineNativeExtensionSample.fomain", "Examples/NativeExtensionSample/Scripts/NativeExtensionSample.fos", "Examples/NativeExtensionSample/SourceExt/NativeExtensionCore.cpp", "Examples/NativeExtensionSample/SourceExt/NativeExtensionCore.h", "Examples/NativeExtensionSample/SourceExt/ServerExtension.cpp", "Examples/NativeExtensionSample/run_native_extension_smoke.py", "Examples/NativeExtensionSample/validate.py", "BuildTools/NativeExtensionInterface.json", "Docs/en/how-to/native-extensions.md", "Docs/en/how-to/native-extensions/project-dependencies.md"]
     },
     "Examples/AiControlSample/README.md": {
       "id": "ai-control-sample-readme",
@@ -1330,7 +1319,8 @@
       "audiences": ["game-developer", "native-extension-developer", "tool-developer", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "tutorial", "visibility": "public", "human": true, "translation": "required"},
       "owner": "tooling", "state": "current", "disposition": "retain", "target": "Examples/AiControlSample/README.md",
-      "sources": ["BuildTools/AiControlProtocol.json", "BuildTools/ai_control_client.py", "Examples/AiControlSample/ai_control_sample.py", "Examples/AiControlSample/run_protocol_smoke.py", "Examples/AiControlSample/validate.py", "BuildTools/tests/test_ai_control_protocol.py", "Docs/AiControlProtocol.md"]
+      "sources": ["BuildTools/AiControlProtocol.json", "BuildTools/ai_control_client.py", "Examples/AiControlSample/ai_control_sample.py", "Examples/AiControlSample/run_protocol_smoke.py", "Examples/AiControlSample/validate.py", "Docs/AiControlProtocol.md"],
+      "historical_sources": ["BuildTools/tests/test_ai_control_protocol.py"]
     },
     "Examples/PublicRepositoryTemplate/README.md": {
       "id": "public-repository-template-readme",
@@ -1348,14 +1338,7 @@
       "owner": "runtime", "state": "current", "disposition": "route", "target": "Source/README.md",
       "sources": ["Source", "Docs/en/contributing/source-tree/index.md"]
     },
-    "Source/Tests/README.md": {
-      "id": "unit-tests-readme",
-      "title": "Unit Tests",
-      "audiences": ["engine-contributor"],
-      "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
-      "owner": "quality", "state": "current", "disposition": "route", "target": "Source/Tests/README.md",
-      "sources": ["Source/Tests", "Docs/Testing.md"]
-    },
+
     "Docs/en/index.md": {
       "id": "documentation-home",
       "title": "FOnline Engine Documentation",
@@ -1426,7 +1409,7 @@
       "audiences": ["game-developer", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "tutorial", "visibility": "public", "human": true, "translation": "required"},
       "owner": "quality", "state": "current", "disposition": "retain", "target": "Docs/en/tutorials/first-test.md",
-      "sources": ["Examples/MinimalMultiplayer/CMakeLists.txt", "Examples/MinimalMultiplayer/CMakePresets.json", "Examples/MinimalMultiplayer/FOnlineMinimalMultiplayer.fomain", "Examples/MinimalMultiplayer/Scripts/Tutorial.fos", "Examples/MinimalMultiplayer/run_tutorial_smoke.py", "BuildTools/buildtools.py", ".github/workflows/validate.yml", "Docs/Testing.md"]
+      "sources": ["Examples/MinimalMultiplayer/CMakeLists.txt", "Examples/MinimalMultiplayer/CMakePresets.json", "Examples/MinimalMultiplayer/FOnlineMinimalMultiplayer.fomain", "Examples/MinimalMultiplayer/Scripts/Tutorial.fos", "Examples/MinimalMultiplayer/run_tutorial_smoke.py", "BuildTools/buildtools.py", ".github/disabled-workflows/validate.yml", "Docs/Testing.md"]
     },
     "Docs/FirstTestTutorial.md": {
       "id": "legacy-first-test-tutorial",
@@ -1458,7 +1441,8 @@
       "audiences": ["game-developer", "engine-contributor", "release-operator", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "build-release", "state": "current", "disposition": "retain", "target": "Docs/en/how-to/build/public-example-repositories.md",
-      "sources": ["Examples/PublicRepositories.json", "Examples/PublicRepositoryTemplate", "Examples/MinimalProject", "Examples/MinimalMultiplayer", "Examples/GameplayTestHarness", "Examples/AiControlSample", "BuildTools/AiControlProtocol.json", "BuildTools/ExternalProjectEvidence.json", "BuildTools/docs_examples.py", "BuildTools/tests/test_docs_examples.py", "Docs/generated/public-examples.json", "Docs/generated/public-examples/index.md", "Docs/en/contributing/decisions/0005-public-example-repository-ownership.md", "Docs/en/explanation/runtime/client-updater.md", ".github/workflows/validate.yml"]
+      "sources": ["Examples/PublicRepositories.json", "Examples/PublicRepositoryTemplate", "Examples/MinimalProject", "Examples/MinimalMultiplayer", "Examples/GameplayTestHarness", "Examples/AiControlSample", "BuildTools/AiControlProtocol.json", "BuildTools/ExternalProjectEvidence.json", "BuildTools/docs_examples.py", "Docs/generated/public-examples.json", "Docs/generated/public-examples/index.md", "Docs/en/contributing/decisions/0005-public-example-repository-ownership.md", "Docs/en/explanation/runtime/client-updater.md", ".github/disabled-workflows/validate.yml"],
+      "historical_sources": ["BuildTools/tests/test_docs_examples.py"]
     },
     "Docs/PublicExampleRepositories.md": {
       "id": "legacy-public-example-repositories-route",
@@ -1538,7 +1522,8 @@
       "audiences": ["game-developer", "release-operator", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "build-release", "state": "current", "disposition": "retain", "target": "Docs/en/how-to/release/packaging.md",
-      "sources": ["BuildTools/PackageInterface.json", "BuildTools/package.py", "BuildTools/cmake/helpers/Build.cmake", "BuildTools/cmake/stages/Packages.cmake", "BuildTools/tests/test_docs_package.py", "BuildTools/tests/validate_package_interface.cmake", "BuildTools/tests/test_package_include.py", "BuildTools/tests/test_package_security.py", "BuildTools/tests/test_package_resource_pack.py", "BuildTools/tests/test_package_zip_helpers.py", "BuildTools/tests/test_packaging_matrix.py", "BuildTools/tests/test_minimal_multiplayer_package.py", "BuildTools/msicreator/createmsi.py", "BuildTools/check_windows7_imports.py", "BuildTools/SupportMatrix.json", ".github/workflows/validate.yml", "Examples/PackagingMatrix", "Examples/MinimalProject", "Examples/MinimalMultiplayer", "Docs/generated/package/index.md", "Docs/en/reference/platforms/support-matrix.md", "Docs/en/how-to/platforms/web-debugging.md", "Docs/en/how-to/platforms/android-debugging.md", "Docs/en/explanation/runtime/client-updater.md"]
+      "sources": ["BuildTools/PackageInterface.json", "BuildTools/package.py", "BuildTools/cmake/helpers/Build.cmake", "BuildTools/cmake/stages/Packages.cmake", "BuildTools/msicreator/createmsi.py", "BuildTools/check_windows7_imports.py", "BuildTools/SupportMatrix.json", ".github/disabled-workflows/validate.yml", "Examples/PackagingMatrix", "Examples/MinimalProject", "Examples/MinimalMultiplayer", "Docs/generated/package/index.md", "Docs/en/reference/platforms/support-matrix.md", "Docs/en/how-to/platforms/web-debugging.md", "Docs/en/how-to/platforms/android-debugging.md", "Docs/en/explanation/runtime/client-updater.md"],
+      "historical_sources": ["BuildTools/tests/test_docs_package.py", "BuildTools/tests/validate_package_interface.cmake", "BuildTools/tests/test_package_include.py", "BuildTools/tests/test_package_security.py", "BuildTools/tests/test_package_resource_pack.py", "BuildTools/tests/test_package_zip_helpers.py", "BuildTools/tests/test_packaging_matrix.py", "BuildTools/tests/test_minimal_multiplayer_package.py"]
     },
     "Docs/PackagingAndRelease.md": {
       "id": "legacy-packaging-and-release-route",
@@ -1554,7 +1539,8 @@
       "audiences": ["release-operator", "game-developer", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "build-release", "state": "current", "disposition": "retain", "target": "Docs/en/how-to/release/operations.md",
-      "sources": ["Source/Applications/ServerApp.cpp", "Source/Applications/ServerHeadlessApp.cpp", "Source/Applications/ServerServiceApp.cpp", "Source/Applications/ServerDaemonApp.cpp", "Source/Frontend/ApplicationInit.cpp", "Source/Frontend/ApplicationHeadless.cpp", "Source/Essentials/Platform.cpp", "Source/Server/Server.cpp", "Source/Common/Settings.inc", "BuildTools/cmake/stages/Applications.cmake", "BuildTools/package.py", "BuildTools/tests/test_docs_release_operations.py", "Examples/PackagingMatrix", "Docs/en/how-to/release/packaging.md", "Docs/en/explanation/runtime/server.md", "Docs/en/explanation/persistence/index.md", "Docs/en/how-to/release/security-and-secrets.md"]
+      "sources": ["Source/Applications/ServerApp.cpp", "Source/Applications/ServerHeadlessApp.cpp", "Source/Applications/ServerServiceApp.cpp", "Source/Applications/ServerDaemonApp.cpp", "Source/Frontend/ApplicationInit.cpp", "Source/Frontend/ApplicationHeadless.cpp", "Source/Essentials/Platform.cpp", "Source/Server/Server.cpp", "Source/Common/Settings.inc", "BuildTools/cmake/stages/Applications.cmake", "BuildTools/package.py", "Examples/PackagingMatrix", "Docs/en/how-to/release/packaging.md", "Docs/en/explanation/runtime/server.md", "Docs/en/explanation/persistence/index.md", "Docs/en/how-to/release/security-and-secrets.md"],
+      "historical_sources": ["BuildTools/tests/test_docs_release_operations.py"]
     },
     "Docs/ReleaseOperations.md": {
       "id": "legacy-release-operations-route",
@@ -1570,7 +1556,8 @@
       "audiences": ["release-operator", "game-developer", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "runtime", "state": "current", "disposition": "retain", "target": "Docs/en/how-to/release/backup-and-recovery.md",
-      "sources": ["Source/Common/Settings.inc", "Source/Server/DataBase.h", "Source/Server/DataBase.cpp", "Source/Server/DataBase-Json.cpp", "Source/Server/DataBase-SQLite.cpp", "Source/Server/DataBase-Mongo.cpp", "Source/Server/DataBase-Memory.cpp", "Source/Server/Server.cpp", "Source/Tests/Test_DataBase.cpp", "BuildTools/tests/test_docs_backup_recovery.py", "Docs/en/explanation/persistence/index.md", "Docs/en/how-to/release/operations.md", "Docs/en/how-to/migration/engine-upgrade.md", "Docs/en/how-to/release/security-and-secrets.md"]
+      "sources": ["Source/Common/Settings.inc", "Source/Server/DataBase.h", "Source/Server/DataBase.cpp", "Source/Server/DataBase-Json.cpp", "Source/Server/DataBase-SQLite.cpp", "Source/Server/DataBase-Mongo.cpp", "Source/Server/DataBase-Memory.cpp", "Source/Server/Server.cpp", "Docs/en/explanation/persistence/index.md", "Docs/en/how-to/release/operations.md", "Docs/en/how-to/migration/engine-upgrade.md", "Docs/en/how-to/release/security-and-secrets.md"],
+      "historical_sources": ["Source/Tests/Test_DataBase.cpp", "BuildTools/tests/test_docs_backup_recovery.py"]
     },
     "Docs/BackupAndRecovery.md": {
       "id": "legacy-backup-and-recovery-route",
@@ -1586,7 +1573,8 @@
       "audiences": ["tool-developer", "engine-contributor", "release-operator", "ai-agent"],
       "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
       "owner": "build-release", "state": "current", "disposition": "retain", "target": "Docs/en/reference/cmake-and-buildtools/pipeline.md",
-      "sources": ["BuildTools/Init.cmake", "BuildTools/buildtools.py", "BuildTools/prepare-workspace.sh", "BuildTools/HelperCliInterface.json", "BuildTools/PackageInterface.json", "BuildTools/package.py", "BuildTools/cmake", "BuildTools/codegen.py", "BuildTools/managed_runtime_payload.py", "BuildTools/codecoverage.py", "BuildTools/android_device.py", "BuildTools/web/simple-web-server.py", "BuildTools/msicreator/createmsi.py", "BuildTools/check_windows7_imports.py", "BuildTools/docs_cmake.py", "BuildTools/docs_helper_cli.py", "BuildTools/docs_package.py", "BuildTools/tests/validate_project_interface.cmake", "BuildTools/tests/validate_package_interface.cmake", "Docs/en/reference/cmake/index.md", "Docs/en/reference/helper-cli/index.md", "Docs/generated/package/index.md"]
+      "sources": ["BuildTools/Init.cmake", "BuildTools/buildtools.py", "BuildTools/prepare-workspace.sh", "BuildTools/HelperCliInterface.json", "BuildTools/PackageInterface.json", "BuildTools/package.py", "BuildTools/cmake", "BuildTools/codegen.py", "BuildTools/managed_runtime_payload.py", "BuildTools/codecoverage.py", "BuildTools/android_device.py", "BuildTools/web/simple-web-server.py", "BuildTools/msicreator/createmsi.py", "BuildTools/check_windows7_imports.py", "BuildTools/docs_cmake.py", "BuildTools/docs_helper_cli.py", "BuildTools/docs_package.py", "Docs/en/reference/cmake/index.md", "Docs/en/reference/helper-cli/index.md", "Docs/generated/package/index.md"],
+      "historical_sources": ["BuildTools/tests/validate_project_interface.cmake", "BuildTools/tests/validate_package_interface.cmake"]
     },
     "Docs/BuildToolsPipeline.md": {
       "id": "legacy-buildtools-pipeline-route",
@@ -1610,7 +1598,8 @@
       "audiences": ["game-developer", "content-author", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "explanation", "visibility": "public", "human": true, "translation": "required"},
       "owner": "content-data", "state": "current", "disposition": "retain", "target": "Docs/en/explanation/content-pipeline/baking.md",
-      "sources": ["Source/Common/Settings.h", "Source/Common/Settings.cpp", "Source/Tools", "BuildTools/cmake/stages/ScriptsAndBaking.cmake", "BuildTools/cmake/helpers/WriteBuildHash.cmake", "BuildTools/managed_runtime_payload.py", "Source/Tests/Test_BakerSetup.cpp"]
+      "sources": ["Source/Common/Settings.h", "Source/Common/Settings.cpp", "Source/Tools", "BuildTools/cmake/stages/ScriptsAndBaking.cmake", "BuildTools/cmake/helpers/WriteBuildHash.cmake", "BuildTools/managed_runtime_payload.py"],
+      "historical_sources": ["Source/Tests/Test_BakerSetup.cpp"]
     },
     "Docs/en/reference/settings/configuration-and-data-sources.md": {
       "id": "configuration-data-sources",
@@ -1618,7 +1607,8 @@
       "audiences": ["game-developer", "content-author", "engine-contributor"],
       "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
       "owner": "content-data", "state": "current", "disposition": "retain", "target": "Docs/en/reference/settings/configuration-and-data-sources.md",
-      "sources": ["Source/Common/Settings.inc", "Source/Common", "Source/Essentials", "Source/Frontend/ApplicationInit.cpp", "Source/Tests/Test_Settings.cpp"]
+      "sources": ["Source/Common/Settings.inc", "Source/Common", "Source/Essentials", "Source/Frontend/ApplicationInit.cpp"],
+      "historical_sources": ["Source/Tests/Test_Settings.cpp"]
     },
     "Docs/ConfigurationAndDataSources.md": {
       "id": "legacy-configuration-data-sources-route",
@@ -1650,7 +1640,8 @@
       "audiences": ["game-developer", "release-operator", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "build-release", "state": "current", "disposition": "retain", "target": "Docs/en/how-to/release/security-and-secrets.md",
-      "sources": ["Source/Common/Settings.inc", "Source/Common/Settings.cpp", "Source/Frontend/ApplicationInit.cpp", "Source/Tools/ConfigBaker.cpp", "Source/Tests/Test_Settings.cpp", "BuildTools/foconfig.py", "BuildTools/package.py", "BuildTools/android-project/app/build.gradle", "BuildTools/tests/test_package_security.py", "BuildTools/tests/test_docs_security_and_secrets.py", ".github/workflows/validate.yml", "Docs/en/how-to/build/project-configuration.md", "Docs/en/how-to/release/packaging.md"]
+      "sources": ["Source/Common/Settings.inc", "Source/Common/Settings.cpp", "Source/Frontend/ApplicationInit.cpp", "Source/Tools/ConfigBaker.cpp", "BuildTools/foconfig.py", "BuildTools/package.py", "BuildTools/android-project/app/build.gradle", ".github/disabled-workflows/validate.yml", "Docs/en/how-to/build/project-configuration.md", "Docs/en/how-to/release/packaging.md"],
+      "historical_sources": ["Source/Tests/Test_Settings.cpp", "BuildTools/tests/test_package_security.py", "BuildTools/tests/test_docs_security_and_secrets.py"]
     },
     "Docs/SecurityAndSecrets.md": {
       "id": "legacy-security-and-secrets-route",
@@ -1698,7 +1689,7 @@
       "audiences": ["game-developer", "engine-contributor", "release-operator", "ai-agent"],
       "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
       "owner": "build-release", "state": "current", "disposition": "retain", "target": "Docs/en/reference/platforms/support-matrix.md",
-      "sources": ["BuildTools/SupportMatrix.json", "BuildTools/docs_support_matrix.py", "BuildTools/buildtools.py", "BuildTools/cmake/stages/Init.cmake", "BuildTools/cmake/stages/Applications.cmake", ".github/workflows/validate.yml", "Examples/MinimalProject", "Examples/MinimalMultiplayer", "Docs/generated/support-matrix.json", "Docs/generated/support-matrix/index.md"]
+      "sources": ["BuildTools/SupportMatrix.json", "BuildTools/docs_support_matrix.py", "BuildTools/buildtools.py", "BuildTools/cmake/stages/Init.cmake", "BuildTools/cmake/stages/Applications.cmake", ".github/disabled-workflows/validate.yml", "Examples/MinimalProject", "Examples/MinimalMultiplayer", "Docs/generated/support-matrix.json", "Docs/generated/support-matrix/index.md"]
     },
     "Docs/SupportMatrix.md": {
       "id": "legacy-support-matrix-route",
@@ -1714,7 +1705,8 @@
       "audiences": ["engine-contributor", "native-extension-developer", "ai-agent"],
       "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
       "owner": "runtime", "state": "current", "disposition": "retain", "target": "Docs/en/reference/native/essentials.md",
-      "sources": ["Source/Essentials", "BuildTools/cmake/stages/EngineSources.cmake", "BuildTools/cmake/stages/CoreLibs.cmake", "BuildTools/natvis/essentials.natvis", "ThirdParty/small_vector", "Source/Tests/Test_Containers.cpp", "Source/Tests/Test_CommonHelpers.cpp", "Source/Tests/Test_WorkThread.cpp"]
+      "sources": ["Source/Essentials", "BuildTools/cmake/stages/EngineSources.cmake", "BuildTools/cmake/stages/CoreLibs.cmake", "BuildTools/natvis/essentials.natvis", "ThirdParty/small_vector"],
+      "historical_sources": ["Source/Tests/Test_Containers.cpp", "Source/Tests/Test_CommonHelpers.cpp", "Source/Tests/Test_WorkThread.cpp"]
     },
     "Docs/Essentials.md": {
       "id": "legacy-native-essentials-route",
@@ -1730,7 +1722,8 @@
       "audiences": ["game-developer", "engine-contributor", "native-extension-developer"],
       "classification": {"diataxis": "explanation", "visibility": "public", "human": true, "translation": "required"},
       "owner": "runtime", "state": "current", "disposition": "retain", "target": "Docs/en/explanation/entity-and-property-model/index.md",
-      "sources": ["Source/Common", "Source/Server", "Source/Tests"]
+      "sources": ["Source/Common", "Source/Server"],
+      "historical_sources": ["Source/Tests"]
     },
     "Docs/EntityModel.md": {
       "id": "legacy-entity-model-route",
@@ -1762,7 +1755,8 @@
       "audiences": ["game-developer", "engine-contributor", "release-operator"],
       "classification": {"diataxis": "explanation", "visibility": "public", "human": true, "translation": "required"},
       "owner": "runtime", "state": "current", "disposition": "retain", "target": "Docs/en/explanation/runtime/server.md",
-      "sources": ["Source/Server", "Source/Tests"]
+      "sources": ["Source/Server"],
+      "historical_sources": ["Source/Tests"]
     },
     "Docs/ServerRuntime.md": {
       "id": "legacy-server-runtime-route",
@@ -1778,7 +1772,8 @@
       "audiences": ["game-developer", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "explanation", "visibility": "public", "human": true, "translation": "required"},
       "owner": "runtime", "state": "current", "disposition": "retain", "target": "Docs/en/explanation/persistence/index.md",
-      "sources": ["Source/Server", "Source/Common", "Source/Tests"]
+      "sources": ["Source/Server", "Source/Common"],
+      "historical_sources": ["Source/Tests"]
     },
     "Docs/Persistence.md": {
       "id": "legacy-persistence-route",
@@ -1826,7 +1821,8 @@
       "audiences": ["game-developer", "engine-contributor", "release-operator"],
       "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
       "owner": "build-release", "state": "current", "disposition": "retain", "target": "Docs/en/reference/resource-pack-format.md",
-      "sources": ["Source/Common/ResourcePack.h", "Source/Common/ResourcePack.cpp", "Source/Common/ResourceIndex.h", "Source/Common/ResourceIndex.cpp", "Source/Client/Updater.cpp", "Source/Tests/Test_ResourcePack.cpp", "Source/Tests/Test_ResourceIndex.cpp", "BuildTools/package.py"]
+      "sources": ["Source/Common/ResourcePack.h", "Source/Common/ResourcePack.cpp", "Source/Common/ResourceIndex.h", "Source/Common/ResourceIndex.cpp", "Source/Client/Updater.cpp", "BuildTools/package.py"],
+      "historical_sources": ["Source/Tests/Test_ResourcePack.cpp", "Source/Tests/Test_ResourceIndex.cpp"]
     },
     "Docs/en/explanation/runtime/client-updater.md": {
       "id": "client-updater",
@@ -1834,7 +1830,8 @@
       "audiences": ["game-developer", "engine-contributor", "release-operator"],
       "classification": {"diataxis": "explanation", "visibility": "public", "human": true, "translation": "required"},
       "owner": "build-release", "state": "current", "disposition": "retain", "target": "Docs/en/explanation/runtime/client-updater.md",
-      "sources": ["Source/Applications/ClientApp.cpp", "Source/Applications/ClientLib.cpp", "Source/Client/ClientRuntimeApi.h", "Source/Client/ClientRuntimeApi.cpp", "Source/Client/Updater.h", "Source/Client/Updater.cpp", "Source/Frontend/ApplicationInit.cpp", "Source/Server/UpdaterBackend.h", "Source/Server/UpdaterBackend.cpp", "Source/Server/Server.cpp", "Source/Server/Player.h", "Source/Server/Player.cpp", "Source/Server/ServerConnection.h", "Source/Server/ServerConnection.cpp", "Source/Common/Common.h", "Source/Common/Settings.inc", "Source/Essentials/DiskFileSystem.h", "Source/Essentials/DiskFileSystem.cpp", "Source/Essentials/Platform.h", "Source/Essentials/Platform.cpp", "BuildTools/cmake/stages/Applications.cmake", "BuildTools/cmake/helpers/Build.cmake", "BuildTools/package.py", "BuildTools/msicreator/createmsi.py", "BuildTools/tests/test_package_resource_pack.py", "Source/Tests/Test_ClientRuntimeApi.cpp", "Source/Tests/Test_DiskFileSystem.cpp", "Source/Tests/Test_Platform.cpp", "Source/Tests/Test_Settings.cpp", "ThirdParty/rpmalloc/rpmalloc/rpmalloc.c", "BuildTools/ExternalProjectEvidence.json"]
+      "sources": ["Source/Applications/ClientApp.cpp", "Source/Applications/ClientLib.cpp", "Source/Client/ClientRuntimeApi.h", "Source/Client/ClientRuntimeApi.cpp", "Source/Client/Updater.h", "Source/Client/Updater.cpp", "Source/Frontend/ApplicationInit.cpp", "Source/Server/UpdaterBackend.h", "Source/Server/UpdaterBackend.cpp", "Source/Server/Server.cpp", "Source/Server/Player.h", "Source/Server/Player.cpp", "Source/Server/ServerConnection.h", "Source/Server/ServerConnection.cpp", "Source/Common/Common.h", "Source/Common/Settings.inc", "Source/Essentials/DiskFileSystem.h", "Source/Essentials/DiskFileSystem.cpp", "Source/Essentials/Platform.h", "Source/Essentials/Platform.cpp", "BuildTools/cmake/stages/Applications.cmake", "BuildTools/cmake/helpers/Build.cmake", "BuildTools/package.py", "BuildTools/msicreator/createmsi.py", "ThirdParty/rpmalloc/rpmalloc/rpmalloc.c", "BuildTools/ExternalProjectEvidence.json"],
+      "historical_sources": ["BuildTools/tests/test_package_resource_pack.py", "Source/Tests/Test_ClientRuntimeApi.cpp", "Source/Tests/Test_DiskFileSystem.cpp", "Source/Tests/Test_Platform.cpp", "Source/Tests/Test_Settings.cpp"]
     },
     "Docs/FrontendAndRendering.md": {
       "id": "legacy-frontend-rendering-route",
@@ -1898,7 +1895,8 @@
       "audiences": ["game-developer", "engine-contributor", "native-extension-developer", "ai-agent", "release-operator"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "scripting", "state": "current", "disposition": "retain", "target": "Docs/en/how-to/scripting/managed-csharp.md",
-      "sources": ["Source/Scripting/Managed", "Source/Tools/ManagedScriptBaker.cpp", "Source/Applications/ManagedScriptBakerApp.cpp", "Source/Common/Settings.inc", "BuildTools/cmake/stages/ScriptsAndBaking.cmake", "BuildTools/cmake/stages/Packages.cmake", "BuildTools/managed_runtime_payload.py", "BuildTools/tests/test_managed_async_callbacks.py", "BuildTools/tests/test_managed_callback_context.py", "BuildTools/tests/test_managed_runtime_packaging.py", "Source/Tests/Test_ManagedScriptBaker.cpp", "BuildTools/tests/test_docs_managed_csharp.py", "BuildTools/tests/test_managed_event_collections.py"]
+      "sources": ["Source/Scripting/Managed", "Source/Tools/ManagedScriptBaker.cpp", "Source/Applications/ManagedScriptBakerApp.cpp", "Source/Common/Settings.inc", "BuildTools/cmake/stages/ScriptsAndBaking.cmake", "BuildTools/cmake/stages/Packages.cmake", "BuildTools/managed_runtime_payload.py"],
+      "historical_sources": ["BuildTools/tests/test_managed_async_callbacks.py", "BuildTools/tests/test_managed_callback_context.py", "BuildTools/tests/test_managed_runtime_packaging.py", "Source/Tests/Test_ManagedScriptBaker.cpp", "BuildTools/tests/test_docs_managed_csharp.py", "BuildTools/tests/test_managed_event_collections.py"]
     },
     "Docs/en/how-to/scripting/style-and-refactoring.md": {
       "id": "angelscript-style",
@@ -1906,7 +1904,8 @@
       "audiences": ["game-developer", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "scripting", "state": "current", "disposition": "retain", "target": "Docs/en/how-to/scripting/style-and-refactoring.md",
-      "sources": ["BuildTools/buildtools.py", ".github/workflows/validate.yml", "Source/Common/Settings.inc", "Source/Common/ScriptSystem.cpp", "Examples/MinimalProject/Scripts/Starter.fos", "Examples/MinimalMultiplayer/Scripts/Tutorial.fos", "Source/Scripting/AngelScript/AngelScriptBackend.cpp", "Source/Scripting/AngelScript/AngelScriptAttributes.cpp", "Source/Scripting/AngelScript/AngelScriptAttributes.h", "Source/Tests/Test_AngelScriptAttributes.cpp", "Source/Tests/Test_AngelScriptBaker.cpp", "BuildTools/tests/test_docs_angelscript_style.py"]
+      "sources": ["BuildTools/buildtools.py", ".github/disabled-workflows/validate.yml", "Source/Common/Settings.inc", "Source/Common/ScriptSystem.cpp", "Examples/MinimalProject/Scripts/Starter.fos", "Examples/MinimalMultiplayer/Scripts/Tutorial.fos", "Source/Scripting/AngelScript/AngelScriptBackend.cpp", "Source/Scripting/AngelScript/AngelScriptAttributes.cpp", "Source/Scripting/AngelScript/AngelScriptAttributes.h"],
+      "historical_sources": ["Source/Tests/Test_AngelScriptAttributes.cpp", "Source/Tests/Test_AngelScriptBaker.cpp", "BuildTools/tests/test_docs_angelscript_style.py"]
     },
     "Docs/AngelScriptStyle.md": {
       "id": "legacy-angelscript-style-route",
@@ -1922,7 +1921,8 @@
       "audiences": ["game-developer", "engine-contributor", "native-extension-developer", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "scripting", "state": "current", "disposition": "retain", "target": "Docs/en/how-to/scripting/lifecycle-and-concurrency.md",
-      "sources": ["Source/Common/ScriptSystem.cpp", "Source/Common/Entity.cpp", "Source/Client/Client.cpp", "Source/Server/Server.cpp", "Source/Server/WorkerPool.cpp", "Source/Server/EntitySync.cpp", "Source/Scripting/AngelScript", "Source/Scripting/Managed", "Source/Scripting/ServerGlobalScriptMethods.cpp", "Source/Tests/Test_AngelScriptAttributes.cpp", "Source/Tests/Test_AngelScriptBaker.cpp", "Source/Tests/Test_ManagedScriptBaker.cpp", "Source/Tests/Test_EntitySync.cpp", "BuildTools/tests/test_docs_script_lifecycle.py"]
+      "sources": ["Source/Common/ScriptSystem.cpp", "Source/Common/Entity.cpp", "Source/Client/Client.cpp", "Source/Server/Server.cpp", "Source/Server/WorkerPool.cpp", "Source/Server/EntitySync.cpp", "Source/Scripting/AngelScript", "Source/Scripting/Managed", "Source/Scripting/ServerGlobalScriptMethods.cpp"],
+      "historical_sources": ["Source/Tests/Test_AngelScriptAttributes.cpp", "Source/Tests/Test_AngelScriptBaker.cpp", "Source/Tests/Test_ManagedScriptBaker.cpp", "Source/Tests/Test_EntitySync.cpp", "BuildTools/tests/test_docs_script_lifecycle.py"]
     },
     "Docs/ScriptLifecycleAndConcurrency.md": {
       "id": "legacy-script-lifecycle-concurrency-route",
@@ -1938,7 +1938,8 @@
       "audiences": ["game-developer", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
       "owner": "scripting", "state": "current", "disposition": "retain", "target": "Docs/en/reference/scripting/remote-calls.md",
-      "sources": ["Source/Tools/MetadataBaker.cpp", "Source/Common/MetadataRegistration.cpp", "Source/Server/ClientDataValidation.cpp", "Source/Server/Server.cpp", "Source/Scripting/AngelScript/AngelScriptRemoteCalls.cpp", "Source/Tests/Test_MetadataBaker.cpp", "Source/Tests/Test_AngelScriptAttributes.cpp", "Source/Tests/Test_ClientDataValidation.cpp", "Source/Tests/Test_NetBuffer.cpp", "BuildTools/docs_metadata.py", "BuildTools/tests/test_docs_metadata.py", "Examples/MinimalProject"]
+      "sources": ["Source/Tools/MetadataBaker.cpp", "Source/Common/MetadataRegistration.cpp", "Source/Server/ClientDataValidation.cpp", "Source/Server/Server.cpp", "Source/Scripting/AngelScript/AngelScriptRemoteCalls.cpp", "BuildTools/docs_metadata.py", "Examples/MinimalProject"],
+      "historical_sources": ["Source/Tests/Test_MetadataBaker.cpp", "Source/Tests/Test_AngelScriptAttributes.cpp", "Source/Tests/Test_ClientDataValidation.cpp", "Source/Tests/Test_NetBuffer.cpp", "BuildTools/tests/test_docs_metadata.py"]
     },
     "Docs/RemoteCalls.md": {
       "id": "legacy-remote-calls-route",
@@ -1970,7 +1971,7 @@
       "audiences": ["game-developer", "engine-contributor", "release-operator", "ai-agent"],
       "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
       "owner": "build-release", "state": "current", "disposition": "retain", "target": "Docs/en/reference/platforms/generated-matrix.md",
-      "sources": ["BuildTools/SupportMatrix.json", "BuildTools/docs_support_matrix.py", "BuildTools/buildtools.py", ".github/workflows/validate.yml", "Docs/generated/support-matrix.json"]
+      "sources": ["BuildTools/SupportMatrix.json", "BuildTools/docs_support_matrix.py", "BuildTools/buildtools.py", ".github/disabled-workflows/validate.yml", "Docs/generated/support-matrix.json"]
     },
     "Docs/generated/support-matrix/index.md": {
       "id": "legacy-generated-support-matrix-index-route",
@@ -1986,7 +1987,8 @@
       "audiences": ["engine-contributor", "release-operator", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "documentation", "state": "current", "disposition": "retain", "target": "Docs/en/contributing/contract-change-management.md",
-      "sources": ["BuildTools/docs_api.py", "BuildTools/docs_api_diff.py", "BuildTools/docs_cmake.py", "BuildTools/docs_cli.py", "BuildTools/docs_package.py", "BuildTools/docs_helper_cli.py", "BuildTools/docs_native_extension.py", "BuildTools/docs_prototype_format.py", "BuildTools/docs_map_format.py", "BuildTools/docs_model_format.py", "BuildTools/docs_text_format.py", "BuildTools/docs_effect_format.py", "BuildTools/docs_image_format.py", "BuildTools/docs_particle_format.py", "BuildTools/docs_font_format.py", "BuildTools/docs_audio.py", "BuildTools/docs_video.py", "BuildTools/docs_ai_control_protocol.py", "BuildTools/docs_contract_diff.py", "BuildTools/docs_validate.py", "BuildTools/HelperCliInterface.json", "BuildTools/NativeExtensionInterface.json", "BuildTools/PrototypeFormatInterface.json", "BuildTools/MapFormatInterface.json", "BuildTools/ModelFormatInterface.json", "BuildTools/TextFormatInterface.json", "BuildTools/EffectFormatInterface.json", "BuildTools/ImageFormatInterface.json", "BuildTools/ParticleFormatInterface.json", "BuildTools/FontFormatInterface.json", "BuildTools/AudioInterface.json", "BuildTools/VideoInterface.json", "BuildTools/AiControlProtocol.json", "BuildTools/PackageInterface.json", "BuildTools/tests/test_docs_api_diff.py", "BuildTools/tests/test_docs_contract_diff.py", "BuildTools/tests/test_docs_ai_control_protocol.py", "Docs/generated/api.json", "Docs/generated/cmake.json", "Docs/generated/cli.json", "Docs/generated/package.json", "Docs/generated/helper-cli.json", "Docs/generated/native-extension.json", "Docs/generated/prototype-format.json", "Docs/generated/map-format.json", "Docs/generated/model-format.json", "Docs/generated/text-format.json", "Docs/generated/effect-format.json", "Docs/generated/image-format.json", "Docs/generated/particle-format.json", "Docs/generated/font-format.json", "Docs/generated/audio.json", "Docs/generated/video.json", "Docs/generated/ai-control-protocol.json", "Docs/contract-change-dispositions.json", "Docs/en/contributing/decisions/0002-public-api-stability-contract.md", ".github/workflows/validate.yml"]
+      "sources": ["BuildTools/docs_api.py", "BuildTools/docs_api_diff.py", "BuildTools/docs_cmake.py", "BuildTools/docs_cli.py", "BuildTools/docs_package.py", "BuildTools/docs_helper_cli.py", "BuildTools/docs_native_extension.py", "BuildTools/docs_prototype_format.py", "BuildTools/docs_map_format.py", "BuildTools/docs_model_format.py", "BuildTools/docs_text_format.py", "BuildTools/docs_effect_format.py", "BuildTools/docs_image_format.py", "BuildTools/docs_particle_format.py", "BuildTools/docs_font_format.py", "BuildTools/docs_audio.py", "BuildTools/docs_video.py", "BuildTools/docs_ai_control_protocol.py", "BuildTools/docs_contract_diff.py", "BuildTools/docs_validate.py", "BuildTools/HelperCliInterface.json", "BuildTools/NativeExtensionInterface.json", "BuildTools/PrototypeFormatInterface.json", "BuildTools/MapFormatInterface.json", "BuildTools/ModelFormatInterface.json", "BuildTools/TextFormatInterface.json", "BuildTools/EffectFormatInterface.json", "BuildTools/ImageFormatInterface.json", "BuildTools/ParticleFormatInterface.json", "BuildTools/FontFormatInterface.json", "BuildTools/AudioInterface.json", "BuildTools/VideoInterface.json", "BuildTools/AiControlProtocol.json", "BuildTools/PackageInterface.json", "Docs/generated/api.json", "Docs/generated/cmake.json", "Docs/generated/cli.json", "Docs/generated/package.json", "Docs/generated/helper-cli.json", "Docs/generated/native-extension.json", "Docs/generated/prototype-format.json", "Docs/generated/map-format.json", "Docs/generated/model-format.json", "Docs/generated/text-format.json", "Docs/generated/effect-format.json", "Docs/generated/image-format.json", "Docs/generated/particle-format.json", "Docs/generated/font-format.json", "Docs/generated/audio.json", "Docs/generated/video.json", "Docs/generated/ai-control-protocol.json", "Docs/contract-change-dispositions.json", "Docs/en/contributing/decisions/0002-public-api-stability-contract.md", ".github/disabled-workflows/validate.yml"],
+      "historical_sources": ["BuildTools/tests/test_docs_api_diff.py", "BuildTools/tests/test_docs_contract_diff.py", "BuildTools/tests/test_docs_ai_control_protocol.py"]
     },
     "Docs/ApiChangeManagement.md": {
       "id": "legacy-api-change-management-route",
@@ -2114,7 +2116,8 @@
       "audiences": ["game-developer", "native-extension-developer", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
       "owner": "build-release", "state": "current", "disposition": "retain", "target": "Docs/en/reference/cmake/index.md",
-      "sources": ["BuildTools/cmake/ProjectInterface.json", "Docs/generated/cmake.json", "BuildTools/docs_cmake.py", "BuildTools/tests/validate_project_interface.cmake"]
+      "sources": ["BuildTools/cmake/ProjectInterface.json", "Docs/generated/cmake.json", "BuildTools/docs_cmake.py"],
+      "historical_sources": ["BuildTools/tests/validate_project_interface.cmake"]
     },
     "Docs/en/reference/cmake/options.md": {
       "id": "generated-cmake-options",
@@ -2130,7 +2133,8 @@
       "audiences": ["game-developer", "native-extension-developer", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
       "owner": "build-release", "state": "current", "disposition": "retain", "target": "Docs/en/reference/cmake/stages.md",
-      "sources": ["BuildTools/cmake/ProjectInterface.json", "Docs/generated/cmake.json", "BuildTools/docs_cmake.py", "BuildTools/tests/validate_project_interface.cmake"]
+      "sources": ["BuildTools/cmake/ProjectInterface.json", "Docs/generated/cmake.json", "BuildTools/docs_cmake.py"],
+      "historical_sources": ["BuildTools/tests/validate_project_interface.cmake"]
     },
     "Docs/en/reference/cmake/helpers.md": {
       "id": "generated-cmake-helpers",
@@ -2146,7 +2150,8 @@
       "audiences": ["game-developer", "tool-developer", "engine-contributor", "release-operator", "ai-agent"],
       "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
       "owner": "build-release", "state": "current", "disposition": "retain", "target": "Docs/en/reference/buildtools/index.md",
-      "sources": ["BuildTools/buildtools.py", "Docs/generated/cli.json", "BuildTools/docs_cli.py", "BuildTools/tests/test_docs_cli.py"]
+      "sources": ["BuildTools/buildtools.py", "Docs/generated/cli.json", "BuildTools/docs_cli.py"],
+      "historical_sources": ["BuildTools/tests/test_docs_cli.py"]
     },
     "Docs/en/reference/buildtools/commands.md": {
       "id": "generated-cli-commands",
@@ -2162,7 +2167,8 @@
       "audiences": ["game-developer", "tool-developer", "engine-contributor", "release-operator", "ai-agent"],
       "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
       "owner": "build-release", "state": "current", "disposition": "retain", "target": "Docs/en/reference/helper-cli/index.md",
-      "sources": ["BuildTools/HelperCliInterface.json", "BuildTools/docs_helper_cli.py", "BuildTools/tests/test_docs_helper_cli.py", "Docs/generated/helper-cli.json"]
+      "sources": ["BuildTools/HelperCliInterface.json", "BuildTools/docs_helper_cli.py", "Docs/generated/helper-cli.json"],
+      "historical_sources": ["BuildTools/tests/test_docs_helper_cli.py"]
     },
     "Docs/en/reference/helper-cli/commands.md": {
       "id": "generated-helper-cli-commands",
@@ -2258,7 +2264,8 @@
       "audiences": ["game-developer", "native-extension-developer", "release-operator", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "build-release", "state": "current", "disposition": "retain", "target": "Docs/en/how-to/native-extensions/project-dependencies.md",
-      "sources": ["BuildTools/Init.cmake", "BuildTools/cmake/ProjectInterface.json", "BuildTools/cmake/helpers/Build.cmake", "BuildTools/cmake/helpers/State.cmake", "BuildTools/cmake/stages/ThirdParty.cmake", "BuildTools/cmake/stages/CoreLibs.cmake", "BuildTools/cmake/stages/Packages.cmake", "Examples/MinimalProject/CMakeLists.txt", "Examples/MinimalProject/StarterServerExtension.cpp", "BuildTools/tests/validate_project_interface.cmake", "BuildTools/tests/test_docs_project_dependencies.py"]
+      "sources": ["BuildTools/Init.cmake", "BuildTools/cmake/ProjectInterface.json", "BuildTools/cmake/helpers/Build.cmake", "BuildTools/cmake/helpers/State.cmake", "BuildTools/cmake/stages/ThirdParty.cmake", "BuildTools/cmake/stages/CoreLibs.cmake", "BuildTools/cmake/stages/Packages.cmake", "Examples/MinimalProject/CMakeLists.txt", "Examples/MinimalProject/StarterServerExtension.cpp"],
+      "historical_sources": ["BuildTools/tests/validate_project_interface.cmake", "BuildTools/tests/test_docs_project_dependencies.py"]
     },
     "Docs/ProjectDependencies.md": {
       "id": "legacy-project-local-dependencies-route",
@@ -2338,7 +2345,8 @@
       "audiences": ["game-developer", "content-author", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "content-data", "state": "current", "disposition": "retain", "target": "Docs/en/how-to/content/prototype-format.md",
-      "sources": ["BuildTools/PrototypeFormatInterface.json", "BuildTools/docs_prototype_format.py", "Source/Common/Settings.inc", "Source/Common/ConfigFile.cpp", "Source/Common/Properties.h", "Source/Common/Properties.cpp", "Source/Common/PropertiesSerializer.cpp", "Source/Common/EntityProtos.cpp", "Source/Common/ProtoManager.cpp", "Source/Tools/ProtoBaker.cpp", "Source/Tools/ProtoTextBaker.cpp", "Source/Tests/Test_ConfigFile.cpp", "Source/Tests/Test_Properties.cpp", "Source/Tests/Test_EntityProtos.cpp", "Source/Tests/Test_ProtoManager.cpp", "Source/Tests/Test_ProtoBaker.cpp", "Docs/en/reference/prototype-format/index.md"]
+      "sources": ["BuildTools/PrototypeFormatInterface.json", "BuildTools/docs_prototype_format.py", "Source/Common/Settings.inc", "Source/Common/ConfigFile.cpp", "Source/Common/Properties.h", "Source/Common/Properties.cpp", "Source/Common/PropertiesSerializer.cpp", "Source/Common/EntityProtos.cpp", "Source/Common/ProtoManager.cpp", "Source/Tools/ProtoBaker.cpp", "Source/Tools/ProtoTextBaker.cpp", "Docs/en/reference/prototype-format/index.md"],
+      "historical_sources": ["Source/Tests/Test_ConfigFile.cpp", "Source/Tests/Test_Properties.cpp", "Source/Tests/Test_EntityProtos.cpp", "Source/Tests/Test_ProtoManager.cpp", "Source/Tests/Test_ProtoBaker.cpp"]
     },
     "Docs/PrototypeFormat.md": {
       "id": "legacy-prototype-format-guide-route",
@@ -2418,7 +2426,8 @@
       "audiences": ["game-developer", "content-author", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "content-data", "state": "current", "disposition": "retain", "target": "Docs/en/how-to/content/map-format.md",
-      "sources": ["BuildTools/MapFormatInterface.json", "BuildTools/docs_map_format.py", "Source/Common/ConfigFile.cpp", "Source/Common/MapLoader.cpp", "Source/Tools/ProtoBaker.cpp", "Source/Tools/ProtoTextBaker.cpp", "Source/Tools/MapBaker.cpp", "Source/Tools/Mapper.cpp", "Source/Client/MapView.cpp", "Source/Server/MapManager.cpp", "Source/Tests/Test_MapLoader.cpp", "Source/Tests/Test_MapBaker.cpp", "Source/Tests/Test_Mapper.cpp", "Docs/en/reference/map-format/index.md"]
+      "sources": ["BuildTools/MapFormatInterface.json", "BuildTools/docs_map_format.py", "Source/Common/ConfigFile.cpp", "Source/Common/MapLoader.cpp", "Source/Tools/ProtoBaker.cpp", "Source/Tools/ProtoTextBaker.cpp", "Source/Tools/MapBaker.cpp", "Source/Tools/Mapper.cpp", "Source/Client/MapView.cpp", "Source/Server/MapManager.cpp", "Docs/en/reference/map-format/index.md"],
+      "historical_sources": ["Source/Tests/Test_MapLoader.cpp", "Source/Tests/Test_MapBaker.cpp", "Source/Tests/Test_Mapper.cpp"]
     },
     "Docs/MapFormat.md": {
       "id": "legacy-map-format-guide-route",
@@ -2434,7 +2443,8 @@
       "audiences": ["game-developer", "content-author", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "content-data", "state": "current", "disposition": "retain", "target": "Docs/en/how-to/content/model-format.md",
-      "sources": ["BuildTools/ModelFormatInterface.json", "BuildTools/docs_model_format.py", "Source/Tools/ModelMeshBaker.cpp", "Source/Tools/ModelSourceLoader.cpp", "Source/Tools/ModelAnimationConverter.cpp", "Source/Tools/ModelInfoBaker.cpp", "Source/Tools/ModelBoundsCalculator.cpp", "Source/Common/ModelMeshData.cpp", "Source/Common/ModelAnimationData.cpp", "Source/Common/ModelBounds.cpp", "Source/Common/AnimationInfo.cpp", "Source/Client/ModelManager.cpp", "Source/Client/ModelHierarchy.cpp", "Source/Client/ModelInformation.cpp", "Source/Client/ModelInstance.cpp", "Source/Client/ModelAnimation.cpp", "Source/Client/ModelSpriteLayout.cpp", "Source/Frontend/Rendering.h", "Source/Tests/Test_ModelBaker.cpp", "Docs/en/reference/model-format/index.md"]
+      "sources": ["BuildTools/ModelFormatInterface.json", "BuildTools/docs_model_format.py", "Source/Tools/ModelMeshBaker.cpp", "Source/Tools/ModelSourceLoader.cpp", "Source/Tools/ModelAnimationConverter.cpp", "Source/Tools/ModelInfoBaker.cpp", "Source/Tools/ModelBoundsCalculator.cpp", "Source/Common/ModelMeshData.cpp", "Source/Common/ModelAnimationData.cpp", "Source/Common/ModelBounds.cpp", "Source/Common/AnimationInfo.cpp", "Source/Client/ModelManager.cpp", "Source/Client/ModelHierarchy.cpp", "Source/Client/ModelInformation.cpp", "Source/Client/ModelInstance.cpp", "Source/Client/ModelAnimation.cpp", "Source/Client/ModelSpriteLayout.cpp", "Source/Frontend/Rendering.h", "Docs/en/reference/model-format/index.md"],
+      "historical_sources": ["Source/Tests/Test_ModelBaker.cpp"]
     },
     "Docs/ModelFormat.md": {
       "id": "legacy-model-format-guide-route",
@@ -2546,7 +2556,8 @@
       "audiences": ["game-developer", "content-author", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
       "owner": "content-data", "state": "current", "disposition": "retain", "target": "Docs/en/reference/model-format/validation.md",
-      "sources": ["BuildTools/ModelFormatInterface.json", "Source/Tools/ModelInfoBaker.cpp", "Source/Tools/ModelMeshBaker.cpp", "Source/Tools/ModelSourceLoader.cpp", "Source/Tools/ModelAnimationConverter.cpp", "Source/Client/ModelInformation.cpp", "Source/Client/ModelInstance.cpp", "Source/Tests/Test_ModelBaker.cpp", "Docs/generated/model-format.json"]
+      "sources": ["BuildTools/ModelFormatInterface.json", "Source/Tools/ModelInfoBaker.cpp", "Source/Tools/ModelMeshBaker.cpp", "Source/Tools/ModelSourceLoader.cpp", "Source/Tools/ModelAnimationConverter.cpp", "Source/Client/ModelInformation.cpp", "Source/Client/ModelInstance.cpp", "Docs/generated/model-format.json"],
+      "historical_sources": ["Source/Tests/Test_ModelBaker.cpp"]
     },
     "Docs/generated/model-format/validation.md": {
       "id": "legacy-generated-model-format-validation-route",
@@ -2562,7 +2573,8 @@
       "audiences": ["game-developer", "content-author", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "content-data", "state": "current", "disposition": "retain", "target": "Docs/en/how-to/content/text-and-localization.md",
-      "sources": ["BuildTools/TextFormatInterface.json", "BuildTools/docs_text_format.py", "Source/Common/TextPack.h", "Source/Common/TextPack.cpp", "Source/Tools/TextBaker.cpp", "Source/Tools/ProtoTextBaker.cpp", "Source/Client/Client.cpp", "Source/Server/Server.cpp", "Source/Scripting/ClientGlobalScriptMethods.cpp", "Source/Scripting/ServerGlobalScriptMethods.cpp", "Source/Scripting/CommonGlobalScriptMethods.cpp", "Source/Client/FontManager.cpp", "Source/Tests/Test_TextPack.cpp", "Source/Tests/Test_TextBaker.cpp", "Source/Tests/Test_ProtoTextBaker.cpp", "Docs/en/reference/text-format/index.md"]
+      "sources": ["BuildTools/TextFormatInterface.json", "BuildTools/docs_text_format.py", "Source/Common/TextPack.h", "Source/Common/TextPack.cpp", "Source/Tools/TextBaker.cpp", "Source/Tools/ProtoTextBaker.cpp", "Source/Client/Client.cpp", "Source/Server/Server.cpp", "Source/Scripting/ClientGlobalScriptMethods.cpp", "Source/Scripting/ServerGlobalScriptMethods.cpp", "Source/Scripting/CommonGlobalScriptMethods.cpp", "Source/Client/FontManager.cpp", "Docs/en/reference/text-format/index.md"],
+      "historical_sources": ["Source/Tests/Test_TextPack.cpp", "Source/Tests/Test_TextBaker.cpp", "Source/Tests/Test_ProtoTextBaker.cpp"]
     },
     "Docs/TextAndLocalization.md": {
       "id": "legacy-text-and-localization-guide-route",
@@ -2594,7 +2606,8 @@
       "audiences": ["game-developer", "content-author", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
       "owner": "content-data", "state": "current", "disposition": "retain", "target": "Docs/en/reference/text-format/syntax.md",
-      "sources": ["BuildTools/TextFormatInterface.json", "Source/Common/TextPack.h", "Source/Common/TextPack.cpp", "Source/Tests/Test_TextPack.cpp", "Docs/generated/text-format.json"]
+      "sources": ["BuildTools/TextFormatInterface.json", "Source/Common/TextPack.h", "Source/Common/TextPack.cpp", "Docs/generated/text-format.json"],
+      "historical_sources": ["Source/Tests/Test_TextPack.cpp"]
     },
     "Docs/generated/text-format/syntax.md": {
       "id": "legacy-generated-text-format-syntax-route",
@@ -2610,7 +2623,8 @@
       "audiences": ["game-developer", "content-author", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
       "owner": "content-data", "state": "current", "disposition": "retain", "target": "Docs/en/reference/text-format/languages.md",
-      "sources": ["BuildTools/TextFormatInterface.json", "Source/Common/Settings.inc", "Source/Common/TextPack.cpp", "Source/Tools/TextBaker.cpp", "Source/Tests/Test_TextPack.cpp", "Source/Tests/Test_TextBaker.cpp", "Docs/generated/text-format.json"]
+      "sources": ["BuildTools/TextFormatInterface.json", "Source/Common/Settings.inc", "Source/Common/TextPack.cpp", "Source/Tools/TextBaker.cpp", "Docs/generated/text-format.json"],
+      "historical_sources": ["Source/Tests/Test_TextPack.cpp", "Source/Tests/Test_TextBaker.cpp"]
     },
     "Docs/generated/text-format/languages.md": {
       "id": "legacy-generated-text-format-languages-route",
@@ -2626,7 +2640,8 @@
       "audiences": ["game-developer", "content-author", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
       "owner": "content-data", "state": "current", "disposition": "retain", "target": "Docs/en/reference/text-format/proto-text.md",
-      "sources": ["BuildTools/TextFormatInterface.json", "Source/Tools/ProtoTextBaker.cpp", "Source/Tests/Test_ProtoTextBaker.cpp", "Docs/generated/text-format.json"]
+      "sources": ["BuildTools/TextFormatInterface.json", "Source/Tools/ProtoTextBaker.cpp", "Docs/generated/text-format.json"],
+      "historical_sources": ["Source/Tests/Test_ProtoTextBaker.cpp"]
     },
     "Docs/generated/text-format/proto-text.md": {
       "id": "legacy-generated-text-format-proto-text-route",
@@ -2658,7 +2673,8 @@
       "audiences": ["game-developer", "content-author", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
       "owner": "content-data", "state": "current", "disposition": "retain", "target": "Docs/en/reference/text-format/validation.md",
-      "sources": ["BuildTools/TextFormatInterface.json", "Source/Common/TextPack.cpp", "Source/Tools/TextBaker.cpp", "Source/Tools/ProtoTextBaker.cpp", "Source/Tests/Test_TextPack.cpp", "Source/Tests/Test_TextBaker.cpp", "Source/Tests/Test_ProtoTextBaker.cpp", "Docs/generated/text-format.json"]
+      "sources": ["BuildTools/TextFormatInterface.json", "Source/Common/TextPack.cpp", "Source/Tools/TextBaker.cpp", "Source/Tools/ProtoTextBaker.cpp", "Docs/generated/text-format.json"],
+      "historical_sources": ["Source/Tests/Test_TextPack.cpp", "Source/Tests/Test_TextBaker.cpp", "Source/Tests/Test_ProtoTextBaker.cpp"]
     },
     "Docs/generated/text-format/validation.md": {
       "id": "legacy-generated-text-format-validation-route",
@@ -2674,7 +2690,8 @@
       "audiences": ["game-developer", "content-author", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "content-data", "state": "current", "disposition": "retain", "target": "Docs/en/how-to/content/effect-format.md",
-      "sources": ["BuildTools/EffectFormatInterface.json", "BuildTools/docs_effect_format.py", "Source/Tools/EffectBaker.cpp", "Source/Frontend/Rendering.h", "Source/Frontend/Rendering.cpp", "Source/Client/EffectManager.cpp", "Source/Client/Client.cpp", "Source/Scripting/ClientGlobalScriptMethods.cpp", "Source/Tests/Test_EffectBaker.cpp", "Docs/en/reference/effect-format/index.md"]
+      "sources": ["BuildTools/EffectFormatInterface.json", "BuildTools/docs_effect_format.py", "Source/Tools/EffectBaker.cpp", "Source/Frontend/Rendering.h", "Source/Frontend/Rendering.cpp", "Source/Client/EffectManager.cpp", "Source/Client/Client.cpp", "Source/Scripting/ClientGlobalScriptMethods.cpp", "Docs/en/reference/effect-format/index.md"],
+      "historical_sources": ["Source/Tests/Test_EffectBaker.cpp"]
     },
     "Docs/EffectFormat.md": {
       "id": "legacy-effect-format-guide-route",
@@ -2786,7 +2803,8 @@
       "audiences": ["game-developer", "content-author", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
       "owner": "content-data", "state": "current", "disposition": "retain", "target": "Docs/en/reference/effect-format/validation.md",
-      "sources": ["BuildTools/EffectFormatInterface.json", "Source/Tools/EffectBaker.cpp", "Source/Tests/Test_EffectBaker.cpp", "Docs/generated/effect-format.json"]
+      "sources": ["BuildTools/EffectFormatInterface.json", "Source/Tools/EffectBaker.cpp", "Docs/generated/effect-format.json"],
+      "historical_sources": ["Source/Tests/Test_EffectBaker.cpp"]
     },
     "Docs/generated/effect-format/validation.md": {
       "id": "legacy-generated-effect-format-validation-route",
@@ -2802,7 +2820,8 @@
       "audiences": ["game-developer", "content-author", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "content-data", "state": "current", "disposition": "retain", "target": "Docs/en/how-to/content/image-format.md",
-      "sources": ["BuildTools/ImageFormatInterface.json", "BuildTools/docs_image_format.py", "Source/Tools/ImageBaker.h", "Source/Tools/ImageBaker.cpp", "Source/Tools/SpriteMeshing.h", "Source/Tools/SpriteMeshing.cpp", "Source/Common/SpriteResource.h", "Source/Common/SpriteResource.cpp", "Source/Common/AnimationInfo.cpp", "Source/Client/DefaultSprites.h", "Source/Client/DefaultSprites.cpp", "Source/Client/SpriteManager.cpp", "Source/Client/TextureAtlas.cpp", "Source/Tests/Test_ImageBaker.cpp", "Source/Tests/Test_TextureAtlas.cpp", "Docs/en/reference/image-format/index.md"]
+      "sources": ["BuildTools/ImageFormatInterface.json", "BuildTools/docs_image_format.py", "Source/Tools/ImageBaker.h", "Source/Tools/ImageBaker.cpp", "Source/Tools/SpriteMeshing.h", "Source/Tools/SpriteMeshing.cpp", "Source/Common/SpriteResource.h", "Source/Common/SpriteResource.cpp", "Source/Common/AnimationInfo.cpp", "Source/Client/DefaultSprites.h", "Source/Client/DefaultSprites.cpp", "Source/Client/SpriteManager.cpp", "Source/Client/TextureAtlas.cpp", "Docs/en/reference/image-format/index.md"],
+      "historical_sources": ["Source/Tests/Test_ImageBaker.cpp", "Source/Tests/Test_TextureAtlas.cpp"]
     },
     "Docs/ImageFormat.md": {
       "id": "legacy-image-format-guide-route",
@@ -2866,7 +2885,8 @@
       "audiences": ["game-developer", "content-author", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
       "owner": "content-data", "state": "current", "disposition": "retain", "target": "Docs/en/reference/image-format/options.md",
-      "sources": ["BuildTools/ImageFormatInterface.json", "Source/Tools/ImageBaker.cpp", "Source/Tests/Test_ImageBaker.cpp", "Docs/generated/image-format.json"]
+      "sources": ["BuildTools/ImageFormatInterface.json", "Source/Tools/ImageBaker.cpp", "Docs/generated/image-format.json"],
+      "historical_sources": ["Source/Tests/Test_ImageBaker.cpp"]
     },
     "Docs/generated/image-format/options.md": {
       "id": "legacy-generated-image-format-options-route",
@@ -2914,7 +2934,8 @@
       "audiences": ["game-developer", "content-author", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
       "owner": "content-data", "state": "current", "disposition": "retain", "target": "Docs/en/reference/image-format/validation.md",
-      "sources": ["BuildTools/ImageFormatInterface.json", "Source/Tools/ImageBaker.cpp", "Source/Client/DefaultSprites.cpp", "Source/Tests/Test_ImageBaker.cpp", "Source/Tests/Test_TextureAtlas.cpp", "Docs/generated/image-format.json"]
+      "sources": ["BuildTools/ImageFormatInterface.json", "Source/Tools/ImageBaker.cpp", "Source/Client/DefaultSprites.cpp", "Docs/generated/image-format.json"],
+      "historical_sources": ["Source/Tests/Test_ImageBaker.cpp", "Source/Tests/Test_TextureAtlas.cpp"]
     },
     "Docs/generated/image-format/validation.md": {
       "id": "legacy-generated-image-format-validation-route",
@@ -3018,7 +3039,8 @@
       "audiences": ["game-developer", "content-author", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
       "owner": "quality", "state": "current", "disposition": "retain", "target": "Docs/en/reference/particle-format/validation.md",
-      "sources": ["BuildTools/ParticleFormatInterface.json", "Source/Tests/Test_ParticleBaker.cpp", "Source/Tests/Test_EffekseerParticleRuntime.cpp", "Source/Tools/ParticleBaker.cpp", "Source/Client/VisualParticles.cpp", "Source/Tools/ParticleEditor.cpp", "Docs/generated/particle-format.json"]
+      "sources": ["BuildTools/ParticleFormatInterface.json", "Source/Tools/ParticleBaker.cpp", "Source/Client/VisualParticles.cpp", "Source/Tools/ParticleEditor.cpp", "Docs/generated/particle-format.json"],
+      "historical_sources": ["Source/Tests/Test_ParticleBaker.cpp", "Source/Tests/Test_EffekseerParticleRuntime.cpp"]
     },
     "Docs/generated/particle-format/index.md": {
       "id": "legacy-generated-particle-format-index-route",
@@ -3162,7 +3184,8 @@
       "audiences": ["game-developer", "content-author", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
       "owner": "quality", "state": "current", "disposition": "retain", "target": "Docs/en/reference/font-format/validation.md",
-      "sources": ["BuildTools/FontFormatInterface.json", "BuildTools/tests/test_docs_font_format.py", "Source/Tests/Test_Mapper.cpp", "Source/Tests/Test_ClientServerIntegration.cpp", "Source/Client/FontManager.cpp", "Docs/generated/font-format.json"]
+      "sources": ["BuildTools/FontFormatInterface.json", "Source/Client/FontManager.cpp", "Docs/generated/font-format.json"],
+      "historical_sources": ["BuildTools/tests/test_docs_font_format.py", "Source/Tests/Test_Mapper.cpp", "Source/Tests/Test_ClientServerIntegration.cpp"]
     },
     "Docs/generated/font-format/index.md": {
       "id": "legacy-generated-font-format-index-route",
@@ -3330,7 +3353,8 @@
       "audiences": ["game-developer", "content-author", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
       "owner": "quality", "state": "current", "disposition": "retain", "target": "Docs/en/reference/audio/validation.md",
-      "sources": ["BuildTools/AudioInterface.json", "BuildTools/tests/test_docs_audio.py", "Source/Tests/Test_AudioBaker.cpp", "Source/Tests/Test_AudioManager.cpp", "Source/Tools/AudioBaker.cpp", "Source/Client/AudioManager.cpp", "Source/Frontend/Application.cpp", "Source/Frontend/ApplicationHeadless.cpp", "Docs/generated/audio.json"]
+      "sources": ["BuildTools/AudioInterface.json", "Source/Tools/AudioBaker.cpp", "Source/Client/AudioManager.cpp", "Source/Frontend/Application.cpp", "Source/Frontend/ApplicationHeadless.cpp", "Docs/generated/audio.json"],
+      "historical_sources": ["BuildTools/tests/test_docs_audio.py", "Source/Tests/Test_AudioBaker.cpp", "Source/Tests/Test_AudioManager.cpp"]
     },
     "Docs/generated/audio/validation.md": {
       "id": "legacy-generated-audio-validation-route",
@@ -3458,7 +3482,8 @@
       "audiences": ["game-developer", "content-author", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
       "owner": "quality", "state": "current", "disposition": "retain", "target": "Docs/en/reference/video/validation.md",
-      "sources": ["BuildTools/VideoInterface.json", "BuildTools/tests/test_docs_video.py", "Source/Tests/README.md", "Source/Client/VideoClip.cpp", "Source/Client/Client.cpp", "Docs/generated/video.json"]
+      "sources": ["BuildTools/VideoInterface.json", "Source/Client/VideoClip.cpp", "Source/Client/Client.cpp", "Docs/generated/video.json"],
+      "historical_sources": ["BuildTools/tests/test_docs_video.py", "Source/Tests/README.md"]
     },
     "Docs/generated/video/validation.md": {
       "id": "legacy-generated-video-validation-route",
@@ -3658,7 +3683,8 @@
       "audiences": ["game-developer", "native-extension-developer", "tool-developer", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "tooling", "state": "current", "disposition": "retain", "target": "Docs/en/how-to/ai-control-protocol.md",
-      "sources": ["BuildTools/AiControlProtocol.json", "BuildTools/ai_control_client.py", "BuildTools/docs_ai_control_protocol.py", "BuildTools/tests/test_ai_control_protocol.py", "BuildTools/tests/test_docs_ai_control_protocol.py", "Examples/AiControlSample/README.md", "Examples/AiControlSample/ai_control_sample.py", "Examples/AiControlSample/run_protocol_smoke.py", "Docs/en/reference/ai-control-protocol/index.md", "Docs/NativeExtensions.md", "Docs/en/how-to/scripting/lifecycle-and-concurrency.md", "Docs/en/how-to/testing/gameplay-and-integration.md", "BuildTools/ExternalProjectEvidence.json"]
+      "sources": ["BuildTools/AiControlProtocol.json", "BuildTools/ai_control_client.py", "BuildTools/docs_ai_control_protocol.py", "Examples/AiControlSample/README.md", "Examples/AiControlSample/ai_control_sample.py", "Examples/AiControlSample/run_protocol_smoke.py", "Docs/en/reference/ai-control-protocol/index.md", "Docs/NativeExtensions.md", "Docs/en/how-to/scripting/lifecycle-and-concurrency.md", "Docs/en/how-to/testing/gameplay-and-integration.md", "BuildTools/ExternalProjectEvidence.json"],
+      "historical_sources": ["BuildTools/tests/test_ai_control_protocol.py", "BuildTools/tests/test_docs_ai_control_protocol.py"]
     },
     "Docs/AiControlProtocol.md": {
       "id": "legacy-ai-control-protocol-guide-route",
@@ -3754,7 +3780,8 @@
       "audiences": ["game-developer", "native-extension-developer", "tool-developer", "engine-contributor", "release-operator", "ai-agent"],
       "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
       "owner": "quality", "state": "current", "disposition": "retain", "target": "Docs/en/reference/ai-control-protocol/integration-validation.md",
-      "sources": ["BuildTools/AiControlProtocol.json", "BuildTools/tests/test_ai_control_protocol.py", "BuildTools/tests/test_docs_ai_control_protocol.py", "Examples/AiControlSample/README.md", "Examples/AiControlSample/run_protocol_smoke.py", "Docs/generated/ai-control-protocol.json"]
+      "sources": ["BuildTools/AiControlProtocol.json", "Examples/AiControlSample/README.md", "Examples/AiControlSample/run_protocol_smoke.py", "Docs/generated/ai-control-protocol.json"],
+      "historical_sources": ["BuildTools/tests/test_ai_control_protocol.py", "BuildTools/tests/test_docs_ai_control_protocol.py"]
     },
     "Docs/generated/ai-control-protocol/integration-validation.md": {
       "id": "legacy-generated-ai-control-protocol-integration-validation-route",
@@ -3770,7 +3797,8 @@
       "audiences": ["game-developer", "content-author", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "content-data", "state": "current", "disposition": "retain", "target": "Docs/en/how-to/content/model-animation.md",
-      "sources": ["BuildTools/ExternalProjectEvidence.json", "Source/Tools/ModelSourceLoader.cpp", "Source/Tools/ModelAnimationConverter.cpp", "Source/Tools/ModelInfoBaker.cpp", "Source/Common/ModelAnimationData.cpp", "Source/Common/AnimationInfo.cpp", "Source/Client/ModelInformation.cpp", "Source/Client/ModelAnimation.cpp", "Source/Client/ModelInstance.cpp", "Source/Common/EngineBase.cpp", "Source/Common/EngineBase.h", "Source/Scripting/CommonGlobalScriptMethods.cpp", "Source/Scripting/ClientCritterScriptMethods.cpp", "Source/Tests/Test_ModelBaker.cpp", "Source/Tests/Test_ModelMeshData.cpp", "Source/Tests/Test_ModelSourceLoader.cpp", "Source/Tests/Test_ModelAnimationData.cpp", "Source/Tests/Test_ModelAnimationConverter.cpp", "Source/Tests/Test_ModelAnimationRuntime.cpp", "Source/Tests/Test_ModelAnimationPoseProcedural.cpp", "Source/Tests/Test_ModelSkeletonCompatibility.cpp", "Source/Tests/Test_OzzAnimation.cpp", "Source/Tests/Test_AngelScriptCommonScriptMethods.cpp", "BuildTools/tests/test_docs_model_animation.py"]
+      "sources": ["BuildTools/ExternalProjectEvidence.json", "Source/Tools/ModelSourceLoader.cpp", "Source/Tools/ModelAnimationConverter.cpp", "Source/Tools/ModelInfoBaker.cpp", "Source/Common/ModelAnimationData.cpp", "Source/Common/AnimationInfo.cpp", "Source/Client/ModelInformation.cpp", "Source/Client/ModelAnimation.cpp", "Source/Client/ModelInstance.cpp", "Source/Common/EngineBase.cpp", "Source/Common/EngineBase.h", "Source/Scripting/CommonGlobalScriptMethods.cpp", "Source/Scripting/ClientCritterScriptMethods.cpp"],
+      "historical_sources": ["Source/Tests/Test_ModelBaker.cpp", "Source/Tests/Test_ModelMeshData.cpp", "Source/Tests/Test_ModelSourceLoader.cpp", "Source/Tests/Test_ModelAnimationData.cpp", "Source/Tests/Test_ModelAnimationConverter.cpp", "Source/Tests/Test_ModelAnimationRuntime.cpp", "Source/Tests/Test_ModelAnimationPoseProcedural.cpp", "Source/Tests/Test_ModelSkeletonCompatibility.cpp", "Source/Tests/Test_OzzAnimation.cpp", "Source/Tests/Test_AngelScriptCommonScriptMethods.cpp", "BuildTools/tests/test_docs_model_animation.py"]
     },
     "Docs/ModelAnimation.md": {
       "id": "legacy-model-animation-route",
@@ -3786,7 +3814,8 @@
       "audiences": ["game-developer", "content-author", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "content-data", "state": "current", "disposition": "retain", "target": "Docs/en/how-to/content/sprite-root-motion.md",
-      "sources": ["BuildTools/ExternalProjectEvidence.json", "Source/Tools/ImageBaker.h", "Source/Tools/ImageBaker.cpp", "Source/Common/SpriteResource.h", "Source/Common/SpriteResource.cpp", "Source/Client/DefaultSprites.h", "Source/Client/DefaultSprites.cpp", "Source/Client/ResourceManager.cpp", "Source/Common/Movement.h", "Source/Common/Movement.cpp", "Source/Common/Geometry.h", "Source/Common/Geometry.cpp", "Source/Client/CritterHexView.h", "Source/Client/CritterHexView.cpp", "Source/Tests/Test_ImageBaker.cpp", "Source/Tests/Test_Geometry.cpp", "BuildTools/tests/test_docs_sprite_root_motion.py"]
+      "sources": ["BuildTools/ExternalProjectEvidence.json", "Source/Tools/ImageBaker.h", "Source/Tools/ImageBaker.cpp", "Source/Common/SpriteResource.h", "Source/Common/SpriteResource.cpp", "Source/Client/DefaultSprites.h", "Source/Client/DefaultSprites.cpp", "Source/Client/ResourceManager.cpp", "Source/Common/Movement.h", "Source/Common/Movement.cpp", "Source/Common/Geometry.h", "Source/Common/Geometry.cpp", "Source/Client/CritterHexView.h", "Source/Client/CritterHexView.cpp"],
+      "historical_sources": ["Source/Tests/Test_ImageBaker.cpp", "Source/Tests/Test_Geometry.cpp", "BuildTools/tests/test_docs_sprite_root_motion.py"]
     },
     "Docs/SpriteRootMotion.md": {
       "id": "legacy-sprite-root-motion-route",
@@ -3882,7 +3911,8 @@
       "audiences": ["game-developer", "engine-contributor", "release-operator", "ai-agent"],
       "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
       "owner": "build-release", "state": "current", "disposition": "retain", "target": "Docs/en/reference/packages/index.md",
-      "sources": ["BuildTools/PackageInterface.json", "BuildTools/package.py", "BuildTools/docs_package.py", "BuildTools/tests/test_docs_package.py", "BuildTools/tests/validate_package_interface.cmake", "Docs/generated/package.json"]
+      "sources": ["BuildTools/PackageInterface.json", "BuildTools/package.py", "BuildTools/docs_package.py", "Docs/generated/package.json"],
+      "historical_sources": ["BuildTools/tests/test_docs_package.py", "BuildTools/tests/validate_package_interface.cmake"]
     },
     "Docs/generated/package/index.md": {
       "id": "legacy-generated-package-index-route",
@@ -3962,7 +3992,8 @@
       "audiences": ["game-developer", "engine-contributor", "release-operator", "ai-agent"],
       "classification": {"diataxis": "reference", "visibility": "public", "human": true, "translation": "required"},
       "owner": "build-release", "state": "current", "disposition": "retain", "target": "Docs/en/reference/public-examples/index.md",
-      "sources": ["Examples/PublicRepositories.json", "Examples/PublicRepositoryTemplate", "BuildTools/docs_examples.py", "BuildTools/tests/test_docs_examples.py", "Docs/generated/public-examples.json"]
+      "sources": ["Examples/PublicRepositories.json", "Examples/PublicRepositoryTemplate", "BuildTools/docs_examples.py", "Docs/generated/public-examples.json"],
+      "historical_sources": ["BuildTools/tests/test_docs_examples.py"]
     },
     "Docs/generated/public-examples/index.md": {
       "id": "legacy-generated-public-examples-index-route",
@@ -3994,7 +4025,8 @@
       "audiences": ["game-developer", "engine-contributor", "native-extension-developer"],
       "classification": {"diataxis": "explanation", "visibility": "public", "human": true, "translation": "required"},
       "owner": "scripting", "state": "current", "disposition": "retain", "target": "Docs/en/contributing/coding-contracts/nullability.md",
-      "sources": ["Source/Scripting", "ThirdParty/AngelScript", "Source/Tests"]
+      "sources": ["Source/Scripting", "ThirdParty/AngelScript"],
+      "historical_sources": ["Source/Tests"]
     },
     "Docs/Nullability.md": {
       "id": "legacy-nullability-route",
@@ -4010,7 +4042,8 @@
       "audiences": ["engine-contributor", "native-extension-developer"],
       "classification": {"diataxis": "explanation", "visibility": "public", "human": true, "translation": "required"},
       "owner": "quality", "state": "current", "disposition": "retain", "target": "Docs/en/contributing/coding-contracts/smart-pointers.md",
-      "sources": ["Source/Essentials/SmartPointers.h", "Source/Scripting", "Source/Tests"]
+      "sources": ["Source/Essentials/SmartPointers.h", "Source/Scripting"],
+      "historical_sources": ["Source/Tests"]
     },
     "Docs/SmartPointers.md": {
       "id": "legacy-smart-pointers-route",
@@ -4026,7 +4059,8 @@
       "audiences": ["engine-contributor", "native-extension-developer"],
       "classification": {"diataxis": "explanation", "visibility": "public", "human": true, "translation": "required"},
       "owner": "quality", "state": "current", "disposition": "retain", "target": "Docs/en/contributing/coding-contracts/exception-safety.md",
-      "sources": ["Source/Essentials", "Source/Server", "Source/Tests"]
+      "sources": ["Source/Essentials", "Source/Server"],
+      "historical_sources": ["Source/Tests"]
     },
     "Docs/ExceptionSafety.md": {
       "id": "legacy-exception-safety-route",
@@ -4074,7 +4108,8 @@
       "audiences": ["engine-contributor", "game-developer", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "quality", "state": "current", "disposition": "retain", "target": "Docs/en/contributing/testing/index.md",
-      "sources": ["Source/Tests", "BuildTools/validate.sh", "Docs/generated/source-inventory.json", ".github/workflows/validate.yml"]
+      "sources": ["BuildTools/validate.sh", "Docs/generated/source-inventory.json", ".github/disabled-workflows/validate.yml"],
+      "historical_sources": ["Source/Tests"]
     },
     "Docs/Testing.md": {
       "id": "legacy-testing-route",
@@ -4090,7 +4125,8 @@
       "audiences": ["game-developer", "engine-contributor", "ai-agent", "release-operator"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "quality", "state": "current", "disposition": "retain", "target": "Docs/en/how-to/testing/gameplay-and-integration.md",
-      "sources": ["BuildTools/gameplay_test_runner.py", "BuildTools/HelperCliInterface.json", "BuildTools/tests/test_gameplay_test_runner.py", "Examples/GameplayTestHarness", "Examples/MinimalMultiplayer/tutorial-smoke.json", "Examples/MinimalMultiplayer/run_tutorial_smoke.py", "Examples/MinimalMultiplayer/CMakeLists.txt", "Examples/MinimalMultiplayer/Scripts/Tutorial.fos", ".github/workflows/validate.yml"]
+      "sources": ["BuildTools/gameplay_test_runner.py", "BuildTools/HelperCliInterface.json", "Examples/GameplayTestHarness", "Examples/MinimalMultiplayer/tutorial-smoke.json", "Examples/MinimalMultiplayer/run_tutorial_smoke.py", "Examples/MinimalMultiplayer/CMakeLists.txt", "Examples/MinimalMultiplayer/Scripts/Tutorial.fos", ".github/disabled-workflows/validate.yml"],
+      "historical_sources": ["BuildTools/tests/test_gameplay_test_runner.py"]
     },
     "Docs/GameplayTesting.md": {
       "id": "legacy-gameplay-testing-route",
@@ -4106,7 +4142,8 @@
       "audiences": ["game-developer", "engine-contributor", "release-operator", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "quality", "state": "current", "disposition": "retain", "target": "Docs/en/troubleshooting/debugging.md",
-      "sources": ["BuildTools/cmake/stages/Init.cmake", "BuildTools/cmake/stages/EngineSources.cmake", "BuildTools/cmake/stages/ThirdParty.cmake", "BuildTools/cmake/helpers/Build.cmake", "BuildTools/cmake/helpers/State.cmake", "BuildTools/natvis/essentials.natvis", "BuildTools/natvis/unordered_dense.natvis", "BuildTools/natvis/fonline.natjmc", "Source/Essentials/BasicCore.cpp", "Source/Essentials/StackTrace.h", "Source/Essentials/StackTrace.cpp", "Source/Essentials/ExceptionHandling.h", "Source/Essentials/ExceptionHandling.cpp", "Source/Essentials/BaseLogging.cpp", "Source/Essentials/Logging.cpp", "Source/Common/DiagnosticSelfTest.cpp", "Source/Common/Settings.inc", "Source/Frontend/ApplicationInit.cpp", "Source/Scripting/AngelScript/AngelScriptBackend.cpp", "Source/Scripting/AngelScript/AngelScriptContext.cpp", "Source/Scripting/AngelScript/AngelScriptDebugger.h", "Source/Scripting/AngelScript/AngelScriptDebugger.cpp", "Source/Scripting/Managed/ManagedScriptBackend.cpp", "Source/Scripting/Managed/ManagedRuntime.cpp", "Source/Scripting/Managed/Analyzers/SyncCoverAnalyzer.cs", "Source/Tools/ManagedScriptBaker.cpp", "Source/Tests/Test_ManagedScriptBaker.cpp", "Source/Tests/Test_StackTrace.cpp", "Source/Tests/Test_ExceptionHandling.cpp", "Source/Tests/Test_ClientRuntimeApi.cpp", "BuildTools/angelscript-debugger/package.json", "BuildTools/angelscript-debugger/src", "BuildTools/ExternalProjectEvidence.json", "BuildTools/tests/test_docs_debugging.py", ".github/workflows/validate.yml"]
+      "sources": ["BuildTools/cmake/stages/Init.cmake", "BuildTools/cmake/stages/EngineSources.cmake", "BuildTools/cmake/stages/ThirdParty.cmake", "BuildTools/cmake/helpers/Build.cmake", "BuildTools/cmake/helpers/State.cmake", "BuildTools/natvis/essentials.natvis", "BuildTools/natvis/unordered_dense.natvis", "BuildTools/natvis/fonline.natjmc", "Source/Essentials/BasicCore.cpp", "Source/Essentials/StackTrace.h", "Source/Essentials/StackTrace.cpp", "Source/Essentials/ExceptionHandling.h", "Source/Essentials/ExceptionHandling.cpp", "Source/Essentials/BaseLogging.cpp", "Source/Essentials/Logging.cpp", "Source/Common/DiagnosticSelfTest.cpp", "Source/Common/Settings.inc", "Source/Frontend/ApplicationInit.cpp", "Source/Scripting/AngelScript/AngelScriptBackend.cpp", "Source/Scripting/AngelScript/AngelScriptContext.cpp", "Source/Scripting/AngelScript/AngelScriptDebugger.h", "Source/Scripting/AngelScript/AngelScriptDebugger.cpp", "Source/Scripting/Managed/ManagedScriptBackend.cpp", "Source/Scripting/Managed/ManagedRuntime.cpp", "Source/Scripting/Managed/Analyzers/SyncCoverAnalyzer.cs", "Source/Tools/ManagedScriptBaker.cpp", "BuildTools/angelscript-debugger/package.json", "BuildTools/angelscript-debugger/src", "BuildTools/ExternalProjectEvidence.json", ".github/disabled-workflows/validate.yml"],
+      "historical_sources": ["Source/Tests/Test_ManagedScriptBaker.cpp", "Source/Tests/Test_StackTrace.cpp", "Source/Tests/Test_ExceptionHandling.cpp", "Source/Tests/Test_ClientRuntimeApi.cpp", "BuildTools/tests/test_docs_debugging.py"]
     },
     "Docs/Debugging.md": {
       "id": "legacy-debugging-route",
@@ -4154,7 +4191,8 @@
       "audiences": ["game-developer", "content-author", "tool-developer", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "tooling", "state": "current", "disposition": "retain", "target": "Docs/en/how-to/tools/animation-particle-viewers.md",
-      "sources": ["Source/Tools/AnimationViewer.h", "Source/Tools/AnimationViewer.cpp", "Source/Tools/ParticleViewer.h", "Source/Tools/ParticleViewer.cpp", "Source/Tools/Mapper.h", "Source/Tools/Mapper.cpp", "Source/Applications/AnimationViewerApp.cpp", "Source/Applications/ParticleViewerApp.cpp", "Source/Common/SettingsStorage.h", "Source/Common/SettingsStorage.cpp", "Source/Client/ResourceManager.cpp", "Source/Client/ParticleSprites.h", "Source/Client/ParticleSprites.cpp", "BuildTools/cmake/stages/Init.cmake", "BuildTools/cmake/stages/EngineSources.cmake", "BuildTools/cmake/stages/CoreLibs.cmake", "BuildTools/cmake/stages/Applications.cmake", "BuildTools/cmake/ProjectInterface.json", "BuildTools/PackageInterface.json", "Examples/MinimalMultiplayer/CMakeLists.txt", "Examples/MinimalMultiplayer/CMakePresets.json", "Examples/MinimalMultiplayer/FOnlineMinimalMultiplayer.fomain", "BuildTools/tests/test_docs_viewer_tools.py"]
+      "sources": ["Source/Tools/AnimationViewer.h", "Source/Tools/AnimationViewer.cpp", "Source/Tools/ParticleViewer.h", "Source/Tools/ParticleViewer.cpp", "Source/Tools/Mapper.h", "Source/Tools/Mapper.cpp", "Source/Applications/AnimationViewerApp.cpp", "Source/Applications/ParticleViewerApp.cpp", "Source/Common/SettingsStorage.h", "Source/Common/SettingsStorage.cpp", "Source/Client/ResourceManager.cpp", "Source/Client/ParticleSprites.h", "Source/Client/ParticleSprites.cpp", "BuildTools/cmake/stages/Init.cmake", "BuildTools/cmake/stages/EngineSources.cmake", "BuildTools/cmake/stages/CoreLibs.cmake", "BuildTools/cmake/stages/Applications.cmake", "BuildTools/cmake/ProjectInterface.json", "BuildTools/PackageInterface.json", "Examples/MinimalMultiplayer/CMakeLists.txt", "Examples/MinimalMultiplayer/CMakePresets.json", "Examples/MinimalMultiplayer/FOnlineMinimalMultiplayer.fomain"],
+      "historical_sources": ["BuildTools/tests/test_docs_viewer_tools.py"]
     },
     "Docs/ViewerTools.md": {
       "id": "legacy-viewer-tools-route",
@@ -4170,7 +4208,8 @@
       "audiences": ["game-developer", "content-author", "tool-developer", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "tooling", "state": "current", "disposition": "retain", "target": "Docs/en/how-to/tools/mapper.md",
-      "sources": ["Source/Tools/Mapper.cpp", "Source/Tools/Mapper.h", "Source/Tools/ParticleEditor.h", "Source/Tools/ParticleEditor.cpp", "Source/Tools/SparkParticleEditor.h", "Source/Tools/SparkParticleEditor.cpp", "Source/Scripting/MapperGlobalScriptMethods.cpp", "Source/Scripting/ClientGlobalScriptMethods.cpp", "Source/Scripting/CommonGlobalScriptMethods.cpp", "Source/Common/Settings.inc", "Source/Common/Geometry.cpp", "Source/Client/MapView.cpp", "Source/Client/TextureAtlas.cpp", "Source/Client/ParticleSprites.h", "Source/Client/VisualParticles.h", "Examples/MinimalMultiplayer/FOnlineMinimalMultiplayer.fomain", "BuildTools/tests/test_docs_mapper_tools.py"]
+      "sources": ["Source/Tools/Mapper.cpp", "Source/Tools/Mapper.h", "Source/Tools/ParticleEditor.h", "Source/Tools/ParticleEditor.cpp", "Source/Tools/SparkParticleEditor.h", "Source/Tools/SparkParticleEditor.cpp", "Source/Scripting/MapperGlobalScriptMethods.cpp", "Source/Scripting/ClientGlobalScriptMethods.cpp", "Source/Scripting/CommonGlobalScriptMethods.cpp", "Source/Common/Settings.inc", "Source/Common/Geometry.cpp", "Source/Client/MapView.cpp", "Source/Client/TextureAtlas.cpp", "Source/Client/ParticleSprites.h", "Source/Client/VisualParticles.h", "Examples/MinimalMultiplayer/FOnlineMinimalMultiplayer.fomain"],
+      "historical_sources": ["BuildTools/tests/test_docs_mapper_tools.py"]
     },
     "Docs/MapperTools.md": {
       "id": "legacy-mapper-tools-route",
@@ -4186,7 +4225,8 @@
       "audiences": ["game-developer", "content-author", "tool-developer", "engine-contributor", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "tooling", "state": "current", "disposition": "retain", "target": "Docs/en/how-to/tools/mapper-interactive.md",
-      "sources": ["BuildTools/DocumentationScreenshots.json", "Docs/generated/screenshots.json", "Docs/assets/screenshots/mapper-particle-preview.png", "Source/Frontend/Application.cpp", "Source/Tools/Mapper.cpp", "Source/Tools/Mapper.h", "Source/Scripting/MapperGlobalScriptMethods.cpp", "Source/Common/Settings.inc", "Examples/MinimalMultiplayer/FOnlineMinimalMultiplayer.fomain", "BuildTools/tests/test_docs_mapper_tools.py"]
+      "sources": ["BuildTools/DocumentationScreenshots.json", "Docs/generated/screenshots.json", "Docs/assets/screenshots/mapper-particle-preview.png", "Source/Frontend/Application.cpp", "Source/Tools/Mapper.cpp", "Source/Tools/Mapper.h", "Source/Scripting/MapperGlobalScriptMethods.cpp", "Source/Common/Settings.inc", "Examples/MinimalMultiplayer/FOnlineMinimalMultiplayer.fomain"],
+      "historical_sources": ["BuildTools/tests/test_docs_mapper_tools.py"]
     },
     "Docs/MapperManual.md": {
       "id": "legacy-mapper-interactive-manual-route",
@@ -4202,7 +4242,8 @@
       "audiences": ["game-developer", "engine-contributor", "release-operator", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "platform", "state": "current", "disposition": "retain", "target": "Docs/en/how-to/platforms/web-debugging.md",
-      "sources": ["BuildTools/ExternalProjectEvidence.json", "BuildTools/buildtools.py", "BuildTools/prepare-workspace.sh", "BuildTools/prepare-win-workspace.ps1", "BuildTools/PackageInterface.json", "BuildTools/package.py", "BuildTools/web", "BuildTools/cmake/stages/Init.cmake", "BuildTools/SupportMatrix.json", "Source/Common/Settings.inc", "Source/Common/WebRelated.cpp", "Source/Common/WebRelated.h", "Source/Frontend/Rendering-OpenGL.cpp", "Source/Client/NetworkClient-Sockets.cpp", "Source/Client/Updater.cpp", "Source/Client/Updater.h", "ThirdParty/emscripten", ".github/workflows/validate.yml", "BuildTools/tests/test_package_security.py", "BuildTools/tests/test_docs_web_debugging.py"]
+      "sources": ["BuildTools/ExternalProjectEvidence.json", "BuildTools/buildtools.py", "BuildTools/prepare-workspace.sh", "BuildTools/prepare-win-workspace.ps1", "BuildTools/PackageInterface.json", "BuildTools/package.py", "BuildTools/web", "BuildTools/cmake/stages/Init.cmake", "BuildTools/SupportMatrix.json", "Source/Common/Settings.inc", "Source/Common/WebRelated.cpp", "Source/Common/WebRelated.h", "Source/Frontend/Rendering-OpenGL.cpp", "Source/Client/NetworkClient-Sockets.cpp", "Source/Client/Updater.cpp", "Source/Client/Updater.h", "ThirdParty/emscripten", ".github/disabled-workflows/validate.yml"],
+      "historical_sources": ["BuildTools/tests/test_package_security.py", "BuildTools/tests/test_docs_web_debugging.py"]
     },
     "Docs/WebDebugging.md": {
       "id": "legacy-web-debugging-route",
@@ -4218,7 +4259,8 @@
       "audiences": ["game-developer", "engine-contributor", "release-operator", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "platform", "state": "current", "disposition": "retain", "target": "Docs/en/how-to/platforms/android-debugging.md",
-      "sources": ["BuildTools/ExternalProjectEvidence.json", "BuildTools/buildtools.py", "BuildTools/prepare-workspace.sh", "BuildTools/android_device.py", "BuildTools/PackageInterface.json", "BuildTools/package.py", "BuildTools/android-project", "BuildTools/SupportMatrix.json", "Source/Common/Settings.inc", "Source/Client/Updater.cpp", "Source/Client/Updater.h", "ThirdParty/android-sdk", "ThirdParty/android-ndk", "ThirdParty/android-api", ".github/workflows/validate.yml", "BuildTools/tests/test_package_security.py", "BuildTools/tests/test_docs_android_debugging.py"]
+      "sources": ["BuildTools/ExternalProjectEvidence.json", "BuildTools/buildtools.py", "BuildTools/prepare-workspace.sh", "BuildTools/android_device.py", "BuildTools/PackageInterface.json", "BuildTools/package.py", "BuildTools/android-project", "BuildTools/SupportMatrix.json", "Source/Common/Settings.inc", "Source/Client/Updater.cpp", "Source/Client/Updater.h", "ThirdParty/android-sdk", "ThirdParty/android-ndk", "ThirdParty/android-api", ".github/disabled-workflows/validate.yml"],
+      "historical_sources": ["BuildTools/tests/test_package_security.py", "BuildTools/tests/test_docs_android_debugging.py"]
     },
     "Docs/AndroidDebugging.md": {
       "id": "legacy-android-debugging-route",
@@ -4234,7 +4276,8 @@
       "audiences": ["engine-contributor", "release-operator"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "build-release", "state": "current", "disposition": "retain", "target": "Docs/en/contributing/third-party/index.md",
-      "sources": ["ThirdParty", "ThirdParty/AngelScript/sdk/angelscript/projects/cmake/CMakeLists.txt", "BuildTools/prepare-workspace.sh", "BuildTools/cmake/stages/ThirdParty.cmake", "BuildTools/tests/test_angelscript_cmake.py"]
+      "sources": ["ThirdParty", "ThirdParty/AngelScript/sdk/angelscript/projects/cmake/CMakeLists.txt", "BuildTools/prepare-workspace.sh", "BuildTools/cmake/stages/ThirdParty.cmake"],
+      "historical_sources": ["BuildTools/tests/test_angelscript_cmake.py"]
     },
     "Docs/ThirdPartyMaintenance.md": {
       "id": "legacy-third-party-maintenance-route",
@@ -4250,7 +4293,8 @@
       "audiences": ["engine-contributor", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "documentation", "state": "current", "disposition": "retain", "target": "Docs/en/contributing/documentation/index.md",
-      "sources": ["Docs/documentation-manifest.json", "Docs/generated/api.json", "Docs/generated/api/index.md", "Docs/generated/cmake.json", "Docs/generated/cmake/index.md", "Docs/generated/cli.json", "Docs/generated/cli/index.md", "Docs/generated/helper-cli.json", "Docs/generated/helper-cli/index.md", "Docs/generated/native-extension.json", "Docs/generated/native-extension/index.md", "Docs/generated/prototype-format.json", "Docs/generated/prototype-format/index.md", "Docs/generated/map-format.json", "Docs/en/reference/map-format/index.md", "Docs/generated/package.json", "Docs/generated/package/index.md", "Docs/generated/snippets.json", "docs-manifest.json", "Docs/generated/ai-evaluation-report.json", "Docs/contract-change-dispositions.json", "BuildTools/codegen.py", "BuildTools/buildtools.py", "BuildTools/HelperCliInterface.json", "BuildTools/NativeExtensionInterface.json", "BuildTools/PrototypeFormatInterface.json", "BuildTools/MapFormatInterface.json", "BuildTools/PackageInterface.json", "BuildTools/package.py", "BuildTools/docs_api.py", "BuildTools/docs_api_diff.py", "BuildTools/docs_contract_diff.py", "BuildTools/docs_cli.py", "BuildTools/docs_helper_cli.py", "BuildTools/docs_native_extension.py", "BuildTools/docs_prototype_format.py", "BuildTools/docs_map_format.py", "BuildTools/docs_cmake.py", "BuildTools/docs_package.py", "BuildTools/docs_reference.py", "BuildTools/docs_snippets.py", "BuildTools/docs_localization.py", "BuildTools/docs_site.py", "BuildTools/docs_ai_eval.py", "BuildTools/docs_ai_delivery.py", "BuildTools/docs_site_artifact.py", "BuildTools/docs_validate.py", "BuildTools/ExternalProjectEvidence.json", "BuildTools/docs_external_evidence.py", "BuildTools/tests/test_docs_external_evidence.py", "BuildTools/tests/test_docs_documentation_operations_foundations.py", "Docs/generated/external-project-evidence.json", "Docs/generated/external-project-evidence/index.md", "BuildTools/cmake/ProjectInterface.json", "BuildTools/tests/test_docs_ai_delivery.py", "BuildTools/tests/test_docs_site.py", "BuildTools/tests/test_docs_site_layout.py", "BuildTools/tests/test_docs_site_artifact.py", "BuildTools/tests/test_docs_browser.py", "BuildTools/tests/test_docs_validate.py", "BuildTools/tests/test_docs_prototype_format.py", "BuildTools/tests/test_docs_map_format.py", "BuildTools/tests/validate_native_extension_interface.cmake", ".github/workflows/validate.yml", "Docs/Site/Layouts/default.html", "Docs/Site/Assets/css/docs.css", "Docs/Site/Assets/js/docs.js", "Docs/Site/Data/docs-site.json", "Docs/Site/Assets/docs-search.json", "Docs/Site/Assets/docs-search.ru.json", "llms.txt", "llms-full.txt", "Source/Scripting/CommonGlobalScriptMethods.cpp", "Docs/NativeExtensions.md", "Docs/PrototypeFormat.md", "Docs/en/how-to/content/map-format.md", "Docs/en/contributing/decisions/0006-documentation-version-locale-routing.md", "Docs/_meta/DocumentationVerificationReport.md", "AGENTS.md", "BuildTools/documentation_metadata.py"]
+      "sources": ["Docs/documentation-manifest.json", "Docs/generated/api.json", "Docs/generated/api/index.md", "Docs/generated/cmake.json", "Docs/generated/cmake/index.md", "Docs/generated/cli.json", "Docs/generated/cli/index.md", "Docs/generated/helper-cli.json", "Docs/generated/helper-cli/index.md", "Docs/generated/native-extension.json", "Docs/generated/native-extension/index.md", "Docs/generated/prototype-format.json", "Docs/generated/prototype-format/index.md", "Docs/generated/map-format.json", "Docs/en/reference/map-format/index.md", "Docs/generated/package.json", "Docs/generated/package/index.md", "Docs/generated/snippets.json", "docs-manifest.json", "Docs/generated/ai-evaluation-report.json", "Docs/contract-change-dispositions.json", "BuildTools/codegen.py", "BuildTools/buildtools.py", "BuildTools/HelperCliInterface.json", "BuildTools/NativeExtensionInterface.json", "BuildTools/PrototypeFormatInterface.json", "BuildTools/MapFormatInterface.json", "BuildTools/PackageInterface.json", "BuildTools/package.py", "BuildTools/docs_api.py", "BuildTools/docs_api_diff.py", "BuildTools/docs_contract_diff.py", "BuildTools/docs_cli.py", "BuildTools/docs_helper_cli.py", "BuildTools/docs_native_extension.py", "BuildTools/docs_prototype_format.py", "BuildTools/docs_map_format.py", "BuildTools/docs_cmake.py", "BuildTools/docs_package.py", "BuildTools/docs_reference.py", "BuildTools/docs_snippets.py", "BuildTools/docs_localization.py", "BuildTools/docs_site.py", "BuildTools/docs_ai_eval.py", "BuildTools/docs_ai_delivery.py", "BuildTools/docs_site_artifact.py", "BuildTools/docs_validate.py", "BuildTools/ExternalProjectEvidence.json", "BuildTools/docs_external_evidence.py", "Docs/generated/external-project-evidence.json", "Docs/generated/external-project-evidence/index.md", "BuildTools/cmake/ProjectInterface.json", ".github/disabled-workflows/validate.yml", "Docs/Site/Layouts/default.html", "Docs/Site/Assets/css/docs.css", "Docs/Site/Assets/js/docs.js", "Docs/Site/Data/docs-site.json", "Docs/Site/Assets/docs-search.json", "Docs/Site/Assets/docs-search.ru.json", "llms.txt", "llms-full.txt", "Source/Scripting/CommonGlobalScriptMethods.cpp", "Docs/NativeExtensions.md", "Docs/PrototypeFormat.md", "Docs/en/how-to/content/map-format.md", "Docs/en/contributing/decisions/0006-documentation-version-locale-routing.md", "Docs/_meta/DocumentationVerificationReport.md", "AGENTS.md", "BuildTools/documentation_metadata.py"],
+      "historical_sources": ["BuildTools/tests/test_docs_external_evidence.py", "BuildTools/tests/test_docs_documentation_operations_foundations.py", "BuildTools/tests/test_docs_ai_delivery.py", "BuildTools/tests/test_docs_site.py", "BuildTools/tests/test_docs_site_layout.py", "BuildTools/tests/test_docs_site_artifact.py", "BuildTools/tests/test_docs_browser.py", "BuildTools/tests/test_docs_validate.py", "BuildTools/tests/test_docs_prototype_format.py", "BuildTools/tests/test_docs_map_format.py", "BuildTools/tests/validate_native_extension_interface.cmake"]
     },
     "Docs/DocumentationMaintenance.md": {
       "id": "legacy-documentation-maintenance-route",
@@ -4266,7 +4310,8 @@
       "audiences": ["engine-contributor", "release-operator", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "documentation", "state": "current", "disposition": "retain", "target": "Docs/en/contributing/documentation/ai-evaluation.md",
-      "sources": ["Docs/ai-evaluation.json", "BuildTools/docs_ai_eval.py", "BuildTools/docs_ai_model_eval.py", "BuildTools/docs_ai_model_review.py", "BuildTools/tests/test_docs_ai_eval.py", "BuildTools/tests/test_docs_ai_model_eval.py", "BuildTools/tests/test_docs_ai_model_review.py", "BuildTools/docs_site.py", "Docs/Site/Assets/js/docs.js", "Docs/Site/Assets/docs-search.json", "Docs/generated/ai-evaluation-report.json", "Docs/_meta/ai-evaluation/2026-08-04-qwen3.5-9b.review.json", "Docs/_meta/ai-evaluation/2026-08-04-gpt-oss-20b.review.json", "Docs/documentation-manifest.json", ".github/workflows/validate.yml"]
+      "sources": ["Docs/ai-evaluation.json", "BuildTools/docs_ai_eval.py", "BuildTools/docs_ai_model_eval.py", "BuildTools/docs_ai_model_review.py", "BuildTools/docs_site.py", "Docs/Site/Assets/js/docs.js", "Docs/Site/Assets/docs-search.json", "Docs/generated/ai-evaluation-report.json", "Docs/_meta/ai-evaluation/2026-08-04-qwen3.5-9b.review.json", "Docs/_meta/ai-evaluation/2026-08-04-gpt-oss-20b.review.json", "Docs/documentation-manifest.json", ".github/disabled-workflows/validate.yml"],
+      "historical_sources": ["BuildTools/tests/test_docs_ai_eval.py", "BuildTools/tests/test_docs_ai_model_eval.py", "BuildTools/tests/test_docs_ai_model_review.py"]
     },
     "Docs/AiEvaluation.md": {
       "id": "legacy-ai-documentation-evaluation-route",
@@ -4282,7 +4327,8 @@
       "audiences": ["engine-contributor", "release-operator", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "documentation", "state": "current", "disposition": "retain", "target": "Docs/en/contributing/documentation/snippets.md",
-      "sources": ["BuildTools/SnippetPolicy.json", "BuildTools/docs_snippets.py", "BuildTools/tests/test_docs_snippets.py", "Docs/generated/snippets.json", "Docs/documentation-manifest.json", ".github/workflows/validate.yml"]
+      "sources": ["BuildTools/SnippetPolicy.json", "BuildTools/docs_snippets.py", "Docs/generated/snippets.json", "Docs/documentation-manifest.json", ".github/disabled-workflows/validate.yml"],
+      "historical_sources": ["BuildTools/tests/test_docs_snippets.py"]
     },
     "Docs/SnippetValidation.md": {
       "id": "legacy-documentation-snippet-validation-route",
@@ -4298,7 +4344,8 @@
       "audiences": ["engine-contributor", "release-operator", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "localization", "state": "current", "disposition": "retain", "target": "Docs/en/contributing/documentation/translation.md",
-      "sources": ["Docs/documentation-manifest.json", "Docs/translation-glossary.json", "docs-manifest.json", "BuildTools/docs_localization.py", "BuildTools/tests/test_docs_localization.py", "Docs/description-translations.ru.json", "Docs/generated/description-translation-status.json", "BuildTools/docs_description_translations.py", "BuildTools/tests/test_docs_description_translations.py", "BuildTools/docs_package.py", "BuildTools/docs_examples.py", "BuildTools/docs_support_matrix.py", "BuildTools/docs_site.py", "BuildTools/docs_ai_delivery.py", ".github/workflows/validate.yml", "Docs/en/contributing/decisions/0006-documentation-version-locale-routing.md", "BuildTools/documentation_metadata.py"]
+      "sources": ["Docs/documentation-manifest.json", "Docs/translation-glossary.json", "docs-manifest.json", "BuildTools/docs_localization.py", "Docs/description-translations.ru.json", "Docs/generated/description-translation-status.json", "BuildTools/docs_description_translations.py", "BuildTools/docs_package.py", "BuildTools/docs_examples.py", "BuildTools/docs_support_matrix.py", "BuildTools/docs_site.py", "BuildTools/docs_ai_delivery.py", ".github/disabled-workflows/validate.yml", "Docs/en/contributing/decisions/0006-documentation-version-locale-routing.md", "BuildTools/documentation_metadata.py"],
+      "historical_sources": ["BuildTools/tests/test_docs_localization.py", "BuildTools/tests/test_docs_description_translations.py"]
     },
     "Docs/TranslationWorkflow.md": {
       "id": "legacy-documentation-translation-workflow-route",
@@ -4314,7 +4361,8 @@
       "audiences": ["engine-contributor", "release-operator", "ai-agent"],
       "classification": {"diataxis": "how-to", "visibility": "public", "human": true, "translation": "required"},
       "owner": "documentation", "state": "current", "disposition": "retain", "target": "Docs/en/contributing/documentation/site-publication.md",
-      "sources": ["Docs/Site/_config.yml", "BuildTools/docs_site_build.py", "BuildTools/docs_prepare.py", ".github/workflows/validate.yml", "Docs/documentation-manifest.json", "Docs/en/contributing/decisions/0006-documentation-version-locale-routing.md", "Docs/ai-evaluation.json", "BuildTools/docs_ai_delivery.py", "BuildTools/tests/test_docs_ai_delivery.py", "BuildTools/docs_ai_eval.py", "BuildTools/tests/test_docs_ai_eval.py", "BuildTools/SnippetPolicy.json", "BuildTools/docs_snippets.py", "BuildTools/tests/test_docs_snippets.py", "BuildTools/DocumentationDiagrams.json", "BuildTools/docs_diagrams.py", "BuildTools/tests/test_docs_diagrams.py", "BuildTools/DocumentationScreenshots.json", "BuildTools/docs_screenshots.py", "BuildTools/tests/test_docs_screenshots.py", "BuildTools/docs_localization.py", "BuildTools/tests/test_docs_localization.py", "BuildTools/docs_site.py", "BuildTools/docs_site_artifact.py", "BuildTools/docs-browser/package.json", "BuildTools/docs-browser/package-lock.json", "BuildTools/docs-browser/audit.mjs", "BuildTools/tests/test_docs_site.py", "BuildTools/tests/test_docs_site_layout.py", "BuildTools/tests/test_docs_site_artifact.py", "BuildTools/tests/test_docs_browser.py", "BuildTools/tests/test_docs_documentation_operations_foundations.py", "BuildTools/tests/test_docs_validate.py", "Docs/Site/Layouts/default.html", "Docs/Site/Assets/css/docs.css", "Docs/Site/Assets/js/docs.js", "Docs/Site/Assets/images/fonline-mark.png", "Docs/Site/Data/docs-site.json", "Docs/Site/Assets/docs-search.json", "Docs/Site/Assets/docs-search.ru.json", "Docs/generated/diagrams.json", "Docs/generated/screenshots.json", "Docs/generated/snippets.json", "docs-manifest.json", "Docs/generated/ai-evaluation-report.json", "llms.txt", "llms-full.txt", "BuildTools/documentation_metadata.py"]
+      "sources": ["Docs/Site/_config.yml", "BuildTools/docs_site_build.py", "BuildTools/docs_prepare.py", ".github/disabled-workflows/validate.yml", "Docs/documentation-manifest.json", "Docs/en/contributing/decisions/0006-documentation-version-locale-routing.md", "Docs/ai-evaluation.json", "BuildTools/docs_ai_delivery.py", "BuildTools/docs_ai_eval.py", "BuildTools/SnippetPolicy.json", "BuildTools/docs_snippets.py", "BuildTools/DocumentationDiagrams.json", "BuildTools/docs_diagrams.py", "BuildTools/DocumentationScreenshots.json", "BuildTools/docs_screenshots.py", "BuildTools/docs_localization.py", "BuildTools/docs_site.py", "BuildTools/docs_site_artifact.py", "BuildTools/docs-browser/package.json", "BuildTools/docs-browser/package-lock.json", "BuildTools/docs-browser/audit.mjs", "Docs/Site/Layouts/default.html", "Docs/Site/Assets/css/docs.css", "Docs/Site/Assets/js/docs.js", "Docs/Site/Assets/images/fonline-mark.png", "Docs/Site/Data/docs-site.json", "Docs/Site/Assets/docs-search.json", "Docs/Site/Assets/docs-search.ru.json", "Docs/generated/diagrams.json", "Docs/generated/screenshots.json", "Docs/generated/snippets.json", "docs-manifest.json", "Docs/generated/ai-evaluation-report.json", "llms.txt", "llms-full.txt", "BuildTools/documentation_metadata.py"],
+      "historical_sources": ["BuildTools/tests/test_docs_ai_delivery.py", "BuildTools/tests/test_docs_ai_eval.py", "BuildTools/tests/test_docs_snippets.py", "BuildTools/tests/test_docs_diagrams.py", "BuildTools/tests/test_docs_screenshots.py", "BuildTools/tests/test_docs_localization.py", "BuildTools/tests/test_docs_site.py", "BuildTools/tests/test_docs_site_layout.py", "BuildTools/tests/test_docs_site_artifact.py", "BuildTools/tests/test_docs_browser.py", "BuildTools/tests/test_docs_documentation_operations_foundations.py", "BuildTools/tests/test_docs_validate.py"]
     },
     "Docs/SitePublication.md": {
       "id": "legacy-documentation-site-publication-route",
@@ -4330,7 +4378,7 @@
       "audiences": ["engine-contributor", "release-operator", "ai-agent"],
       "classification": {"diataxis": "explanation", "visibility": "public", "human": true, "translation": "required"},
       "owner": "documentation", "state": "current", "disposition": "retain", "target": "Docs/en/contributing/decisions/0001-github-pages-markdown-publication.md",
-      "sources": ["Docs/Site/_config.yml", "BuildTools/docs_site_build.py", "BuildTools/docs_prepare.py", "Docs/documentation-manifest.json", "BuildTools/docs_validate.py", "BuildTools/docs_site.py", "BuildTools/docs_site_artifact.py", "BuildTools/docs-browser/audit.mjs", ".github/workflows/validate.yml"]
+      "sources": ["Docs/Site/_config.yml", "BuildTools/docs_site_build.py", "BuildTools/docs_prepare.py", "Docs/documentation-manifest.json", "BuildTools/docs_validate.py", "BuildTools/docs_site.py", "BuildTools/docs_site_artifact.py", "BuildTools/docs-browser/audit.mjs", ".github/disabled-workflows/validate.yml"]
     },
     "Docs/Decisions/0001-github-pages-markdown-publication.md": {
       "id": "legacy-adr-github-pages-markdown-publication-route",
@@ -4346,7 +4394,8 @@
       "audiences": ["game-developer", "engine-contributor", "native-extension-developer", "ai-agent"],
       "classification": {"diataxis": "explanation", "visibility": "public", "human": true, "translation": "required"},
       "owner": "scripting", "state": "current", "disposition": "retain", "target": "Docs/en/contributing/decisions/0002-public-api-stability-contract.md",
-      "sources": ["BuildTools/codegen.py", "BuildTools/NativeExtensionInterface.json", "BuildTools/docs_api.py", "BuildTools/docs_api_diff.py", "BuildTools/docs_contract_diff.py", "BuildTools/docs_native_extension.py", "BuildTools/docs_reference.py", "BuildTools/docs_public_api.py", "BuildTools/tests/test_docs_contract_diff.py", "Source/Scripting", "Source/Scripting/CommonGlobalScriptMethods.cpp", "Source/Common/Common.h", "Docs/generated/api.json", "Docs/generated/api/index.md", "Docs/generated/native-extension.json", "Docs/generated/native-extension/index.md", "Docs/generated/ai-control-protocol.json", "Docs/contract-change-dispositions.json", "Docs/generated/source-inventory.json", "PUBLIC_API.md"]
+      "sources": ["BuildTools/codegen.py", "BuildTools/NativeExtensionInterface.json", "BuildTools/docs_api.py", "BuildTools/docs_api_diff.py", "BuildTools/docs_contract_diff.py", "BuildTools/docs_native_extension.py", "BuildTools/docs_reference.py", "BuildTools/docs_public_api.py", "Source/Scripting", "Source/Scripting/CommonGlobalScriptMethods.cpp", "Source/Common/Common.h", "Docs/generated/api.json", "Docs/generated/api/index.md", "Docs/generated/native-extension.json", "Docs/generated/native-extension/index.md", "Docs/generated/ai-control-protocol.json", "Docs/contract-change-dispositions.json", "Docs/generated/source-inventory.json", "PUBLIC_API.md"],
+      "historical_sources": ["BuildTools/tests/test_docs_contract_diff.py"]
     },
     "Docs/Decisions/0002-public-api-stability-contract.md": {
       "id": "legacy-adr-public-api-stability-contract-route",
@@ -4362,7 +4411,8 @@
       "audiences": ["game-developer", "engine-contributor", "tool-developer", "ai-agent"],
       "classification": {"diataxis": "explanation", "visibility": "public", "human": true, "translation": "required"},
       "owner": "documentation", "state": "current", "disposition": "retain", "target": "Docs/en/contributing/decisions/0003-manifest-backed-ai-documentation-delivery.md",
-      "sources": ["Docs/documentation-manifest.json", "Docs/ai-evaluation.json", "BuildTools/docs_ai_delivery.py", "BuildTools/docs_ai_eval.py", "BuildTools/docs_localization.py", "BuildTools/tests/test_docs_ai_delivery.py", "BuildTools/tests/test_docs_ai_eval.py", "BuildTools/docs_validate.py", ".github/workflows/validate.yml", "Docs/Site/_config.yml", "llms.txt", "llms-full.txt", "docs-manifest.json"]
+      "sources": ["Docs/documentation-manifest.json", "Docs/ai-evaluation.json", "BuildTools/docs_ai_delivery.py", "BuildTools/docs_ai_eval.py", "BuildTools/docs_localization.py", "BuildTools/docs_validate.py", ".github/disabled-workflows/validate.yml", "Docs/Site/_config.yml", "llms.txt", "llms-full.txt", "docs-manifest.json"],
+      "historical_sources": ["BuildTools/tests/test_docs_ai_delivery.py", "BuildTools/tests/test_docs_ai_eval.py"]
     },
     "Docs/Decisions/0003-manifest-backed-ai-documentation-delivery.md": {
       "id": "legacy-adr-manifest-backed-ai-documentation-delivery-route",
@@ -4378,7 +4428,8 @@
       "audiences": ["game-developer", "engine-contributor", "tool-developer", "ai-agent"],
       "classification": {"diataxis": "explanation", "visibility": "public", "human": true, "translation": "required"},
       "owner": "documentation", "state": "current", "disposition": "retain", "target": "Docs/en/contributing/decisions/0004-manifest-backed-site-navigation-search.md",
-      "sources": ["Docs/documentation-manifest.json", "BuildTools/docs_site.py", "BuildTools/docs_site_artifact.py", "BuildTools/docs-browser/audit.mjs", "BuildTools/tests/test_docs_site.py", "BuildTools/tests/test_docs_site_layout.py", "BuildTools/tests/test_docs_site_artifact.py", "BuildTools/tests/test_docs_browser.py", "BuildTools/docs_validate.py", ".github/workflows/validate.yml", "Docs/Site/_config.yml", "Docs/Site/Layouts/default.html", "Docs/Site/Assets/css/docs.css", "Docs/Site/Assets/js/docs.js", "Docs/Site/Assets/images/fonline-mark.png", "Docs/Site/Data/docs-site.json", "Docs/Site/Assets/docs-search.json", "Docs/Site/Assets/docs-search.ru.json"]
+      "sources": ["Docs/documentation-manifest.json", "BuildTools/docs_site.py", "BuildTools/docs_site_artifact.py", "BuildTools/docs-browser/audit.mjs", "BuildTools/docs_validate.py", ".github/disabled-workflows/validate.yml", "Docs/Site/_config.yml", "Docs/Site/Layouts/default.html", "Docs/Site/Assets/css/docs.css", "Docs/Site/Assets/js/docs.js", "Docs/Site/Assets/images/fonline-mark.png", "Docs/Site/Data/docs-site.json", "Docs/Site/Assets/docs-search.json", "Docs/Site/Assets/docs-search.ru.json"],
+      "historical_sources": ["BuildTools/tests/test_docs_site.py", "BuildTools/tests/test_docs_site_layout.py", "BuildTools/tests/test_docs_site_artifact.py", "BuildTools/tests/test_docs_browser.py"]
     },
     "Docs/Decisions/0004-manifest-backed-site-navigation-search.md": {
       "id": "legacy-adr-manifest-backed-site-navigation-search-route",
@@ -4394,7 +4445,8 @@
       "audiences": ["game-developer", "engine-contributor", "release-operator", "ai-agent"],
       "classification": {"diataxis": "explanation", "visibility": "public", "human": true, "translation": "required"},
       "owner": "build-release", "state": "current", "disposition": "retain", "target": "Docs/en/contributing/decisions/0005-public-example-repository-ownership.md",
-      "sources": ["Examples/PublicRepositories.json", "Examples/PublicRepositoryTemplate", "Examples/MinimalProject", "BuildTools/docs_examples.py", "BuildTools/tests/test_docs_examples.py", "Docs/en/how-to/build/public-example-repositories.md", "Docs/generated/public-examples.json", "Docs/generated/public-examples/index.md"]
+      "sources": ["Examples/PublicRepositories.json", "Examples/PublicRepositoryTemplate", "Examples/MinimalProject", "BuildTools/docs_examples.py", "Docs/en/how-to/build/public-example-repositories.md", "Docs/generated/public-examples.json", "Docs/generated/public-examples/index.md"],
+      "historical_sources": ["BuildTools/tests/test_docs_examples.py"]
     },
     "Docs/Decisions/0005-public-example-repository-ownership.md": {
       "id": "legacy-adr-public-example-repository-ownership-route",
@@ -4410,7 +4462,8 @@
       "audiences": ["game-developer", "engine-contributor", "release-operator", "ai-agent"],
       "classification": {"diataxis": "explanation", "visibility": "public", "human": true, "translation": "required"},
       "owner": "documentation", "state": "current", "disposition": "retain", "target": "Docs/en/contributing/decisions/0006-documentation-version-locale-routing.md",
-      "sources": ["Docs/documentation-manifest.json", "BuildTools/docs_ai_delivery.py", "BuildTools/docs_localization.py", "BuildTools/docs_site.py", "BuildTools/docs_site_artifact.py", "BuildTools/docs_validate.py", "BuildTools/tests/test_docs_ai_delivery.py", "BuildTools/tests/test_docs_localization.py", "BuildTools/tests/test_docs_site.py", "BuildTools/tests/test_docs_site_layout.py", "BuildTools/tests/test_docs_site_artifact.py", "BuildTools/tests/test_docs_validate.py", "Docs/Site/_config.yml", "Docs/Site/Layouts/default.html", "Docs/en/contributing/documentation/site-publication.md", "Docs/ProductionDocumentationPlan.md", "docs-manifest.json"]
+      "sources": ["Docs/documentation-manifest.json", "BuildTools/docs_ai_delivery.py", "BuildTools/docs_localization.py", "BuildTools/docs_site.py", "BuildTools/docs_site_artifact.py", "BuildTools/docs_validate.py", "Docs/Site/_config.yml", "Docs/Site/Layouts/default.html", "Docs/en/contributing/documentation/site-publication.md", "Docs/ProductionDocumentationPlan.md", "docs-manifest.json"],
+      "historical_sources": ["BuildTools/tests/test_docs_ai_delivery.py", "BuildTools/tests/test_docs_localization.py", "BuildTools/tests/test_docs_site.py", "BuildTools/tests/test_docs_site_layout.py", "BuildTools/tests/test_docs_site_artifact.py", "BuildTools/tests/test_docs_validate.py"]
     },
     "Docs/Decisions/0006-documentation-version-locale-routing.md": {
       "id": "legacy-adr-documentation-version-locale-routing-route",
@@ -4490,7 +4543,8 @@
       "audiences": ["engine-contributor", "ai-agent"],
       "classification": {"diataxis": "reference", "visibility": "internal", "human": true, "translation": "not-required"},
       "owner": "documentation", "state": "current", "disposition": "move-meta", "target": "Docs/_meta/external-project-evidence.md",
-      "sources": ["BuildTools/ExternalProjectEvidence.json", "BuildTools/docs_external_evidence.py", "BuildTools/tests/test_docs_external_evidence.py", "Docs/documentation-manifest.json", "Docs/ProductionDocumentationPlan.md", "Docs/en/contributing/documentation/index.md"]
+      "sources": ["BuildTools/ExternalProjectEvidence.json", "BuildTools/docs_external_evidence.py", "Docs/documentation-manifest.json", "Docs/ProductionDocumentationPlan.md", "Docs/en/contributing/documentation/index.md"],
+      "historical_sources": ["BuildTools/tests/test_docs_external_evidence.py"]
     },
     "Docs/ProductionDocumentationPlan.md": {
       "id": "production-documentation-plan",
@@ -4506,7 +4560,8 @@
       "audiences": ["engine-contributor", "ai-agent"],
       "classification": {"diataxis": "none", "visibility": "internal", "human": true, "translation": "not-required"},
       "owner": "scripting", "state": "active-plan", "disposition": "retain", "target": "Docs/_meta/RuntimeBuildLocalePlan.md",
-      "sources": ["BuildTools/buildtools.py", "BuildTools/tests/test_runtime_build_environment.py", "Docs/en/how-to/scripting/managed-csharp.md", "Docs/en/reference/changelog.md"]
+      "sources": ["BuildTools/buildtools.py", "Docs/en/how-to/scripting/managed-csharp.md", "Docs/en/reference/changelog.md"],
+      "historical_sources": ["BuildTools/tests/test_runtime_build_environment.py"]
     },
     "Docs/_meta/ManagedRuntimeReadyValidationPlan.md": {
       "id": "managed-runtime-ready-validation-plan",
@@ -4514,7 +4569,8 @@
       "audiences": ["engine-contributor", "ai-agent"],
       "classification": {"diataxis": "none", "visibility": "internal", "human": true, "translation": "not-required"},
       "owner": "scripting", "state": "active-plan", "disposition": "retain", "target": "Docs/_meta/ManagedRuntimeReadyValidationPlan.md",
-      "sources": ["BuildTools/buildtools.py", "BuildTools/cmake/stages/ThirdParty.cmake", "BuildTools/tests/test_managed_runtime_ready_validation.py", "BuildTools/tests/test_managed_runtime_workspace_cache.py", "BuildTools/tests/test_buildtools_prebuilt_managed_runtime.py", "Docs/en/how-to/scripting/managed-csharp.md", "Docs/en/reference/changelog.md"]
+      "sources": ["BuildTools/buildtools.py", "BuildTools/cmake/stages/ThirdParty.cmake", "Docs/en/how-to/scripting/managed-csharp.md", "Docs/en/reference/changelog.md"],
+      "historical_sources": ["BuildTools/tests/test_managed_runtime_ready_validation.py", "BuildTools/tests/test_managed_runtime_workspace_cache.py", "BuildTools/tests/test_buildtools_prebuilt_managed_runtime.py"]
     }
   }
 }

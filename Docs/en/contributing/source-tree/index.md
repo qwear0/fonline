@@ -20,7 +20,7 @@ This guide explains where to start when navigating `Source/`. It complements the
 - Changing scripting integration or script-visible native methods: `Source/Scripting/`.
 - Changing developer tools, baking, mapper, or editors: `Source/Tools/`.
 - Changing application/window/rendering abstraction: `Source/Frontend/`.
-- Looking for behavior examples or regression coverage: `Source/Tests/`.
+- Looking for executable integration examples: `Examples/`; choose proportionate checks through [Verification and tests](../testing/).
 
 Route to the owning directory first. Before naming a concrete file, helper, or
 target, verify its exact spelling in the current source inventory; adjacent
@@ -101,9 +101,10 @@ Application and rendering abstraction. It contains `Application*.cpp` variants a
 
 This layer is relevant for native client startup, headless modes, testing, Web, and Android platform notes.
 
-## `Source/Tests/`
+<a id="sourcetests"></a>
+## Verification sources
 
-The tests are the executable knowledge base for many engine subsystems. File names are grouped by subsystem (`Test_Geometry.cpp`, `Test_NetBuffer.cpp`, `Test_DataBase.cpp`, `Test_AngelScript*.cpp`, `Test_ManagedScriptBaker.cpp`, etc.). Expand the [Source/Tests README](../../../../Source/Tests/README.md) when adding new test categories, and reconcile [Testing](../../../Testing.md) against the current runner and generated targets.
+This fork removed its own native, managed, Python, and debugger unit suites. Current evidence comes from the owning implementation, existing source/content validators, compiler and bake output, and direct application use. `Examples/` retains runnable integration routes; vendored tests and runtime diagnostics are separate. Do not restore removed suites to satisfy an inherited guide.
 
 ## Navigation anti-patterns
 

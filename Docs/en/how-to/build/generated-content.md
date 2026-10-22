@@ -51,7 +51,7 @@ The complete example configurations in `Examples/MinimalMultiplayer`,
 `Source/Common/Settings.inc`. After changing Engine settings, run
 `python generate_config.py` in each directory and include the resulting
 `.fomain` changes. Verify each with `python generate_config.py --check` and run
-`python BuildTools/tests/test_docs_examples.py` from the Engine root before
+`python BuildTools/docs_examples.py --check` from the Engine root before
 packaging or staging those examples.
 
 The embedding project calls the staged BuildTools pipeline:
@@ -69,7 +69,7 @@ BuildPackages()
 FinalizeProjectGeneration()
 ```
 
-`SetupCodeGeneration()` consumes Engine and project native sources, code-generation tags, templates, and project options. `ForceCodeGeneration` is the dependency used by script compilation and baking targets, so stale native metadata cannot be hidden behind an unrelated incremental resource bake.
+`SetupCodeGeneration()` consumes Engine and project native sources, code-generation tags, templates, and project options. Setting defaults are complete macro arguments: quotes and nested parentheses protect embedded commas, so `Web.BackgroundColor` retains the single string `rgb(0, 0, 0)` rather than three truncated values. `ForceCodeGeneration` is the dependency used by script compilation and baking targets, so stale native metadata cannot be hidden behind an unrelated incremental resource bake.
 
 Reconfigure after changing CMake options, source registration, stage hooks, generated templates, or the Engine pin. Build the smallest target that compiles the affected generated source.
 

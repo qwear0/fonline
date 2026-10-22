@@ -371,7 +371,11 @@ This keeps file parsing generic while letting server/tools decide how loaded cri
 
 Map resource production is adjacent to baking. For `MapBaker`, see [Baking Pipeline](content-pipeline/baking.md).
 
-## Tests to inspect
+<a id="tests-to-inspect"></a>
+
+## Historical test inventory
+
+The suites below were removed from this fork and are not runnable prerequisites. Build the affected role and use existing bake, Mapper round-trip and client/server movement paths; new automated tests require an explicit request.
 
 Relevant tests include:
 
@@ -396,7 +400,7 @@ Relevant tests include:
 
 ## Validation checklist
 
-1. Run movement/path/map-loader tests relevant to the changed algorithm.
+1. Build affected geometry/movement consumers and exercise the changed path/loader behavior through the existing application route, including rejected and boundary inputs.
 2. Test both direct and multihex movement if blocker logic changes.
 3. Validate `FO_GEOMETRY` assumptions when changing directions/projection.
 4. Validate map loading with real baked map resources from an embedding project when parser behavior changes.

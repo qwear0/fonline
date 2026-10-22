@@ -5,7 +5,7 @@ locale: ru
 document_id: frontend-rendering
 permalink: /Docs/ru/explanation/rendering/
 ---
-<!-- docs-translation: {"document_id":"frontend-rendering","locale":"ru","source_path":"Docs/en/explanation/rendering/index.md","source_sha256":"d1f65368f9bb0b9bd1b37c478b398ed1cb12c06064df1603325e5c992d208e96"} -->
+<!-- docs-translation: {"document_id":"frontend-rendering","locale":"ru","source_path":"Docs/en/explanation/rendering/index.md","source_sha256":"c44a29ee3dd55c9de49e3825071c72decd0435f6a6111a83785c352a1be863f7"} -->
 # Frontend и рендеринг
 
 ## Отображение ограниченного обзора карты
@@ -615,7 +615,7 @@ level 10.0. Сборка без 3D может принять level 9.3, если
 Для 9.3 размер atlas ограничен 4096 пикселями, point-list draws выполняются
 без index buffer. Levels 9.1 и 9.2 не поддерживаются.
 
-При создании устройства сначала запрашивается feature level 11.1. Если старый runtime Direct3D 11.0 отвергает весь список с `E_INVALIDARG` (в частности, Windows 7 без platform update), движок повторяет тот же запрос hardware или WARP без 11.1. Остальные ошибки остаются обычными ошибками создания устройства. Журнал содержит выбранный feature level и, если доступно, DXGI adapter, идентификаторы vendor/device, версию пользовательского драйвера и объём видеопамяти.
+Swap chain создаётся через DXGI factory, полученную от adapter созданного device, а не через независимо созданную factory: на пути Windows 7 это существенное ограничение совместимости. При создании устройства сначала запрашивается feature level 11.1. Если старый runtime Direct3D 11.0 отвергает весь список с `E_INVALIDARG` (в частности, Windows 7 без platform update), движок повторяет тот же запрос hardware или WARP без 11.1. Остальные ошибки остаются обычными ошибками создания устройства. Журнал содержит выбранный feature level и, если доступно, DXGI adapter, идентификаторы vendor/device, версию пользовательского драйвера и объём видеопамяти.
 
 - создаёт D3D device, swap chain и render-target resources;
 - не фиксирует refresh rate windowed swap chain, оставляя выбор desktop compositor;
@@ -765,7 +765,7 @@ rotation/projection; setup-time positive и draw-time negative offsets
 
 Рендеринг использует два разных размера:
 
-- **Logical screen size** — `Settings.View.ScreenWidth/ScreenHeight`. В этой системе координат игра рисует `_rtMain`, projection и GUI/ImGui.
+- **Logical screen size** — живой `GetScreenSize()` окна, использующий `Application::ScreenState.Size` либо `_virtualScreenSize` виртуального окна. `View.ScreenWidth/ScreenHeight` — неизменяемые входы запуска, не текущее состояние. В этой системе координат игра рисует `_rtMain`, projection и GUI/ImGui.
 - **Backbuffer size** — реальный output surface: pixels OS window, monitor fullscreen или virtual render texture embedded client.
 
 Игра всегда рисует `_rtMain` в logical size. Финальный blit при
@@ -786,9 +786,7 @@ boundary внутри эффекта.
 ### Windowed
 
 Window pixels и logical size поддерживаются равными. Событие
-`SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED` вне fullscreen записывает
-`Settings.ScreenWidth/Height`, вызывает `OnWindowSizeChanged`, а
-`OnScreenSizeChanged` — только при реальном изменении settings.
+`SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED` вне fullscreen обновляет живое screen state, вызывает `OnWindowSizeChanged`, а `OnScreenSizeChanged` — только при фактическом изменении logical size.
 `Game.SetResolution(w, h)` сначала меняет logical size, затем OS window, если
 клиент не fullscreen и не virtual; последующее OS event не вызывает повторный
 GUI/map refresh того же logical resolution.
@@ -799,7 +797,7 @@ GUI/map refresh того же logical resolution.
 size. Fullscreen resolution означает **logical render size**:
 `Game.SetResolution` меняет logical size, а blit aspect-fits его в monitor.
 Startup/toggle/pixel-size events fullscreen обновляют renderer/backbuffer, но не
-перезаписывают `Settings.ScreenWidth/Height` и не вызывают
+перезаписывают выбранный живой logical size и не вызывают
 `OnScreenSizeChanged`, иначе выбранное logical resolution схлопнулось бы к
 monitor size. `AppWindow::ToggleFullscreen()` помечает transition до SDL call,
 потому что queued event может прийти при старых flags. Bars ожидаемы только при
@@ -820,18 +818,9 @@ monitor size. `AppWindow::ToggleFullscreen()` помечает transition до S
 - game render идёт в `_rtMain` logical size, затем aspect-fit в `_virtualRenderTex` physical size;
 - host aspect-fit/center-ит virtual texture в display rect и обратным тем же mapping переводит input, поэтому black bars не искажают local mouse coordinates.
 
-Resolution change обновляет settings **владеющего engine**, не host. Virtual
-`SetScreenSize` хранит logical value в `_virtualScreenSize`, а
-`SpriteManager::SetScreenSize` отражает его в собственные
-`Settings.ScreenWidth/Height` до handlers. `SetResolution` не вызывает
-`SetWindowSize` для virtual window и не меняет `_virtualSize`; host layout и
-render texture не resize-ятся. В standalone один engine, поэтому settings
-engine и `App->Settings` совпадают.
+Resolution change принадлежит **живому состоянию владеющего окна**, а не immutable settings движка или host. Virtual `SetScreenSize`/`GetScreenSize` используют `_virtualScreenSize`, реальное окно — `Application::ScreenState.Size`. `SpriteManager` следует за своим окном и его size-change event. `SetResolution` не вызывает `SetWindowSize` для virtual window, а `SetScreenSize` не меняет `_virtualSize`; host layout и render texture не resize-ятся.
 
-GUI re-center выполняется через `OnScreenSizeChanged` →
-`Gui::Callback_OnResolutionChanged()`, заново layout-ящий screens по
-`Settings.View.ScreenWidth/Height`; `Anchor: None` центрируется по parent/screen.
-Таким образом, `_rtMain` задаёт pixels, а settings — layout coordinates.
+Layout GUI проекта должен читать живой logical size и обновляться по клиентскому `OnScreenSizeChanged`. `_rtMain` и layout coordinates должны соответствовать `GetScreenSize()`; immutable startup settings после resize дают устаревшую геометрию. High-level callbacks `Gui` и политика anchors принадлежат проекту, а не GUI-контракту Engine.
 
 Local-map viewport при фактическом logical size change сразу recenter-ится на
 chosen critter. `MapView` берёт logical client size, а не physical backbuffer;

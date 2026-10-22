@@ -13,6 +13,10 @@ permalink: /Docs/en/contributing/decisions/0003-manifest-backed-ai-documentation
 - Amended: 2026-08-01 for locale-aware delivery and deterministic evaluation ownership
 - Owners: documentation, tooling
 
+## Fork applicability
+
+The delivery architecture is retained; the public domain and dated budget/publication entries below describe upstream history, not this fork's deployment. Local generated delivery files live in ignored `Workspace/Documentation/` via `documentation_metadata.py`, and rendering exports logical root endpoints into `Workspace/DocumentationSite/`. Archived workflows do not execute. Use existing local generators/checks; removed unit suites are not prerequisites and publication requires separate authority.
+
 ## Context
 
 FOnline documentation must work as a standalone source for game developers and AI systems without creating separate, contradictory corpora. The repository already owns canonical Markdown, generated contract JSON, a document/source manifest, and a GitHub Pages/Jekyll route at `https://fonline.ru`.
@@ -28,7 +32,7 @@ Hand-maintaining those surfaces would duplicate the documentation index and drif
 ## Decision
 
 1. `Docs/documentation-manifest.json` is the only source for AI-delivery membership, stable document IDs, audiences, state, ownership, locale policy, publication URL, and source provenance.
-2. `BuildTools/docs_ai_delivery.py` deterministically generates three root-level static files:
+2. `BuildTools/docs_ai_delivery.py` deterministically generates three logical public-root static endpoints, locally stored under `Workspace/Documentation/`:
    - `llms.txt`, a public current-page route grouped by Diataxis kind with an explicitly ordered start section and source-ref-pinned clean Markdown links;
    - `llms-full.txt`, a bounded context bundle of public current Markdown;
    - `docs-manifest.json`, a public machine-readable projection of the source manifest.
@@ -60,7 +64,7 @@ Hand-maintaining those surfaces would duplicate the documentation index and drif
 9. `Docs/ai-evaluation.json` and its deterministic generated report measure retrieval and source-evidence freshness without claiming model answer correctness. Model-family runs follow the separately reviewed protocol in `Docs/en/contributing/documentation/ai-evaluation.md`.
 10. English remains canonical while reviewed Russian records retain the same stable IDs with locale-qualified variants and translation-freshness metadata. AI delivery exposes only current locale records and never treats a missing or stale mirror as current.
 11. The generated files are discovery and transport surfaces, not new normative owners. Engine source/tests, canonical Markdown, and generated contract models retain the precedence declared by the source manifest.
-12. Focused tests, standalone validation, and GitHub Actions check schema, filters, URLs, hashes, deterministic output, byte budget, workflow wiring, and freshness.
+12. Existing local generation and standalone checks validate schema, filters, URLs, hashes, deterministic output, byte budget and freshness. The former focused tests and GitHub Actions wiring are historical; they do not run in this fork.
 
 ## Consequences
 
@@ -90,11 +94,9 @@ Hand-maintaining those surfaces would duplicate the documentation index and drif
 
 ## Verification
 
-- `python BuildTools/tests/test_docs_ai_delivery.py`
 - `python BuildTools/docs_ai_delivery.py --check`
-- `python BuildTools/tests/test_docs_validate.py`
 - `python BuildTools/docs_validate.py`
-- GitHub Pages-compatible rendering through the existing `Build documentation site` job
+- Separately authorized local GitHub Pages-compatible rendering and artifact inspection; the archived `Build documentation site` job is not an active check.
 
 ## Related documents
 

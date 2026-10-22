@@ -5,7 +5,7 @@ locale: ru
 document_id: adr-public-api-stability-contract
 permalink: /Docs/ru/contributing/decisions/0002-public-api-stability-contract.html
 ---
-<!-- docs-translation: {"document_id":"adr-public-api-stability-contract","locale":"ru","source_path":"Docs/en/contributing/decisions/0002-public-api-stability-contract.md","source_sha256":"d2af696a9e8e46aa48e2e23fe3c6d484c49509a5092818069bcbed2471d2f5cc"} -->
+<!-- docs-translation: {"document_id":"adr-public-api-stability-contract","locale":"ru","source_path":"Docs/en/contributing/decisions/0002-public-api-stability-contract.md","source_sha256":"a0b81ac73a41a073b6bd2d663143435d6ef42e484b7976900602e05cf92e1a92"} -->
 # ADR-0002: контракт стабильности публичного API
 
 - Статус: принято
@@ -13,6 +13,10 @@ permalink: /Docs/ru/contributing/decisions/0002-public-api-stability-contract.ht
 - Изменено: 2026-08-02 после принятия владельцами экспериментального scope-контракта инвентаря native-codegen
 - Изменено: 2026-10-04 для актуального API, сохранения смысла, явных ошибок миграции и версий каждого обновления master
 - Владельцы: скрипты, runtime, сборка и выпуск, документация
+
+## Применимость к форку
+
+Правила current-only API, сохранения смысла, миграций и version progression остаются обязательными. Enforcement локальный: workflows архивированы, собственные unit suites удалены. Существующие model/comparator checks, затронутые compile/bake и application evidence по-прежнему нужны; новые автоматизированные тесты требуют явного разрешения. Исторические upstream test/CI results не доказывают выполнение в этом checkout.
 
 ## Контекст
 
@@ -42,7 +46,7 @@ FOnline предоставляет игровым проектам много п
 1. Объявления в исходном коде, metadata annotations, парсеры, объявления настроек, CMake helpers и тесты авторитетны для текущего поведения.
 2. Генерируемые канонические модели контрактов нормализуют эти источники в стабильные идентификаторы и машиночитаемый JSON.
 3. Справочные страницы для людей, локализованные индексы публичных контрактов и корневой legacy-маршрут `PUBLIC_API.md` генерируются из этих моделей и дополняются примерами и объяснениями, ориентированными на задачи.
-4. Ручной текст не должен поддерживать количества объявлений, сигнатуры или междоменные реестры, которые можно сгенерировать. `Docs/generated/source-inventory.json` остаётся независимым реестром исходников; семнадцать моделей контрактов владеют соответствующими повторно используемыми поверхностями.
+4. Ручной текст не должен поддерживать количества объявлений, сигнатуры или междоменные реестры, которые можно сгенерировать. `Docs/generated/source-inventory.json` остаётся независимым реестром исходников; текущим перечнем modeled domains владеет generated [индекс публичных контрактов](../../reference/public-contract/index.md).
 5. Документация проекта может описывать использование API движка, но не может повышать метку стабильности этого API.
 
 ### Классификация, принадлежащая исходному коду
@@ -83,15 +87,15 @@ Contract tags не заменяют проверку владельцем. Пи�
 
 ### Автоматическая проверка генерируемых контрактов
 
-`BuildTools/docs_contract_diff.py` сравнивает все семнадцать моделируемых доменов с теми же путями на базовом SHA pull request или ревизии перед push: native API, CMake, основной BuildTools CLI, package, helper CLI, native extension, prototype, map, model, text, effect, image, particle, font, audio, video, AiControl protocol. Специализированный нативный слой `BuildTools/docs_api_diff.py` сохраняет семантику символов и перегрузок; остальные модели сопоставляют принадлежащие исходникам стабильные идентификаторы. Все домены классифицируют добавления, документацию, политику и breaking changes относительно стабильности baseline, поэтому одновременное понижение до `internal` не может обойти проверку.
+`BuildTools/docs_contract_diff.py` сравнивает все текущие моделируемые домены с теми же путями на базовом SHA pull request или ревизии перед push: native API, CMake, основной BuildTools CLI, package, helper CLI, native extension, prototype, map, model, text, effect, image, particle, font, audio, video, AiControl protocol. Специализированный нативный слой `BuildTools/docs_api_diff.py` сохраняет семантику символов и перегрузок; остальные модели сопоставляют принадлежащие исходникам стабильные идентификаторы. Все домены классифицируют добавления, документацию, политику и breaking changes относительно стабильности baseline, поэтому одновременное понижение до `internal` не может обойти проверку.
 
 Для вспомогательных скриптов каждый исполняемый `create_parser()` остаётся источником истины синтаксиса, а `BuildTools/HelperCliInterface.json` владеет стабильной идентичностью helper, назначением, аудиторией, владельцем вызова и явными исключениями. Проверка AST inventory отклоняет новый открытый helper parser, который не смоделирован и не отнесён к другому каноническому домену. Домен helper CLI остаётся `internal`, пока владелец не утвердит версионированную политику поддержки.
 
-Для нативного C++ проекта `BuildTools/NativeExtensionInterface.json` моделирует роли исходников, используемые текущими targets, поддерживаемые сигнатуры hooks, fallback, call sites и правила bindings. Структурные тесты и тесты генератора сопоставляют его с текущим поведением CMake/codegen; runtime input он не является. Домен имеет статус `experimental` и совместим по исходному коду только на закреплённой ревизии движка; он не обещает бинарный ABI между ревизиями. Проектные реализации и внешние SDK остаются вне контракта движка.
+Для нативного C++ проекта `BuildTools/NativeExtensionInterface.json` моделирует роли исходников, используемые текущими targets, поддерживаемые сигнатуры hooks, fallback, call sites и правила bindings. Существующий generator проверяет declared source anchors; configure/compile/bake затронутых ролей и application use устанавливают integration behavior; runtime input он не является. Домен имеет статус `experimental` и совместим по исходному коду только на закреплённой ревизии движка; он не обещает бинарный ABI между ревизиями. Проектные реализации и внешние SDK остаются вне контракта движка.
 
 Breaking change объявления `stable`, `experimental` или `deprecated` требует точной записи схемы v2 в накопительном реестре `Docs/contract-change-dispositions.json`. Запись содержит домен, классификацию владельца, обоснование, миграцию, release note и обработку совместимости и привязана к change ID и baseline/current digest соответствующего домена. Изменения источника модели, области модели и контракта уровня модели также требуют решения. Изменения внутренних записей остаются видимыми в отчёте, но не становятся обещаниями совместимости.
 
-CI записывает JSON/Markdown-отчёты для пары ревизий в `Workspace/`, проверяет отсутствие пропущенных решений и загружает отчёт даже при ошибке. Текущий сайт не публикует исторические снимки только ради этой проверки.
+Локально запускайте comparator с точными baseline/target, сохраняйте JSON/Markdown revision-pair reports в `Workspace/` и требуйте всех dispositions. Архивное upstream CI upload behavior не действует в этом форке. Текущий сайт не публикует исторические снимки только ради этой проверки.
 
 ### Версионирование
 
@@ -128,9 +132,9 @@ CI записывает JSON/Markdown-отчёты для пары ревизи�
 - `BuildTools/docs_inventory.py --check` закрепляет независимый inventory экспортов, тестов и настроек, полученный из исходного кода.
 - `BuildTools/docs_api.py --check` закрепляет каноническую модель нативной кодогенерации, включая family/symbol IDs, описания, явное или default происхождение контракта, metadata жизненного цикла, сигнатуры и происхождение объявления.
 - `BuildTools/docs_reference.py --check` закрепляет сгенерированные страницы для людей из модели нативной кодогенерации.
-- Фокусные тесты доказывают, что селекторы семейства `ApiContract` охватывают перегрузки, устаревшие count и hash scope-контракта отклоняются, точные переопределения scope работают, замены deprecated разрешаются, некорректные селекторы отклоняются, а аннотации только для документации не изменяют compatibility hash.
-- `BuildTools/docs_contract_diff.py --enforce`, специализированный API comparator и их фокусные тесты отклоняют removal, shape change и stability withdrawal публичных baseline-записей без решения, устаревшие digest и изменения контракта модели или parser во всех семнадцати генерируемых доменах.
-- `BuildTools/docs_public_api.py --check` пересобирает корневой индекс контрактов из этих семнадцати моделей и отклоняет устаревшие ссылки доменов, метки или количества нативных символов.
+- Source/codegen review и существующая API generation должны сохранять overload-family selection, fail-closed scope pins, exact overrides, lifecycle validation и исключение documentation-only metadata из runtime hashing. Удалённые focused suites не являются текущими prerequisites.
+- `BuildTools/docs_contract_diff.py --enforce` и specialized API comparator проверяют undisposed baseline-public removals, shape changes, stability withdrawals, stale digests и model/parser contracts всех текущих generated domains.
+- `BuildTools/docs_public_api.py --check` проверяет generated locale contract indexes по текущим моделям и отклоняет устаревшие ссылки доменов, метки или количества нативных символов.
 - Широкая классификация `stable` остаётся задачей владельцев и политики выпусков; закреплённый инвентарём scope со статусом `experimental` сам по себе не обещает стабильную совместимость между ревизиями.
 - Code review должен отклонять текст, который представляет неклассифицированный доступный символ как stable.
 

@@ -7,7 +7,7 @@ permalink: /Docs/ru/contributing/coding-contracts/nullability.html
 ---
 
 # Nullable-типы
-<!-- docs-translation: {"document_id":"nullability","locale":"ru","source_path":"Docs/en/contributing/coding-contracts/nullability.md","source_sha256":"ba79255cf2cce8d31b49bf02997ea78d9acc950f4ea846fe2647afb845e6686a"} -->
+<!-- docs-translation: {"document_id":"nullability","locale":"ru","source_path":"Docs/en/contributing/coding-contracts/nullability.md","source_sha256":"b8dc48b18641847407e9d8bb9397f4ad6f4ea13bf1db462f973a5a122a54355f"} -->
 > Документация принадлежит движку. Эта страница задает переиспользуемый
 > контракт компилятора, runtime и native-границы. Анализаторы проекта могут
 > вводить более строгую политику авторинга, но не являются частью контракта
@@ -32,7 +32,7 @@ permalink: /Docs/ru/contributing/coding-contracts/nullability.html
 
 Generated Managed sources включают nullable reference types и переносят тот же metadata nullable bit в C# `?` у ссылок entity, string и ref type. Value types этот bit не получают. Native `ptr<T>` становится non-null C# reference contract; `nptr<T>`, nullable property flag или nullable event/remote-call tag становится `T?`. Generated methods, properties, events, delegates и remote-call caller methods сохраняют это написание, чтобы Roslyn находил unchecked dereference и несовместимые assignments во время compile.
 
-C# annotations не гарантируют runtime ownership. Managed entity wrapper остаётся borrowed, после `await` может указывать на уничтоженную entity и требует нового resolve/validation вместе с server cover. Ожидаемое отсутствие сужайте обычной веткой `is null` / `is not null`. Для invariant используйте `Game.VerifyNotNull(value, message)` или `Game.Verify(...)` и сохраняйте narrowed non-null value; не подавляйте warning оператором `!`, если доказательство можно выразить явно.
+C# annotations не гарантируют runtime ownership. Managed entity wrapper остаётся borrowed, после `await` может указывать на уничтоженную entity и требует нового resolve/validation вместе с server cover. Ожидаемое отсутствие сужайте обычной веткой `is null` / `is not null`. Для invariant используйте `Invariant.VerifyNotNull(value, message)` или `Invariant.Verify(...)` и сохраняйте narrowed non-null value; не подавляйте warning оператором `!`, если доказательство можно выразить явно.
 
 Metadata declarations остаются авторитетными для всех backend. Nullable argument `///@ Event` или `///@ RemoteCall` порождает nullable C# parameter, а attributed handler `[Event]`, `[ServerRemoteCall]` или `[ClientRemoteCall]` должен сохранять тот же semantic contract. Managed validation включает compile generated project с nullable diagnostics, настроенные Roslyn analyzers и runtime callback/serialization test для допустимого null. Generation, async lifetime, analyzers и packaging описаны в [Managed C# scripting](../../how-to/scripting/managed-csharp.md).
 
@@ -48,7 +48,7 @@ Location? GetCritterLocation(Critter cr)
     if (cr.MapId == ZERO_IDENT) {
         return null;
     }
-    Map map = cr.GetMap();
+    Map? map = cr.GetMap();
     return map != null ? map.GetLocation() : null;
 }
 
@@ -496,7 +496,7 @@ Engine больше не поставляет прежнюю library AngelScript
 
 Когда проект предоставляет его, он выражает инвариант собственной server/client logic. Сбой означает bug, поэтому macro бросает исключение, а проект обязан оставлять эту проверку во всех конфигурациях, а не считать её debug-only assertion.
 
-Managed C# имеет принадлежащие Engine эквиваленты `Game.Verify`, `Game.VerifyNotNull` и `Game.Unreachable` в `Source/Scripting/Managed/CoreScripts/Verify.cs`; их nullable-flow annotations и throwing behavior описаны в [Скриптах Managed C#](../../how-to/scripting/managed-csharp.md).
+Managed C# предоставляет `Invariant.Verify`, `Invariant.VerifyNotNull` и `Invariant.Failed` в `Source/Scripting/Managed/CoreScripts/Invariant.cs`. Когда C# должен также распознать завершение пути с возвращаемым значением, пишите `throw Invariant.Unreachable(message, context...)`: `Unreachable` возвращает исключение, а не выбрасывает его. Nullable-flow annotations и поведение описаны в [Скриптах Managed C#](../../how-to/scripting/managed-csharp.md).
 
 #### `verify` и штатное восстановление
 
@@ -552,8 +552,7 @@ Script-to-script передача аргументов не полностью �
 ### Примечание по миграции
 
 Изменение source-incompatible для скриптов, записывавших потенциальный `null` в
-bare handle: destination теперь обязан быть `T?`. Inline test scripts в
-`Source/Tests/Test_*.cpp` обновлены вместе с runtime.
+bare handle: destination теперь обязан быть `T?`. Компилируйте затронутые роли скриптов проекта с текущим nullable-контрактом; прежние встроенные native test suites в этом форке удалены.
 
 Проект после миграции должен включать
 `asEP_DISALLOW_NULLABLE_TO_NON_NULLABLE`. Оставшийся runtime exception обычно

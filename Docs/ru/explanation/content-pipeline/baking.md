@@ -5,7 +5,7 @@ document_id: baking-pipeline
 locale: ru
 permalink: /Docs/ru/explanation/content-pipeline/baking.html
 ---
-<!-- docs-translation: {"document_id":"baking-pipeline","locale":"ru","source_path":"Docs/en/explanation/content-pipeline/baking.md","source_sha256":"02fc683607372cd5677e520c61921d8e9dc0cd9bcb0003dc18cbfa06128581cd"} -->
+<!-- docs-translation: {"document_id":"baking-pipeline","locale":"ru","source_path":"Docs/en/explanation/content-pipeline/baking.md","source_sha256":"52b4c16f4f968f6165f96a133214b8684b71478c9634339f3f3778912c29b2b9"} -->
 # Конвейер запекания ресурсов
 
 Bake выдаёт loose outputs для каждого target. Затем packaging фильтрует логический pack по target и пишет детерминированную базу `.fores`; Embedded внутри executable остаётся ZIP. Клиентское обновление может соединить базу с одним append-only writable `.patch.fores`, а удаляемый `Resources.foindex` ускоряет общий поиск. Бинарный формат, хеши, проверки и восстановление описаны в [формате пакетов ресурсов](../../../ResourcePackFormat.md), синхронизация клиента — в [разделении client runtime и updater](../runtime/client-updater.md). `BuildTools/measure_resource_packs.py` сравнивает реальные форматы baked tree с необязательным readback; `analyze_resource_corpus.py` оценивает распределение исходников и стоимость индекса без записи packs.
@@ -81,27 +81,6 @@ Bake выдаёт loose outputs для каждого target. Затем packagi
 - `Source/Tools/AngelScriptBaker.cpp`
 - `Source/Tools/ManagedScriptBaker.h`
 - `Source/Tools/ManagedScriptBaker.cpp`
-- `Source/Tests/Test_BakerSetup.cpp`
-- `Source/Tests/Test_MetadataBaker.cpp`
-- `Source/Tests/Test_ConfigBaker.cpp`
-- `Source/Tests/Test_RawCopyBaker.cpp`
-- `Source/Tests/Test_AudioBaker.cpp`
-- `Source/Tests/Test_ImageBaker.cpp`
-- `Source/Tests/Test_EffectBaker.cpp`
-- `Source/Tests/Test_ProtoBaker.cpp`
-- `Source/Tests/Test_ProtoTextBaker.cpp`
-- `Source/Tests/Test_MapBaker.cpp`
-- `Source/Tests/Test_TextBaker.cpp`
-- `Source/Tests/Test_ModelBaker.cpp`
-- `Source/Tests/Test_ParticleBaker.cpp`
-- `Source/Tests/Test_ModelMeshData.cpp`
-- `Source/Tests/Test_ModelAnimationData.cpp`
-- `Source/Tests/Test_ModelAnimationConverter.cpp`
-- `Source/Tests/Test_ModelSkeletonCompatibility.cpp`
-- `Source/Tests/Test_ModelSourceLoader.cpp`
-- `Source/Tests/Test_OzzAnimation.cpp`
-- `Source/Tests/Test_AngelScriptBaker.cpp`
-- `Source/Tests/Test_ManagedScriptBaker.cpp`
 
 ## Что делает запекание
 
@@ -123,9 +102,9 @@ Bake выдаёт loose outputs для каждого target. Затем packagi
 
 Это необходимо на файловых системах без учёта регистра: запись файла или создание каталога повторно использует старую directory entry, outdated sweep сравнивает пути без учёта регистра, а incremental bake может пропустить якобы актуальный artifact. Runtime lookup остаётся точным, поэтому старое написание превращается в неразрешимый ресурс.
 
-Ожидаемые имена поступают из `BakeChecker`, поэтому baker с отличающимся от исходника выходным именем регистрирует путь результата. `ImageBaker` регистрирует Fallout-кадры криттеров `.frm` в нижнем регистре, а набор направлений `.fr0`..`.fr5` — как один `.fofrm` для криттеров или `.frm` в остальных каталогах. Так согласование не заменяет имя, ожидаемое runtime lookup, написанием исходника. `ScanModeRegistersTheResourceEachSourceBakesTo` сравнивает зарегистрированные имена с записанными ресурсами.
+Ожидаемые имена поступают из `BakeChecker`, поэтому baker с отличающимся от исходника выходным именем регистрирует путь результата. `ImageBaker` регистрирует Fallout-кадры криттеров `.frm` в нижнем регистре, а набор направлений `.fr0`..`.fr5` — как один `.fofrm` для криттеров или `.frm` в остальных каталогах. Так согласование не заменяет имя, ожидаемое runtime lookup, написанием исходника. При изменении mapping сравните зарегистрированные и записанные пути в настоящем bake; документационная проверка не исполняет scan reconciliation.
 
-Согласование выполняется один раз за bake по уже созданным output, не добавляет работу к каждой записи, не удаляет и не пересоздаёт содержимое и исправляет даже пропущенные как up-to-date artifacts. На case-sensitive файловой системе старое имя удаляет обычный sweep. Контракт закреплён тестами `BakerMasterRenamesStaleCasedOutputAfterCaseOnlyInputRename`, `BakerMasterRenamesStaleCasedOutputDirAfterCaseOnlyInputDirRename` и `DiskFileSystemNameCase`.
+Согласование выполняется один раз за bake по уже созданным output, не добавляет работу к каждой записи, не удаляет и не пересоздаёт содержимое и исправляет даже пропущенные как up-to-date artifacts. На case-sensitive файловой системе старое имя удаляет обычный sweep. Проверяйте case-only переименования на фактической файловой системе; результаты удалённой unit suite не являются текущей приёмкой.
 
 ## Владение выходным каталогом и конкурирующие процессы
 
@@ -220,11 +199,11 @@ AddBakingTarget(Game_PublicResources
 
 Этот путь публикации используют и outputs `MasterBaker`, и `BakerDataSource::WriteData`. Отчёты запекания, маркер успешного завершения `Resources.build-hash` и снимки dependency cache Effekseer также публикуются целиком атомарно. Их содержимое, порядок подтверждения успешного запекания и правила timestamp для неизменённых ресурсов сохраняются.
 
-Windows пытается применить OS/filesystem-specific POSIX rename при отказе обычной замены. Это не гарантирует замену любого загруженного образа или CRT-held файла: открытый потребитель может отклонить публикацию, и Baker обязан сообщить об отказе, сохранив прежний результат. Engine disk readers разрешают delete sharing и сохраняют прежние байты после успешной замены. Публикацию managed assemblies проверяйте настоящим backend/bake-маршрутом; один shared-reader тест не доказывает все режимы mapping. Helper сбрасывает стадию без directory synchronization и обещаний сохранности rename при отключении питания.
+Windows пытается применить OS/filesystem-specific POSIX rename при отказе обычной замены. Это не гарантирует замену любого загруженного образа или CRT-held файла: открытый потребитель может отклонить публикацию, и Baker обязан сообщить об отказе, сохранив прежний результат. Engine disk readers разрешают delete sharing и сохраняют прежние байты после успешной замены. Публикацию managed assemblies проверяйте настоящим backend/bake-маршрутом; наблюдение одного shared-reader сценария не доказывает все режимы mapping. Helper сбрасывает стадию без directory synchronization и обещаний сохранности rename при отключении питания.
 
-`Source/Tests/Test_DiskFileSystem.cpp` проверяет замену при открытом читателе,
-эксклюзивное создание без обрезания, сохранность назначения и удаление временного
-файла после ошибки публикации. Низкоуровневым контрактом владеет
+Проверяйте публикацию через настоящий потребляющий bake, при необходимости с
+открытым reader; результаты удалённой unit suite не являются текущим
+доказательством. Низкоуровневым контрактом владеет
 [Essentials](../../reference/native/essentials.md#файловая-система-сжатие-сокеты-и-рабочие-потоки).
 
 ### `BaseBaker`
@@ -551,56 +530,43 @@ Generated Ozz rig является единственным production clip/pose
 
 Это отдельные targets от resource baking, но они находятся в одном preparation stage, потому что generated/baked runtime inputs образуют общий build workflow.
 
-## Какие тесты проверять
+<a id="какие-тесты-проверять"></a>
 
-Focused coverage находится в `Source/Tests/`:
+## Граница проверки
 
-- `Test_BakerSetup.cpp`
-- `Test_ConfigBaker.cpp`
-- `Test_MetadataBaker.cpp`
-- `Test_RawCopyBaker.cpp`
-- `Test_AudioBaker.cpp`
-- `Test_ImageBaker.cpp`
-- `Test_EffectBaker.cpp`
-- `Test_ProtoBaker.cpp`
-- `Test_ProtoTextBaker.cpp`
-- `Test_MapBaker.cpp`
-- `Test_TextBaker.cpp`
-- `Test_ModelBaker.cpp`
-- `Test_ParticleBaker.cpp`
-- `Test_ModelMeshData.cpp`
-- `Test_ModelAnimationData.cpp`
-- `Test_ModelAnimationConverter.cpp`
-- `Test_ModelSkeletonCompatibility.cpp`
-- `Test_ModelSourceLoader.cpp`
-- `Test_OzzAnimation.cpp`
-- `Test_AngelScriptBaker.cpp`
-- `Test_ManagedScriptBaker.cpp`
+Собственные native, managed, Python и debugger unit suites удалены из форка.
+Не восстанавливайте их и не включайте удалённые test/coverage options ради
+исторических инструкций. Проверки документации инспектируют model/source
+контракты, но не исполняют конвертацию, публикацию ресурсов, rendering или
+аудио-callbacks.
 
-Выбирайте самый узкий тест, покрывающий изменённый baker. Сгенерированные проектом имена CMake targets следует узнавать из preset/build files проекта, а не фиксировать в Engine doc.
+Используйте минимальную затронутую сборку проекта и существующий bake/application
+маршрут. Имена generated targets берите из preset/build files проекта. Сохраняйте
+точные ревизии, конфигурацию, входы, логи, пути выхода и наблюдаемые ограничения.
+Датированный исторический отчёт не является приёмкой текущего дерева.
 
 ## Маршрутизация изменений
 
-- Новый baker: изменить `Source/Tools/*Baker.*`, зарегистрировать в `BaseBaker::SetupBakers()` или `SetupBakersHook()`, добавить focused tests.
+- Новый baker: изменить `Source/Tools/*Baker.*`, зарегистрировать в `BaseBaker::SetupBakers()` или `SetupBakersHook()`, проверить существующим application-маршрутом.
 - Аргументы команд: обновить `ScriptsAndBaking.cmake`.
-- Resource build hash: обновить `MasterBaker::BakeAllInternal` в `Source/Tools/Baker.cpp` и build tests; запись marker должна оставаться внутри output lock.
+- Resource build hash: обновить `MasterBaker::BakeAllInternal` в `Source/Tools/Baker.cpp` и соответствующую build/bake проверку; запись marker должна оставаться внутри output lock.
 - Metadata: обновить `MetadataBaker.*` и [Generated API and Metadata](../../reference/metadata/index.md).
-- Prototype: обновить `PrototypeFormatInterface.json`, [Prototype Format](../../how-to/content/prototype-format.md), model/reference, focused test и aggregate contract diff.
-- Map: обновить `MapFormatInterface.json`, [Map Format](../../how-to/content/map-format.md), reference, focused/native tests и project rebake.
-- Image/sprite: обновить `ImageFormatInterface.json`, [Image and Sprite Formats](../../how-to/content/image-format.md), tests, rebake и visible inspection.
-- Fonts: обновить `FontFormatInterface.json`, [Font Formats](../../how-to/content/font-format.md), tests, rebake и typography inspection.
-- Audio: обновить `AudioInterface.json`, [Audio](../../how-to/content/audio.md), tests, rebake и audible inspection на заявленных платформах.
-- Video: обновить `VideoInterface.json`, [Video](../../how-to/content/video.md), tests, rebake и visible inspection.
-- Effects: обновить `EffectFormatInterface.json`, [Effect Format](../../how-to/content/effect-format.md), tests, contract diff и visible backend scene.
-- Для AngelScript bake обновить `AngelScriptBaker.*`, тесты AngelScript и [Scripting](../scripting-runtime/).
-- Для Managed C# bake, generated project, assemblies или runtime payload обновить `ManagedScriptBaker.*`, [Скрипты Managed C#](../../how-to/scripting/managed-csharp.md), native/Python managed tests и затронутый package/platform route.
+- Prototype: обновить `PrototypeFormatInterface.json`, [Prototype Format](../../how-to/content/prototype-format.md), model/reference, `docs_prototype_format.py --check` и aggregate contract diff.
+- Map: обновить `MapFormatInterface.json`, [Map Format](../../how-to/content/map-format.md), reference, `docs_map_format.py --check` и project rebake.
+- Image/sprite: обновить `ImageFormatInterface.json`, [Image and Sprite Formats](../../how-to/content/image-format.md), model check, rebake и visible inspection.
+- Fonts: обновить `FontFormatInterface.json`, [Font Formats](../../how-to/content/font-format.md), model check, rebake и typography inspection.
+- Audio: обновить `AudioInterface.json`, [Audio](../../how-to/content/audio.md), model check, rebake и audible inspection на заявленных платформах.
+- Video: обновить `VideoInterface.json`, [Video](../../how-to/content/video.md), model check, rebake и visible inspection.
+- Effects: обновить `EffectFormatInterface.json`, [Effect Format](../../how-to/content/effect-format.md), model check, contract diff и visible backend scene.
+- Для AngelScript bake обновить `AngelScriptBaker.*`, компиляцию затронутых script-ролей и [Scripting](../scripting-runtime/).
+- Для Managed C# bake, generated project, assemblies или runtime payload обновить `ManagedScriptBaker.*`, [Скрипты Managed C#](../../how-to/scripting/managed-csharp.md), проверки компиляции/bake generated project и затронутый package/platform route.
 
 ## Контрольный список проверки
 
 1. Выполнить configure из корня встраивающего проекта.
 2. Собрать baker application/library, если изменён соответствующий код.
-3. Запустить focused native tests изменённого baker-а.
+3. Проверить затронутую документационную модель и реальные диагностику/выход bake.
 4. Выполнить `BakeResources`, когда важны incremental/cache/build-hash semantics.
-5. После model source или Ozz conversion выполнить `ForceBakeResources`: это positive integration gate на реальных FBX проекта, а не только synthetic fixtures.
+5. После model source или Ozz conversion выполнить `ForceBakeResources`: это positive integration gate на реальных FBX проекта; одно чтение исходников не исполняет конвертацию.
 6. Рассматривать generated output только как результат, не как authored source.
 7. При изменении responsibilities обновить этот документ и [BuildTools Pipeline](../../reference/cmake-and-buildtools/pipeline.md).

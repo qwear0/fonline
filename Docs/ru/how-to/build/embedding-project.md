@@ -7,7 +7,7 @@ permalink: /Docs/ru/how-to/build/embedding-project.html
 ---
 
 # Встраивание FOnline в игровой проект
-<!-- docs-translation: {"document_id":"embedding-project","locale":"ru","source_path":"Docs/en/how-to/build/embedding-project.md","source_sha256":"0acb2ae65debb2493c031a7054a88ab552d1cae52581979b098ea8fa81034b23"} -->
+<!-- docs-translation: {"document_id":"embedding-project","locale":"ru","source_path":"Docs/en/how-to/build/embedding-project.md","source_sha256":"458321b00f16763cc7045288dd2770479b837fecb774aa5845858e17cbf09419"} -->
 FOnline рассчитан на подключение как source submodule. Репозиторий движка
 поставляет переиспользуемую технологию, а репозиторий игры создает конкретный
 продукт.
@@ -96,7 +96,7 @@ extensions и bakers либо через отдельно версионируе
 
 Проект может определять authored formats для игровых систем, не входящих в
 контракт движка. Типичный пример: dialog trees. Система остается project-owned,
-пока ее reusable implementation, tests, fixtures, compatibility policy и
+пока её reusable implementation, существующие проверки, fixtures, compatibility policy и
 документация не перенесены в Engine или versioned companion.
 
 Полный project-owned format должен определять:

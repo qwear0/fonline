@@ -5,7 +5,7 @@ locale: ru
 document_id: engine-architecture
 permalink: /Docs/ru/explanation/architecture/
 ---
-<!-- docs-translation: {"document_id":"engine-architecture","locale":"ru","source_path":"Docs/en/explanation/architecture/index.md","source_sha256":"ed29a41d3c3a6b2ccfa73bd8a892142f2657683129e26e7b2d7137403110ad61"} -->
+<!-- docs-translation: {"document_id":"engine-architecture","locale":"ru","source_path":"Docs/en/explanation/architecture/index.md","source_sha256":"2ce0cdca28c7952c5a964812d64120656dde6a163641fa61fe1ac0ad6d713079"} -->
 # Архитектура движка
 
 Этот документ содержит основанную на исходном коде карту слоёв FOnline. Используйте её, чтобы определить владельца поведения перед переходом к документации конкретной подсистемы.
@@ -66,7 +66,7 @@ FOnline состоит из переиспользуемого движка, в�
 - `ServerApp.cpp`, `ServerDaemonApp.cpp`, `ServerHeadlessApp.cpp` и `ServerServiceApp.cpp` для вариантов server.
 - `MapperApp.cpp` для центрального интерактивного инструмента редактирования.
 - `BakerApp.cpp` и `ASCompilerApp.cpp` для поддержки generation/build.
-- `TestingApp.cpp` для выполнения тестов.
+- Прежний `TestingApp.cpp` и собственные unit/coverage targets удалены; текущая проверка использует существующие build, compile/bake, CLI и application paths.
 
 `BuildTools/cmake/stages/Applications.cmake` подключает эти файлы к project-specific targets в зависимости от build options, включая режимы client/server/tool/platform/library/headless. Не фиксируйте target names в документации движка: они часто выводятся из `FO_DEV_NAME` и presets встраивающего проекта.
 
@@ -167,7 +167,7 @@ FOnline состоит из переиспользуемого движка, в�
 2. BuildTools загружает project options и engine sources.
 3. Шаги codegen и baking подготавливают generated API/resources/scripts.
 4. Applications собираются из точек входа `Source/Applications/`.
-5. Runtime запускается через выбранное приложение: client, server, mapper, baker, test app или platform package.
+5. Runtime запускается через выбранное приложение: client, server, mapper, baker или platform package.
 6. Client/server/tools используют common runtime services и при необходимости вызывают принадлежащие игре scripts/content.
 
 ## Где документировать изменения

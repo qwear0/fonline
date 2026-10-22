@@ -431,8 +431,8 @@
           "translation": "Автоматизация должна завершаться закрыто, а не принимать неоднозначные данные."
         },
         "/validation_rules/@id=ai-control-protocol.validation.malformed-peer/requirement": {
-          "source_sha256": "3dc825e3b0adbf9911b03aa6a6efcae88783c2d93504402a60cd1a57288c842f",
-          "translation": "Клиентские тесты отклоняют неверный JSON, неподдерживаемые конверты, несовпадающие id, одновременные result/error и слишком длинные строки."
+          "source_sha256": "b71a88b9f1c9921b258df03f6381860b4c8487e6214f2ad3d42353c80dd47c8b",
+          "translation": "Эталонный клиент отклоняет неверный JSON, неподдерживаемые конверты, несовпадающие id, одновременные result/error и слишком длинные строки; генерация по исходникам не исполняет эти отказы."
         },
         "/validation_rules/@id=ai-control-protocol.validation.project-native/name": {
           "source_sha256": "ba89b2092820512c8d2cda262fa6e182dc57fe0bc0ef93c05d40053ebb404b09",
@@ -459,16 +459,16 @@
           "translation": "Запустите эталонный клиент с примером сервера и докажите auth, liveness, status, наблюдение, неверный ввод, принятие действия, завершение, обновление состояния и поведение event cursor."
         },
         "/validation_rules/@id=ai-control-protocol.validation.security/name": {
-          "source_sha256": "54b619f768522782ec364b3deb187ae16cd5f63537426d0d6002051012036ec2",
-          "translation": "Тесты границы безопасности"
+          "source_sha256": "ac325332c5add45d4f64b31eaaccbfa0bb9d3a804e792c4cdb034b4425d1c87f",
+          "translation": "Проверка границы безопасности"
         },
         "/validation_rules/@id=ai-control-protocol.validation.security/rationale": {
-          "source_sha256": "9406bd1974da574c5f7f80e66e2bfb1425163a780d7c712cd489b004d0f4740f",
-          "translation": "Требования безопасности должны оставаться исполняемыми при развитии helper."
+          "source_sha256": "e8510886c4924f9b217a8c8bee8532e2b75715987f68593faf40d762327b7427",
+          "translation": "Успешный smoke примера — ограниченное свидетельство протокола, не security review нативного listener и не инспекция shipping artifact."
         },
         "/validation_rules/@id=ai-control-protocol.validation.security/requirement": {
-          "source_sha256": "2310b90df72246f907f73bc6b4685cd67a89bb0e2dcc024a268d0df4348f6cdf",
-          "translation": "Тесты доказывают отказ для non-loopback, отдельную для соединения авторизацию, отклонение неверного token и отсутствие token в аргументах командной строки."
+          "source_sha256": "655cf6a6549084ffce0c44f0abbe114f2c2c4c55964306600348aeb138cc6fc4",
+          "translation": "Проверьте в эталонном клиенте и примере явный non-loopback opt-in и чтение token из среды. Сохранённый smoke выполняет авторизацию соединения и ошибочную аутентификацию; удалённые unit suites не являются текущим gate."
         },
         "/validation_rules/@id=ai-control-protocol.validation.shipping-artifact/name": {
           "source_sha256": "cd1f8a3aa8bd6c1202556f4d9a054085de50c2cba39a6b73b02ba86ee4bf70ce",
@@ -765,151 +765,6 @@
         "/helpers/@id=helper-cli.android-device/name": {
           "source_sha256": "aea99625aefb8459c19638eccdce88b569ba0213285d812047b14b7a7bd5be44",
           "translation": "Управление устройством Android"
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.clean/arguments/@id=helper-cli.codecoverage.command.clean.argument.backend/description": {
-          "source_sha256": "aa1fb879cb02c5b3148f25e5eaba5e6e772934ec69f98ce2e3ecb63b9f54dcdb",
-          "translation": "Backend компилятора/toolchain покрытия."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.clean/arguments/@id=helper-cli.codecoverage.command.clean.argument.binary/description": {
-          "source_sha256": "523bdc4bb473ace817b1879650e7fcea2ae6acf38bc7d3af74a8786d368885cb",
-          "translation": "Инструментированный исполняемый файл тестов."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.clean/arguments/@id=helper-cli.codecoverage.command.clean.argument.binary_args/description": {
-          "source_sha256": "d92c86dff50003d216a22a6b892ae8b87e296c261475576eaf962e8b50d10d6e",
-          "translation": "Аргументы, передаваемые тестовому бинарному файлу."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.clean/arguments/@id=helper-cli.codecoverage.command.clean.argument.build_dir/description": {
-          "source_sha256": "013362827657e08f22bc8870e4c3b12d21581b205cbfc923889081d8feed664f",
-          "translation": "Настроенный каталог сборки CMake."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.clean/arguments/@id=helper-cli.codecoverage.command.clean.argument.objects/description": {
-          "source_sha256": "7f20d12e6c1e63d0ee223080c922c8125add0a8b8825163ec79d9d534bcc0d2b",
-          "translation": "Дополнительный инструментированный исполняемый файл или динамическая библиотека для отчёта LLVM; аргумент можно повторять."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.clean/arguments/@id=helper-cli.codecoverage.command.clean.argument.output_dir/description": {
-          "source_sha256": "e92181990d5b3f3cfd250411849c94143fb7ff5ee7a440dba2571e9e6be66aac",
-          "translation": "Каталог выходных данных покрытия и отчётов."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.clean/arguments/@id=helper-cli.codecoverage.command.clean.argument.workspace_root/description": {
-          "source_sha256": "f600b2319fef950bd2ab0d1ba79835565785723b0cd5c864e8df85850b8301cf",
-          "translation": "Каталог исходников подключающего проекта."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.clean/description": {
-          "source_sha256": "74998682dcd49c0bd7bf22841eb19703eaf27a6a7d707766943889fc22381b42",
-          "translation": "Удалить ранее собранные данные покрытия и отчёты."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.clean/summary": {
-          "source_sha256": "74998682dcd49c0bd7bf22841eb19703eaf27a6a7d707766943889fc22381b42",
-          "translation": "Удалить ранее собранные данные покрытия и отчёты."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.full/arguments/@id=helper-cli.codecoverage.command.full.argument.backend/description": {
-          "source_sha256": "aa1fb879cb02c5b3148f25e5eaba5e6e772934ec69f98ce2e3ecb63b9f54dcdb",
-          "translation": "Backend компилятора/toolchain покрытия."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.full/arguments/@id=helper-cli.codecoverage.command.full.argument.binary/description": {
-          "source_sha256": "523bdc4bb473ace817b1879650e7fcea2ae6acf38bc7d3af74a8786d368885cb",
-          "translation": "Инструментированный исполняемый файл тестов."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.full/arguments/@id=helper-cli.codecoverage.command.full.argument.binary_args/description": {
-          "source_sha256": "d92c86dff50003d216a22a6b892ae8b87e296c261475576eaf962e8b50d10d6e",
-          "translation": "Аргументы, передаваемые тестовому бинарному файлу."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.full/arguments/@id=helper-cli.codecoverage.command.full.argument.build_dir/description": {
-          "source_sha256": "013362827657e08f22bc8870e4c3b12d21581b205cbfc923889081d8feed664f",
-          "translation": "Настроенный каталог сборки CMake."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.full/arguments/@id=helper-cli.codecoverage.command.full.argument.output_dir/description": {
-          "source_sha256": "e92181990d5b3f3cfd250411849c94143fb7ff5ee7a440dba2571e9e6be66aac",
-          "translation": "Каталог выходных данных покрытия и отчётов."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.full/arguments/@id=helper-cli.codecoverage.command.full.argument.workspace_root/description": {
-          "source_sha256": "f600b2319fef950bd2ab0d1ba79835565785723b0cd5c864e8df85850b8301cf",
-          "translation": "Каталог исходников подключающего проекта."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.full/description": {
-          "source_sha256": "aab03451f489a5d56729d1b581d909dfd9876e7a6bab11045f1b958d1fd42b07",
-          "translation": "Очистить данные, запустить инструментированный бинарный файл и создать отчёты."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.full/summary": {
-          "source_sha256": "aab03451f489a5d56729d1b581d909dfd9876e7a6bab11045f1b958d1fd42b07",
-          "translation": "Очистить данные, запустить инструментированный бинарный файл и создать отчёты."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.report/arguments/@id=helper-cli.codecoverage.command.report.argument.backend/description": {
-          "source_sha256": "aa1fb879cb02c5b3148f25e5eaba5e6e772934ec69f98ce2e3ecb63b9f54dcdb",
-          "translation": "Backend компилятора/toolchain покрытия."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.report/arguments/@id=helper-cli.codecoverage.command.report.argument.binary/description": {
-          "source_sha256": "523bdc4bb473ace817b1879650e7fcea2ae6acf38bc7d3af74a8786d368885cb",
-          "translation": "Инструментированный исполняемый файл тестов."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.report/arguments/@id=helper-cli.codecoverage.command.report.argument.binary_args/description": {
-          "source_sha256": "d92c86dff50003d216a22a6b892ae8b87e296c261475576eaf962e8b50d10d6e",
-          "translation": "Аргументы, передаваемые тестовому бинарному файлу."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.report/arguments/@id=helper-cli.codecoverage.command.report.argument.build_dir/description": {
-          "source_sha256": "013362827657e08f22bc8870e4c3b12d21581b205cbfc923889081d8feed664f",
-          "translation": "Настроенный каталог сборки CMake."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.report/arguments/@id=helper-cli.codecoverage.command.report.argument.output_dir/description": {
-          "source_sha256": "e92181990d5b3f3cfd250411849c94143fb7ff5ee7a440dba2571e9e6be66aac",
-          "translation": "Каталог выходных данных покрытия и отчётов."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.report/arguments/@id=helper-cli.codecoverage.command.report.argument.workspace_root/description": {
-          "source_sha256": "f600b2319fef950bd2ab0d1ba79835565785723b0cd5c864e8df85850b8301cf",
-          "translation": "Каталог исходников подключающего проекта."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.report/description": {
-          "source_sha256": "aa5b7e9b10620c2a379dc390b006e45ba5d7e2fd0f6de29460762440b7f02910",
-          "translation": "Создать текстовый и HTML-отчёты из собранных данных покрытия."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.report/summary": {
-          "source_sha256": "aa5b7e9b10620c2a379dc390b006e45ba5d7e2fd0f6de29460762440b7f02910",
-          "translation": "Создать текстовый и HTML-отчёты из собранных данных покрытия."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.run/arguments/@id=helper-cli.codecoverage.command.run.argument.backend/description": {
-          "source_sha256": "aa1fb879cb02c5b3148f25e5eaba5e6e772934ec69f98ce2e3ecb63b9f54dcdb",
-          "translation": "Backend компилятора/toolchain покрытия."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.run/arguments/@id=helper-cli.codecoverage.command.run.argument.binary/description": {
-          "source_sha256": "523bdc4bb473ace817b1879650e7fcea2ae6acf38bc7d3af74a8786d368885cb",
-          "translation": "Инструментированный исполняемый файл тестов."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.run/arguments/@id=helper-cli.codecoverage.command.run.argument.binary_args/description": {
-          "source_sha256": "d92c86dff50003d216a22a6b892ae8b87e296c261475576eaf962e8b50d10d6e",
-          "translation": "Аргументы, передаваемые тестовому бинарному файлу."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.run/arguments/@id=helper-cli.codecoverage.command.run.argument.build_dir/description": {
-          "source_sha256": "013362827657e08f22bc8870e4c3b12d21581b205cbfc923889081d8feed664f",
-          "translation": "Настроенный каталог сборки CMake."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.run/arguments/@id=helper-cli.codecoverage.command.run.argument.output_dir/description": {
-          "source_sha256": "e92181990d5b3f3cfd250411849c94143fb7ff5ee7a440dba2571e9e6be66aac",
-          "translation": "Каталог выходных данных покрытия и отчётов."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.run/arguments/@id=helper-cli.codecoverage.command.run.argument.workspace_root/description": {
-          "source_sha256": "f600b2319fef950bd2ab0d1ba79835565785723b0cd5c864e8df85850b8301cf",
-          "translation": "Каталог исходников подключающего проекта."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.run/description": {
-          "source_sha256": "8a7d956d0f37759abab7f540df9f40aa6d71e95f6f6dcb79c9bc2ea9aaffab8b",
-          "translation": "Запустить инструментированный тестовый бинарный файл и собрать данные покрытия."
-        },
-        "/helpers/@id=helper-cli.codecoverage/commands/@id=helper-cli.codecoverage.command.run/summary": {
-          "source_sha256": "8a7d956d0f37759abab7f540df9f40aa6d71e95f6f6dcb79c9bc2ea9aaffab8b",
-          "translation": "Запустить инструментированный тестовый бинарный файл и собрать данные покрытия."
-        },
-        "/helpers/@id=helper-cli.codecoverage/description": {
-          "source_sha256": "60aad502dcc6fcfa06d400cbe0618cb65bef9e5c6b7439e8086d2587dbc5191a",
-          "translation": "Очищает, собирает и формирует отчёты покрытия кода движка для сгенерированных тестовых целей."
-        },
-        "/helpers/@id=helper-cli.codecoverage/invocation_owner": {
-          "source_sha256": "7e50b49ce99d12956be862b13c12ed853b00bdfaa6d365a76b63f6a08ce8a6c5",
-          "translation": "BuildTools/cmake/stages/Applications.cmake",
-          "preserve_source": true
-        },
-        "/helpers/@id=helper-cli.codecoverage/name": {
-          "source_sha256": "fe858ca3d2e33ec4e9d345b040f4572c13d0e04c4935dff0bde44d6c35fcb5a4",
-          "translation": "Покрытие кода"
         },
         "/helpers/@id=helper-cli.codegen/description": {
           "source_sha256": "b168d702c894ecf577f1b692dfffcf07973385fc79bb25b0caceda5c8a8a0ccc",
@@ -1540,8 +1395,8 @@
           "translation": "Мемоизация отсутствующего пути"
         },
         "/runtime_rules/@id=image-format.runtime.missing-cache/rationale": {
-          "source_sha256": "0dad0addadb6ef2bae9af0b8039a9d280de6fb2a3df1570cbff9968965a263f1",
-          "translation": "Добавление ранее отсутствовавшего ресурса во время live session обычно требует пересоздать manager или перезапустить client перед повтором того же пути."
+          "source_sha256": "377bddddb2002a222fd73c41d5b992c7fda00427af8b258091911d7eb9e45591",
+          "translation": "Нативный код может вызвать ForgetFailedSprite для сброса ошибки пути или InvalidateSpriteResource для сброса кэшей этого пути. Если tooling проекта не открывает такие операции, пересоздайте manager или перезапустите клиент перед повтором."
         },
         "/runtime_rules/@id=image-format.runtime.missing-cache/requirement": {
           "source_sha256": "5104928ca7a203f6ea8c2afae9eea8d0bc7c1f77de8fd8d17f962d7b1a18a91d",
@@ -1615,8 +1470,8 @@
           "translation": "Каждый direction sheet разделяет один frame-count и timing header."
         },
         "/validation_rules/@id=image-format.validation.fofrm-directions/requirement": {
-          "source_sha256": "cb35fc2ccea7f48f10298d2ec089080bf2054977e9a0eb41d14a61ffa81eebbf",
-          "translation": "Отклоняйте частичные наборы направлений и любое последующее направление, чьё расплющенное число кадров отличается от нулевого."
+          "source_sha256": "4f77b4bfb9bc9662076110649c5a3a4bbd6406fc470e23347469b5b2deb45ffa",
+          "translation": "Отсутствие раздела направления один или ссылки на его кадр завершает загрузку как однонаправленную; поздние направления не проверяются. Если обход дошёл до поздних направлений, пропуск раздела или несовпадение числа кадров вызывает ошибку. Авторите одно направление либо полный набор карты."
         },
         "/validation_rules/@id=image-format.validation.fofrm-nested-shared/name": {
           "source_sha256": "2da26c62e7f15b6568ae5463d63d7e86cd80dbdd7f77625fc7c82788ade49461",
@@ -1639,8 +1494,8 @@
           "translation": "Legacy binary parsers должны детерминированно завершаться ошибкой, а не создавать усечённые runtime containers."
         },
         "/validation_rules/@id=image-format.validation.malformed-inputs/requirement": {
-          "source_sha256": "be3068e4a6a4b9c107cda8a74430b255d13ef3fc856031f68d64ab7f792fb62b",
-          "translation": "Сохраняйте focused failure coverage для повреждённых PNG, TGA, FRM/FRx/RIX/ART/ZAR/TIL/MOS/BAM, SPR и вложенных FOFRM."
+          "source_sha256": "0410bb5abfe92d03209c0acb77434f8d48fba1bb6a7e520ca42b222f65798ebd",
+          "translation": "Запеките изменённые изображения и проверьте диагностику декодера. Успех генерации документации не является исполнением PNG, TGA, legacy, SPR или вложенных FOFRM parsers."
         },
         "/validation_rules/@id=image-format.validation.playback-timing/name": {
           "source_sha256": "cca9878dbe64744b05d93b1a17af314ec12ddbd667f2124655bd7e5dc19cb402",
@@ -1659,8 +1514,8 @@
           "translation": "Визуальный gate встраиваемого проекта"
         },
         "/validation_rules/@id=image-format.validation.project-visible/rationale": {
-          "source_sha256": "28081f39441d6a2f7468ac8c084721d235c7fa7a67ba5387d07d265f89b4d2a2",
-          "translation": "Parser/container tests не доказывают framing графики, filtering, gait или выбор project resource pack."
+          "source_sha256": "aa87b721cf9da92583b750ce41f382f5cc79338f1a896d26580b57d731aa8041",
+          "translation": "Проверки документации по исходникам не доказывают framing графики, filtering, походку или выбор project resource pack."
         },
         "/validation_rules/@id=image-format.validation.project-visible/requirement": {
           "source_sha256": "d2585e7280dc2524057b21367667b0fde77a7fcac257dcccb9f3ef8766022507",
@@ -2500,16 +2355,16 @@
           "translation": "Передача null или экземпляра с очищенными ресурсами воспроизведения ничего не рисует и не выбрасывает исключение."
         },
         "/embedded_rules/@id=video.embedded.positive-size/name": {
-          "source_sha256": "4313a7d950fcd229f9982c56e762054ed0ae28884982bb431397ceb7aa8da82c",
-          "translation": "Положительный размер цели продвигает воспроизведение"
+          "source_sha256": "47534eafd4b17c4ba9501297f141fb89e23a5d2915bf19222bffa41ab94b948a",
+          "translation": "Положительный размер цели выполняет декодирование"
         },
         "/embedded_rules/@id=video.embedded.positive-size/rationale": {
-          "source_sha256": "139d05b54bb0d58cdf82b2024797cc4369b8d670fad8e522223468b2e4820a42",
-          "translation": "RenderFrame вызывается только внутри ветки положительного размера."
+          "source_sha256": "4338506edd39fc63583fe3703d724c99d636dc02cdc34d7aef1dbc170e36cddd",
+          "translation": "RenderFrame выполняется только при положительном размере, а StartTime задан при создании. Проверка остановки и очистка находятся вне этой ветви."
         },
         "/embedded_rules/@id=video.embedded.positive-size/requirement": {
-          "source_sha256": "8d2f049410354249ac11a565601b5212ce60bc23e23dfec4e503641383557926",
-          "translation": "Передавайте положительные ширину и высоту в каждом кадре; нулевой или отрицательный размер пропускает декодирование, загрузку текстуры и рисование."
+          "source_sha256": "9dab0105da0a71810bb815548b8f689a382b8af04386f06a2bcf11ff9b6fd3df",
+          "translation": "Для декодирования, загрузки и рисования передавайте положительные ширину и высоту. Скрытие экземпляра или неположительный размер не ставит его часы на паузу; следующий положительный draw может догонять время."
         },
         "/embedded_rules/@id=video.embedded.rectangle/name": {
           "source_sha256": "f773bdb8d8a3dd024e8e0e83305d9d5b16d785ef94f99b7f2a6da8c45fa6137e",
@@ -2540,12 +2395,12 @@
           "translation": "Жизненный цикл поля Stopped"
         },
         "/embedded_rules/@id=video.embedded.stopped/rationale": {
-          "source_sha256": "9ea225b005c15a03dc16f6db7e3447bfba7ab9b250af5bdfb1bbb4e2a5b73e36",
-          "translation": "Метод рисования очищает ресурсы и устанавливает экспортированное поле после проверки остановки."
+          "source_sha256": "e6fedf4b983acdac98b7daec600096e0e90aa415cb1115fc78c762a42130c8c2",
+          "translation": "Проверка остановки следует за декодированием и находится вне ветви положительного размера. Одно чтение Stopped или скрытие живого экземпляра не декодирует до конца потока и не освобождает playback resources."
         },
         "/embedded_rules/@id=video.embedded.stopped/requirement": {
-          "source_sha256": "12b5bc3b8a11c7f8bc6438a59817d9efea8428ffa289c734d4c83ce3d94440a0",
-          "translation": "Опрашивайте VideoPlayback.Stopped, продолжая рисовать экземпляр; флаг становится true, когда DrawVideoPlayback обнаруживает остановку ролика."
+          "source_sha256": "c65e16c457eb45a3aa5bc64a4166d4135fab9891c076666e791659a0f46d8aa8",
+          "translation": "VideoPlayback.Stopped обновляется только когда DrawVideoPlayback обнаруживает остановку ролика. Декодирование, остановившее ролик, вызывает очистку в том же вызове; последующий вызов с неположительным размером также может обработать уже остановленный ролик."
         },
         "/formats/@id=video.format.ogv/name": {
           "source_sha256": "fe70492987734b5f14ff56eb318405997e765f3970e67da493171d2fb201354e",
@@ -2717,16 +2572,16 @@
           "translation": "Не обещайте зацикленные ролики, пока многоцикловая визуальная регрессия не докажет перемотку декодера и непрерывность кадров точного ресурса."
         },
         "/validation_rules/@id=video.validation.no-native-fixture/name": {
-          "source_sha256": "21f9d8aafef57a61b922579eb1219a295acb06d747dda0183bb00d4b2e2d8ca0",
-          "translation": "Отсутствующий нативный video fixture"
+          "source_sha256": "3c8ca5ab5d585807ca5ec234e2089454622c9c0ff19f724e5e68521521321c2a",
+          "translation": "Граница runtime-свидетельств"
         },
         "/validation_rules/@id=video.validation.no-native-fixture/rationale": {
-          "source_sha256": "fb2ee914435aed48f849d2fb2b80ec185a758c256e64df0b08de6f6385e3547d",
-          "translation": "Текущий набор нативных тестов не содержит сфокусированного исходника декодера/воспроизведения видео."
+          "source_sha256": "0335b1b61ab0bd6c3af6e219c979ba633d0f7a2545449393ef20e7adf8420a98",
+          "translation": "Source anchors и генерация документации не исполняют Theora-декодирование или показ текстуры."
         },
         "/validation_rules/@id=video.validation.no-native-fixture/requirement": {
-          "source_sha256": "95051fd89a1c7d4d0f6cfc748394a5a5821c04bd0f202a15414dfc66652e2d25",
-          "translation": "Считайте отсутствие Test_*Video* или Test_*Theora* пробелом покрытия и сохраняйте обязательными видимые регрессионные доказательства."
+          "source_sha256": "64a21663d2bde462c0ab71cf8158e26ee766c4f52287b80fa7623a6f9f4d95ab",
+          "translation": "Для свидетельств о декодере, очереди, очистке и цикле используйте прямое видимое воспроизведение; собственных unit suites движка в этом форке нет."
         },
         "/validation_rules/@id=video.validation.project-boundary/name": {
           "source_sha256": "cfb9e27000841fc2dbf0fcdf2a35ace292a2416648cbd31d9f4ca4267984a436",
@@ -2773,12 +2628,12 @@
           "translation": "Проверка запечённого payload"
         },
         "/decoding_rules/@id=audio.decoding.acm-shape/rationale": {
-          "source_sha256": "4cba660fd70825985577fbe15976a4da17a2d92fe8210842b3cb8564d012d4dc",
-          "translation": "Граница запекания выявляет некорректные нативные входные данные и результат кодировщика до попытки воспроизведения клиентом; затем runtime читает число каналов и частоту дискретизации из проверенного потока."
+          "source_sha256": "653fcc9304dca2bc0f4a0da1934d64e079b9cb63bdf83b87bd5d0d13133607a3",
+          "translation": "Проверка passthrough распознаёт заголовки Vorbis, но не декодирует весь поток. Успех кодировщика и запекания не доказывает устойчивое runtime-декодирование или слышимую корректность."
         },
         "/decoding_rules/@id=audio.decoding.acm-shape/requirement": {
-          "source_sha256": "8fdd455081884b21460ba1b53da58a7554256c8e7f75fcfc96c360cc31355bbc",
-          "translation": "Отклоняйте сгенерированный или скопированный без перекодирования payload, если libvorbisfile не открывает его как корректный поток Vorbis."
+          "source_sha256": "4cdfc460d7ada379600a1da6cf1fae333e798692e3357b93a143a9b835097892",
+          "translation": "Перед passthrough проверяйте авторский Ogg через ov_test_callbacks. Результат WAV/ACM кодируется и записывается без такой проверки."
         },
         "/decoding_rules/@id=audio.decoding.callback-mixing/name": {
           "source_sha256": "7ad77bbe593b40c6f6089109f81a666611d46d85903e5c6cf6ce9c0165dd0c99",
@@ -2845,8 +2700,8 @@
           "translation": "Разрядность WAV PCM"
         },
         "/decoding_rules/@id=audio.decoding.wav-pcm-width/rationale": {
-          "source_sha256": "d6ab241991cc8858dc5523af88af8b843c85a2e858b4bdd5efefe4cfc679f921",
-          "translation": "AudioBaker преобразует каждый поддерживаемый sample в signed 16-bit перед кодированием Vorbis и отклоняет обрезанные кадры или несогласованные метаданные формата."
+          "source_sha256": "d4f94f4ca8cade335f9a367b4a5dd2964db0f423fbc45dacebf35df3cc03da1b",
+          "translation": "AudioBaker отклоняет несогласованные метаданные, ограничивает данные чанка доступными байтами и кодирует только полные кадры; неполный хвостовой кадр отбрасывается, отсутствие полных кадров вызывает ошибку."
         },
         "/decoding_rules/@id=audio.decoding.wav-pcm-width/requirement": {
           "source_sha256": "c209fb7b136493078280cca676fd4cf16de89787cf1e4ce35c7bcb98e1d94a58",
@@ -2897,8 +2752,8 @@
           "translation": "PlayMusic передаёт указанное имя файла непосредственно в AudioManager.Load."
         },
         "/delivery_rules/@id=audio.delivery.music-path/requirement": {
-          "source_sha256": "44c02a7491bc64ac62e1066b1464a6d40b2489d29d260eddf39353d7e3f3a45b",
-          "translation": "Передавайте музыку по точному пути ресурса; в отличие от эффектов, она не разрешается через нормализованный индекс имён звуков."
+          "source_sha256": "b341f6474e085f199b87f36bb44119d7c1951f1089568b49b8dfa348d5711de0",
+          "translation": "Передавайте музыку по точному пути ресурса, как и эффекты; ни один playback-путь не разрешает нормализованный индекс имён звуков."
         },
         "/delivery_rules/@id=audio.delivery.raw-copy/name": {
           "source_sha256": "5dcbaf6226f87ec434f593d869324a4e606b41248a343f905c9bb17222b9a124",
@@ -2909,8 +2764,8 @@
           "translation": "Аудиоресурсы больше не используют RawCopy: WAV нормализуется и кодируется, а уже нативный Ogg проверяется и копируется без дополнительного прохода с потерями."
         },
         "/delivery_rules/@id=audio.delivery.raw-copy/requirement": {
-          "source_sha256": "e1adbfbf2275befdeb865ad42af5ac4a538d8573d87bac7d99b54eb467fbabf6",
-          "translation": "Включайте baker Audio в каждый пакет с runtime-аудио; он принимает WAV и Ogg, а при FO_AUDIO_ACM ещё и ACM, и выдаёт проверенный payload Ogg Vorbis."
+          "source_sha256": "78a6389045543b49c9b7da28bedf824cf7edfb7663b4c2646edee41b71d981e5",
+          "translation": "Включайте baker Audio в каждый пакет с runtime-аудио; он принимает WAV и Ogg, а при FO_AUDIO_ACM ещё и ACM, и записывает payload Ogg Vorbis. Только авторский Ogg проходит проверку Vorbis перед записью."
         },
         "/description": {
           "source_sha256": "0f5a2ac07cca4b7711523b5970448354471a09551ce56079a20c3db85f756137",
@@ -2939,8 +2794,8 @@
           "preserve_source": true
         },
         "/formats/@id=audio.format.wav/rationale": {
-          "source_sha256": "13ce3d7e96611dfd3878bf6216ff50c137c7b0b4830628934caf97dc1a3350c1",
-          "translation": "AudioBaker нормализует поддерживаемые samples WAV в interleaved signed 16-bit PCM и кодирует один проверенный ресурс Ogg Vorbis по авторскому пути."
+          "source_sha256": "1b7a22b978e02a2f196e3e093c7d061b632f7c18ca92540e3b2efd00ce3b8c62",
+          "translation": "AudioBaker нормализует поддерживаемые samples WAV в interleaved signed 16-bit PCM и кодирует один ресурс Ogg Vorbis по авторскому пути."
         },
         "/formats/@id=audio.format.wav/requirement": {
           "source_sha256": "0f8740ec9bbceb71a4195701e6c74162c0ad0a02804e2ce9fb105194a91f32a1",
@@ -2959,8 +2814,8 @@
           "translation": "AudioManager применяет pan к буферу каждого callback, а не к декодированному хранилищу, поэтому последующие обновления позиции не накапливают предыдущее панорамирование, а громкие samples не усиливаются до clipping."
         },
         "/playback_rules/@id=audio.playback.default-acm/requirement": {
-          "source_sha256": "7e3b77971fb31c6ffc7efafe40e4d285d85284cecb4c9c6141b51ef1943f9050",
-          "translation": "Передавайте pan в диапазоне от -1 до 1 для штатного закона баланса: отрицательное значение ослабляет правый канал, положительное — левый, а ближний канал остаётся с единичным усилением."
+          "source_sha256": "296b70ea9fee11be0f1ed5732eec7250b6f675d3fc8b769f332172fb84be5c59",
+          "translation": "Передавайте pan от -1 до 1 для расчётного закона баланса: отрицательное значение ослабляет правый канал, положительное — левый, ближний сохраняет единичное усиление. API передаёт pan без ограничения диапазона."
         },
         "/playback_rules/@id=audio.playback.disabled-success/name": {
           "source_sha256": "476d30014f3e6eba69410578071c414da4a4061a516f5983d3dd831c7f2b0714",
@@ -3093,8 +2948,8 @@
           ]
         },
         "/scope/support_note": {
-          "source_sha256": "49ed941bf15dd10810cc4c19d4d8b07ff60d2edbe82c93ee38c75f6afdd3d617",
-          "translation": "Авторские входы WAV и нативного Ogg, запечённый payload Ogg, handles звука, обновления позиционирования и поведение клиентского воспроизведения привязаны к ревизии сфокусированными тестами baker и mixer."
+          "source_sha256": "17ab85f5d9c061a07012655c17459c8daa0cb8bf9393662aa9a4ec02c1b50e20",
+          "translation": "Модель проверяет актуальные source anchors и выведенные константы аудио. Запекание ресурсов и слышимый запуск клиента — отдельные проектные проверки; собственных unit suites движка в этом форке нет."
         },
         "/validation_rules/@id=audio.validation.decoder-diagnostics/name": {
           "source_sha256": "94ca715d06bb97b0cafb3a368d2fa278813ed44894112ac8f53a833a2d932288",
@@ -3113,8 +2968,8 @@
           "translation": "Справочник по исходникам"
         },
         "/validation_rules/@id=audio.validation.generated-reference/rationale": {
-          "source_sha256": "7dfb02c4be2646fb5658f64ef20a28d570486b9e4fdc89cbaf7170924847c80b",
-          "translation": "Сгенерированная модель выявляет drift расширений исходников, runtime-кодека, размера порции, настройки, handle, набора тестов и headless-поведения до незаметного устаревания текста."
+          "source_sha256": "abb3934b08f3ac6cbc5ff97b960e837c696c70040141e05bbbb2260b0c455d95",
+          "translation": "Сгенерированная модель выявляет drift расширений исходников, runtime-кодека, размера порции, настройки, handle и headless-поведения до незаметного устаревания текста."
         },
         "/validation_rules/@id=audio.validation.generated-reference/requirement": {
           "source_sha256": "8d30cf8fa06c364ee5c6b2c3d32d4f412826a8b9844d8c8ec3825c0ecc75a65a",
@@ -3133,16 +2988,16 @@
           "translation": "Не заявляйте слышимую проверку по headless- или stub-приложению; AppAudio там отключён, а воспроизведение может сообщить о no-op success."
         },
         "/validation_rules/@id=audio.validation.native-test-gap/name": {
-          "source_sha256": "70e466cbdb5850c13ab17f93eac174f76305b20a97e18b9e006e64a62434dcf3",
-          "translation": "Сфокусированное нативное покрытие"
+          "source_sha256": "48ace633bfdc048fd5ffba1329f33aa6a253943c5649623c4ce6f608c80f2211",
+          "translation": "Граница runtime-проверки"
         },
         "/validation_rules/@id=audio.validation.native-test-gap/rationale": {
-          "source_sha256": "81824f762b265629ce04c7f2da83e80bcb9e7c78be0d1c07da5e38b082c5b140",
-          "translation": "Эти suites напрямую исполняют контракт кодека и callback; видимый клиент всё ещё нужен, чтобы доказать работу реального платформенного устройства и слышимый вывод."
+          "source_sha256": "bbef412191e2c1006c563ed91c351a326b395c35063d01f2efd7cc6840a79937",
+          "translation": "Проверки документации по исходникам не исполняют кодеки или аудио-callbacks. Слышимый вывод требует активного платформенного устройства."
         },
         "/validation_rules/@id=audio.validation.native-test-gap/requirement": {
-          "source_sha256": "a56771434fee8712a3496f113d5ae500050b3a5a807ba8dd2c7fafbbe15fb5a2",
-          "translation": "Запускайте Test_AudioBaker и Test_AudioManager для запекания WAV/Ogg, passthrough, ошибочных входов, панорамирования, позиционированного воспроизведения, текущих обновлений, истечения handles и вывода mixer."
+          "source_sha256": "ff592abf8e56159cac923bf8ecb5198d13f67d823cd6013e1b6f47804183cd77",
+          "translation": "Используйте существующие resource-bake и client playback маршруты для WAV/Ogg и включённого ACM, обновлений размещения, истечения handles, смешивания и повторов; собственные unit suites движка удалены."
         },
         "/validation_rules/@id=audio.validation.project-boundary/name": {
           "source_sha256": "4cf76ef47eaad3078ccbb182cd4fc98c1533e973dc89cf697c2ba3f5762001d5",
@@ -3161,8 +3016,8 @@
           "translation": "Гейт запекания аудио"
         },
         "/validation_rules/@id=audio.validation.raw-copy/rationale": {
-          "source_sha256": "ef498d31fa14956d338ac263c919b340ff7e2f98cc2c7f5defafc44f5b34d66d",
-          "translation": "Сфокусированные тесты доказывают преобразование и passthrough, а запекание во встраиваемом проекте доказывает, что его пакет действительно выбирает Audio и поставляет ресурсы, используемые скриптами."
+          "source_sha256": "f22ec0e57efc601b1f8ab8fb4e6e95272b0b0aa1ca67688152e57abd4386c7c9",
+          "translation": "Запекание проекта выполняет конвертацию и passthrough и показывает, выбирает ли пакет Audio. Отдельно проверяйте выход и runtime-диагностику: bake не декодирует полностью каждый результат."
         },
         "/validation_rules/@id=audio.validation.raw-copy/requirement": {
           "source_sha256": "a4c21e2ae6a5f60f23384058023ba20f641d486fa6526db0d1eb3aff2d76a066",
@@ -3193,8 +3048,8 @@
           "translation": "Включите FO_AUDIO_ACM перед запеканием Interplay ACM версии 1 через baker Audio; по умолчанию опция OFF, запросы при выключенном импортёре падают с авторским путём."
         },
         "/formats/@id=audio.format.acm/rationale": {
-          "source_sha256": "fb141f4f86aeca0c9f18e2f238c15a72ce085e2ced51d3e2be7172a263fe2aba",
-          "translation": "Импортёр Engine под guard декодирует ACM в signed 16-bit PCM и использует общий проверяемый кодировщик Vorbis, сохраняя авторский путь как для WAV. Runtime-декодера ACM нет."
+          "source_sha256": "3118214466b1375ba928aeb7b6e2af3277678fb028c6ec2925bf2df203296ccc",
+          "translation": "Импортёр Engine под guard декодирует ACM в signed 16-bit PCM и использует общий кодировщик Vorbis, сохраняя авторский путь как для WAV. Runtime-декодера ACM нет."
         },
         "/decoding_rules/@id=audio.decoding.acm-channels/name": {
           "source_sha256": "a160c295afcf0dcf11bb90fb285d3565169eb351460056e78667b7a975ee4b53",
@@ -3233,8 +3088,8 @@
           "translation": "Ключ платформы движка, например linux, win64, web или android-arm64."
         },
         "/commands/@id=cli.buildtools.command.build/arguments/@id=cli.buildtools.command.build.argument.target/description": {
-          "source_sha256": "a5cf319054df6029bfffbe2aba4c8b7eede4bed322d06b4c753203a35f5a226e",
-          "translation": "Профиль цели BuildTools, например client, server, baker или unit-tests."
+          "source_sha256": "7867b9b49337dac6b6b44e24c67acb01373e62592562e51bb3e69b01af922f7e",
+          "translation": "Профиль цели BuildTools, например client, server, mapper или baker"
         },
         "/commands/@id=cli.buildtools.command.build/summary": {
           "source_sha256": "4f721dde4ad668008884b8673f94d8929c010613de1af2c61e33675772f230e5",
@@ -3456,10 +3311,6 @@
           "source_sha256": "3b8d9a9cfdc04c20c883ed4e252678043c1c5a755ad753f93552fa2e7d8f60fa",
           "translation": "Создаёт цели серверных приложений."
         },
-        "/options/@id=cmake.option.FO_CODE_COVERAGE/description": {
-          "source_sha256": "61afd89b86169e64a328107d90f9155e4b37b7657b673530a5bd972a8a8b606d",
-          "translation": "Создаёт конфигурацию покрытия кода; этот режим нельзя сочетать с режимами сборки приложений или модульных тестов."
-        },
         "/options/@id=cmake.option.FO_CXX_STANDARD/description": {
           "source_sha256": "b818c4b849bd0f9293f4b53ff45ffa5f2f309127b6fcc2f60d6e3cbe68221f47",
           "translation": "Стандарт языка C++ для компиляции проекта; значения ниже 20 не поддерживаются."
@@ -3588,10 +3439,6 @@
           "source_sha256": "9b0e5be982f4eb857ebe5b0a7744f16de56f221bd162be5fbe19f05e097be695",
           "translation": "Число символов, хранимых внутри строки движка до выделения памяти; значение должно быть на единицу меньше числа, кратного восьми."
         },
-        "/options/@id=cmake.option.FO_UNIT_TESTS/description": {
-          "source_sha256": "0464a01fa3fd54b2aff8e9d664caa338c62bb09782be946b2ea8948d5a3b2746",
-          "translation": "Создаёт цели модульных тестов движка."
-        },
         "/options/@id=cmake.option.FO_VERBOSE_BUILD/description": {
           "source_sha256": "e21912ca94fa1f32ccc9e808d5686473edf7eeeea3500fbaea2c33d494260388",
           "translation": "Включает подробный status-вывод системы сборки FOnline."
@@ -3618,8 +3465,8 @@
           "translation": "Версионируемая линия поддержки пока не объявлена; подключающим проектам следует закреплять ревизию движка."
         },
         "/stages/@id=cmake.stage.Applications/description": {
-          "source_sha256": "cdb4c6ae8c2ffe8a3b93aca19c029745a79c8c420a7712f1b764327e3a7a4ad2",
-          "translation": "Создаёт включённые приложения клиента, сервера, Mapper, компилятора, baker, viewer и тестов."
+          "source_sha256": "625b854bc5be602fb8d61f2034f3c4f20d74c961d9f90883ec09b0674fa27e55",
+          "translation": "Создаёт включённые приложения клиента, сервера, Mapper, компилятора, baker и viewer."
         },
         "/stages/@id=cmake.stage.Codegen/description": {
           "source_sha256": "79722e6b6c3853461eaaed76797949daad4baefe8ddd01889782cdcc34f07812",
@@ -4785,10 +4632,6 @@
           "source_sha256": "4665ba97750ad4e7dc81bf1e4075c08b69a24c8584435616cbfd1b68a9cf1d93",
           "translation": "Авторитетный серверный код и экспорты в серверные скрипты."
         },
-        "/roles/@id=native-extension.role.tests/description": {
-          "source_sha256": "5a857fc261e7d7443dbfdd6e6f8e36b8aa5e95c75417d6db79a8d88f4bda5443",
-          "translation": "Проектные модули трансляции Catch2, компилируемые непосредственно во включённые исполняемые файлы unit-тестов и покрытия; у TESTS нет потребителей среды выполнения и целей экспорта в скрипты."
-        },
         "/scope/excluded": {
           "source_sha256": "f5d1144bcb6036f57862898b51a1a8fb43d386b779f96e4eb770ebeb1324a520",
           "translation": [
@@ -5124,8 +4967,8 @@
           "translation": "Пример по тегу демонстрирует один полный путь нативного расширения без игровых сервисов и проходит проверки сгенерированного контракта расширений."
         },
         "/repositories/@id=native-extension-sample/purpose": {
-          "source_sha256": "00a58125f46c48b3aa69fcebd5504e288a7e0dbd0e00002e13e97e166d575c37",
-          "translation": "Продвинутый минимальный пример проектной композиции C++, lifecycle-хуков, экспортов в скрипты, тестов и проверки ABI."
+          "source_sha256": "36d47e044dd42b9995be91a37e36ffde57dc387a7d00e8f0bc9cfd92cf177f87",
+          "translation": "Продвинутый минимальный пример композиции проектного C++, lifecycle hooks, script exports, runtime smoke и ревью ABI."
         },
         "/repositories/@id=project-template/exit_gate": {
           "source_sha256": "49f06c6f1b6b3827c03fea84e6f8576b6a04c59a3e915df59d015e4bff9daccb",
@@ -6005,12 +5848,12 @@
           "translation": "Обязательный базовый исходник"
         },
         "/language_rules/@id=text-format.language.default-source-required/rationale": {
-          "source_sha256": "1a2ee76206662dac1351769cf18acc9bbcda2b384e99c263ffb644a0cba94c21",
-          "translation": "TextBaker не может нормализовать изменённый пакет без базового языка и вызывает исключение до разбора выхода."
+          "source_sha256": "d47a29c58573f1231f2947e12e107dafa7740ae5961e0bace2c3830b4b8051f6",
+          "translation": "TextBaker проверяет набор выбранных языков, затем FixPacks нормализует пакеты/ключи относительно fallback. Проект должен отдельно проверять авторский base source каждого пакета."
         },
         "/language_rules/@id=text-format.language.default-source-required/requirement": {
-          "source_sha256": "604c7f0da81bf0561e906f03dfc6c90050f2ad5bae8443563b35855995223eda",
-          "translation": "Для каждого изменённого исходного текстового пакета выбранный набор файлов должен содержать исходник базового языка."
+          "source_sha256": "62b6b992772c93e505279397ead49354f7ec62519e9e360237f5de1b8e43229b",
+          "translation": "Выбранный raw input set должен содержать базовый язык в совокупности. Это не проверка полноты каждого пакета; child-only пакет, отсутствующий у fallback, может быть удалён нормализацией."
         },
         "/language_rules/@id=text-format.language.filename/name": {
           "source_sha256": "3fc6620c9672ff2eb08b49fac810300f7bf7ae5fa1cf7d1c7e707ca486f40ce2",
@@ -6464,16 +6307,16 @@
           "translation": "Smoke-маршрут на симуляторе или устройстве не требуется."
         },
         "/platforms/@id=linux-x64-clang/limitations": {
-          "source_sha256": "f03786568b253d3aad79de51fc3b977c8d3d235e8e6b5e1da1864100f7a2f464",
-          "translation": "Текущая матрица квалифицирует только конфигурацию и компиляцию на Ubuntu 24.04; runtime, другие дистрибутивы, установщики, подписание, магазины, развёртывание и откат требуют проектной приёмки."
+          "source_sha256": "f1beee75efc8928821c548fd3c68ac30280447eb3283b8e31e4209efd707347c",
+          "translation": "Ubuntu 24.04 — хост архивной линии, не свежая квалификация. Другие дистрибутивы, runtime, установщики, подпись, развёртывание и откат требуют приёмки проекта."
         },
         "/platforms/@id=linux-x64-clang/runtime_evidence": {
           "source_sha256": "bc4c9eca7f920efb63c901da4510a6c60e556f8b6a16b6e49ef7909385d44e5a",
           "translation": "Проверяемый реестр валидации BuildTools не требует процессного smoke-маршрута."
         },
         "/platforms/@id=linux-x64-gcc/limitations": {
-          "source_sha256": "1d478a1f596aad18d61c6b829ccddd8946d49b60a384adb47ba089f842ac3bdb",
-          "translation": "Runtime-квалификация обеспечивается линией Clang; проекту, который зависит от поведения GCC, нужна собственная smoke-линия."
+          "source_sha256": "9501e4e636f084b52614c61dfe02fa5cfb0a1a0a2e0fe27b452241a5a799b07b",
+          "translation": "В этом форке ни GCC, ни Clang не имеют текущей обязательной runtime-линии. Квалифицируйте фактически поставляемые компилятор и артефакт."
         },
         "/platforms/@id=linux-x64-gcc/runtime_evidence": {
           "source_sha256": "616ff970f9eedbff523ccf5554ee02aa3ac16d04942191df874bf202b7ab55c6",
@@ -6488,24 +6331,24 @@
           "translation": "Процессный smoke-маршрут клиента не требуется."
         },
         "/platforms/@id=web-client/limitations": {
-          "source_sha256": "ace456af947eefced39ca4c5410ac8b03d940b771e954298003cdee224e26ca2",
-          "translation": "Штатная Web-цель поддерживает только клиент WebGL 2. Линия сборки не квалифицирует пары браузеров и GPU либо production hosting, заголовки, хранение, активацию звука, развёртывание, CDN, подписание или откат; эти приёмочные gates остаются ответственностью проекта."
+          "source_sha256": "4ca4e94c60fe35403da782c0ec29cd2e0715e247088ba0d7b3217c97bcf5d167",
+          "translation": "Штатная Web-цель — только клиент WebGL 2. Архивное определение cross-build не квалифицирует browser/GPU, hosting, headers, persistence, активацию аудио, packaging, развёртывание или откат."
         },
         "/platforms/@id=web-client/runtime_evidence": {
           "source_sha256": "8deaffd8bbe65c727205735168b5f68b2f3623f52761217cc3d5a9ee05beb0f8",
           "translation": "Проверяемый реестр валидации BuildTools не требует браузерного процессного smoke-маршрута."
         },
         "/platforms/@id=windows-x64-clangcl/limitations": {
-          "source_sha256": "007bb0e1a07d9a2550ca4d272784e674f5dced7fcc60123da156ed3b62bceb0f",
-          "translation": "Используйте MSVC для квалифицированного маршрута Windows, если встраивающий проект не добавил собственную проверку ClangCL."
+          "source_sha256": "89580f29565649dc4d783f642ddb6e3e4b2be9cb87742612dd733c5807776150",
+          "translation": "MSVC и ClangCL требуют проектных configure/build и runtime-свидетельств; активный CI этого форка сейчас не квалифицирует ни один из них."
         },
         "/platforms/@id=windows-x64-clangcl/runtime_evidence": {
           "source_sha256": "64ab21a448088cbe5dc1a48586da01797ce3670a3202343545b236b577c7f8fb",
           "translation": "Обязательная линия CI или runtime отсутствует."
         },
         "/platforms/@id=windows-x64-msvc/limitations": {
-          "source_sha256": "f8ee591ee091ed2592adda0fe4a89a1b789db4b0e8fcd7b589b4fad328124166",
-          "translation": "Обязательная линия подтверждает конфигурацию и компиляцию, но не поведение рендерера, драйвера, базы данных, установщика, подписания, магазина, развёртывания, отката или runtime lifecycle."
+          "source_sha256": "26d201285c05226187f7d73839d2e54c587ba3d3360ebd66ebc91689ff92e3c0",
+          "translation": "Архивные определения линий — историческая конфигурация, не текущее build/runtime-свидетельство. Приёмка renderer, driver, database, packaging, deployment и lifecycle остаётся у проекта."
         },
         "/platforms/@id=windows-x64-msvc/runtime_evidence": {
           "source_sha256": "bc4c9eca7f920efb63c901da4510a6c60e556f8b6a16b6e49ef7909385d44e5a",
@@ -6520,20 +6363,20 @@
           "translation": "Процессный smoke-маршрут не требуется."
         },
         "/policy/build_gated": {
-          "source_sha256": "030970cc514382c2c8b0c4dd3210bd2eb476d62519b2ed5a2479321544c4205b",
-          "translation": "Конфигурируется и компилируется обязательным workflow проверки при каждом изменении."
+          "source_sha256": "23a8864e012c746e2d8cb4a7f0616bdf541798a44efb1e17f53e480dcd586c5b",
+          "translation": "Зарезервировано для активного обязательного workflow, конфигурирующего и компилирующего профиль при каждом изменении; сейчас в этом форке нет профилей такого уровня."
         },
         "/policy/not_in_public_matrix": {
           "source_sha256": "fa9093c6c1e23d3a7cd0d80ac1d7720b1f0a25fb9074d6644fa78654865590c9",
           "translation": "Для этой комбинации приложения и платформы не опубликована поддерживаемая цель проверки."
         },
         "/policy/smoke_gated": {
-          "source_sha256": "06dd943a7b90e72fe151be4cf542d69c5fc4d62ca07ea824f673b51fd9aa560b",
-          "translation": "Проходит проверку сборки и автоматический процессный smoke-тест starter-, native-extension-, многопользовательского проекта или Content Showcase."
+          "source_sha256": "b4dc55b2f51a1ed2e5d37fb480c5fae16ebab84e7fd8f34f1f6cd0f240e70b3c",
+          "translation": "Зарезервировано для активного build gate и именованного автоматического process route; архивные workflow не являются свидетельством исполнения."
         },
         "/policy/source_capable": {
-          "source_sha256": "a83cc63a53eee3258eface1ab23295b7e2a3f6878eb8e6e1d62370349a785299",
-          "translation": "Проверяемый реестр BuildTools предоставляет цель, но обязательный workflow её не запускает."
+          "source_sha256": "fa11b9fe21d0f945405552ca2a2af9f95fdd18c8095d004b2a7c2ca38914d993",
+          "translation": "Актуальный реестр BuildTools предоставляет цель. У форка нет активного обязательного CI gate; объявление цели не доказывает завершённую сборку или runtime-приёмку."
         },
         "/renderer_policy/@platforms=Android%20and%20iOS/compiled_backends": {
           "source_sha256": "015e9de5e0afbc80a72b4bddc7e3ef6f984257cd13010cafb8ed944d9a9d841e",
@@ -6871,8 +6714,8 @@
           "translation": "Один исходный эффект поддерживает активные backend-ы рендерера без проектных ответвлений шейдера."
         },
         "/baking_rules/@id=effect-format.baking.native-flavors/requirement": {
-          "source_sha256": "8c36c6b55d24f3f2173891c57ce29122dd2b639bbf1fd9524f630ee99829f429",
-          "translation": "Каждая стадия создаёт нативный Vulkan SPIR-V, desktop GLSL 330, GLSL ES 300, HLSL Shader Model 4.0 и исходный Metal для macOS и iOS."
+          "source_sha256": "4a7f1a138c8c6bcc4eed7461fce307cd38d4948a9b33f32a5672845fc005531a",
+          "translation": "Каждая стадия сохраняет native Vulkan SPIR-V, SDL SPIR-V, desktop GLSL 330, GLSL ES 300, скомпилированный Direct3D DXBC и исходник Metal для macOS/iOS. HLSL Shader Model 4.0 — временный вход компилятора, не сохраняемый вариант."
         },
         "/baking_rules/@id=effect-format.baking.sdl-remap/name": {
           "source_sha256": "5af42c050b3123b37a815bec4ba7aa5c36669c9e123a182a7f35d3d75b7211a5",
@@ -7418,8 +7261,8 @@
           "translation": "Ресурс может пройти один backend и остаться неполным для другого пакета."
         },
         "/validation_rules/@id=effect-format.validation.output-flavors/requirement": {
-          "source_sha256": "f4c2ee516d0cbd7544022660152674dec4e4d7fe8dddb202cbb20bcc30f1c31e",
-          "translation": "Проверяйте исходник, метаданные, нативный SPIR-V, SDL SPIR-V, GLSL, GLSL ES, HLSL и оба выхода MSL для каждой стадии/прохода."
+          "source_sha256": "3dc3f11cd03942b0648a6676fe1efe385d8a47fa60078d6f97c4606009a86a40",
+          "translation": "Проверяйте исходник, метаданные, native SPIR-V, SDL SPIR-V, GLSL, GLSL ES, DXBC и оба выхода MSL для каждой стадии/прохода. Не требуйте сохранённый HLSL."
         },
         "/validation_rules/@id=effect-format.validation.project-ownership/name": {
           "source_sha256": "d52090d2a9280f2b2f57fe8b6fc0c34ba2210417d1c7189bc005a72197ae0f70",
@@ -7574,8 +7417,8 @@
           "translation": "Двадцатибайтные записи символов"
         },
         "/bmfont_rules/@id=font-format.bmfont.char-records/rationale": {
-          "source_sha256": "2edb337751f913c7a9343f3324fa85e1906405308b545b235dfb59357044b10f",
-          "translation": "В поставляемых шрифтах встречаются отрицательные выносы, поэтому это подтверждённое исходным кодом ограничение должно быть явно указано, а не описано как корректное знаковое декодирование."
+          "source_sha256": "1b36e4e531a2eb90ce500a2e724ad0433c33df6ef3726508e53959babc448c93",
+          "translation": "Поставляемые шрифты содержат отрицательные выносы, поэтому ограничение unsigned-read должно оставаться явным. Повторные character IDs используют прежний глиф, поздние полные записи перезаписывают его метрики; дубликаты ID не отклоняются."
         },
         "/bmfont_rules/@id=font-format.bmfont.char-records/requirement": {
           "source_sha256": "54d8b84cbcb72233ba593319c0fce7b075c87d1b96f2e893a7791e4421954b56",
@@ -7702,8 +7545,8 @@
           "preserve_source": true
         },
         "/fofnt_fields/@id=font-format.fofnt.letter/rationale": {
-          "source_sha256": "bf77e1fc37fa33087e3a0b0dd8eb27335efcb18b0c1a3fa096c44b1643692102",
-          "translation": "Парсер декодирует ровно одну кодовую точку для выбора записи карты глифов; поздние дубликаты заменяют ранние метрики."
+          "source_sha256": "d4681bbb1297d93ad2c76d69418be5e5fb6621153c52d16ac11904585d02e43e",
+          "translation": "Парсер декодирует одну кодовую точку для выбора глифа; дубликат использует тот же глиф: обновляются только встреченные поля, опущенные сохраняют прежние значения."
         },
         "/fofnt_fields/@id=font-format.fofnt.letter/requirement": {
           "source_sha256": "3d2d082cd773fed92929bf450eb37d28657041fae2428fc5698e6703801519b8",
@@ -8166,16 +8009,16 @@
           "translation": "Запекайте дескриптор и изображение, запускайте измерения каждого масштаба и визуально проверяйте обычные, обведённые, перенесённые, выровненные, локализованные случаи и отсутствующие глифы."
         },
         "/validation_rules/@id=font-format.validation.engine-tests/name": {
-          "source_sha256": "cd843cc7ada17d7b366d2d22ad53839bd5ad1986f4b8ae6ea2c98df7f99156c2",
-          "translation": "Регрессионные gate Engine"
+          "source_sha256": "1a4425cdcafb85ec04d27ea0b697e54eafbc3907cfea6c0248f28d91f4af7675",
+          "translation": "Проверки исходников и runtime"
         },
         "/validation_rules/@id=font-format.validation.engine-tests/rationale": {
-          "source_sha256": "b5dae4ea4b620fd78cb8ece6b81a6db047fb76149422a7b8b618776fc7f6166d",
-          "translation": "Структурные проверки фиксируют выведенные из исходников контракты, а нативные тесты покрывают пути ресурсов и создания клиента."
+          "source_sha256": "46c11bb17e7b3692504af5cdb475aff3c83ead92354113137b361a842c9a86ae",
+          "translation": "Проверки по исходникам не исполняют загрузку дескриптора, binding шрифта, layout или rendering."
         },
         "/validation_rules/@id=font-format.validation.engine-tests/requirement": {
-          "source_sha256": "fa8ab60bf8e85d45f9467e81f5357aff79da8f5f2ae996ee21f7aaa4610e65eb",
-          "translation": "После изменений FontManager или дескрипторов запускайте целевой тест документации и полный сгенерированный target модульных тестов Engine."
+          "source_sha256": "213a15dc838d2981f1958cbb122557ea6f8d2a2b97139262d5cc6567db7ea508",
+          "translation": "После изменений дескрипторов или FontManager проверьте generated font reference, затем привяжите запечённые дескриптор и изображение в настоящем клиенте; собственные unit suites движка удалены."
         },
         "/validation_rules/@id=font-format.validation.fofnt-header/name": {
           "source_sha256": "4b0cf246aeb530be34756f0283e59f74eecdd8e6f5dd5c5409bb54dc20e1b571",
@@ -9311,24 +9154,24 @@
           "translation": "Семантика анимации ParticleSprite"
         },
         "/runtime_rules/@id=particle-format.runtime.sprite-semantics/rationale": {
-          "source_sha256": "e7197c480a5d0df54a5034bca58cd3e065526aff70f257105ab2159170f88262",
-          "translation": "Универсальные элементы управления анимацией Sprite не соответствуют временной шкале SPARK или выбору направления."
+          "source_sha256": "e5b8864639cbbb804706f6a82ffad6f842ba5635d79649808dc17b3beda3edad",
+          "translation": "Направление — вход ориентации, а не выбор directional frame. SPARK поддерживает его; Effekseer сообщает, что look-direction oriented particles не поддерживаются."
         },
         "/runtime_rules/@id=particle-format.runtime.sprite-semantics/requirement": {
-          "source_sha256": "34f5c8fbd28837f1751c7e6649c24b49093ff6648a02e5b3f6b91f108e0d8578",
-          "translation": "ParticleSprite нельзя копировать и он никогда не участвует в hit test; Play пересоздаёт систему, Stop ничего не делает, SetTime и SetDir игнорируются, а IsPlaying отражает активное состояние SPARK."
+          "source_sha256": "67cd4f9ee76a9a55432eecbd63022a6bec81fce9146b867b5f76c77a0aa2b188",
+          "translation": "ParticleSprite нельзя копировать, hit test всегда false; Play перезапускает, Stop и SetTime — no-op, SetDir хранит угол для runtime Setup, IsPlaying отражает активность backend. Effekseer отклоняет ненулевой look direction."
         },
         "/runtime_rules/@id=particle-format.runtime.update-cadence/name": {
           "source_sha256": "fcf4ceb9053d713e20dd4bde9b336fcc9a7cebc8f8ca0f5d87f6c74ec14b7cda",
           "translation": "Частота обновления"
         },
         "/runtime_rules/@id=particle-format.runtime.update-cadence/rationale": {
-          "source_sha256": "af2d2a1d10f660f03477dc8f1de50fad5f558890d8688ed32488e07f12259da3",
-          "translation": "Симуляция частиц использует общую настройку 3D-анимации, а не отдельный FPS частиц."
+          "source_sha256": "bf6f995f00d1eb77bc78be2fcbaea5d0697b58318cb62bbe5fc6084c7b305c20",
+          "translation": "ParticleSprite вызывает Update независимо от NeedDraw. Обновление атласа ограничено по частоте, direct-scene маршрут рисует через свой scene callback."
         },
         "/runtime_rules/@id=particle-format.runtime.update-cadence/requirement": {
-          "source_sha256": "61829bdc1bb9b2f5b748de3b1325ceca4b78676413e87bf57adeeae3eb9d8829",
-          "translation": "Render.Animation3dFPS задаёт порог обновления частиц в миллисекундах; ноль оставляет нулевой порог и тем самым допускает обновление каждый кадр."
+          "source_sha256": "6357f36bafb08ac8786d50beedd53d04d41ba01d36ed3912a51b778a0a645045",
+          "translation": "Render.Animation3dFPS задаёт порог render-refresh NeedDraw, а не фиксированную частоту simulation. Update продвигает backend на прошедшее время; ноль снимает draw throttle. Forced draw без прошедшего времени использует шаг не меньше миллисекунды."
         },
         "/runtime_rules/@id=particle-format.runtime.world-scale/name": {
           "source_sha256": "d7279f62766bcc3c71a20f73f9a37e80de59c4d50f56db94b42fa8790bb7ba2d",
@@ -9428,16 +9271,16 @@
           "translation": "Редактируйте исходные ресурсы .spark в Mapper, сохраняйте их через XML-сериализатор SPARK, затем повторно запекайте и пересоздавайте предпросмотр .spk."
         },
         "/validation_rules/@id=particle-format.validation.baker-tests/name": {
-          "source_sha256": "4dcc797aee7d4c318ad28b0f13f36faf702ee40e0ab7f5d4f32c23d4963e2cba",
-          "translation": "Тесты бейкера частиц"
+          "source_sha256": "216b79f564b64cb44f8c9ecc1e46328d696dda1d74d42f074442cb5d262ef4e9",
+          "translation": "Проверки запекания частиц"
         },
         "/validation_rules/@id=particle-format.validation.baker-tests/rationale": {
-          "source_sha256": "95d8c2b25c7a3f2a80a941af66b894f1713ac6bb3365665567f03a71037822e1",
-          "translation": "Нативный набор проверяет границы бейкинга обеих подсистем."
+          "source_sha256": "e3ad8d294810b5a0b9cd3c20a768f0c8a1c4a9137415414915d8464ce42aa09b",
+          "translation": "Собственные unit suites движка удалены. Проверки документации не исполняют границы запекания backend."
         },
         "/validation_rules/@id=particle-format.validation.baker-tests/requirement": {
-          "source_sha256": "58c168fddeeeb4fd725b1eb1b07f7543a22af8e22e82cf44ee4f35c6f5fe0d97",
-          "translation": "После изменения исходных форматов, трансформаций, проверки путей, вывода компилятора или инвалидации зависимостей запускайте модульные тесты ParticleBaker."
+          "source_sha256": "beaae7292b0d084342ab52890b9b0d8f4206dcf573d50aa03bd8743df479f4cc",
+          "translation": "После изменений форматов, transforms, проверок путей, compiler output или dependency invalidation перезапеките представительные ресурсы каждого включённого backend; проверьте диагностику и runtime-выход."
         },
         "/validation_rules/@id=particle-format.validation.documentation/name": {
           "source_sha256": "b332a213cf4d245ca73848868307505e3e6b53863da3f8852074a7d0ad680c0a",
@@ -9452,24 +9295,24 @@
           "translation": "После изменения форматов частиц, подсистем, инструментов или интеграций запускайте docs_particle_format.py --check и его сфокусированный модульный тест."
         },
         "/validation_rules/@id=particle-format.validation.effekseer-runtime/name": {
-          "source_sha256": "3d64926eb20442e033596888e00e5b4bb1bac6cc3e0c90af6562a587ac0e4792",
-          "translation": "Runtime-тесты Effekseer"
+          "source_sha256": "8a06fcd8fa239d649afe44e84e0a6071f9de9b3e0e33f1905f9c36248ded5ec0",
+          "translation": "Проверка runtime Effekseer"
         },
         "/validation_rules/@id=particle-format.validation.effekseer-runtime/rationale": {
-          "source_sha256": "c039cb5251dd3e090984a70a27f40f587203cec7e4f5a9f789bc514ebd469201",
-          "translation": "Набор проверяет детерминированную callback-геометрию и поддерживаемое runtime-поведение."
+          "source_sha256": "52a55b5be167e11d90b8d33bef5e00e1b14c0b2d5803b59045658045c3f49999",
+          "translation": "Authoring editor и проверки исходников не выполняют callback rendering FOnline и не доказывают игровую интеграцию."
         },
         "/validation_rules/@id=particle-format.validation.effekseer-runtime/requirement": {
-          "source_sha256": "db62aac2443832be32762f1d91134518216f24109ec977c68880a140d2519b1f",
-          "translation": "После изменения геометрии компилятора или runtime, сортировки, пакетирования, текстур, seed или масштаба запускайте сфокусированные runtime-тесты Effekseer."
+          "source_sha256": "b69ab4413af54c03c92d4af30a1be52c33270ce0d26b081b2a7a120a46baa881",
+          "translation": "После изменений геометрии, сортировки, batching, textures, seed или scale проверьте запечённый эффект в Mapper или ParticleViewer и представительной клиентской сцене. Look direction Effekseer оставляйте нулевым."
         },
         "/validation_rules/@id=particle-format.validation.model-route/name": {
           "source_sha256": "6322ee071b1b8b354c794899258282fe5bef9d34abcdf50fb3c7d251d2ab8cf0",
           "translation": "Маршрут привязки к модели"
         },
         "/validation_rules/@id=particle-format.validation.model-route/rationale": {
-          "source_sha256": "93a8370a2e88870684660ef264d726d29eab9cf3a2b4e61953c4fc003218d44f",
-          "translation": "Тесты ParticleSprite не проверяют владение привязкой к кости модели или проекцию."
+          "source_sha256": "be8ccc81d9f0e50b54b0a590bbd17b64f282eb9f0c486443d1ced8d1a98f86f4",
+          "translation": "Изолированный particle preview не проверяет владение привязкой к кости модели или игровую проекцию."
         },
         "/validation_rules/@id=particle-format.validation.model-route/requirement": {
           "source_sha256": "f3d0c5ece8208ac6b3e0fb831a8f577331bfe2841b53977032133618a633a6de",

@@ -100,13 +100,13 @@ static void Cleanup(sentry_options_t* raw_options) noexcept {
 
 Because the common case now keeps the clean name on the checked `nptr<T>` itself, do **not** introduce `nullable_` locals as a narrowing ritual. Do **not** invent per-call disambiguators such as `_lookup`, `_ref`, `_ptr`, or `_begin`, and **never copy an already-named nullable or raw pointer into an intermediate just to wear a prefix**. Bind a raw pointer straight to `ptr<T>` after the `!= nullptr` check — do not route it through an `nptr<T>` intermediate just to null-check it.
 
-When a value is **provably non-null** — `std::string::data()` / `string_view::data()` (never null), `&object`, or an already-non-null result — bind it **straight to `ptr<T>` with no check and no `nptr<T>` intermediate**; adding a `!= nullptr` test there is dead code. And do not introduce *any* wrapper for a method-local pointer that never escapes the function and is used only for local address arithmetic — a `ptr<T>` (or a plain raw pointer for pure pointer math) is enough:
+When a value is **provably non-null** — a live string object's `data()`, `&object`, or an already-non-null result — bind it **straight to `ptr<T>` with no check and no `nptr<T>` intermediate**. A default or otherwise empty `string_view` may have null `data()`; preserve that absence with `nptr<T>`, or pass the view/span itself when the operation accepts an empty range. And do not introduce *any* wrapper for a method-local pointer that never escapes the function and is used only for local address arithmetic — a `ptr<T>` (or a plain raw pointer for pure pointer math) is enough:
 
 ```cpp
-ptr<const char> view_begin = _sv.data();        // data() is never null — no nptr, no check
+auto view_begin = make_nptr(_sv.data());       // An empty view may have null data
 ptr<const char> storage_begin = _s.data();
 ptr<const char> storage_end = storage_begin.get() + _s.size();
-if (view_begin < storage_begin || !(view_begin < storage_end)) { ... }
+if (!view_begin) { /* Handle the empty view before address arithmetic. */ }
 ```
 
 One exception: an **exported/ABI parameter whose name is fixed by an external contract** (or pinned in the smart-pointer-audit allowlist) keeps its name; narrow it to a `<name>_ptr` local rather than renaming the parameter.
@@ -250,7 +250,7 @@ rg "^\s*(mutable\s+)?unique_ptr<[^\n;]+>\s+\w+[^;{}]*\{\}\s*;" Source SourceExt
 rg "^\s*(mutable\s+)?refcount_ptr<[^\n;]+>\s+\w+[^;{}]*\{\}\s*;" Source SourceExt
 ```
 
-Run the embedding project's generated engine unit-test target after pointer-layer changes. If native script bindings or exported method signatures are touched, also run the script compilation/baking validation used by that project.
+After pointer-layer changes, build the smallest affected embedding-project role and exercise its existing ownership/lifetime application path. The former Engine unit target is removed; new automated tests require an explicit request. If native bindings or exported signatures change, also compile/bake the affected script roles.
 
 The Engine repository does not currently ship a whole-tree textual or AST smart-pointer policy checker. Embedding projects can keep lightweight migration guards in their own source control, but those commands, task names, baselines, and allowlists are project-owned and are not normative Engine evidence.
 

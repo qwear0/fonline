@@ -5,7 +5,7 @@ locale: ru
 document_id: entity-model
 permalink: /Docs/ru/explanation/entity-and-property-model/
 ---
-<!-- docs-translation: {"document_id":"entity-model","locale":"ru","source_path":"Docs/en/explanation/entity-and-property-model/index.md","source_sha256":"c95401077f30fb38547d9e6282ba9e6a0541a28b406657bee34a0f1887e81776"} -->
+<!-- docs-translation: {"document_id":"entity-model","locale":"ru","source_path":"Docs/en/explanation/entity-and-property-model/index.md","source_sha256":"114fb729d3e6d83654a17920a725a5ea0e962f0a34ed09f394459ac6591bef38"} -->
 # Модель сущностей
 
 Этот документ описывает переиспользуемую runtime-модель сущностей: дескрипторы типов сущностей, сгенерированные средства доступа к свойствам, сущности-прототипы, владение внутренними сущностями, события сущностей и модель хранения свойств, на которой строятся другие runtime-системы.
@@ -241,7 +241,9 @@ Binary restore paths (`RestoreData`, `RestoreAllData`) также проверя
 
 Persistence backends хранят records `AnyData::Document`. Подробности database commit и recovery приведены в [сохранении данных](../persistence/).
 
-## Проверяемые тесты
+## Исторический перечень тестов
+
+Suites ниже удалены в этом форке и описывают только прежнее покрытие. Текущая проверка использует build/compile/bake затронутой роли и существующие application paths save/load, lifecycle и replication. Новые автоматизированные тесты требуют явного запроса.
 
 К соответствующим тестам относятся:
 
@@ -267,8 +269,8 @@ Persistence backends хранят records `AnyData::Document`. Подробно�
 ## Checklist проверки
 
 1. Соберите минимальную цель, компилирующую сгенерированный код сущностей и свойств.
-2. Запустите тесты жизненного цикла сущностей и прототипов, относящиеся к изменённому типу.
-3. Запустите тесты свойств и метаданных при изменении флагов свойств, регистрации или сериализации.
+2. Проверьте затронутый lifecycle/prototype через существующий application path проекта.
+3. Выполните compile/bake изменённых property/metadata declarations и проверьте фактические serialization/save/reload, если затронуты.
 4. Для синхронизируемого свойства проверьте пути репликации клиента и сервера и обновите [сеть и авторитетность](../authority-and-networking/), если поведение изменилось.
 5. Для persistent-свойства проверьте database save/load paths и обновите [сохранение данных](../persistence/), если поведение изменилось.
 6. Для видимого скриптам свойства или метода проверьте сгенерированный script API и при необходимости обновите [Nullability.md](../../../Nullability.md).

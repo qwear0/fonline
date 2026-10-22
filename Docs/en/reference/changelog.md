@@ -14,6 +14,18 @@ Developer-visible FOnline changes and migration notes are maintained here in Eng
 
 ## Current - 2026-10-22
 
+### Documentation
+
+- Reconcile documentation ownership, manifests, diagrams, translation descriptions, native coding contracts and runtime explanations with current source. Distinguish archived upstream/site evidence from fork publication and preserve actual updater/persistence limitations.
+- Complete retirement of owned Python/build-tool fixtures and remove their validation-project registration. Existing production documentation checks remain available.
+
+### Migration
+
+- Base `56a28290a725781a40615af3b9f8005e2917aa65` (`2026.1.59-dev`) → `2026.1.60-dev`. Remove remaining calls into `BuildTools/tests`; regenerate documentation delivery outputs from the reconciled manifest and descriptions. Use the corrected lifecycle/ownership guidance without interpreting documentation changes as new runtime capabilities or live site deployment.
+- No runtime API, configuration value, save/resource format, wire `0.0.75` or Managed ABI `9` change. No data conversion; the coordinated range still requires its following generated/reference updates. Rollback restores the matching preceding source/documentation artifacts.
+
+## 2026.1.59-dev - 2026-10-22
+
 ### Changed
 
 - Continue the owner-authorized retirement of the Python unit suites for documentation, managed-runtime tooling and packaging. Production generators, validators, packaging tools and vendored suites are retained; no replacement test framework is introduced.

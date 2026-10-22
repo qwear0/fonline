@@ -7,7 +7,7 @@ permalink: /Docs/ru/contributing/coding-contracts/exception-safety.html
 ---
 
 # Безопасность исключений и устойчивость инвариантов движка
-<!-- docs-translation: {"document_id":"exception-safety","locale":"ru","source_path":"Docs/en/contributing/coding-contracts/exception-safety.md","source_sha256":"30f8752b0f99c5fbb3c565405a8a07513c6abdce8613b195cb533069af68490a"} -->
+<!-- docs-translation: {"document_id":"exception-safety","locale":"ru","source_path":"Docs/en/contributing/coding-contracts/exception-safety.md","source_sha256":"1922179e2f34bd2ba8981a8f9a0d15f2325040ffb1880d7f0d343cb62cf534a2"} -->
 Этот документ объясняет, как движок сохраняет согласованное состояние при
 исключениях. Главное требование: исключение посреди составного изменения
 состояния (создание, регистрация, уничтожение и инвалидирование сущности,
@@ -347,10 +347,7 @@ for (size_t prev_deps = std::numeric_limits<size_t>::max(); cr->HasItems() || cr
 
 ## 7. Тесты
 
-Контракты закреплены `Source/Tests/Test_AngelScriptEntityLifecycle.cpp` и
-`Source/Tests/Test_AngelScriptServerMapOperations.cpp`. При изменении lifecycle или
-инвариантов запускайте сгенерированную цель unit-тестов проекта-встраивателя и
-расширяйте эти suites, не ослабляя assertions.
+Прежние suites `Test_AngelScriptEntityLifecycle.cpp` и `Test_AngelScriptServerMapOperations.cpp` описывали init/finish/load/unload и reentrant destroy/move; они удалены в этом форке и не являются текущей runnable guarantee. Сохраняйте lifecycle/invariant contract. Выполните build/compile/bake затронутых ролей и существующий application path для relevant failure/post-event state; не ослабляйте assertions и не создавайте новые автоматизированные тесты без явного запроса.
 
 ## 8. Классификация безопасности исключений по функциям (уровни ES)
 

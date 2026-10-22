@@ -12,11 +12,15 @@ permalink: /Docs/en/contributing/decisions/0005-public-example-repository-owners
 - Date: 2026-07-15
 - Owners: documentation, build-release, runtime, content, repository administrators
 
+## Fork applicability
+
+The external repository portfolio and protected/scheduled CI lanes below are prospective governance for separately authorized published examples, not evidence that this fork created them or enabled CI. Its own workflows are archived and unit suites removed. Validate current local registry/scaffolds with existing checks and application routes; do not create tests, repositories, remote settings or releases implicitly.
+
 ## Context
 
 FOnline needs runnable public examples that are smaller and more teachable than production games. A single large sample would mix bootstrap, gameplay, assets, native integration, releases, and project policy. Unpinned examples would drift with Engine `master`; copied Last Frontier or TLA material would make reusable documentation depend on another project's code and licenses.
 
-The Engine already owns an executable headless scaffold in `Examples/MinimalProject`, generated contract references, a standalone documentation site, and CI smoke routes. It did not yet own a machine-readable external-repository portfolio, common governance files, exact pin validation, scheduled compatibility policy, asset provenance contract, or publication authority boundary.
+The Engine already owns an executable headless scaffold in `Examples/MinimalProject`, generated contract references, a standalone documentation site, and historically upstream CI smoke routes. At adoption it did not yet own a machine-readable external-repository portfolio, common governance files, exact pin validation, scheduled compatibility policy, asset provenance contract, or publication authority boundary.
 
 ## Decision
 
@@ -60,10 +64,9 @@ Rejected because silent drift would make security, compatibility, and support cl
 
 ## Verification
 
-- `python BuildTools/tests/test_docs_examples.py`
 - `python BuildTools/docs_examples.py --check`
 - `python BuildTools/docs_validate.py`
-- both compatibility lanes in every repository whose status is `published`
+- separately verify both required compatibility lanes for any actually published external repository; a local registry entry or template is not evidence of their execution
 
 ## Related documents
 

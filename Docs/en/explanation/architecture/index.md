@@ -65,7 +65,7 @@ The main layers are:
 - `ServerApp.cpp`, `ServerDaemonApp.cpp`, `ServerHeadlessApp.cpp`, and `ServerServiceApp.cpp` for server variants.
 - `MapperApp.cpp` for the central interactive editing tool.
 - `BakerApp.cpp` and `ASCompilerApp.cpp` for generation/build support.
-- `TestingApp.cpp` for test execution.
+- The former `TestingApp.cpp` and Engine-owned unit/coverage targets are removed; current verification uses existing build, compile/bake, CLI and application paths.
 
 `BuildTools/cmake/stages/Applications.cmake` wires these files into project-specific targets based on build options such as client/server/tool/platform/library modes. Avoid hard-coding target names in engine docs: target names are often derived from the embedding project's `FO_DEV_NAME` and presets.
 
@@ -166,7 +166,7 @@ A normal embedding-project workflow looks like this:
 2. BuildTools loads project options and engine sources.
 3. Codegen and baking steps prepare generated API/resources/scripts.
 4. Applications are built from `Source/Applications/` entry points.
-5. Runtime starts through the selected app: client, server, mapper, baker, test app, or platform package.
+5. Runtime starts through the selected app: client, server, mapper, baker, or platform package.
 6. Client/server/tools use common runtime services and call into game-owned scripts/content where appropriate.
 
 ## Where to document changes

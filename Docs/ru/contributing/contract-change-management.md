@@ -5,7 +5,7 @@ locale: ru
 document_id: api-change-management
 permalink: /Docs/ru/contributing/contract-change-management.html
 ---
-<!-- docs-translation: {"document_id":"api-change-management","locale":"ru","source_path":"Docs/en/contributing/contract-change-management.md","source_sha256":"2b037e974b21413e4bdb8c19b9cdb42c76478f21603cb437cc062550c09f6cb1"} -->
+<!-- docs-translation: {"document_id":"api-change-management","locale":"ru","source_path":"Docs/en/contributing/contract-change-management.md","source_sha256":"88a53421d1c15df965a1b4b6ffa935a5bdd1ece334c5567bd6cea44e18be8da0"} -->
 # Управление изменениями генерируемых контрактов
 
 > Руководство для сопровождающих движок. Используйте эту страницу, чтобы сравнивать между ревизиями генерируемые контракты native API, CMake, основного и вспомогательного BuildTools CLI, package, native extensions, форматов prototype, map, model, text, effect, image, particle и font, audio, video и протокола AiControl и принимать решения по изменениям, чувствительным к совместимости, до слияния.
@@ -101,21 +101,6 @@ breaking; затем используйте baseline stability, чтобы ре�
 - `BuildTools/docs_package.py`
 - `BuildTools/docs_contract_diff.py`
 - `BuildTools/docs_validate.py`
-- `BuildTools/tests/test_docs_api_diff.py`
-- `BuildTools/tests/test_docs_contract_diff.py`
-- `BuildTools/tests/test_docs_helper_cli.py`
-- `BuildTools/tests/test_docs_native_extension.py`
-- `BuildTools/tests/test_docs_prototype_format.py`
-- `BuildTools/tests/test_docs_map_format.py`
-- `BuildTools/tests/test_docs_model_format.py`
-- `BuildTools/tests/test_docs_text_format.py`
-- `BuildTools/tests/test_docs_effect_format.py`
-- `BuildTools/tests/test_docs_image_format.py`
-- `BuildTools/tests/test_docs_particle_format.py`
-- `BuildTools/tests/test_docs_font_format.py`
-- `BuildTools/tests/test_docs_audio.py`
-- `BuildTools/tests/test_docs_video.py`
-- `BuildTools/tests/test_docs_ai_control_protocol.py`
 - `Docs/generated/api.json`
 - `Docs/generated/cmake.json`
 - `Docs/generated/cli.json`
@@ -135,7 +120,7 @@ breaking; затем используйте baseline stability, чтобы ре�
 - `Docs/generated/package.json`
 - `Docs/contract-change-dispositions.json`
 - `Docs/en/contributing/decisions/0002-public-api-stability-contract.md`
-- `.github/workflows/validate.yml`
+- `.github/disabled-workflows/validate.yml`
 
 ## Входы и результаты
 
@@ -239,7 +224,7 @@ python BuildTools/docs_contract_diff.py \
 
 `--check` вычисляет и проверяет результат, не записывая файлы отчёта. При устранении ошибки предпочтителен `--write`, поскольку Markdown-отчёт включает готовые для заполнения шаблоны реестра.
 
-`BuildTools/docs_api_diff.py` остаётся доступным для исследования нативных символов и regression tests. CI использует aggregate command, поэтому зелёный отчёт только API не может скрыть drift CMake, CLI, package, helper CLI, native extension, prototype format, map format, model format, text format, effect format, image format, particle format, font format, audio, video или AiControl protocol.
+`BuildTools/docs_api_diff.py` остаётся доступным для исследования нативных символов. Локальная проверка использует aggregate command, поэтому зелёный отчёт только API не может скрыть drift CMake, CLI, package, helper CLI, native extension, prototype format, map format, model format, text format, effect format, image format, particle format, font format, audio, video или AiControl protocol.
 
 ## Поведение bootstrap
 
@@ -280,16 +265,11 @@ Directory baseline обязан содержать все семнадцать �
 
 Validator доказывает форму реестра и точную привязку, но не качество одобрения. Review обязан отклонять placeholder text, неверные заявления о совместимости, отсутствующие migrations или владельца вне затронутого домена.
 
-## Поведение CI
+## Локальная проверка и архивный CI
 
-Задание `Validate documentation` загружает полную историю и выбирает:
+В форке определения workflows архивированы в `.github/disabled-workflows/`; активного CI документации и автоматического артефакта contract diff нет. Выполняйте общую команду локально после проверки актуальности моделей/справочников, сохраняйте оба отчёта и не скрывайте ненулевой код при отсутствии обязательного disposition.
 
-- `github.event.pull_request.base.sha` для pull requests;
-- `github.event.before` для pushes в `master`.
-
-После проверки актуальности моделей и справочников CI выполняет `docs_contract_diff.py --write --enforce`. Отсутствующее обязательное disposition завершает задание ошибкой. Шаг upload с `if: always()` сохраняет оба отчёта для диагностики.
-
-Pull request с несколькими commits сравнивается с commit базовой ветки, а не с предыдущим commit feature branch. Push с несколькими commits использует полный отправленный диапазон. Standalone validator отклоняет удаление общего реестра, контракта манифеста с семнадцатью моделями, checkout полной истории, аргумента base ref, aggregate test или enforcement switch.
+Выбирайте настоящую базу интеграции/публикации. Многокоммитное изменение сравнивается по полному диапазону база–результат, не только с предыдущим локальным commit. Архивный upstream job использовал base SHA pull request либо push `before` SHA и сохранял отчёты при сбое; это объясняет исторические свидетельства, а не текущую автоматизацию. Standalone validator по-прежнему требует общий реестр и manifest полного набора моделируемых доменов.
 
 ## Семантическая проверка и обязанности каждого обновления
 
@@ -305,7 +285,7 @@ Pull request с несколькими commits сравнивается с commi
 2. Существует путь замены или миграции либо реестр объясняет, почему он невозможен.
 3. Release notes называют затронутых разработчиков и поддерживаемые линии ревизий.
 4. Изменения network/serialization включают обязательные metadata совместимости или миграции.
-5. Generated references, examples и focused tests изменяются вместе.
+5. Generated references и затронутые примеры изменяются вместе; существующие compile/bake/application-проверки подтверждают изменённое поведение.
 6. Владелец домена runtime, scripting, build или release принимает срок поддержки.
 
 Внутренние изменения не требуют обещания совместимости, но неожиданные removals и shape churn всё равно заслуживают review, поскольку могут показать отсутствующую классификацию стабильности.
@@ -320,7 +300,7 @@ Aggregate report не может обнаружить:
 - был ли успешно выполнен migration guide или package path;
 - поддержку между линиями выпусков, которые ещё не объявлены и не отмечены tags.
 
-По-прежнему обязательны тесты runtime, structural CMake, native extension, prototype/map/model/text/effect/image/particle/font/audio/video/AiControl protocol, package, starter и embedding project. Зелёный отчёт семнадцати доменов доказывает только принятую смену ревизии для моделируемых declarative surfaces.
+Для затронутых runtime/content-границ используйте соразмерные существующие compiler, configure, bake, package, starter или прямые application-проверки по [правилам проверки](testing/). Удалённые unit/structural-наборы форка не являются предпосылками. Зелёный отчёт семнадцати доменов доказывает только принятую смену ревизии для моделируемых declarative surfaces.
 
 ## Устранение неполадок
 
@@ -328,7 +308,7 @@ Aggregate report не может обнаружить:
 - `does not exist at baseline revision`: ожидается только для первой зафиксированной ревизии модели.
 - `missing dispositions`: проверьте `Workspace/contract-diff.md`, добавьте проверенные записи и повторите запуск для той же пары ревизий.
 - disposition всё ещё отсутствует: скопируйте из текущего отчёта точные domain, change ID и оба contract hash.
-- изменение description классифицировано как breaking: добавьте focused regression вложенного поля до изменения policy или ledger.
+- изменение description классифицировано как breaking: изучите указанное вложенное поле и владеющее правило сравнения до изменения policy/ledger; не подавляйте настоящую разницу контракта.
 - internal change неожиданно блокирует: сначала проверьте drift source/scope модели; обычные изменения внутренних записей только отображаются в отчёте.
 - одновременно изменилось много записей: проверьте stable IDs и владеющий generator до принятия отчёта.
 
@@ -336,13 +316,13 @@ Aggregate report не может обнаружить:
 
 0. Выполните проверку версии/чейнджлогов и исчерпывающую семантическую миграцию из контракта обновления Engine; запустите `BuildTools/docs_engine_version.py` относительно точной исходной ревизии публикации.
 1. Пересоберите и проверьте все семнадцать канонических моделей и сгенерированный Markdown.
-2. Выполните `test_docs_api_diff.py` и `test_docs_contract_diff.py`.
+2. Подтвердите идентичность базовых и текущих моделей; запустите существующий общий CLI.
 3. Сравните с целевой базой при помощи `--write --enforce`.
 4. Проверьте каждое обязательное disposition и замените каждый сгенерированный placeholder.
-5. Выполните затронутый native, script, CMake, packaging, starter или project test.
-6. Выполните `test_docs_validate.py` и `docs_validate.py`.
-7. Проверьте CI artifact contract diff и статус каждого домена.
-8. Не добавляйте файлы в staging, если staging или commit явно не запрошены.
+5. Соберите/скомпилируйте/запеките/упакуйте затронутых потребителей и при необходимости проверьте приложение непосредственно.
+6. Запустите `docs_validate.py` со свежими предпосылками.
+7. Сохраните локальный артефакт contract diff и подтвердите статус каждого домена.
+8. Следуйте `AGENTS.md` для разрешений на коммиты/push задачи; более узкий запрет Git для worker остаётся обязательным.
 
 ## См. также
 

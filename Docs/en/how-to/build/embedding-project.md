@@ -79,7 +79,7 @@ Keep these in the embedding project:
 
 A project may define authored formats for game systems that are not part of the
 Engine contract. Dialog trees are a common example. Keep such a system
-project-owned until its reusable implementation, tests, fixtures, compatibility
+project-owned until its reusable implementation, existing verification, fixtures, compatibility
 policy, and documentation have moved into Engine or a versioned companion.
 
 A complete project-owned format should identify:
@@ -134,4 +134,4 @@ Use this routing:
 
 ## Validation principle
 
-Validate engine changes through a real embedding project whenever possible. The engine-owned minimal project provides the baseline host-aware `Examples/MinimalProject/validate.py` route; larger projects remain necessary for client, content, packaging, and gameplay contracts. The example validator is opt-in and is not a required Engine workflow lane. A reusable engine change may compile in isolation but still break generated APIs, project packaging, scripts, or content baking. Choose the narrowest project target that exercises the changed layer.
+Validate engine changes through a real embedding project whenever possible. The engine-owned minimal project provides the baseline host-aware `Examples/MinimalProject/validate.py` route; larger projects remain necessary for client, content, packaging, and gameplay contracts. The example validator is opt-in; this fork archives its workflow definitions and promises no active CI lane. A reusable engine change may compile in isolation but still break generated APIs, project packaging, scripts, or content baking. Choose the narrowest project target that exercises the changed layer.

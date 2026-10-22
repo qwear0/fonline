@@ -124,7 +124,7 @@ A backend without a byte representation throws `DataBaseException` in both direc
 
 `DbSQLite::CreateSnapshotData()` serializes the database with `sqlite3_serialize()` while holding the source storage lock, so the bytes are the exact page image the database would have on disk with WAL content folded in. `RestoreSnapshotData()` loads those bytes into a private in-memory database with `sqlite3_deserialize()` and copies it into the live storage with the online-backup API: deserializing straight into the live handle would detach it from its file. The buffer handed to `sqlite3_deserialize()` is allocated with `sqlite3_malloc64()` and freed on close.
 
-`ServerEngine::CreateSnapshot()` is the higher Engine-state composition for a stable authoritative world. It first reaches quiescence and returns typed blockers for runtime-only script contexts, delayed closures, time events, or movement; only a ready world flushes exact time/id, creates the backend payload, and writes the paired versioned RNG/compatibility manifest. This does not change the narrower `DataBase` contract and is not atomic slot publication. Restore callers strictly read the manifest, copy the immutable database payload to an isolated live directory, and pass its state into a fresh `ServerEngine`; opening a selected snapshot directly as writable live storage is outside the supported contract.
+`ServerEngine::CreateSnapshot()` is the higher Engine-state composition for a stable authoritative world. It first reaches quiescence and returns typed blockers for runtime-only script contexts, delayed closures, time events, or movement; only a ready world flushes exact time/id, creates the backend payload, and returns a `ServerSnapshotState` plus payload bytes. It writes no manifest or file and defines no container reader. The embedder owns serialization, integrity and atomic publication of that pair, and restores it through `ServerSnapshotRestore` into an isolated fresh `ServerEngine`. This does not change the narrower `DataBase` contract or serialize arbitrary runtime/project state.
 
 `DataBaseSnapshotDrainsAndBlocksNewProducers` pins the shared commit/producer barrier. `SQLiteDataBaseCreatesReopenableSnapshotWithoutOverwriting` pins pending-write inclusion, later-source-mutation exclusion, live-source independent reopen, no-overwrite behavior, and a failed destination that leaves no database file.
 
@@ -175,7 +175,7 @@ When changing commit durability, validate failed-write recovery and pending-log 
 
 JSON files contain ordinary UTF-8 objects; SQLite record BLOBs contain CBOR objects. Both preserve signed Int64 (including limits and values above 2^53), finite Float64, Bool, String, Array and Dict, including embedded NUL in strings/keys. Null/binary, unsigned overflow, non-object roots, malformed/truncated input and trailing CBOR bytes fail. Limits: 64 MiB per record and 64 nesting levels. CBOR SAX validation checks types/depth/declared lengths before DOM allocation; validation precedes writes.
 
-Use empty JSON/SQLite storage: old EJSON/BSON has no reader/converter. Preserve old binaries/storage for rollback. Mongo BSON/Memory semantics and SQLite tables/keys/WAL/snapshots remain unchanged; snapshots require matching current metadata/binaries. [Components](../../how-to/build/project-configuration.md#optional-native-components) defines provider selection; [backup/recovery](../../how-to/release/backup-and-recovery.md) defines consistent sets. Guarded `Test_DataBase.cpp` checks codecs, reopen/update/delete and recovery.
+Use empty JSON/SQLite storage: old EJSON/BSON has no reader/converter. Preserve old binaries/storage for rollback. Mongo BSON/Memory semantics and SQLite tables/keys/WAL/snapshots remain unchanged; snapshots require matching current metadata/binaries. [Components](../../how-to/build/project-configuration.md#optional-native-components) defines provider selection; [backup/recovery](../../how-to/release/backup-and-recovery.md) defines consistent sets. Qualify codecs, reopen/update/delete and recovery through the selected backend's actual application path.
 
 ## Relationship to entity state
 
@@ -198,9 +198,11 @@ Do not add database-specific assumptions to `Entity` or `Properties` unless all 
 
 `DrawGui()` is available at both facade and backend levels for debug/inspection UI.
 
-## Tests to inspect
+<a id="tests-to-inspect"></a>
 
-Relevant tests include:
+## Historical test inventory
+
+The following suites and hidden Mongo coordination harness were removed from this fork. Their names record earlier coverage, not runnable prerequisites or evidence for the current target. Use existing affected-backend builds and isolated application/database operations for current verification:
 
 - `Source/Tests/Test_DataBase.cpp`
 - entity-management tests such as `Test_LocationAndEntityMgmt.cpp` when persistence affects saved entities;
@@ -221,12 +223,12 @@ The hidden `MongoDataBaseRecoversAfterIsolatedServerRestart` test requires `FO_T
 
 ## Validation checklist
 
-1. Run `Source/Tests/Test_DataBase.cpp` or the embedding project's equivalent database test target.
+1. Build the affected persistent backend and use the existing embedding-project application path against isolated disposable storage. New automated tests or infrastructure require an explicit request.
 2. Validate insert, update, delete, get, valid, and ID enumeration for every affected backend.
 3. Validate integer-key and string-key collections when changing key handling.
 4. Validate commit queue drain with `StartCommitChanges()` / `WaitCommitChanges()`.
 5. Validate operation-log restore after a simulated failed commit when durability/recovery behavior changes.
 6. Validate that an enabled `DataBase.OpLogPath` is non-empty and that replacing `.oplog` with `-committed.oplog` produces a distinct committed-log path.
-7. For snapshot changes, prove pending changes are included, later source mutations are excluded, the destination reopens while the source remains live, completed destinations are not overwritten, and failed destinations leave no database artifact.
+7. For snapshot changes, verify queue draining, backend failure/refusal, byte payload isolation and restore into a fresh session. File naming, no-overwrite publication and failed-output cleanup are embedder responsibilities, not guarantees of this byte-returning database API.
 8. Validate entity save/load paths when persistent property semantics change.
 9. Never put production credentials or live connection strings into repository docs or tests.

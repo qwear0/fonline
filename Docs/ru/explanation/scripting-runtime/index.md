@@ -7,7 +7,7 @@ permalink: /Docs/ru/explanation/scripting-runtime/
 ---
 
 # Скриптовый runtime
-<!-- docs-translation: {"document_id":"scripting-runtime","locale":"ru","source_path":"Docs/en/explanation/scripting-runtime/index.md","source_sha256":"f98b7c292ab25521f611431cb2399028df3f993f35ef80c9501242a23c52f43f"} -->
+<!-- docs-translation: {"document_id":"scripting-runtime","locale":"ru","source_path":"Docs/en/explanation/scripting-runtime/index.md","source_sha256":"98e2b98e88dd27930509d2b7b772b7e44baca77aed2b6609a4ccb5925ed0e620"} -->
 > Документация движка. Эта страница описывает переиспользуемое поведение скриптового runtime в `Source/Common/ScriptSystem.*` и `Source/Scripting/`; конкретные игровые скрипты, квесты, правила и политика контента принадлежат подключающему проекту.
 
 ## Назначение
@@ -141,7 +141,7 @@ Destroyed entities также отклоняются на script-to-native bound
 
 `Source/Scripting/AngelScript/AngelScriptAttributes.cpp` разбирает специфичные для движка script attributes и declaration tags. Важные контракты:
 
-- удаление nullable-суффикса `T?` и перенос признака в метаданные;
+- разбор `T?` самим AngelScript frontend и перенос nullable declarations в metadata, не удаление суффикса preprocessor;
 - объявления `///@ Event` и соответствующие обработчики `[[Event]]`;
 - объявления `///@ RemoteCall`, необязательные структурные пределы `MaxBytes N` / `MaxCollectionSize N` и соответствующие реализации `[[ServerRemoteCall]]` или `[[ClientRemoteCall]]`;
 - отдельный entry point административных команд `[[AdminRemoteCall]]`;
@@ -210,7 +210,7 @@ AngelScript хранит значение `bool` в одном байте чет
 блок catch, и этот контекст сбрасывается только при повторной подготовке контекста
 скрипта.
 
-Lookup текста следует той же модели владения. Клиентские и mapper-скрипты могут получать строки и менять язык; серверные скрипты предоставляют только проверку наличия текста и число вариантов. Полный поведенческий контракт и семантика отсутствующих данных находятся в [руководстве по тексту и локализации](../../how-to/content/text-and-localization.md).
+Lookup текста следует той же модели владения. Клиентские и mapper-скрипты могут получать строки и менять язык; серверные скрипты предоставляют только проверку наличия текста и число вариантов. Полный поведенческий контракт и семантика отсутствующих данных находятся в [руководстве по тексту и локализации](../../how-to/content/text-and-localization.md). Text baking требует base language в совокупности входов, а не base source каждого pack; normalization удаляет packs, отсутствующие у выбранного fallback. Успешный bake поэтому не доказывает per-pack/key translation coverage проекта.
 
 Client render helpers `Game.DrawSprite`, `Game.DrawSpritePattern` и `Game.DrawSpriteRegion` допустимы только в render-facing callbacks (`RenderIface` и GUI draw callbacks). `Game.DrawSpriteRegion(sprId, uv0, uv1, pos, size, color)` рисует нормализованный подпрямоугольник `[0, 1]` исходного логического изображения sprite в destination rectangle; polygon-cropped atlas frames преобразуются через исходный offset, а прозрачные обрезанные поля остаются прозрачными в результате. `Game.DrawSpritePattern` использует тот же контракт логического изображения для каждой полной или частичной tile. Region drawing предназначен для переиспользуемой GUI composition, например script-side 9-slice panels, и возвращает `false`, когда sprite не поддерживает atlas-region drawing.
 
@@ -267,7 +267,9 @@ wrapper той же entity.
 
 `Source/Scripting/Native/` сейчас содержит только `.keepalive`, обозначающий зарезервированный source root будущей интеграции native scripting. Не документируйте его как реализованный, пока не появятся runtime, build, tests и authoring contract.
 
-## Тесты для изучения
+## Исторический перечень тестов
+
+Suites ниже удалены в этом форке и не являются current prerequisites. Используйте существующие role compile/bake и native dispatcher/application routes; новые тесты требуют явного запроса.
 
 Поведение скриптов покрывают специализированные тесты:
 
@@ -307,7 +309,7 @@ wrapper той же entity.
 
 1. Если изменились сигнатуры или аннотации, перегенерируйте код и проверьте diff сгенерированных метаданных и wrappers.
 2. Скомпилируйте каждый включённый backend: `CompileAngelScript` для AngelScript и `CompileManagedScripts` для Managed C#.
-3. Запустите самые узкие затронутые script tests. Для AngelScript начинайте с `Test_AngelScriptAttributes`, `Test_AngelScriptBaker` и `Test_AngelScriptCall`; для Managed C# — с `Test_ManagedScriptBaker`, managed core/analyzer tests и затронутых `BuildTools/tests/test_managed_*.py`. Для независимых от backend изменений запускайте общие method/entity tests.
+3. Запеките затронутые ресурсы и выполните самый узкий existing application path через actual callback/remote-call/lifetime boundary каждого выбранного backend; компиляция не доказывает runtime behavior.
 4. Для nullable-изменений выполните analyzers, описанные в [Nullability.md](../../../Nullability.md).
 5. Для изменений server/client/mapper methods проверьте runtime-путь стороны-владельца; одной компиляции недостаточно.
 6. Обновляйте [карту методов скриптового API](../../reference/script-api/method-ownership.md) при добавлении, удалении или содержательной перегруппировке файлов экспортируемых методов.

@@ -365,8 +365,7 @@ connection wrapper's lifetime must be disciplined:
 accepted TCP connection, and a real websocketpp client that sends a frame then relies on server shutdown to
 disconnect it). `NetworkServerWebSocketsQueuesCloseAcrossPeerAbortAndRetainedWrapper` also covers peer
 abort, repeated disconnect, exactly one notification and a wrapper retained after endpoint destruction.
-Run these tests and the unchanged `SecureChannelRunsOverWebSockets` under ThreadSanitizer and
-AddressSanitizer to check state serialization and lifetime separately.
+These former suites, including `SecureChannelRunsOverWebSockets`, are removed in this fork. Build the affected native transport with supported sanitizers and exercise the existing connection/shutdown path to inspect state serialization and lifetime separately; this does not authorize a new test harness.
 
 ## Ordered UDP transport
 
@@ -456,7 +455,11 @@ can reach is not a started server — the retries buy the losing side of the rac
 not turn a dead port into an acceptable state. The interthread transport is not part of this: it
 binds nothing another process could hold, so a failure there is a defect rather than a race.
 
-## Tests to inspect
+<a id="tests-to-inspect"></a>
+
+## Historical test inventory
+
+The suites below were removed from this fork. Preserve their historical coverage notes, but use affected-role compilation and the existing isolated client/server transport/application path for current evidence. New automated tests require an explicit request.
 
 Relevant tests include:
 
@@ -476,7 +479,7 @@ Relevant tests include:
 
 ## Validation checklist
 
-1. Run UDP, client, and server network tests relevant to the changed transport.
+1. Build the affected transport roles and exercise the actual connection, handshake, malformed-input rejection and reconnect behavior through existing isolated application paths.
 2. Validate both connect/accept and disconnect paths.
 3. Validate partial receives and message framing when changing `NetInBuffer` / `NetOutBuffer`.
 4. Validate hash resolution/debug-hash behavior across client and server builds.

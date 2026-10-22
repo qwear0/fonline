@@ -5,7 +5,7 @@ locale: ru
 document_id: client-updater
 permalink: /Docs/ru/explanation/runtime/client-updater.html
 ---
-<!-- docs-translation: {"document_id":"client-updater","locale":"ru","source_path":"Docs/en/explanation/runtime/client-updater.md","source_sha256":"890f5da56c0c61d9675016ac14a9e4db0cf6ff32451f2e6111bab575705dd959"} -->
+<!-- docs-translation: {"document_id":"client-updater","locale":"ru","source_path":"Docs/en/explanation/runtime/client-updater.md","source_sha256":"39f54969abd8d91edf663d9403084008b42e1ed32c3aef34e0252506ae8975a7"} -->
 # Разделение клиентской среды выполнения и обновление
 
 > Документация движка по переиспользуемому ABI между клиентским host и runtime,
@@ -95,12 +95,6 @@ Backend сканирует клиентские resource packs и native runtime
 - `BuildTools/cmake/helpers/Build.cmake`
 - `BuildTools/package.py`
 - `BuildTools/msicreator/createmsi.py`
-- `BuildTools/tests/test_package_resource_pack.py`
-- `BuildTools/tests/test_package_zip_helpers.py`
-- `Source/Tests/Test_ClientRuntimeApi.cpp`
-- `Source/Tests/Test_DiskFileSystem.cpp`
-- `Source/Tests/Test_Platform.cpp`
-- `Source/Tests/Test_Settings.cpp`
 - `ThirdParty/rpmalloc/rpmalloc/rpmalloc.c`
 
 ## Владение ресурсами Managed runtime
@@ -123,7 +117,7 @@ Mono/shim следуют native compatibility/restart rules, а class-library ch
 не загружается. Это одинаково для обычного и headless-клиента. Настройка
 `Client.ForceEmbeddedRuntime`, переданная в командной строке до загрузки settings,
 пропускает неявную библиотеку; явный `--ClientLibPath` всё равно имеет приоритет.
-Какой бы модуль ни выполнял игру, он запускает единый двухстадийный updater UI:
+Какой бы модуль ни выполнял игру, он запускает один updater UI; handshake выбирает режим ресурсов или native binary:
 
 Перед открытием журнала нового запуска host переименовывает существующий `<client>.log` в `<client>.prev.log` внутри writable root. Поэтому журнал предыдущего сбоя или зависания остаётся доступен для диагностики. Если другой процесс удерживает старый файл и переименование не удаётся, host записывает предупреждение и продолжает работу. Сохраняется один предыдущий запуск, а не архив журналов.
 
@@ -140,10 +134,11 @@ Mono/shim следуют native compatibility/restart rules, а class-library ch
     ▼
 <live runtime module>                 ─── the running module (loaded DLL by default; host module on fallback / ForceEmbeddedRuntime)
     │
-    │  RunClientRuntime: InitApp → resource Updater (UI) → ClientEngine → MainLoop
-    │  If resource updater reports compat outdated and platform supports self-update:
-    │     stage 2: binary Updater (UI) writes or verifies the module at `<runtime>-staging` / `<runtime>`
-    │     return ClientRuntimeResult { ReloadRequested, RequestedRuntimePath = <runtime> }
+    │  RunClientRuntime: InitApp → single Updater (UI)
+    │     ResourcesReady → ClientEngine → MainLoop
+    │     BinariesStaged → return ClientRuntimeResult { ReloadRequested, RequestedRuntimePath = <runtime> }
+    │  CompatibilityOutdated selects binary mode in that same updater on supported platforms;
+    │  it writes or verifies `<runtime>-staging` / `<runtime>` and requires a fresh process
     │
     └─► returns ClientRuntimeResult (Shutdown / ReloadRequested / FatalError)
 
@@ -177,7 +172,7 @@ Restart step (taken on either Case after ReloadRequested) — PromoteStagedReloa
 вычисляется под тем же capability guard: у Android и iOS нет пригодного
 executable path для загружаемого sibling module. Поскольку runtime выбирается раньше
 обычного чтения конфигурации, `Client.ForceEmbeddedRuntime` должен прийти как
-`--ForceEmbeddedRuntime`; значение только из `.fomain` или SubConfig не влияет на
+`--Client.ForceEmbeddedRuntime`; значение только из `.fomain` или SubConfig не влияет на
 этот pre-init выбор.
 
 Загруженную по live path DLL нельзя безопасно заменить и снова загрузить в том
@@ -523,7 +518,7 @@ server payload остаются byte-identical при раздельной уп�
 
 Incremental baker может touch неизменившийся output, но content-identical repack
 не должен менять FNV descriptor hash и заставлять пользователей скачивать pack
-заново. Client packs записываются как `.fores` из отсортированных нормализованных путей без timestamps. Packager проверяет каталог и каждый декодированный payload по длине и content hash. `Embedded` остаётся ZIP и проходит CRC-проверку в памяти до patch binary. Дефектный artifact останавливает упаковку до публикации. См. [test_package_resource_pack.py](../../../../BuildTools/tests/test_package_resource_pack.py) и [test_package_zip_helpers.py](../../../../BuildTools/tests/test_package_zip_helpers.py).
+заново. Client packs записываются как `.fores` из отсортированных нормализованных путей без timestamps. Packager проверяет каталог и каждый декодированный payload по длине и content hash. `Embedded` остаётся ZIP и проходит CRC-проверку в памяти до patch binary. Дефектный artifact останавливает упаковку до публикации. Проверяйте готовый пакет существующим packager и затронутым путём приложения; прежние package unit suites удалены.
 
 Packaging может передать reuse детерминированных resource archives
 принадлежащему проекту helper из `FO_RESOURCE_ARCHIVE_CACHE_HELPER`. Helper
@@ -669,7 +664,7 @@ compatibility на этих платформах updater возвращает `P
 | Host не находит runtime и fallback невозможен либо не удалась починка ресурсов | message box сообщает `Client update failed. Please install the latest full client package.` |
 | Server выключен, перезапускается или недоступен | message box `Can't connect to the server. It may be offline or restarting, please try again later.`, log `Client updater: connection failed`, затем terminal result `ConnectionFailed`; crash report намеренно не создаётся |
 | Поколение updater не совпадает | server log `Connected client X has outdated updater version Y`; старый client требует base package, generation 2+ просит latest full client package |
-| Gameplay version outdated на self-update platform | resource pass сообщает compatibility outdated, binaries mode stages runtime, показывает restart prompt, возвращает `ReloadRequested`; host продвигает файл и выходит |
+| Gameplay version outdated на self-update platform | тот же updater выбирает binary mode, подготавливает или проверяет runtime и завершает `BinariesStaged`; runtime показывает restart prompt и возвращает `ReloadRequested`; host продвигает файл и выходит, загрузка происходит только в следующем процессе |
 | Gameplay version outdated в Web/iOS/Android | message box `Client outdated, please update via your app store`, затем exit без native self-update |
 | Неверный file index/offset | server warning `Wrong file index ...` или `Wrong update file offset ...`, затем disconnect |
 | Client data не совпадает с server data | server log `Connected client X runs metadata version A while the server runs B`; updater log называет local version, server version и resource directory. Найдите каталог из другой bake |
@@ -684,7 +679,7 @@ compatibility на этих платформах updater возвращает `P
 
 Локальная приёмка:
 
-1. Соберите и запустите generated unit-test target проекта. `Test_ClientRuntimeApi.cpp` проверяет ABI, exports/results, selector round-trip, validation, live selection, staging и fallback; `Test_DiskFileSystem.cpp` — parity hash и writable path; `Test_Platform.cpp` — user data base; `Test_Settings.cpp` — inheritance `UpdateFilesInMemory` и read-only `Common.UserWritablePath`; application-config tests покрывают CLI/marker resolution, раннее размещение log/config и fail-safe creation.
+1. Используйте изолированный пакет проекта и writable directory. В этом форке нет generated unit-test target; применяйте существующие build/package commands и прямые проверки приложения ниже. Проверяйте ABI/results, selector validation и staging recovery отдельно от целостности ресурсов и CLI/marker path resolution.
 2. Соберите generated client host. На native platform зависимость должна построить runtime alias рядом с host. Отдельно соберите runtime target для isolated validation.
 3. Запустите host с bundled runtime и подтвердите DLL happy path, resource update и вход в игру.
 4. Запустите с `--ClientLibPath <path>` и валидным alternate runtime.

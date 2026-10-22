@@ -50,8 +50,8 @@ The Engine repository owns:
 - bounded line, command-queue, and event-history requirements;
 - accepted-command sequence ids and the terminal `command_completed` event;
 - the loopback-first security policy;
-- the standard-library reference client, protocol sample, generated contract,
-  focused tests, and compatibility-diff policy.
+- the standard-library reference client, runnable protocol smoke, generated
+  contract, and compatibility-diff policy.
 
 This is a protocol and integration contract, not a listener in the FOnline core
 runtime. The reference server deliberately stands in for a project client loop.
@@ -91,7 +91,7 @@ A normal integration has four ownership zones:
 
 The listener thread must never retain or mutate script objects, entities, GUI
 nodes, or engine state. Pass plain copied values through a bounded queue. Read
-[NativeExtensions.md](../../NativeExtensions.md) for extension roles and lifecycle,
+[Native Extensions](native-extensions.md) for extension roles and lifecycle,
 [Script Lifecycle and Concurrency](scripting/lifecycle-and-concurrency.md) for script
 thread ownership, and [Nullability.md](../contributing/coding-contracts/nullability.md) for native/script handles.
 
@@ -249,7 +249,7 @@ system. Do not publish this TCP endpoint directly on a LAN or the internet.
 Use a project native extension when a real FOnline client needs the bridge:
 
 1. Add a project CMake option that gates the complete listener implementation
-   and defaults according to the project's development policy. Force it off in
+   and defaults to off. Enable it only in explicit development profiles; force it off in
    every release/package workflow.
 2. Store only plain copied command, event, status, and observation values in the
    native bridge. Give all shared containers explicit locks and positive caps.
@@ -304,19 +304,18 @@ Run the project-neutral proof from the Engine root:
 
 ```powershell
 python Examples\AiControlSample\run_protocol_smoke.py
-python BuildTools\tests\test_ai_control_protocol.py
-python BuildTools\tests\test_docs_ai_control_protocol.py
 python BuildTools\docs_ai_control_protocol.py --check
 ```
 
 The smoke starts an ephemeral loopback listener and proves wrong-token rejection,
 per-connection authorization, liveness, status fields, initial observation,
 invalid params, unknown methods, action acceptance, asynchronous completion,
-updated observation, and exclusive event cursors. Focused malformed-peer tests
-also reject mismatched ids, ambiguous responses, invalid JSON, and oversized
-lines.
+updated observation, and exclusive event cursors. The reference client source
+also rejects mismatched ids, ambiguous responses, invalid JSON, and oversized
+lines. Those source checks are not additional exercised smoke cases; the old
+Python unit suites are retired.
 
-The reference `AiControlClient` requires `timeout` to be a finite positive number representable as a Python float. Construction rejects `NaN`, either infinity, overflow, booleans, and non-numeric values with `ValueError("timeout must be a finite positive number")` before any socket connection. Focused constructor tests cover invalid inputs and accepted positive integer/fractional timeouts without opening sockets.
+The reference `AiControlClient` requires `timeout` to be a finite positive number representable as a Python float. Construction rejects `NaN`, either infinity, overflow, booleans, and non-numeric values with `ValueError("timeout must be a finite positive number")` before any socket connection. This is the constructor's source contract, not evidence of a unit suite run.
 
 This sample is **not a FOnline runtime proof**. A project integration must also:
 

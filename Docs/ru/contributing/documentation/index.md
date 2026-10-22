@@ -5,276 +5,77 @@ locale: ru
 document_id: documentation-maintenance
 permalink: /Docs/ru/contributing/documentation/
 ---
-<!-- docs-translation: {"document_id":"documentation-maintenance","locale":"ru","source_path":"Docs/en/contributing/documentation/index.md","source_sha256":"e7f170fbee13ab6fbe6f6b4cf793b06f58bff870667576df2b225bee0d9f2e86"} -->
+<!-- docs-translation: {"document_id":"documentation-maintenance","locale":"ru","source_path":"Docs/en/contributing/documentation/index.md","source_sha256":"905d56222b9119c63698319e8b22fa93f37f9daa28d11be98c69eb3474d372a2"} -->
+
 # Сопровождение документации
 
-> Документация движка. Эта страница объясняет, как сохранять документацию FOnline привязанной к исходному коду, удобной для навигации и отделённой от содержимого проектов, использующих движок.
-
-`docs-manifest.json` — общий генерируемый индекс технических данных. `docs_localization.py` владеет `#/translation_status`, а `docs_site.py` — `#/routing`. Каждый генератор сохраняет остальные разделы и проверяет актуальность собственного раздела. Порядок: локализация, сайт/поиск/маршруты, оценка ИИ при необходимости, затем данные для ИИ; последний шаг обновляет публичные хэши документов и артефактов. Хэши проверенных русских переводов сохраняются в комментариях исходников. Не редактируйте генерируемые разделы вручную. Индекс и навигация указывают `VERSION` как источник версии, не храня копию его значения.
-
-## Назначение
-
-Перед проверкой или сборкой сайта выполните `python BuildTools/docs_prepare.py`. Команда строит игнорируемые индексы и отчёты в порядке зависимостей, не переписывая версионируемые модели публичных контрактов, Markdown, SVG и PNG. В Git остаются исходный manifest, правила, переводы и модели контрактов; `docs-manifest.json`, endpoints `llms`, навигация, поиск и каталоги проверок входят в результат сборки. Вход агента с checkout — `AGENTS.md`; файлы `llms` предназначены для внешних читателей сайта.
-
-Используйте эту страницу при добавлении, проверке и реорганизации документации движка. Это рабочее руководство дополняет машиночитаемый [манифест документации](../../../documentation-manifest.json), [бэклог документации](https://github.com/cvet/fonline/blob/master/Docs/_meta/DocumentationBacklog.md), [шаблон исследования](https://github.com/cvet/fonline/blob/master/Docs/_meta/DocumentationResearchTemplate.md), [отчёт о проверке](https://github.com/cvet/fonline/blob/master/Docs/_meta/DocumentationVerificationReport.md), [руководство по публикации сайта](site-publication.md), [индекс документации](../../index.md) и [точку входа для ИИ-сопровождения](../../../../AGENTS.md).
+Поддерживайте переиспользуемые контракты Engine по текущим исходникам этого форка. Начните с [AGENTS.md](../../../../AGENTS.md), [навыка сопровождения](../../../../skills/fosquad-engine-doc-maintainer/SKILL.md) и владеющей страницы в [оглавлении](../../index.md). Правила игры, контент, профили запуска, сервисы и политика выпуска принадлежат подключающим проектам.
 
 ## Проверенные исходные пути
 
-- `../AGENTS.md`
-- `README.md`
-- `Docs/en/index.md`
-- `Docs/ru/index.md`
-- `Docs/README.md` (legacy-маршрут)
-- `Docs/_meta/DocumentationBacklog.md`
-- `Docs/_meta/DocumentationExpansionPlan.md`
-- `Docs/_meta/DocumentationResearchTemplate.md`
-- `Docs/_meta/DocumentationVerificationReport.md`
+- `AGENTS.md`
 - `Docs/documentation-manifest.json`
-- `Docs/generated/api.json`
-- `Docs/generated/api/*.md`
-- `Docs/contract-change-dispositions.json`
-- `Docs/generated/source-inventory.json`
-- `Docs/generated/cli.json`
-- `Docs/en/reference/buildtools/*.md`
-- `Docs/ru/reference/buildtools/*.md`
-- `Docs/generated/cli/*.md` (legacy-маршруты)
-- `Docs/generated/helper-cli.json`
-- `Docs/en/reference/helper-cli/*.md`
-- `Docs/ru/reference/helper-cli/*.md`
-- `Docs/generated/helper-cli/*.md` (legacy-маршруты)
-- `Docs/generated/cmake.json`
-- `Docs/en/reference/cmake/*.md`
-- `Docs/ru/reference/cmake/*.md`
-- `Docs/generated/cmake/*.md` (legacy-маршруты)
-- `Docs/generated/native-extension.json`
-- `Docs/generated/native-extension/*.md`
-- `Docs/generated/prototype-format.json`
-- `Docs/generated/prototype-format/*.md`
-- `Docs/generated/map-format.json`
-- `Docs/generated/map-format/*.md`
-- `Docs/generated/model-format.json`
-- `Docs/generated/model-format/*.md`
-- `Docs/generated/text-format.json`
-- `Docs/generated/text-format/*.md`
-- `Docs/generated/effect-format.json`
-- `Docs/generated/effect-format/*.md`
-- `Docs/generated/image-format.json`
-- `Docs/generated/image-format/*.md`
-- `Docs/generated/particle-format.json`
-- `Docs/ru/reference/particle-format/*.md`
-- `Docs/generated/font-format.json`
-- `Docs/ru/reference/font-format/*.md`
-- `Docs/generated/audio.json`
-- `Docs/en/reference/audio/*.md`
-- `Docs/generated/video.json`
-- `Docs/en/reference/video/*.md`
-
-- `BuildTools/AiControlProtocol.json`
-- `BuildTools/ai_control_client.py`
-- `BuildTools/docs_ai_control_protocol.py`
-- `BuildTools/tests/test_ai_control_protocol.py`
-- `BuildTools/tests/test_docs_ai_control_protocol.py`
-- `Examples/AiControlSample/`
-- `Docs/generated/ai-control-protocol.json`
-- `Docs/generated/ai-control-protocol/*.md`
-- `Docs/generated/package.json`
-- `Docs/generated/package/*.md`
-- `Examples/PublicRepositories.json`
-- `Examples/PublicRepositoryTemplate/`
-- `BuildTools/docs_examples.py`
-- `BuildTools/tests/test_docs_examples.py`
-- `Docs/generated/public-examples.json`
-- `Docs/generated/public-examples/*.md`
-- `BuildTools/SupportMatrix.json`
-- `BuildTools/docs_support_matrix.py`
-- `BuildTools/tests/test_docs_support_matrix.py`
-- `Docs/generated/support-matrix.json`
-- `Docs/generated/support-matrix/*.md`
-- `BuildTools/DocumentationDiagrams.json`
-- `BuildTools/docs_diagrams.py`
-- `BuildTools/tests/test_docs_diagrams.py`
-- `Docs/generated/diagrams.json`
-- `Docs/assets/diagrams/*.svg`
-- `BuildTools/DocumentationScreenshots.json`
-- `BuildTools/docs_screenshots.py`
-- `BuildTools/tests/test_docs_screenshots.py`
-- `Docs/generated/screenshots.json`
-- `Docs/assets/screenshots/*.png`
-- `BuildTools/SnippetPolicy.json`
-- `BuildTools/docs_snippets.py`
-- `BuildTools/tests/test_docs_snippets.py`
-- `Docs/generated/snippets.json`
-- `Docs/translation-glossary.json`
-- `BuildTools/docs_localization.py`
-- `BuildTools/tests/test_docs_localization.py`
-- `docs-manifest.json#/translation_status`
 - `Docs/description-translations.ru.json`
-- `BuildTools/docs_description_translations.py`
-- `BuildTools/tests/test_docs_description_translations.py`
-- `Docs/generated/description-translation-status.json`
-- `Docs/ai-evaluation.json`
-- `BuildTools/docs_ai_eval.py`
-- `BuildTools/tests/test_docs_ai_eval.py`
-- `Docs/generated/ai-evaluation-report.json`
-- `BuildTools/docs_ai_delivery.py`
-- `BuildTools/tests/test_docs_ai_delivery.py`
-- `BuildTools/docs_site.py`
-- `BuildTools/docs_site_artifact.py`
-- `BuildTools/tests/test_docs_site.py`
-- `BuildTools/tests/test_docs_site_layout.py`
-- `BuildTools/tests/test_docs_site_artifact.py`
-- `BuildTools/docs-browser/package.json`
-- `BuildTools/docs-browser/package-lock.json`
-- `BuildTools/docs-browser/audit.mjs`
-- `BuildTools/tests/test_docs_browser.py`
-- `BuildTools/web/default-index.html`
-- `BuildTools/web/simple-web-server.py`
-- `Docs/Site/Data/docs-site.json`
-- `Docs/Site/Assets/docs-search.json`
-- `Docs/Site/Assets/docs-search.ru.json`
-- `docs-manifest.json#/routing`
-- `llms.txt`
-- `llms-full.txt`
-- `docs-manifest.json`
-- `BuildTools/docs_api.py`
-- `BuildTools/docs_api_diff.py`
-- `BuildTools/docs_contract_diff.py`
-- `BuildTools/docs_public_api.py`
-- `Docs/ru/reference/public-contract/index.md`, его EN-источник и legacy-маршрут `PUBLIC_API.md`
-- `BuildTools/ExternalProjectEvidence.json`
-- `BuildTools/docs_external_evidence.py`
-- `BuildTools/tests/test_docs_external_evidence.py`
-- `BuildTools/gameplay_test_runner.py`
-- `BuildTools/tests/test_gameplay_test_runner.py`
-- `BuildTools/tests/test_docs_gameplay_testing.py`
-- `Docs/generated/external-project-evidence.json`
-- `Docs/generated/external-project-evidence/index.md`
-- `BuildTools/docs_reference.py`
-- `BuildTools/docs_metadata.py`
-- `BuildTools/docs_inventory.py`
-- `BuildTools/docs_cli.py`
-- `BuildTools/docs_helper_cli.py`
-- `BuildTools/docs_native_extension.py`
-- `BuildTools/docs_prototype_format.py`
-- `BuildTools/docs_map_format.py`
-- `BuildTools/docs_model_format.py`
-- `BuildTools/docs_text_format.py`
-- `BuildTools/docs_effect_format.py`
-- `BuildTools/docs_image_format.py`
-- `BuildTools/docs_particle_format.py`
-- `BuildTools/docs_font_format.py`
-- `BuildTools/docs_audio.py`
-- `BuildTools/docs_video.py`
-- `BuildTools/docs_package.py`
+- `BuildTools/documentation_metadata.py`
+- `BuildTools/docs_prepare.py`
 - `BuildTools/docs_validate.py`
-- `BuildTools/tests/test_docs_api.py`
-- `BuildTools/tests/test_docs_api_diff.py`
-- `BuildTools/tests/test_docs_contract_diff.py`
-- `BuildTools/tests/test_docs_public_api.py`
-- `BuildTools/tests/test_docs_reference.py`
-- `BuildTools/tests/test_docs_metadata.py`
-- `BuildTools/tests/test_docs_inventory.py`
-- `BuildTools/tests/test_docs_cli.py`
-- `BuildTools/tests/test_docs_helper_cli.py`
-- `BuildTools/tests/test_docs_native_extension.py`
-- `BuildTools/tests/test_docs_prototype_format.py`
-- `BuildTools/tests/test_docs_map_format.py`
-- `BuildTools/tests/test_docs_model_format.py`
-- `BuildTools/tests/test_docs_text_format.py`
-- `BuildTools/tests/test_docs_effect_format.py`
-- `BuildTools/tests/test_docs_image_format.py`
-- `BuildTools/tests/test_docs_particle_format.py`
-- `BuildTools/tests/test_docs_font_format.py`
-- `BuildTools/tests/test_docs_audio.py`
-- `BuildTools/tests/test_docs_video.py`
-- `BuildTools/tests/validate_native_extension_interface.cmake`
-- `BuildTools/tests/test_docs_package.py`
-- `BuildTools/tests/validate_package_interface.cmake`
-- `BuildTools/tests/test_docs_validate.py`
-- `.github/workflows/validate.yml`
-- `Docs/Site/_config.yml`, `Docs/documentation-manifest.json`, `BuildTools/docs_prepare.py`, `BuildTools/docs_site_build.py`
-- репрезентативные документы подсистем в `Docs/`, проверенные по исходному коду
+- `BuildTools/docs_localization.py`
+- `BuildTools/docs_contract_diff.py`
+- `.github/disabled-workflows/validate.yml`
 
 ## Правила владения документацией
 
-Документация движка должна описывать повторно используемое поведение движка:
+Manifest классифицирует сопровождаемые страницы по стабильному ID, аудитории, типу Diataxis, видимости, требованиям перевода, владельцу, состоянию, целевому пути и исходникам. Добавление, перенос, удаление или смену назначения страницы отражайте в manifest и навигации в том же изменении. Текущие `sources` должны существовать; `historical_sources` сохраняет удалённые источники происхождения, а не запускаемые предпосылки. Датированные отчёты и сторонние материалы сохраняйте как историю, не превращая старые результаты в текущие доказательства.
 
-- структуру исходного кода и архитектуру;
-- точки входа приложений и инструментов сборки;
-- поведение runtime, сущностей, сети, хранения, клиента, сервера и frontend;
-- скриптинг, генерируемые метаданные, nullability и экспорт native-методов;
-- bakers, Mapper, редакторы и общие механизмы инструментов;
-- сборку и отладку платформ;
-- маршрутизацию тестов и проверок.
+Политика ревью владельцев в manifest задаёт основных владельцев, необходимые свидетельства и совместное ревью границ. Документация, локализация, runtime, скрипты, контент, frontend, сеть, сборка/выпуск, платформы, инструменты и качество — отдельные ответственности. Свидетельства внешних проектов помогают исследованию, но не являются нормативной зависимостью Engine. Продвигаемому контракту нужны реализация в Engine и текущая проверка.
 
-Документация подключаемого проекта должна отвечать за:
+Канонический язык — английский; поддерживайте русское зеркало по [процессу перевода](translation.md). Ссылки должны оставаться внутри Engine либо явно вести на внешний исходник. Код, конфигурация и исполняемые парсеры имеют приоритет над унаследованной прозой.
 
-- конкретный игровой контент, баланс, квесты, тексты, карты, фракции и политику релизов;
-- игровые скрипты и native-расширения проекта;
-- точные имена бинарных файлов и presets, если они не приведены только как примеры;
-- генерируемые результаты продукта и downstream pipelines.
+## Стандартный процесс обновления раздела
 
-Документация движка не должна опираться на скрипты, тесты, инструменты, CI jobs или сгенерированные артефакты подключаемого проекта как на нормативное доказательство поведения движка. Если повторно используемый helper проверки достаточно важен для ссылки из документа движка, он должен находиться в репозитории движка. Проектный helper следует цитировать только в документации этого проекта.
+1. Зафиксируйте настоящий checkout, HEAD, грязное состояние, разрешённые пути и затронутых владельцев. Сохраните посторонние изменения.
+2. Прочитайте текущую реализацию, входы публичных моделей, потребителей и владеющие EN/RU-страницы. Совпадение сгенерированного справочника с моделью само по себе не доказывает поддержку описанного поведения.
+3. Сначала исправляйте владельца: аннотации/codegen для native API, `ProjectInterface.json` и реализацию CMake для сборки, исполняемые парсеры для CLI, соответствующий `*Interface.json` и parser/baker/runtime для контента, пакетов и native-расширений.
+4. Одновременно исправляйте руководство и русский смысл. Не обновляйте хэш перевода без согласования прозы, блоков кода, ссылок, предупреждений и ограничений.
+5. Перегенерируйте затронутые модели и справочники существующими генераторами. Компилируйте затронутые native/script-роли, запекайте изменённые входы и проверяйте приложение непосредственно, если компиляция не доказывает требуемое поведение. Следуйте [правилам проверки](../testing/): собственных unit-наборов в форке нет, новые тесты и тестовая инфраструктура требуют явного запроса.
+6. Сравните каждый затронутый сгенерированный домен с настоящей базой по [управлению изменениями контрактов](../contract-change-management.md). Общая проверка охватывает native API, CMake, основной/helper CLI, пакеты, native-расширения, prototype/map/model/text/effect/image/particle/font/audio/video и AiControl. Нулевая разница только native API не закрывает остальные домены.
+7. Обновите состав manifest/навигацию и проверенное происхождение изображений при срабатывании их условий. Следуйте порядку генерации ниже, затем запускайте нужные проверки с настоящими предпосылками.
+8. Запишите точные команды, коды завершения, изменённые пути, идентичность результата, исключения и оставшиеся блокеры. Частичная генерация, старые отчёты и архивный CI не дают статуса проверенного корпуса.
+9. Следуйте `AGENTS.md` для коммитов задачи и обычного push в форк. Более узкий запрет Git для worker имеет приоритет для этого worker. Продвижение версии, двуязычные заметки изменений/миграции и проверка точного диапазона публикации относятся к разрешённой интеграции по [контракту обновления Engine](../../how-to/release/versioning.md#every-master-update).
 
-Документация движка находится в `Engine/Docs/`. Не поддерживайте параллельные объяснения поведения движка в документации подключаемого проекта: ведите оттуда на страницу движка, оставляя только проектные wrappers, команды и правила.
+## Генерируемые выходы и порядок
 
-Markdown-ссылки документации движка должны разрешаться внутри checkout движка. Не используйте пути родительского проекта даже в ненормативных примерах: укажите стабильную HTTPS-ссылку на tagged public example repository или опишите ответственность проекта обычным текстом, пока такого примера нет.
+JSON публичных контрактов, сгенерированные справочники, проверенные переводы и исходники визуальных материалов остаются версионируемыми. Не редактируйте справочники и каталоги вручную. `docs_prepare.py` восстанавливает игнорируемые данные доставки, но не версионируемые модели, Markdown, SVG или PNG; сбой возможен после частичной записи. Узкая правка Markdown/навыка не требует полной сборки сайта, но полная проверка доставки требует свежих предпосылок.
 
-Каждая сопровождаемая Markdown-страница классифицирована в `Docs/documentation-manifest.json`. Манифест задаёт стабильный ID, аудиторию, тип Diataxis, видимость, область перевода, владельца домена, lifecycle state, место миграции и исходные пути. Там же определены rolling/current version channel, отложенная политика release snapshots, canonical и planned locales, явные README locale pairs и стратегия миграции маршрутов. Добавление, перемещение, удаление, смена цели или перевод страницы требуют изменения манифеста в том же наборе правок.
+1. Перегенерируйте изменённые публичные модели и EN/RU-справочники; проверьте переводы модельных описаний и обновите их статус.
+2. Перегенерируйте диаграммы и каталог скриншотов; при срабатывании записанного условия переснимите изображение, а не подтверждайте необъяснённые байты новым хэшем.
+3. Создайте отчёт блоков кода, затем статус локализации.
+4. Создайте навигацию, поиск по локалям и маршруты.
+5. При необходимости обновите оценку ИИ, затем доставку ИИ последней, чтобы публичные хэши описывали окончательные входы.
 
-### Владельцы и требования к review
+`docs-manifest.json` — общие генерируемые метаданные: локализация владеет `#/translation_status`, генерация сайта — `#/routing`, доставка ИИ сохраняет эти разделы и обновляет хэши документов/артефактов. `BuildTools/documentation_metadata.py` размещает локальные корневые endpoints и служебные файлы в игнорируемом `Workspace/Documentation/`; отрендеренный результат находится в `Workspace/DocumentationSite/`. Публичные URL — логические маршруты доставки, а не доказательство их публикации этим форком. Точка входа сопровождающего checkout — `AGENTS.md`, не сгенерированные `llms`-пакеты.
 
-Манифест также задаёт единый review contract для каждого владельца домена. Изменение документации требует primary owner страницы или структурированного контракта, evidence этого владельца и всех co-reviews, вызванных изменённой границей. `localization` владеет parity локалей документации и проверкой носителем языка; `content-data` по-прежнему владеет форматом текста движка и механикой authored data. Build/release, runtime, scripting, content, frontend, networking, tooling, platform, quality, localization и documentation остаются разными обязанностями, даже если сейчас их выполняет один maintainer.
+## Проверка ссылок и путей
 
-[Инвентарь внешних проектных доказательств и их продвижения](https://github.com/cvet/fonline/blob/master/Docs/generated/external-project-evidence/index.md) является проверяемым внутренним discovery ledger для Last Frontier и TLA. Каждая запись должна указывать точный snapshot source, disposition, priority, Engine или project target, primary owner, required reviews и promotion gate. Наличие записи само по себе не делает внешний проект нормативным: утверждение `promoted` заново выводится из исходного кода и тестов Engine, `boundary-owned` оставляет конкретную реализацию вне Engine, `promotion-candidate` фиксирует недостающие повторно используемые артефакты, а `project-owned` запрещает выдумывать контракт Engine. Обновляйте и проверяйте по исходникам этот ledger, если evidence любого проекта меняет решение о promotion или выявляет новую общую задачу; сам ledger исключён из публичного сайта и AI delivery.
+Из корня Engine, при разрешённой генерации и доступных предпосылках:
 
-Каждое обновление master, включая правки только документации, также следует [обязательному контракту обновления Engine](../../how-to/release/versioning.md#каждое-обновление-master): рост версии, датированные двуязычные заметки изменений/миграции, сохранение смысла и полные генерируемые данные. Перед разрешённой интеграцией выполните `BuildTools/docs_engine_version.py` относительно фактической исходной ревизии.
+```bash
+python BuildTools/docs_prepare.py
+python BuildTools/docs_snippets.py --check
+python BuildTools/docs_localization.py --check --enforce-complete
+python BuildTools/docs_validate.py
+git diff --check
+```
 
-## Стандартный процесс работы над группой документов
+Также запускайте существующий `--check` каждого затронутого генератора. `docs_validate.py` проверяет владение manifest, текущие исходники, ссылки/якоря, конфигурацию публикации и актуальность выходов. Он не запускает удалённые Python/CMake/native-наборы. Отсутствующие и устаревшие выходы остаются ошибками; исправляйте владельцев и перегенерируйте, не ослабляя проверки. `docs_snippets.py --check --external` дополнительно требует установленных Bash и PowerShell и разбирает команды без выполнения. Не устанавливайте зависимости неявно.
 
-1. Выберите связную группу из [бэклога документации](https://github.com/cvet/fonline/blob/master/Docs/_meta/DocumentationBacklog.md).
-2. Изучите исходные пути из бэклога и связанные тесты и build-файлы.
-3. Напишите или обновите owning doc и раздел `Source paths inspected`.
-4. Отдавайте приоритет отношениям исходного кода и границам владения, а не длинным перечням API-мелочей.
-5. Добавляйте validation checklist в глубокие документы подсистем.
-6. При изменении генерируемой поверхности проверяйте owning structured contract. Для native API обновляйте `///@ ApiContract` и используйте `BuildTools/docs_api_diff.py`; для project-facing CMake меняйте `BuildTools/cmake/ProjectInterface.json`; для main BuildTools CLI сохраняйте `create_parser()` авторитетным; для helper CLI обновляйте `BuildTools/HelperCliInterface.json`; для native extensions - `BuildTools/NativeExtensionInterface.json`. Изменения prototype, map, model, text, effect, image, particle, font, audio, video и [AiControl](../../how-to/ai-control-protocol.md) требуют соответствующего `BuildTools/*Interface.json`, owning guide, генератора, focused tests и реального bake/runtime review подключаемого проекта. Для native GUI render/input primitives обновляйте [Frontend и рендеринг](../../explanation/rendering/) и [границу интеграции GUI](../../how-to/runtime/gui.md), generated script API, native tests и видимую проектную проверку; high-level GUI остаётся проектным. Изменения model animation также затрагивают [Model Animation](../../how-to/content/model-animation.md), sprite offsets и movement phase - [Sprite Root Motion](../../how-to/content/sprite-root-motion.md), package grammar - `BuildTools/PackageInterface.json`, а public example portfolio - `Examples/PublicRepositories.json` и [PublicExampleRepositories.md](../../../PublicExampleRepositories.md). Перегенерируйте все затронутые runtime models, сравните все семнадцать generated contract domains через `BuildTools/docs_contract_diff.py`, обновите root contract index через `BuildTools/docs_public_api.py` и заполните dispositions из [управления изменениями контрактов](../contract-change-management.md) для baseline-public и model-contract breaks. Project-authored remote calls остаются ответственностью проекта: bake обеих сторон и их каталог выполняются там.
-   Для текущей 3D-подсистемы совладельцами двух bakers считаются `ModelSourceLoader`, `ModelAnimationConverter`, `ModelAnimationData`, `ModelMeshData`, `ModelManager`, `ModelInformation`, `ModelInstance` и `ModelAnimation`. Изменение parser, source, compatibility, mesh/rig wire, Ozz runtime или ownership требует обновления обоих model guides и structured contract, focused model/Ozz native suites, force rebake проекта, чистого следующего incremental bake и визуальной проверки pose/composition.
-7. Добавьте или обновите запись в `Docs/documentation-manifest.json`, сохраняйте stable ID и locale target авторитетными и назначьте каждую public current human top-level page ровно одной группе `site_delivery.navigation`. Сначала регенерируйте source-owned diagrams через `BuildTools/docs_diagrams.py`, затем переснимайте triggered screenshots и обновляйте `Docs/generated/screenshots.json` через `BuildTools/docs_screenshots.py`. После этого обновляйте `Docs/generated/snippets.json` через `BuildTools/docs_snippets.py`. После семнадцати source models и references регенерируйте канонические EN/RU индексы публичных контрактов и корневой legacy-маршрут. Затем обновляйте translation status; каждая существующая русская страница должна содержать новый normalized English hash. Далее `BuildTools/docs_site.py` создаёт `Docs/Site/Data/docs-site.json`, оба search indexes и `docs-manifest.json#/routing`. При изменении evaluation ownership/evidence или English search обновляйте `Docs/generated/ai-evaluation-report.json` через `BuildTools/docs_ai_eval.py`. В конце `BuildTools/docs_ai_delivery.py` создаёт `llms.txt`, `llms-full.txt` и `docs-manifest.json`. Public manifest хеширует diagram, screenshot, snippet, site и evaluation data; эти файлы нельзя редактировать вручную.
-8. При добавлении новой пользовательской страницы обновите [индекс документации](../../index.md).
-9. Повышайте статус в бэклоге только после semantic source review, а не после одной проверки ссылок.
-10. Добавьте датированный раздел в [отчёт о проверке](https://github.com/cvet/fonline/blob/master/Docs/_meta/DocumentationVerificationReport.md) с scope, sources, fixes и checks.
-11. Выполните `python BuildTools/docs_validate.py` и не оставляйте staged files, если владелец явно не попросил stage или commit.
-
-### Перемещение публичного документа
-
-Не считайте простое переименование файла достаточной миграцией маршрута:
-
-1. Сохраните stable document ID на новой canonical page.
-2. Переместите canonical content в английский target из манифеста и добавляйте matching Russian target только после review перевода.
-3. Оставьте старый Markdown path как короткий durable pointer на canonical page, чтобы сохранить legacy URL в GitHub и Jekyll.
-4. Отметьте старую запись как replacement/route alias, а новую сделайте единственным non-`replace` owner целевого пути.
-5. Перегенерируйте `docs-manifest.json#/routing`; старый маршрут должен появиться в `legacy_redirects` и указывать на ожидаемый canonical document ID.
-6. Добавляйте в navigation/search только canonical page. Legacy pointer не является вторым searchable owner.
-7. Требуйте `locale: en` / `locale: ru` front matter для новой пары, проверяйте stable-ID language switch и отсутствие чужой локали в каждом search index.
-8. Перед удалением временного migration state выполните focused localization, site, AI-delivery, standalone validation, Jekyll artifact и browser locale-interaction checks.
-
-Текущий маршрут остаётся canonical, пока весь набор правок не принят. Planned path в route catalog не разрешает удалять старый файл.
+Определения workflows в `.github/disabled-workflows/` — сохранённые исторические исходники, не активный CI. Локальный архив не меняет удалённые настройки. Проверка отрендеренного сайта и браузера — отдельные этапы из [публикации сайта](site-publication.md); локальная проверка исходников не доказывает deployment, работу screen reader или совместимость runtime.
 
 ## Согласование при обновлении ревизии
 
-Получение или смена ревизии движка является событием документации, а не только Git-операцией. Каждый входящий commit может изменить контракт, даже если в нём уже есть документация. Maintainer, выполняющий update, отвечает за reconciliation в том же worktree.
+До разрешённого pull/rebase/смены ревизии запишите старый SHA и назначение, сохраните грязные и неотслеживаемые входы в именованной страховочной копии, сохраните базовые модели, если их нет в Git. Переносите неопубликованные локальные коммиты на полученную базу через rebase; не переписывайте опубликованный tip. Merge применяется только для разошедшихся опубликованных историй. Engine и игра согласуются отдельно.
 
-Перед обновлением:
-
-1. Запишите текущий Engine SHA и целевую branch/ref.
-2. Сохраните dirty worktree в именованном stash или отдельном worktree, включая untracked generated documentation, и не удаляйте safety copy до успешной проверки.
-3. Сохраните текущую generated JSON model в ignored `Workspace/`, если её нет в committed baseline.
-
-Незалитые коммиты обязательно переносите rebase на полученную базу, даже при наличии upstream.
-Уже залитые tip сохраняйте в предках; merge нужен только для разошедшихся опубликованных историй.
-Правило отдельно действует для Engine и embedding project.
-
-После интеграции:
+После интеграции изучите весь входящий диапазон:
 
 ```bash
 git log --oneline <old-engine-sha>..<new-engine-sha>
@@ -282,133 +83,27 @@ git diff --name-status <old-engine-sha>..<new-engine-sha>
 git diff --stat <old-engine-sha>..<new-engine-sha>
 ```
 
-Затем согласуйте каждую изменённую поверхность:
+Прочитайте каждое входящее изменение реализации/конфигурации и относящиеся к нему сохранённые тесты, а не только заголовки коммитов. Найдите владельцев через `sources` manifest, согласуйте затронутые руководства/модели, перегенерируйте по зависимостям и сравните контракты с сохранённой базой. Выполните минимально достаточную сборку/запечку/проверку приложения и документации. Запишите старый/новый SHA, влияние на совместимость/миграцию, разницу генерации и реальные сбои до удаления страховочной копии. Обновление не завершено, пока обязательный выход устарел, у изменения поведения нет решения владельца или нерешённая работа существует только в stash.
 
-1. Читайте входящий исходный код и тесты, а не только commit subjects или prose.
-2. Найдите owning page через [индекс документации](../../index.md) и поля `sources` в [манифесте документации](../../../documentation-manifest.json).
-3. Сохраняйте полезную входящую документацию, но сразу исправляйте stale paths, project dependencies, неподтверждённые утверждения и отсутствующий validation evidence.
-4. Обновляйте owning page и cross-links в том же worktree. Workaround или тест подключаемого проекта не является нормативным доказательством Engine; reusable proof должно находиться в этом репозитории.
-5. Запишите точный SHA range, изменения контракта, generated delta, затронутые документы и проверки в [отчёте о проверке](https://github.com/cvet/fonline/blob/master/Docs/_meta/DocumentationVerificationReport.md).
+## Перенос публичного документа
 
-Триггеры генерируемых поверхностей:
+Сохраните стабильный ID, добавьте проверенную EN/RU-пару и оставьте старый Markdown-путь долговечным указателем. У цели должен быть ровно один канонический владелец не с `replace`. Обновите manifest/навигацию, перегенерируйте локализацию, маршруты, поиск, snippets и доставку ИИ. До удаления переходного состояния проверьте старые якоря, сохраняющие локаль ссылки, отрендеренные маршруты и переключение языка на одном завершённом сайте. Один запланированный путь не разрешает удалять текущий маршрут.
 
-| Входящее изменение | Обязательное согласование |
-|---|---|
-| `BuildTools/codegen.py`, native metadata annotations, `Source/Scripting/` или `Source/Common/Settings.inc` | Перегенерировать native API model и Markdown; применить `docs_api_diff.py` и aggregate contract diff. |
-| `BuildTools/cmake/ProjectInterface.json` или project-facing CMake implementation | Перегенерировать и проверить `Docs/generated/cmake.json`, канонические английские страницы в `Docs/en/reference/cmake/` и legacy-указатели в `Docs/generated/cmake/`; в том же изменении обновить проверенное русское зеркало и его source hash. Запустить `validate_project_interface.cmake`, focused CMake documentation test, localization checks и site validation. При необходимости обновить [ProjectDependencies.md](../../../ProjectDependencies.md), minimal fixture и проектную configure/build проверку. |
-| `BuildTools/buildtools.py::create_parser()` или CLI help/default/choice | Через `docs_cli.py` перегенерировать и проверить `Docs/generated/cli.json`, канонические английские страницы в `Docs/en/reference/buildtools/` и legacy-указатели в `Docs/generated/cli/`; в том же изменении обновить проверенное русское зеркало и его source hash. Запустить focused CLI documentation test, localization checks и site validation. |
-| Helper `create_parser()` или `BuildTools/HelperCliInterface.json` | Через `docs_helper_cli.py` перегенерировать и проверить `Docs/generated/helper-cli.json`, канонические английские страницы в `Docs/en/reference/helper-cli/` и legacy-указатели в `Docs/generated/helper-cli/`; в том же изменении обновить проверенное русское зеркало и его source hash. Запустить focused helper CLI test, localization checks и site validation, проверить owner/audience/invocation contract. |
-| Prototype parser, metadata, text properties или `Baking.ProtoFileExtensions` | Обновить [PrototypeFormat.md](../../../PrototypeFormat.md), structured model, focused tests и bake проекта. |
-| `MapLoader`, `MapBaker`, Mapper load/save, ownership или materialization | Обновить [формат карт](../../how-to/content/map-format.md), model/reference, Engine map tests и bake проекта. |
-| Model bakers/loaders/converters, `.fo3d`, FBX/OBJ, layers, links, materials, animations или `FO_MODEL_*` | Обновить [формат моделей](../../how-to/content/model-format.md), [Model Animation](../../how-to/content/model-animation.md), model contract, native tests, force/incremental bake и визуальную проверку. |
-| `.fotxt`, language normalization, prototype `$Text`, text methods или inline colors | Обновить [Текст и локализация](../../how-to/content/text-and-localization.md), model/reference, tests, bake и visible language switch. |
-| `.fofx`, `EffectBaker`, render state/resources, runtime bindings или `FO_EFFECT_*` | Обновить [Формат эффектов](../../how-to/content/effect-format.md), model/reference, tests, bake и каждый affected backend/profile. |
-| Image formats, FOFRM, `ImageBaker`, sprite records/factories, atlas или caches | Обновить [Форматы изображений и спрайтов](../../how-to/content/image-format.md), model/reference, tests, bake и визуальные dimensions/alpha/directions/cadence/hit masks. |
-| Particle macros, SPARK/Effekseer sources/baking/rendering, Mapper tools, caches или model links | Обновить [формат и исполнение частиц](../../how-to/content/particle-format.md), model/reference, tests, bake и все enabled backends/integration paths. |
-| `MapperEngine`, штатные меню/окна/controls/hotkeys/history/layout Mapper, mapper-side exports, headless capture карты, TGA/atlas readback или свидетельства видимого окна | Обновить [интерактивное руководство по Mapper](../../how-to/tools/mapper-interactive.md) и [инструменты Mapper](../../how-to/tools/mapper.md), запустить `test_docs_mapper_tools.py` и проверить затронутый интерактивный или headless-путь на fixture движка. При изменении UI, захвата, fixture или recorded trigger заново снять точный screenshot, обновить provenance, собрать Jekyll и проверить desktop/mobile; изменения map format или particles также следуют их owning rows. |
-| `AnimationViewer`, `ParticleViewer`, их hosts/targets/packages, Mapper embedding или settings | Обновить [руководство по просмотру анимации и частиц](../../how-to/tools/animation-particle-viewers.md), focused test, affected binaries и visible workflow; также выполнить model/particle routes. |
-| Font formats, raw-copy, `FontManager`, slots/flags, scale, measurement, wrapping или colors | Обновить [форматы шрифтов и компоновку текста](../../how-to/content/font-format.md), model/reference, tests, bake и visible text rendering. |
-| Sound indexing/decoding, playback methods, audio settings/mixing или raw-copy | Обновить [Audio.md](../../../Audio.md), model/reference, tests, bake и audible validation на каждой заявленной платформе. |
-| Ogg/Theora, fullscreen/embedded video, queue/input/music/drawing или raw-copy OGV | Обновить [Video.md](../../../Video.md), model/reference, tests, bake и visible first-frame/motion/completion/cleanup validation. |
-| Native GUI render/input primitives или их script exports | Обновить [Frontend и рендеринг](../../explanation/rendering/) и [границу интеграции GUI](../../how-to/runtime/gui.md), generated script API и native tests; затем скомпилировать затронутые backend и выполнить видимую проверку проекта. High-level GUI/formats/generators остаются в проекте. |
-| Package interface, `DefinePackage`, `Packages.cmake`, `package.py` или package behavior | Обновить [Packaging and Release](../../how-to/release/packaging.md), при необходимости [Support Matrix](../../reference/platforms/support-matrix.md), package model/tests/fixtures и re-audit signing, secrets, provenance, acceptance и rollback. |
-| Native build configurations или symbol flags, `is_run_in_debugger`, `break_into_debugger`, capture/resolution стека, exception/crash handlers, `FO_SELFTEST_CRASH`, Natvis/NatJMC, `AngelScript.Debugger*`, endpoint/protocol отладчика AngelScript, Managed exception/stack reporting, generated C# projects, qualification managed debugger или адаптер VS Code | Обновить [нативную, AngelScript и Managed отладку](../../troubleshooting/debugging.md) и её английский источник; при изменении файлов или ревизий обновить точное project evidence; выполнить `test_docs_debugging.py`, stack/exception и затронутые runtime tests, typecheck/build адаптера или live-endpoint gate, когда применимо, и статические/живые launch checks проекта. Сохранять loopback bind, отличать symbols от debug semantics, не переносить privacy ownership crash artifacts в Engine и не выводить live capability из mock controls или статического профиля. |
-| Pin/preparation Emscripten, Web CMake flags, Web package/shell/server, canvas/clipboard/IDBFS/main-loop behavior, выбор WebSocket, Web native-updater capability, support label, hosting/security contract или project Web evidence | Обновить [сборку, упаковку и отладку в браузере](../../how-to/platforms/web-debugging.md), а при изменении границы также Packaging, Security, Support Matrix, Networking или Client Updater; выполнить `test_docs_web_debugging.py`, package/security/support tests, затронутый Web build, fresh bake/package, inspection HTTP artifacts/headers и применимые строки browser/release acceptance. Build-only evidence нельзя повышать до browser или production-deployment qualification. |
-| Android platform/ABI mappings, SDK/NDK/API pins, package settings, Gradle/manifest/SDL templates, `FOnlineActivity`, resource staging, ADB endpoint/install/launch/log behavior, Android native-updater capability, support labels или project Android evidence | Обновить [сборку, упаковку и отладку на Android](../../how-to/platforms/android-debugging.md), а при изменении границы также Packaging, Security, Support Matrix или Client Updater; выполнить `test_docs_android_debugging.py`, package/security/support tests, затронутый Android native build, fresh bake и Gradle assembly, inspection APK, install/update, cold/warm launch и применимые строки device acceptance. Build-only evidence нельзя повышать до APK, device, release или store qualification. |
-| Settings substitution/redaction, secret tokens, `ConfigBaker`, signing или CI credentials | Обновить [Security and Secrets](../../how-to/release/security-and-secrets.md), [Project Configuration](../../how-to/build/project-configuration.md), focused security tests и synthetic-secret audit. |
-| Database backends, commit/reconnect/panic/oplog, persistence lifecycle, migration или backup/restore | Обновить [Persistence](../../explanation/persistence/), [Backup and Recovery](../../how-to/release/backup-and-recovery.md), tests и isolated semantic restore с RPO/RTO evidence. |
-| Public example manifest/template/scaffold, visibility/pins или compatibility | Обновить [публичные репозитории с примерами](../../how-to/build/public-example-repositories.md), model/tests и rematerialized clean candidates в pinned/current modes. |
-| Validation profiles, platform matrices/detection, runtime smoke или artifacts | Обновить support matrix source и [Support Matrix](../../reference/platforms/support-matrix.md), generator и affected validation target. |
-| Gameplay runner/schema/harness/process smoke | Обновить [Gameplay and Integration Testing](../../how-to/testing/gameplay-and-integration.md), helper CLI и example manifest; выполнить focused tests и реальный baked smoke. |
-| Tracy configurations/version/instrumentation | Обновить [Profiling](../../how-to/quality/profiling.md), focused test, affected profile build и isolated captures. |
-| Canonical English prose, locale target, glossary или Russian translation | Обновить существующую пару, сохранить fences, hash и locale links; регенерировать localization, site, artifact и browser checks. |
-| Обращённый к читателю текст в generated model, `Docs/description-translations.ru.json` или Russian generated reference | Сохранить canonical JSON и stable IDs, обновить перевод по стабильному локатору и точный source hash, перегенерировать владеющие model/pages и `description-translation-status.json`, выполнить focused test каталога и тест владеющего генератора. |
-| Diagram manifest, owning doc, provenance, alt/caption или CSS | Обновить source manifest и prose, сгенерировать SVG/catalog, выполнить test, Jekyll build и visual review. |
-| Screenshot manifest, UI/fixture, image, environment, interactions или trigger | Точно воспроизвести fixture, переснять без косметической обработки, обновить catalog, выполнить tests, Jekyll build и desktop/mobile review. |
-| Fenced block или `BuildTools/SnippetPolicy.json` | Объявить language/harness в [Documentation Snippet Validation](snippets.md), обновить report, выполнить external parser и semantic owner checks. |
-| Export methods, native tests или settings declarations | Перегенерировать `Docs/generated/source-inventory.json`. |
-| Inventoried Markdown, ownership/state/target/source, publication/version/locale policy | Обновить manifest; затем snippets, site, AI evaluation и AI delivery. Не обходить context budget усечением. |
-| Public title/path/state, README pair, site navigation/routing/search, Jekyll layout или assets | Обновить site data/search/routes, source/layout/artifact/browser tests и полный browser audit; не снижать gates. |
-| AI task set, evidence, search ranking или source ref | Обновить [AI Documentation Evaluation](ai-evaluation.md), report и focused test; не добавлять нерелевантные keywords и не снижать threshold. |
-| Metadata baker или remote-call format/runtime | Обновить [Remote Calls](../../reference/scripting/remote-calls.md); проект должен rebake обе стороны и свой catalog. |
-| Module init, callbacks, `Yield`, scheduling/synchronization или teardown | Обновить [Script Lifecycle and Concurrency](../../how-to/scripting/lifecycle-and-concurrency.md) и narrow tests. |
-| Порядок `.fos`, side macros, ownership/style, formatter, mutable globals, attributed calls, generated script или refactoring | Обновить [Стиль AngelScript и рефакторинг](../../how-to/scripting/style-and-refactoring.md) и английский оригинал, запустить focused test и владеющий formatter, выполнить compile без warnings и behavior test; project style остаётся внешним. |
-| Model animation tokens/durations/aliases/metadata/methods | Обновить [Model Animation](../../how-to/content/model-animation.md), focused tests, API/reference при необходимости и bake проекта. |
-| `NextX`/`NextY`, baked offsets или movement render phase | Обновить [Sprite Root Motion](../../how-to/content/sprite-root-motion.md), tests, bake и visible movement validation. |
-| Build, package, platform, runtime, persistence, networking или pointer/nullability behavior | Обновить owning source-grounded page и narrow behavior/test path из неё. |
+## Правила написания по исходникам
 
-После каждого триггера генерируемой поверхности выполняйте `docs_contract_diff.py` против сохранённых старых models или выбранной Git base. Нулевой native API delta не закрывает изменения CMake, CLI, package, helper CLI, native extension и форматных/runtime contracts.
+Начинайте с назначения и владения; указывайте решающие исходники и условия обновления. Предпочитайте связи скопированным перечням и неподтверждённым количествам. Отделяйте возможности движка от политики игры. Точно описывайте оставшиеся ограничения проверки; активная устаревшая инструкция требует исправления, а не автоматического исторического исключения. Для блоков кода используйте [руководство snippets](snippets.md), для смысловой актуальности — [руководство перевода](translation.md).
 
-Update не завершён, пока generator сообщает stale output, входящее поведение не имеет documentation disposition, остаются conflict markers или safety stash является единственной копией нерешённой работы. Удаляйте safety stash только после финальных checks и подтверждения пустого staged area.
+## Значения статусов backlog
 
-## Значения статусов бэклога
+- `planned`: выявлено, не исследовано.
+- `researching`: изучаются исходники.
+- `drafted`: текст есть, смысловая проверка не завершена.
+- `verified`: проверка по исходникам и обязательные проверки после правки успешно завершены для указанного результата.
 
-- `planned` - тема определена, исследование не начато.
-- `researching` - идёт проверка исходного кода.
-- `drafted` - первый документ существует, semantic validation не завершён.
-- `verified` - страница проверена по текущему исходному коду, post-edit mechanical checks прошли.
+## Заметки для ИИ-сопровождающих
 
-Не оставляйте progress только в чате. Завершённая или blocked группа должна быть записана в backlog/report.
+`AGENTS.md` владеет операционной и Git-политикой; навык задаёт ограниченный поиск, владение и маршруты доказательств. Унаследованные требования upstream к публикации/тестам не отменяют текущих инструкций форка. Отдельно сообщайте состояние локальной установки и публикации; загруженный навык не является аудитом корпуса.
 
-## Проверка ссылок и путей
+## Контрольный список
 
-Как минимум проверяйте:
-
-- manifest coverage, ownership metadata и declared source paths;
-- Markdown links и anchors во всех inventoried docs;
-- что resolved local links остаются внутри Engine root;
-- существование backticked source/build/doc paths;
-- stale alternate-layout terms из старых snapshots;
-- test inventory coverage при изменении [Testing](../testing/);
-- `git diff --check`;
-- staged area и working-tree status.
-
-Выполните полный standalone gate из корня Engine. Test discovery не позволяет молча пропустить новый `test_docs_*.py`:
-
-```bash
-python -m unittest discover -s BuildTools/tests -p "test_docs_*.py"
-python BuildTools/tests/test_gameplay_test_runner.py
-python BuildTools/tests/test_minimal_multiplayer_package.py
-python BuildTools/tests/test_ai_control_protocol.py
-python BuildTools/tests/test_package_security.py
-python BuildTools/tests/test_angelscript_cmake.py
-cmake -P BuildTools/tests/validate_project_interface.cmake
-cmake -P BuildTools/tests/validate_package_interface.cmake
-cmake -P BuildTools/tests/validate_native_extension_interface.cmake
-python BuildTools/docs_snippets.py --check --external
-python BuildTools/docs_validate.py
-```
-
-Jobs `Validate documentation` и `Parse documentation snippets` в `.github/workflows/validate.yml` являются авторитетной развёрткой CI: они явно запускают каждый focused test и generator check, затем классифицируют изменения контрактов относительно base revision. Сохраняйте их и aggregate local route поведенчески эквивалентными. Подключаемый проект и native build им не нужны.
-
-Изменения rendered output также должны следовать [руководству по публикации сайта](site-publication.md). При доступном pinned Ruby/Bundler/Node environment выполните `python BuildTools/docs_site_build.py`, `python BuildTools/docs_site_artifact.py --site-dir Workspace/DocumentationSite` и pinned browser audit. Каждый pull request получает GitHub Pages-compatible `Workspace/DocumentationSite` artifact и отдельные static/browser validation reports от job `Build documentation site`.
-
-Планируемые будущие документы описывайте обычным текстом, если checker явно их не исключает; не оформляйте отсутствующие страницы как существующие code paths или links.
-
-## Правила написания с опорой на исходный код
-
-- Начинайте с назначения и маршрута для читателя.
-- Добавляйте `Source paths inspected` в документы подсистем.
-- Ведите на соседние документы вместо дублирования деталей.
-- Указывайте точные пути исходного кода для ownership.
-- Для cross-project evidence используйте tagged public example URLs; не включайте локальный checkout проекта в процедуру Engine.
-- Не обещайте неподдерживаемые workflows; описывайте то, что подтверждают текущие source/test/build wiring.
-- При переносе ownership обновляйте связанные документы.
-
-## Примечания для ИИ-сопровождения
-
-[AGENTS.md](../../../../AGENTS.md) является точкой входа ИИ-maintainer. Он ведёт к human docs и фиксирует repository conventions, включая запрет commit/push без явной просьбы. Сохраняйте его кратким и навигационным, а подробные процедуры помещайте в `Docs/`. Root `llms.txt`, `llms-full.txt` и `docs-manifest.json` являются generated retrieval routes для внешних агентов; `Docs/Site/Data/docs-site.json`, оба locale search indexes и `docs-manifest.json#/routing` образуют соответствующую human navigation/search/routing projection. Все шесть артефактов должны выводиться из одного manifest/corpus.
-
-Будущий ИИ-agent, продолжающий roadmap, должен сначала восстановить контекст по git status, backlog и verification report. Контекст чата вторичен относительно состояния репозитория.
-
-## Контрольный список проверки
-
-1. Новые документы классифицированы в `Docs/documentation-manifest.json` и связаны из [индекса документации](../../index.md) и при необходимости [AGENTS.md](../../../../AGENTS.md).
-2. Статус бэклога соответствует реальному source validation state.
-3. Verification report содержит каждую promoted group.
-4. Для API changes есть base-revision report, а required public dispositions проходят [управление изменениями контрактов](../contract-change-management.md).
-5. AI delivery и human site delivery регенерированы, focused tests/checks проходят.
-6. `python BuildTools/tests/test_docs_validate.py` и `python BuildTools/docs_validate.py` проходят.
-7. Link/path/test/stale-term checks проходят после обновления report.
-8. `git diff --cached --name-only` пуст, если staging явно не запрошен.
-9. Финальный report перечисляет изменённые файлы и подтверждает отсутствие commit/push, если их не просили.
+Подтвердите владение manifest/навигации, верность EN/RU, свежесть исходников и предпосылок, полноту решений контрактов, реальные коды обязательных проверок, whitespace и сохранность постороннего грязного состояния. Укажите непроверенное. Узкая правка документации не даёт принятия live-сайта, runtime или всего корпуса.

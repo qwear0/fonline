@@ -81,27 +81,6 @@ Baking writes loose target-specific outputs. Packaging then filters each logical
 - `Source/Tools/AngelScriptBaker.cpp`
 - `Source/Tools/ManagedScriptBaker.h`
 - `Source/Tools/ManagedScriptBaker.cpp`
-- `Source/Tests/Test_BakerSetup.cpp`
-- `Source/Tests/Test_MetadataBaker.cpp`
-- `Source/Tests/Test_ConfigBaker.cpp`
-- `Source/Tests/Test_RawCopyBaker.cpp`
-- `Source/Tests/Test_AudioBaker.cpp`
-- `Source/Tests/Test_ImageBaker.cpp`
-- `Source/Tests/Test_EffectBaker.cpp`
-- `Source/Tests/Test_ProtoBaker.cpp`
-- `Source/Tests/Test_ProtoTextBaker.cpp`
-- `Source/Tests/Test_MapBaker.cpp`
-- `Source/Tests/Test_TextBaker.cpp`
-- `Source/Tests/Test_ModelBaker.cpp`
-- `Source/Tests/Test_ParticleBaker.cpp`
-- `Source/Tests/Test_ModelMeshData.cpp`
-- `Source/Tests/Test_ModelAnimationData.cpp`
-- `Source/Tests/Test_ModelAnimationConverter.cpp`
-- `Source/Tests/Test_ModelSkeletonCompatibility.cpp`
-- `Source/Tests/Test_ModelSourceLoader.cpp`
-- `Source/Tests/Test_OzzAnimation.cpp`
-- `Source/Tests/Test_AngelScriptBaker.cpp`
-- `Source/Tests/Test_ManagedScriptBaker.cpp`
 
 ## What baking does
 
@@ -123,7 +102,7 @@ At runtime/source level, baking is owned by:
 
 This exists because a case-only rename of an input is otherwise invisible on a case-insensitive filesystem. The output stream or directory creation reuses the old directory entry, the outdated sweep compares case-folded paths, and incremental baking may then skip the apparently current artifact. Runtime lookup remains exact, so the stale spelling becomes an unresolvable resource.
 
-The expected names come from `BakeChecker`, so a baker whose output differs from its source registers the output path. `ImageBaker` registers Fallout critter `.frm` frames in lowercase and a `.fr0`..`.fr5` direction set as one `.fofrm` for critters or `.frm` elsewhere. This keeps reconciliation from restoring the source spelling over the name runtime lookup expects. `ScanModeRegistersTheResourceEachSourceBakesTo` checks registered names against the written resources.
+The expected names come from `BakeChecker`, so a baker whose output differs from its source registers the output path. `ImageBaker` registers Fallout critter `.frm` frames in lowercase and a `.fr0`..`.fr5` direction set as one `.fofrm` for critters or `.frm` elsewhere. This keeps reconciliation from restoring the source spelling over the name runtime lookup expects. Inspect registered and written paths through the actual bake when changing this mapping; documentation checks do not execute scan reconciliation.
 
 Reconciliation runs once per bake over the outputs the bakers already produced. It neither adds per-write work nor deletes and recreates content, and it also repairs outputs skipped as up to date. On a case-sensitive filesystem the ordinary outdated sweep removes the old name and reconciliation has nothing to do. `BakerMasterRenamesStaleCasedOutputAfterCaseOnlyInputRename`, `BakerMasterRenamesStaleCasedOutputDirAfterCaseOnlyInputDirRename`, and `DiskFileSystemNameCase` pin both the pipeline and filesystem contracts.
 
@@ -220,11 +199,11 @@ timestamp behavior.
 
 Both `MasterBaker` outputs and `BakerDataSource::WriteData` use this publication path. Baking reports, the successful `Resources.build-hash` marker and Effekseer dependency-cache snapshots also publish complete files atomically; their contents, successful-bake ordering and unchanged-resource timestamp rules are preserved.
 
-Windows attempts an OS/filesystem-specific POSIX rename path when ordinary replacement fails. This does not guarantee replacement of every loaded image or CRT-held file: an open consumer may still refuse publication, and the Baker must report failure while retaining the previous output. Engine disk readers permit delete sharing and retain their old bytes after successful replacement. Validate managed assembly publication through the actual backend/bake route; a shared reader test alone does not prove every mapping mode. The helper flushes the stage without adding directory synchronization or promising power-loss durability for the rename.
+Windows attempts an OS/filesystem-specific POSIX rename path when ordinary replacement fails. This does not guarantee replacement of every loaded image or CRT-held file: an open consumer may still refuse publication, and the Baker must report failure while retaining the previous output. Engine disk readers permit delete sharing and retain their old bytes after successful replacement. Validate managed assembly publication through the actual backend/bake route; observing one shared-reader case does not prove every mapping mode. The helper flushes the stage without adding directory synchronization or promising power-loss durability for the rename.
 
-`Source/Tests/Test_DiskFileSystem.cpp` covers replacement with an existing reader,
-exclusive creation without truncation, destination preservation and temporary-file
-cleanup after publication failure. The low-level contract is owned by
+Check publication through the actual consuming bake, including an open reader
+when relevant; removed unit-suite results are not current evidence. The low-level
+contract is owned by
 [Essentials](../../reference/native/essentials.md#filesystem-compression-sockets-and-work-threads).
 
 ### `BaseBaker`
@@ -670,7 +649,7 @@ For `.fomap` section order, placement IDs, ownership references, static/dynamic 
 
 `ParticleBaker` owns both optional particle backends. It validates authored SPARK `.spark` XML and serializes deterministic `.spk` data; it compiles Effekseer `.efkproj` sources and dependencies into `.efk`. Both outputs include mandatory measured bounds, and authored `.spk`/`.efk` inputs are rejected. Use [Particle Format And Runtime](../../how-to/content/particle-format.md) and its generated [particle-format reference](../../reference/particle-format/index.md) for backend options, source/runtime formats, supported objects and render capabilities, incremental baking, runtime framing, integration routes, and the mandatory visible validation boundary.
 
-Bitmap-font descriptors also have no dedicated baker. `RawCopyBaker` copies runtime `.fofnt` and AngelCode text `.fnt` descriptors, while `.bmfc` is only an authoring sidecar that may be shipped for source provenance; the descriptor's referenced PNG/TGA image is baked separately by `ImageBaker`. `FontManager` validates and binds the descriptor at client startup. Use [Font Formats And Text Layout](../../how-to/content/font-format.md) and its generated [font-format reference](../../reference/font-format/index.md) for exact syntax, resource relationships, layout/rendering semantics, diagnostics, and visible validation.
+Bitmap-font descriptors also have no dedicated baker. `RawCopyBaker` copies runtime `.fofnt` text and binary BMFont v3 `.fnt` descriptors, while `.bmfc` is only an authoring sidecar that may be shipped for source provenance; the descriptor's referenced PNG/TGA image is baked separately by `ImageBaker`. `FontManager` validates and binds the descriptor at client startup. Use [Font Formats And Text Layout](../../how-to/content/font-format.md) and its generated [font-format reference](../../reference/font-format/index.md) for exact syntax, resource relationships, layout/rendering semantics, diagnostics, and visible validation.
 
 Audio has a dedicated baker. Authored PCM/IEEE-float `.wav` is normalized to
 signed 16-bit PCM and encoded as Vorbis, while authored `.ogg` is verified and
@@ -687,7 +666,7 @@ Ogg/Theora decoder. Use [Video](../../how-to/content/video.md) and the generated
 fullscreen/embedded behavior, separate audio, diagnostics, and the mandatory
 visible-client gate.
 
-`EffectBaker` compiles each `.fofx` pass once with glslang (Vulkan 1.0 client, SPIR-V 1.0) and emits, per stage, the native `-spv` (consumed by `Rendering-Vulkan`, and cross-compiled by SPIRV-Cross to `-glsl` / `-glsl_es` / `-hlsl`) plus, for the opt-in SDL_GPU backend, a `-spv_sdl` flavor and SDL-remapped `-msl_mac`/`-msl_ios`. The native SPIR-V follows the engine's 2-set descriptor convention (set 0 = uniform buffers, set 1 = combined image samplers, shared by both stages); `-spv_sdl` is that same SPIR-V with its descriptor decorations rewritten in place to SDL_GPU's per-stage convention (vertex samplers = set 0 / UBOs = set 1, fragment samplers = set 2 / UBOs = set 3, dense 0..N-1 slots). The per-pass `-info` artifact carries two sections: `[EffectInfo]` (program-wide bindings the GL/D3D/Vulkan backends consume, plus a `CHECK_BUF` size validation against the `RenderEffect` uniform structs) and `[EffectInfoSdl]` (per-stage SDL slot per resource plus the sampler/UBO counts `SDL_CreateGPUShader` needs). The baker hard-fails an effect that exceeds SDL_GPU per-stage limits (4 uniform buffers, 16 samplers), declares storage buffers/images, uses duplicate/missing explicit bindings, or declares a resource it never uses. Use [Effect Format](../../how-to/content/effect-format.md) and the generated [effect-format reference](../../reference/effect-format/index.md) for the owning authoring, resource, runtime-cache, script-value, and validation contract.
+`EffectBaker` compiles each `.fofx` pass once with glslang (Vulkan 1.0 client, SPIR-V 1.0) and emits, per stage, the native `-spv` (consumed by `Rendering-Vulkan`, and cross-compiled by SPIRV-Cross to `-glsl` / `-glsl_es` and transient HLSL compiled into persisted `-dxbc`) plus, for the opt-in SDL_GPU backend, a `-spv_sdl` flavor and SDL-remapped `-msl_mac`/`-msl_ios`. The native SPIR-V follows the engine's 2-set descriptor convention (set 0 = uniform buffers, set 1 = combined image samplers, shared by both stages); `-spv_sdl` is that same SPIR-V with its descriptor decorations rewritten in place to SDL_GPU's per-stage convention (vertex samplers = set 0 / UBOs = set 1, fragment samplers = set 2 / UBOs = set 3, dense 0..N-1 slots). The per-pass `-info` artifact carries two sections: `[EffectInfo]` (program-wide bindings the GL/D3D/Vulkan backends consume, plus a `CHECK_BUF` size validation against the `RenderEffect` uniform structs) and `[EffectInfoSdl]` (per-stage SDL slot per resource plus the sampler/UBO counts `SDL_CreateGPUShader` needs). The baker hard-fails an effect that exceeds SDL_GPU per-stage limits (4 uniform buffers, 16 samplers), declares storage buffers/images, uses duplicate/missing explicit bindings, or declares a resource it never uses. Use [Effect Format](../../how-to/content/effect-format.md) and the generated [effect-format reference](../../reference/effect-format/index.md) for the owning authoring, resource, runtime-cache, script-value, and validation contract.
 
 Direct3D consumes baked `-dxbc`, produced from SPIRV-Cross HLSL by vendored
 vkd3d-shader, not runtime HLSL compilation. Optional
@@ -1186,58 +1165,45 @@ Every packed managed assembly, including copied package/project-reference DLLs, 
 
 These are separate command targets from resource baking, but they share the same stage because generated/baked runtime inputs are part of the same build preparation workflow.
 
-## Tests to inspect
+<a id="tests-to-inspect"></a>
 
-Baker behavior is covered by focused tests in `Source/Tests/`:
+## Verification boundary
 
-- `Test_BakerSetup.cpp`
-- `Test_ConfigBaker.cpp`
-- `Test_MetadataBaker.cpp`
-- `Test_RawCopyBaker.cpp`
-- `Test_AudioBaker.cpp`
-- `Test_ImageBaker.cpp`
-- `Test_EffectBaker.cpp`
-- `Test_ProtoBaker.cpp`
-- `Test_ProtoTextBaker.cpp`
-- `Test_MapBaker.cpp`
-- `Test_TextBaker.cpp`
-- `Test_ModelBaker.cpp`
-- `Test_ParticleBaker.cpp`
-- `Test_ModelMeshData.cpp`
-- `Test_ModelAnimationData.cpp`
-- `Test_ModelAnimationConverter.cpp`
-- `Test_ModelSkeletonCompatibility.cpp`
-- `Test_ModelSourceLoader.cpp`
-- `Test_OzzAnimation.cpp`
-- `Test_AngelScriptBaker.cpp`
-- `Test_ManagedScriptBaker.cpp`
+Engine-owned native, managed, Python and debugger unit suites are retired in
+this fork. Do not restore them or enable removed test/coverage options to follow
+historical documentation. Existing documentation checks inspect model/source
+contracts; they do not execute conversion, resource publication, rendering, or
+audio callbacks.
 
-Use the smallest test that matches the baker you changed. If CMake target names are generated by the embedding project, discover them from that project's presets/build files instead of hard-coding them here.
+Use the smallest affected embedding-project build and existing bake/application
+route. Discover generated target names from that project's presets/build files.
+Retain exact revisions, configuration, inputs, logs, output paths and observed
+limits. A dated historical report is not acceptance of the current tree.
 
 ## Change routing
 
-- New baker type: add/modify `Source/Tools/*Baker.*`, register it in `BaseBaker::SetupBakers()` or through `SetupBakersHook()`, and add focused tests.
+- New baker type: add/modify `Source/Tools/*Baker.*`, register it in `BaseBaker::SetupBakers()` or `SetupBakersHook()`, and exercise its existing application route.
 - Baking command arguments: update `BuildTools/cmake/stages/ScriptsAndBaking.cmake`.
-- Resource build hash behavior: update `MasterBaker::BakeAllInternal` in `Source/Tools/Baker.cpp` and related tests/build validation; the marker must remain inside the output lock.
+- Resource build hash behavior: update `MasterBaker::BakeAllInternal` in `Source/Tools/Baker.cpp` and affected build/bake validation; the marker must remain inside the output lock.
 - Metadata baking: update `Source/Tools/MetadataBaker.*` and [Generated API and Metadata](../../reference/metadata/index.md).
-- Prototype format/property loading: update `BuildTools/PrototypeFormatInterface.json`, [Prototype Format](../../how-to/content/prototype-format.md), regenerate its model/reference, run `test_docs_prototype_format.py`, and include it in the aggregate contract diff.
-- Map parsing/baking/materialization: update `BuildTools/MapFormatInterface.json`, [Map Format](../../how-to/content/map-format.md), regenerate its model/reference, run `test_docs_map_format.py`, include it in the aggregate contract diff, run the affected map unit tests, and rebake an embedding project.
-- Image import, FOFRM composition, baked sprite records, or stock client loading/atlas/cache behavior: update `BuildTools/ImageFormatInterface.json`, [Image And Sprite Formats](../../how-to/content/image-format.md), regenerate its model/reference, run `test_docs_image_format.py`, include it in the aggregate contract diff, run focused image/atlas tests, and rebake plus visibly inspect an affected embedding project.
-- Font descriptor delivery, `Baking.RawCopyFileExtensions`, FOFNT/BMFont parsing, binding, layout, or rendering: update `BuildTools/FontFormatInterface.json`, [Font Formats And Text Layout](../../how-to/content/font-format.md), regenerate its model/reference, run `test_docs_font_format.py`, include it in the aggregate contract diff, run native tests, and rebake plus visibly inspect an affected embedding project.
-- Audio baking, WAV/Ogg validation and conversion, `AudioManager`, sound-name indexing, playback handles, spatial updates, settings, or frontend mixing: update `BuildTools/AudioInterface.json`, [Audio](../../how-to/content/audio.md), regenerate its model/reference, run `test_docs_audio.py`, include it in the aggregate contract diff, run native tests, and rebake plus audibly inspect an affected embedding project on every claimed platform.
-- Video raw-copy delivery, Ogg/Theora decoding, `VideoClip`, fullscreen queue/input/music/drawing, or script-owned playback: update `BuildTools/VideoInterface.json`, [Video](../../how-to/content/video.md), regenerate its model/reference, run `test_docs_video.py`, include it in the aggregate contract diff, run native tests, and rebake plus visibly inspect an affected embedding project on every claimed platform.
-- Effect parsing/baking/resources/runtime selection: update `BuildTools/EffectFormatInterface.json`, [Effect Format](../../how-to/content/effect-format.md), regenerate its model/reference, run `test_docs_effect_format.py`, include it in the aggregate contract diff, run focused effect-baker tests, and validate affected backends in a visible embedding-project scene.
-- AngelScript bake behavior: update `Source/Tools/AngelScriptBaker.*`, the AngelScript tests, and [Scripting](../scripting-runtime/).
-- Managed C# bake, generated-project, assembly, or runtime-payload behavior: update `Source/Tools/ManagedScriptBaker.*`, [Managed C# Scripting](../../how-to/scripting/managed-csharp.md), the native/Python managed tests, and the affected package/platform route.
+- Prototype format/property loading: update `BuildTools/PrototypeFormatInterface.json`, [Prototype Format](../../how-to/content/prototype-format.md), regenerate its model/reference, run `docs_prototype_format.py --check`, and include it in the aggregate contract diff.
+- Map parsing/baking/materialization: update `BuildTools/MapFormatInterface.json`, [Map Format](../../how-to/content/map-format.md), regenerate its model/reference, run `docs_map_format.py --check`, include it in the aggregate contract diff, and rebake an embedding project.
+- Image import, FOFRM composition, baked sprite records, or stock client loading/atlas/cache behavior: update `BuildTools/ImageFormatInterface.json`, [Image And Sprite Formats](../../how-to/content/image-format.md), regenerate its model/reference, run `docs_image_format.py --check`, include it in the aggregate contract diff, and rebake plus visibly inspect an affected embedding project.
+- Font descriptor delivery, `Baking.RawCopyFileExtensions`, FOFNT/BMFont parsing, binding, layout, or rendering: update `BuildTools/FontFormatInterface.json`, [Font Formats And Text Layout](../../how-to/content/font-format.md), regenerate its model/reference, run `docs_font_format.py --check`, include it in the aggregate contract diff, and rebake plus visibly inspect an affected embedding project.
+- Audio baking, WAV/Ogg validation and conversion, `AudioManager`, sound-name indexing, playback handles, spatial updates, settings, or frontend mixing: update `BuildTools/AudioInterface.json`, [Audio](../../how-to/content/audio.md), regenerate its model/reference, run `docs_audio.py --check`, include it in the aggregate contract diff, and rebake plus audibly inspect an affected embedding project on every claimed platform.
+- Video raw-copy delivery, Ogg/Theora decoding, `VideoClip`, fullscreen queue/input/music/drawing, or script-owned playback: update `BuildTools/VideoInterface.json`, [Video](../../how-to/content/video.md), regenerate its model/reference, run `docs_video.py --check`, include it in the aggregate contract diff, and rebake plus visibly inspect an affected embedding project on every claimed platform.
+- Effect parsing/baking/resources/runtime selection: update `BuildTools/EffectFormatInterface.json`, [Effect Format](../../how-to/content/effect-format.md), regenerate its model/reference, run `docs_effect_format.py --check`, include it in the aggregate contract diff, bake representative effects, and validate affected backends in a visible embedding-project scene.
+- AngelScript bake behavior: update `Source/Tools/AngelScriptBaker.*`, compile the affected script roles, and [Scripting](../scripting-runtime/).
+- Managed C# bake, generated-project, assembly, or runtime-payload behavior: update `Source/Tools/ManagedScriptBaker.*`, [Managed C# Scripting](../../how-to/scripting/managed-csharp.md), the generated-project compile/bake checks, and the affected package/platform route.
 
 ## Validation checklist
 
 1. Configure from an embedding project root.
 2. Build the project baker application/library target if the changed path affects app/library code.
-3. Run the relevant baker test(s) under `Source/Tests/`.
+3. Check the affected documentation model and inspect real bake diagnostics/output.
 4. Run `BakeResources` for incremental behavior when cache/build-hash logic matters.
 5. Run `ForceBakeResources` after model-source or Ozz conversion changes. This
    is the positive integration gate that parses and extracts animations from the
-   project's real FBX files instead of only synthetic unit-test assets.
+   project's real FBX files; source inspection alone does not execute conversion.
 6. Inspect generated output only as output, not as hand-authored source.
 7. Update this document and [BuildTools Pipeline](../../reference/cmake-and-buildtools/pipeline.md) if stage responsibilities change.

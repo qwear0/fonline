@@ -24,15 +24,14 @@ explicit entrypoint mapping below. Every public human page has:
 - one derived `Docs/ru/...` mirror path, or an explicit README pair;
 - one canonical English content hash in the generated translation-status model.
 
-All 194 required Russian counterparts are present, and
-`localization.enforcement` is `complete`. Every page must remain complete,
-hash-current, code-preserving, and correctly paired. The generated report is
-the authoritative inventory; adding a new translation-required English page
-without its Russian counterpart fails validation immediately.
+`localization.enforcement` is `complete`: every required page must have a complete,
+hash-current, code-preserving, correctly paired Russian counterpart. The fresh
+generated report, not a copied count, is the authoritative inventory; a missing
+or stale counterpart fails validation.
 
 The current machine report is [docs-manifest.json#/translation_status](https://fonline.ru/docs-manifest.json#/translation_status).
 
-This 194/194 result proves physical page parity. Generated Russian pages can
+A passing page-parity report proves structural completeness and freshness, not translation quality. Generated Russian pages can
 also contain reader-facing prose supplied by machine models rather than by the
 Markdown template. That semantic layer has a separate catalog and gate,
 described below; physical parity must not be reported as complete semantic
@@ -82,7 +81,7 @@ Stable document IDs join languages. Translated titles and headings never define 
 6. Translate prose, headings, table labels, alt text, and reader-facing warnings.
 7. Preserve identifiers, file paths, commands, code, metadata tags, enum values, and fenced code blocks exactly.
 8. Link to the Russian counterpart. The complete-parity gate rejects a missing target rather than allowing a production fallback.
-9. Run the snippet gate against the canonical English fences, then run the localization generator and focused tests.
+9. Run the snippet gate against the canonical English fences, then generate and check localization status.
 
 The helper can print the exact hash through the generated status model. Do not compute or edit hashes independently in a second format.
 
@@ -101,12 +100,11 @@ Run:
 
 ```bash
 python BuildTools/docs_localization.py --write
-python BuildTools/tests/test_docs_localization.py
 python BuildTools/docs_localization.py --check --enforce-complete
 ```
 
 The manifest also enables this production release gate by default; the explicit
-flag keeps local and CI intent visible:
+flag keeps local acceptance intent visible; archived workflows are not active checks:
 
 ```bash
 python BuildTools/docs_localization.py --check --enforce-complete
@@ -132,10 +130,10 @@ Generators apply the overlay to a deep copy of the model: canonical JSON and
 English Markdown remain unchanged, while Russian Markdown receives translated
 descriptions before its fixed labels and headings are localized.
 
-The catalog uses `complete`: all 4,811 reader-facing values in all 19 generated
-domains, including the native API, have current reviewed records. CI and local
-validation reject any missing, unknown, stale, type-changing, list-shape-changing,
-or inline-code-changing entry. When a generator exposes another reader-facing
+The catalog uses `complete`: every reader-facing value in the inventoried models,
+including the native API, needs a current reviewed record. Local validation rejects
+missing, unknown, stale, type-changing, list-shape-changing, or inline-code-changing
+entries; use a fresh status report for exact coverage. When a generator exposes another reader-facing
 value, add its reviewed translation in the same change; an incomplete catalog
 is not an accepted intermediate state.
 
@@ -152,7 +150,6 @@ Run:
 
 ```bash
 python BuildTools/docs_description_translations.py --write --enforce-complete
-python BuildTools/tests/test_docs_description_translations.py
 python BuildTools/docs_description_translations.py --check --enforce-complete
 ```
 
@@ -195,7 +192,7 @@ bounded independently from the English corpus.
 
 ## Review checklist
 
-- Behavior still matches current Engine source and tests.
+- Behavior still matches current Engine source and proportionate existing checks.
 - No requirement, warning, limitation, recovery step, table row, or alt text was omitted.
 - Commands and fenced code are unchanged and pass the same snippet harness as English; claimed semantic outcomes still pass their owning compile/bake/smoke test.
 - Identifiers, paths, settings, tags, and extensions are unchanged.
@@ -238,7 +235,7 @@ The bilingual launch requires:
 1. one-to-one Russian coverage for every `translation: required` current human page;
 2. reviewed glossary and complete generated-description catalog;
 3. `README.ru.md` and paired subsystem/example READMEs;
-4. complete enforcement in the manifest and CI;
+4. complete enforcement in the manifest and successful local validation;
 5. bilingual navigation/search and language-preserving links;
 6. native-speaker review plus the automated Russian 200-percent reflow profile
    and representative assistive-technology review;

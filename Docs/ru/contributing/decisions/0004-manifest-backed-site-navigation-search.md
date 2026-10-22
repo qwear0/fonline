@@ -5,13 +5,17 @@ locale: ru
 document_id: adr-manifest-backed-site-navigation-search
 permalink: /Docs/ru/contributing/decisions/0004-manifest-backed-site-navigation-search.html
 ---
-<!-- docs-translation: {"document_id":"adr-manifest-backed-site-navigation-search","locale":"ru","source_path":"Docs/en/contributing/decisions/0004-manifest-backed-site-navigation-search.md","source_sha256":"3609c77a54d31d6fa1516a4b13ba39cc520d1ca5cfa1b4260b87dae297d0c3de"} -->
+<!-- docs-translation: {"document_id":"adr-manifest-backed-site-navigation-search","locale":"ru","source_path":"Docs/en/contributing/decisions/0004-manifest-backed-site-navigation-search.md","source_sha256":"979ef1745dd1a46ca8f3d674938cfad1416e7d4fcfb9503d0975d1800cd9344d"} -->
 # ADR-0004: навигация и поиск сайта на основе манифеста
 
 - Статус: принято
 - Дата: 2026-07-15
 - Изменено: 2026-08-01 для локализованной навигации, ограниченного поиска по каждой локали и браузерной проверки собранного сайта
 - Владельцы: документация, инструменты
+
+## Применимость к форку
+
+Это сохраняет upstream site design, не доказывая публикацию `fonline.ru` форком. Workflows архивированы, собственные unit suites удалены, remote settings не изменены локальным архивированием. Генерируйте navigation/search/routes локально; проверяйте rendered artifacts и запускайте существующий browser audit только с разрешением и уже имеющимися зависимостями. Source checks и historical artifacts не доказывают current deployment.
 
 ## Контекст
 
@@ -50,7 +54,7 @@ permalink: /Docs/ru/contributing/decisions/0004-manifest-backed-site-navigation-
 
 - Добавление, перевод или переклассификация публичной документации могут требовать назначения стабильного идентификатора группе навигации и повторной генерации обоих locale indexes, маршрутов, навигации, статуса локализации и AI artifacts.
 - Клиентский поиск ищет документы текущей ревизии, а не предоставляет версионированный symbol service или semantic retrieval system.
-- Изменения layout требуют и тестов взаимодействия на уровне исходников, и проверки артефакта Jekyll, поскольку локальные статические тесты не доказывают рендеринг Liquid.
+- Изменения layout требуют существующих rendered-artifact/browser checks и visual inspection: source checks не доказывают Liquid rendering. Новые тесты/инфраструктура требуют явного разрешения.
 - Немигрированные плоские английские пути остаются видимыми во время миграции дерева локалей. Проверенные группы миграции доказывают канонические страницы EN/RU, переключение по stable ID, русский поиск и долговечные legacy pointer routes; ADR-0006, статус локализации и генерируемый каталог маршрутов владеют текущим покрытием и остатком.
 
 ## Отклонённые варианты
@@ -63,16 +67,11 @@ permalink: /Docs/ru/contributing/decisions/0004-manifest-backed-site-navigation-
 
 ## Проверка
 
-- `python BuildTools/tests/test_docs_site.py`
-- `python BuildTools/tests/test_docs_site_layout.py`
-- `python BuildTools/tests/test_docs_site_artifact.py`
-- `python BuildTools/tests/test_docs_browser.py`
 - `python BuildTools/docs_site.py --check`
 - `python BuildTools/docs_site_artifact.py --site-dir Workspace/DocumentationSite`
 - `npm --prefix BuildTools/docs-browser run audit`
-- `python BuildTools/tests/test_docs_validate.py`
 - `python BuildTools/docs_validate.py`
-- проверка артефакта GitHub Actions `Build documentation site` на desktop и mobile widths
+- проверка точного локального rendered site на desktop/mobile widths; архивные GitHub Actions не поставляют текущие artifacts
 
 ## Связанные документы
 

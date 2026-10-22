@@ -7,7 +7,7 @@ permalink: /Docs/ru/explanation/persistence/
 ---
 
 # Сохранение данных
-<!-- docs-translation: {"document_id":"persistence","locale":"ru","source_path":"Docs/en/explanation/persistence/index.md","source_sha256":"76a2f6b5f819a67ab3cdd4c73a8d761f31a9288c9326af591854136700c0826f"} -->
+<!-- docs-translation: {"document_id":"persistence","locale":"ru","source_path":"Docs/en/explanation/persistence/index.md","source_sha256":"ccd8d3117604022ad3c986ae9776b0d0b26c3d3f93af7fcf22b9fb435d117473"} -->
 Этот документ описывает серверную абстракцию базы данных, модель коллекций и ключей, очередь commit, согласованные с backend снимки, журналы восстановления и реализации backend.
 
 Используйте его при изменении `Source/Server/DataBase.*`, настроек базы данных, кода загрузки и сохранения сущностей или тестов persistence.
@@ -126,7 +126,7 @@ Backend без байтового представления бросает `Dat
 
 `DbSQLite::CreateSnapshotData()` сериализует базу через `sqlite3_serialize()`, удерживая блокировку исходного хранилища, поэтому байты — это точный образ страниц, каким база была бы на диске со свёрнутым содержимым WAL. `RestoreSnapshotData()` загружает эти байты в приватную базу в памяти через `sqlite3_deserialize()` и копирует её в живое хранилище через online-backup API: десериализация прямо в живой handle оторвала бы его от файла. Буфер для `sqlite3_deserialize()` выделяется через `sqlite3_malloc64()` и освобождается при закрытии.
 
-`ServerEngine::CreateSnapshot()` — более высокая композиция состояния движка для стабильного авторитетного мира. Сначала достигается quiescence и возвращаются типизированные блокеры для runtime-контекстов скриптов, отложенных замыканий, событий времени и движения; только готовый мир сбрасывает точные время и id, создаёт байты backend и пишет парный версионированный манифест генератора и совместимости. Узкий контракт `DataBase` это не меняет, атомарной публикацией слота не является. Восстанавливающий строго читает манифест, копирует неизменяемые байты базы в изолированный живой каталог и передаёт состояние в свежий `ServerEngine`; открывать выбранный снимок напрямую как живое записываемое хранилище контрактом не поддерживается.
+`ServerEngine::CreateSnapshot()` — более высокая композиция состояния движка для стабильного авторитетного мира. Сначала достигается quiescence и возвращаются типизированные блокеры для runtime-контекстов скриптов, отложенных замыканий, событий времени и движения; только готовый мир сбрасывает точные время и id, создаёт байты backend и возвращает `ServerSnapshotState` вместе с байтами payload. Он не пишет manifest или файл и не определяет container reader. Сериализация, целостность и атомарная публикация пары принадлежат проекту; восстановление передаёт `ServerSnapshotRestore` в изолированный свежий `ServerEngine`. Это не меняет узкий контракт `DataBase` и не сериализует произвольное runtime/project state.
 
 `DataBaseSnapshotDrainsAndBlocksNewProducers` закрепляет общий барьер commit и производителей. `SQLiteDataBaseCreatesReopenableSnapshotWithoutOverwriting` закрепляет включение ожидающих записей, исключение более поздних изменений источника, независимое переоткрытие при живом источнике, отказ перезаписывать готовый результат и отсутствие файла базы после неудачного назначения.
 
@@ -178,7 +178,7 @@ Backend без байтового представления бросает `Dat
 
 JSON-файлы содержат обычные UTF-8 objects, BLOB записи SQLite — CBOR objects. Сохраняются знаковый Int64 (пределы и числа выше 2^53), конечный Float64, Bool, String, Array, Dict, включая NUL строк/ключей. Null/binary, unsigned overflow, другой корень, испорченный/усечённый вход и байты после CBOR отвергаются. Пределы: 64 МиБ на запись, 64 уровня вложенности. SAX проверяет типы/глубину/объявленные размеры до выделения DOM; валидация предшествует записи.
 
-Используйте пустые JSON/SQLite: для старых EJSON/BSON нет reader/converter. Сохраните старые binaries/storage для отката. Семантика Mongo BSON/Memory и SQLite tables/keys/WAL/snapshots сохраняется; снимкам нужны текущие согласованные metadata/binaries. [Компоненты](../../how-to/build/project-configuration.md#optional-native-components) задают выбор провайдера, [backup/recovery](../../how-to/release/backup-and-recovery.md) — согласованные комплекты. Guarded `Test_DataBase.cpp` проверяет codecs, reopen/update/delete и recovery.
+Используйте пустые JSON/SQLite: для старых EJSON/BSON нет reader/converter. Сохраните старые binaries/storage для отката. Семантика Mongo BSON/Memory и SQLite tables/keys/WAL/snapshots сохраняется; снимкам нужны текущие согласованные metadata/binaries. [Компоненты](../../how-to/build/project-configuration.md#optional-native-components) задают выбор провайдера, [backup/recovery](../../how-to/release/backup-and-recovery.md) — согласованные комплекты. Проверяйте codecs, reopen/update/delete и recovery реальным application path выбранного backend.
 
 ## Связь с состоянием сущности
 
@@ -203,7 +203,7 @@ Persistence хранит документы; состояние сущности
 
 ## Тесты для проверки
 
-Подходящие тесты:
+Следующие suites и скрытый Mongo coordination harness удалены в этом форке. Их имена описывают прежнее покрытие, а не исполняемые prerequisites или доказательство текущего target. Для текущей проверки используйте существующие builds затронутого backend и изолированные application/database operations:
 
 - `Source/Tests/Test_DataBase.cpp`;
 - тесты управления сущностями, например `Test_LocationAndEntityMgmt.cpp`, когда persistence влияет на сохраняемые сущности;
@@ -224,12 +224,12 @@ Persistence хранит документы; состояние сущности
 
 ## Контрольный список проверки
 
-1. Запустите `Source/Tests/Test_DataBase.cpp` или эквивалентную тестовую цель базы данных подключающего проекта.
+1. Соберите затронутый persistent backend и используйте существующий application path проекта с изолированным disposable storage. Новые автоматизированные тесты и их инфраструктура требуют явного запроса.
 2. Для каждого затронутого backend проверьте insert, update, delete, get, valid и перечисление ID.
 3. При изменении ключей проверьте коллекции с integer и string key.
 4. Проверьте опустошение commit queue через `StartCommitChanges()` / `WaitCommitChanges()`.
 5. При изменении durability или recovery проверьте восстановление operation log после имитации неудачного commit.
 6. Проверьте, что при включённом operation log `DataBase.OpLogPath` непуст и замена `.oplog` на `-committed.oplog` даёт отдельный путь committed-журнала.
-7. При изменении снимков докажите, что ожидающие записи включены, более поздние изменения источника исключены, назначение переоткрывается при живом источнике, готовое назначение не перезаписывается, а после неудачи файла базы не остаётся.
+7. При изменении snapshot проверьте queue drain, отказ backend, изоляцию байтов payload и restore в свежую сессию. Имена файлов, no-overwrite publication и очистка failed output принадлежат проекту, а не byte-returning API базы.
 8. При изменении семантики постоянного свойства проверьте загрузку и сохранение сущности.
 9. Никогда не помещайте производственные учётные данные или действующие строки подключения в документацию или тесты репозитория.

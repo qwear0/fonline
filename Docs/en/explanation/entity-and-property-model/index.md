@@ -241,7 +241,11 @@ The binary restore paths (`RestoreData`, `RestoreAllData`) likewise validate the
 
 Persistence backends store `AnyData::Document` records. For database commit/recovery details, see [Persistence](../persistence/).
 
-## Tests to inspect
+<a id="tests-to-inspect"></a>
+
+## Historical test inventory
+
+The suites listed below were removed from this fork. They record earlier coverage only; current verification uses affected-role build/compile/bake and existing application save/load, lifecycle and replication paths. New automated tests require an explicit request.
 
 Relevant tests include:
 
@@ -267,8 +271,8 @@ Relevant tests include:
 ## Validation checklist
 
 1. Build the smallest target that compiles generated entity/property code.
-2. Run entity lifecycle/prototype tests relevant to the changed type.
-3. Run property/metadata tests when property flags, registration, or serialization changes.
+2. Exercise the affected entity lifecycle/prototype through the existing project application path.
+3. Compile/bake changed property/metadata declarations and inspect actual serialization/save/reload when affected.
 4. If a property is synced, validate client/server replication paths and update [Networking](../authority-and-networking/) if behavior changes.
 5. If a property is persistent, validate database save/load paths and update [Persistence](../persistence/) if behavior changes.
 6. If a property or method is script-visible, validate generated script API and update [Nullability.md](../../../Nullability.md) where applicable.

@@ -14,6 +14,10 @@ permalink: /Docs/en/contributing/decisions/0002-public-api-stability-contract.ht
 - Amended: 2026-10-04 for current-only API, preserved semantics, fail-closed migration and per-master-update versions
 - Owners: scripting, runtime, build-release, documentation
 
+## Fork applicability
+
+The current-only API, preserved-meaning, migration and version-progression rules remain binding. Enforcement is local in this fork: workflows are archived and own unit suites removed. Existing model/comparator checks, affected compile/bake and application evidence remain required; new automated tests require explicit authorization. Historical upstream test/CI results are not execution evidence for this checkout.
+
 ## Context
 
 FOnline exposes many surfaces to game projects: CMake helpers, BuildTools commands, settings, package layouts, native hooks, AngelScript methods/types/events/properties, metadata, serialized entities, network messages, file formats, and application/runtime ABIs.
@@ -42,7 +46,7 @@ Until a symbol or surface is explicitly classified, it is `internal`. Existing r
 1. Source declarations, metadata annotations, parsers, settings declarations, CMake helpers, and tests are authoritative for current behavior.
 2. Generated canonical contract models normalize those sources into stable IDs and machine-readable JSON.
 3. Human reference pages, the locale-specific public contract indexes, and the root `PUBLIC_API.md` legacy route are generated from those models and supplemented with task-oriented examples and explanations.
-4. Manual prose must not maintain declaration counts, signatures, or cross-domain inventories that can be generated. `Docs/generated/source-inventory.json` remains the independent source inventory; the seventeen contract models own their respective reusable surfaces.
+4. Manual prose must not maintain declaration counts, signatures, or cross-domain inventories that can be generated. `Docs/generated/source-inventory.json` remains the independent source inventory; the generated [Public Contract Index](../../reference/public-contract/index.md) owns the current modeled-domain inventory.
 5. Project documentation may describe how it consumes an engine API but cannot upgrade that API's stability label.
 
 ### Source-owned classification
@@ -83,15 +87,15 @@ Every removal or replacement carries exhaustive bilingual [migration records](..
 
 ### Automated generated-contract enforcement
 
-`BuildTools/docs_contract_diff.py` compares all seventeen modeled domains with the same paths at the pull request base SHA or pre-push revision: native API, CMake, main BuildTools CLI, package, helper CLI, native extension, prototype, map, model, text, effect, image, particle, font, audio, video, and AiControl protocol. The specialized native layer in `BuildTools/docs_api_diff.py` retains symbol/overload semantics; the other models match their source-owned stable IDs. All domains classify additions, documentation, policy, and breaking changes against baseline stability so a simultaneous downgrade to `internal` cannot bypass review.
+`BuildTools/docs_contract_diff.py` compares all currently modeled domains with the same paths at the pull request base SHA or pre-push revision: native API, CMake, main BuildTools CLI, package, helper CLI, native extension, prototype, map, model, text, effect, image, particle, font, audio, video, and AiControl protocol. The specialized native layer in `BuildTools/docs_api_diff.py` retains symbol/overload semantics; the other models match their source-owned stable IDs. All domains classify additions, documentation, policy, and breaking changes against baseline stability so a simultaneous downgrade to `internal` cannot bypass review.
 
 For helper scripts, each executable `create_parser()` remains the syntax source of truth while `BuildTools/HelperCliInterface.json` owns stable helper identity, purpose, audience, invocation owner, and explicit exclusions. AST inventory validation rejects a newly exposed helper parser that is neither modeled nor assigned to another canonical domain. The helper CLI domain is `internal` until an owner approves a versioned support policy.
 
-For project-native C++, `BuildTools/NativeExtensionInterface.json` models the source roles consumed by current targets, supported hook signatures/fallbacks/call sites, and binding rules. Structural and generator tests compare it with current CMake/codegen behavior; it is not a runtime input. The domain is `experimental` and source-compatible only at a pinned engine revision; it does not promise a cross-revision binary ABI. Project implementations and external SDKs remain outside the engine contract.
+For project-native C++, `BuildTools/NativeExtensionInterface.json` models the source roles consumed by current targets, supported hook signatures/fallbacks/call sites, and binding rules. The existing generator validates its declared source anchors; affected-role configure/compile/bake and application use establish integration behavior; it is not a runtime input. The domain is `experimental` and source-compatible only at a pinned engine revision; it does not promise a cross-revision binary ABI. Project implementations and external SDKs remain outside the engine contract.
 
 A breaking `stable`, `experimental`, or `deprecated` declaration change requires an exact schema-v2 cumulative-ledger entry in `Docs/contract-change-dispositions.json`. The entry records the domain, owner classification, rationale, migration, release-note, and compatibility handling and is bound to the change ID plus that domain's baseline/current contract digests. Model-source, model-scope, and model-level contract changes also require disposition. Internal entry changes remain reportable but do not become compatibility promises.
 
-CI writes JSON/Markdown revision-pair reports under `Workspace/`, enforces missing dispositions, and uploads the report even on failure. The current site does not publish historical snapshots merely to support this gate.
+Run the comparator against the exact baseline/target locally, retain JSON/Markdown revision-pair reports under `Workspace/`, and enforce missing dispositions. Archived upstream CI upload behavior is not active in this fork. The current site does not publish historical snapshots merely to support this gate.
 
 ### Versioning
 
@@ -128,9 +132,9 @@ Documentation describes the current branch until the engine has meaningful relea
 - `BuildTools/docs_inventory.py --check` pins the independent source-backed export/test/settings inventory.
 - `BuildTools/docs_api.py --check` pins the canonical native-codegen model, including family/symbol IDs, descriptions, explicit/default contract provenance, lifecycle metadata, signatures, and declaration provenance.
 - `BuildTools/docs_reference.py --check` pins the generated human pages for the native-codegen model.
-- Focused tests prove that `ApiContract` family selectors cover overloads, stale scope counts and inventory hashes fail closed, exact scope overrides work, deprecated replacements resolve, invalid selectors fail, and docs-only annotations do not change the compatibility hash.
-- `BuildTools/docs_contract_diff.py --enforce`, the specialized API comparator, and their focused tests reject undisposed baseline-public removals, shape changes, stability withdrawals, stale digests, and model/parser contract changes across all seventeen generated domains.
-- `BuildTools/docs_public_api.py --check` regenerates the root contract index from those seventeen models and rejects stale domain links, labels, or native summary counts.
+- Source/codegen review and existing API generation must preserve overload-family selection, fail-closed scope pins, exact overrides, lifecycle validation and documentation-only exclusion from runtime hashing. Removed focused suites are not current prerequisites.
+- `BuildTools/docs_contract_diff.py --enforce` and the specialized API comparator check undisposed baseline-public removals, shape changes, stability withdrawals, stale digests and model/parser contracts across the current generated domains.
+- `BuildTools/docs_public_api.py --check` checks the generated locale contract indexes against the current models and rejects stale domain links, labels, or native summary counts.
 - Broad stable classifications remain owner and release-policy work; the inventory-pinned `experimental` scope does not itself claim cross-revision stable compatibility.
 - Code review must reject prose that presents an unclassified reachable symbol as stable.
 

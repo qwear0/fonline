@@ -13,9 +13,13 @@ permalink: /Docs/en/contributing/decisions/0001-github-pages-markdown-publicatio
 - Amended: 2026-08-01 after the locale-aware site and rendered-browser gates landed
 - Owners: documentation, build-release
 
+## Fork applicability
+
+This ADR records upstream publication history and the retained Markdown/Jekyll design, not deployment evidence for this fork. Local workflow definitions are archived under `.github/disabled-workflows/`; no remote Pages, DNS or repository setting changed merely because they were archived. Current local inputs are `Docs/Site/_config.yml` and manifest-derived files in ignored `Workspace/Documentation/`; rendering produces `Workspace/DocumentationSite/`. The publisher must separately authorize and verify any deployment.
+
 ## Context
 
-FOnline already publishes its repository site through GitHub Pages, uses Jekyll configuration from `_config.yml`, and binds the production domain through root `CNAME = fonline.ru`. The documentation source is Markdown in the engine repository and must remain readable both in the GitHub repository UI and on the public site.
+At upstream adoption, FOnline already published its repository site through GitHub Pages, uses Jekyll configuration from `_config.yml`, and binds the production domain through root `CNAME = fonline.ru`. The documentation source is Markdown in the engine repository and must remain readable both in the GitHub repository UI and on the public site.
 
 The production documentation program also requires:
 
@@ -29,11 +33,11 @@ Introducing a separate site application would duplicate ownership and move the p
 
 ## Decision
 
-**2026-10-09 publication update:** the owner switched Pages to GitHub Actions. This supersedes the original root-file and branch-source constraints below: configuration is now `Docs/Site/_config.yml`, dependency/domain files are generated from the source manifest into `Workspace/Documentation/`, and the validated `Workspace/DocumentationSite/` artifact is deployed. Markdown, Jekyll, domain and public URLs are preserved. [Site publication](../documentation/site-publication.md) owns the current build and verification procedure.
+**Historical upstream publication update, 2026-10-09:** the upstream owner switched Pages to GitHub Actions. This supersedes the original root-file and branch-source constraints below: configuration is now `Docs/Site/_config.yml`, dependency/domain files are generated from the source manifest into `Workspace/Documentation/`, and the validated `Workspace/DocumentationSite/` artifact is deployed. Markdown, Jekyll, domain and public URLs are preserved. [Site publication](../documentation/site-publication.md) owns the current build and verification procedure.
 
 1. GitHub Pages remains the production publisher and Jekyll remains the renderer.
 2. Markdown committed to this repository is the canonical human-documentation source.
-3. Root `_config.yml` and `CNAME` remain part of the tested publication contract. `Docs/documentation-manifest.json` records provider, generator, source format, domain, and owning paths.
+3. The original root `_config.yml`/`CNAME` arrangement below is historical; current local paths follow the publication update above. `Docs/documentation-manifest.json` records provider, generator, source format, domain, and owning paths.
 4. Do not introduce Docusaurus, a parallel `website/` content tree, or checked-in generated HTML.
 5. Jekyll layouts, includes, data files, supported plugins, theme overrides, and static assets may provide presentation and navigation, but must remain a thin rendering layer over Markdown.
 6. The target public locale layout is:
@@ -51,7 +55,7 @@ Introducing a separate site application would duplicate ownership and move the p
 9. Translation freshness is tracked from a canonical-content hash. Production publication must not present a stale Russian page as current.
 10. Existing public URLs receive GitHub Pages-compatible redirects or durable Markdown route pages before source files move.
 11. The existing Pages source branch/folder remains unchanged by documentation restructuring. Repository administrators must verify and record that setting plus DNS ownership before a production migration.
-12. Pull requests run fast Markdown/manifest/link checks and, in the site phase, a GitHub Pages-compatible Jekyll build that uploads `Workspace/DocumentationSite` as a review artifact. Production still deploys through the existing Pages route.
+12. Run existing Markdown/manifest/link checks locally; when rendering is authorized and dependencies exist, build/inspect the exact Jekyll artifact. Retain evidence separately from publication. This fork does not run the archived pull-request/deployment jobs.
 
 ## Consequences
 
@@ -84,7 +88,7 @@ Introducing a separate site application would duplicate ownership and move the p
 - `python BuildTools/docs_site.py --check` checks locale-aware navigation and bounded search derived from the manifest.
 - `python BuildTools/docs_site_artifact.py --site-dir Workspace/DocumentationSite` validates the rendered Jekyll routes and static endpoints.
 - `npm --prefix BuildTools/docs-browser run audit` checks desktop/mobile pages, interactions, screenshots, and axe-core results.
-- The `Validate documentation` and `Build documentation site` jobs run without an embedding project or native build and retain `Workspace/DocumentationSite` as a review artifact.
+- The archived `Validate documentation` and `Build documentation site` jobs describe upstream delivery history, not current execution. Record actual local check/build results and do not install or publish implicitly.
 - Standalone GitHub Markdown rendering remains a required route alongside Jekyll.
 
 ## Related documents

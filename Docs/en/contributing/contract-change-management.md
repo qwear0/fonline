@@ -100,21 +100,6 @@ Project-authored remote calls remain a separate baked project catalog. Remaining
 - `BuildTools/docs_package.py`
 - `BuildTools/docs_contract_diff.py`
 - `BuildTools/docs_validate.py`
-- `BuildTools/tests/test_docs_api_diff.py`
-- `BuildTools/tests/test_docs_contract_diff.py`
-- `BuildTools/tests/test_docs_helper_cli.py`
-- `BuildTools/tests/test_docs_native_extension.py`
-- `BuildTools/tests/test_docs_prototype_format.py`
-- `BuildTools/tests/test_docs_map_format.py`
-- `BuildTools/tests/test_docs_model_format.py`
-- `BuildTools/tests/test_docs_text_format.py`
-- `BuildTools/tests/test_docs_effect_format.py`
-- `BuildTools/tests/test_docs_image_format.py`
-- `BuildTools/tests/test_docs_particle_format.py`
-- `BuildTools/tests/test_docs_font_format.py`
-- `BuildTools/tests/test_docs_audio.py`
-- `BuildTools/tests/test_docs_video.py`
-- `BuildTools/tests/test_docs_ai_control_protocol.py`
 - `Docs/generated/api.json`
 - `Docs/generated/cmake.json`
 - `Docs/generated/cli.json`
@@ -134,7 +119,7 @@ Project-authored remote calls remain a separate baked project catalog. Remaining
 - `Docs/generated/package.json`
 - `Docs/contract-change-dispositions.json`
 - `Docs/en/contributing/decisions/0002-public-api-stability-contract.md`
-- `.github/workflows/validate.yml`
+- `.github/disabled-workflows/validate.yml`
 
 ## Inputs and outputs
 
@@ -238,7 +223,7 @@ python BuildTools/docs_contract_diff.py \
 
 `--check` computes and enforces without writing report files. Prefer `--write` while resolving a failure because the Markdown report includes ready-to-fill ledger templates.
 
-`BuildTools/docs_api_diff.py` remains available for native-symbol investigation and regression tests. CI enforcement uses the aggregate command so a green API-only report cannot hide CMake, CLI, package, helper-CLI, native-extension, prototype-format, map-format, model-format, text-format, effect-format, image-format, particle-format, font-format, audio, video, or AiControl protocol drift.
+`BuildTools/docs_api_diff.py` remains available for native-symbol investigation. Local enforcement uses the aggregate command so a green API-only report cannot hide CMake, CLI, package, helper-CLI, native-extension, prototype-format, map-format, model-format, text-format, effect-format, image-format, particle-format, font-format, audio, video, or AiControl protocol drift.
 
 ## Bootstrap behavior
 
@@ -279,16 +264,11 @@ Historical entries may remain; unmatched entries are inert. Domain, change ID, a
 
 The validator proves ledger shape and exact binding, not approval quality. Review must reject placeholder text, incorrect compatibility claims, missing migrations, or an owner outside the affected domain.
 
-## CI behavior
+## Local enforcement and archived CI
 
-The `Validate documentation` job checks out full history and selects:
+This fork archives workflow definitions under `.github/disabled-workflows/`; it has no active documentation CI or automatic contract-diff artifact. Run the aggregate command locally after model/reference freshness checks, retain both reports, and preserve a failed exit when a required disposition is missing.
 
-- `github.event.pull_request.base.sha` for pull requests;
-- `github.event.before` for pushes to `master`.
-
-After model/reference freshness checks, CI runs `docs_contract_diff.py --write --enforce`. A missing required disposition fails the job. The `if: always()` upload step preserves both reports for diagnosis.
-
-A multi-commit pull request is compared with its base branch commit, not the previous feature-branch commit. A multi-commit push uses the complete pushed range. The standalone validator rejects removal of the shared ledger, seventeen-model manifest contract, full-history checkout, base-ref argument, aggregate test, or enforcement switch.
+Select the actual intended integration/publication baseline. A multi-commit change is compared with the complete base-to-target range, not just the previous local commit. The archived upstream job used the pull-request base SHA or push `before` SHA and retained reports on failure; those records explain historical evidence, not current automation. The standalone validator still requires the shared ledger and complete modeled-domain manifest.
 
 ## Semantic review and every-update obligations
 
@@ -304,7 +284,7 @@ For a public breaking change, review all of these:
 2. A replacement or migration path exists, or the ledger explains why none is possible.
 3. Release notes identify affected developers and supported revision lines.
 4. Network/serialization changes include required compatibility or migration metadata.
-5. Generated references, examples, and focused tests change together.
+5. Generated references and affected examples change together; existing compile/bake/application checks establish the changed behavior.
 6. The owning runtime, scripting, build, or release domain accepts the support timeline.
 
 Internal changes need no compatibility promise, but surprising removals and shape churn still deserve review because they may reveal a missing stability classification.
@@ -319,7 +299,7 @@ The aggregate report cannot detect:
 - whether a migration guide or package path was exercised successfully;
 - support across release lines that have not been declared and tagged.
 
-Runtime, structural CMake, native-extension, prototype/map/model/text/effect/image/particle/font/audio/video/AiControl protocol, package, starter, and embedding-project tests remain required. A green seventeen-domain report proves only that the modeled declarative surfaces have an accepted revision transition.
+Use proportionate existing compiler, configure, bake, package, starter, or direct application checks for affected runtime/content boundaries under [Verification and tests](testing/). This fork's removed unit/structural suites are not prerequisites. A green seventeen-domain report proves only that the modeled declarative surfaces have an accepted revision transition.
 
 ## Troubleshooting
 
@@ -327,7 +307,7 @@ Runtime, structural CMake, native-extension, prototype/map/model/text/effect/ima
 - `does not exist at baseline revision`: expected only for a model's first landed revision.
 - `missing dispositions`: inspect `Workspace/contract-diff.md`, add reviewed entries, and rerun against the same revision pair.
 - disposition remains missing: copy the exact domain, change ID, and both contract hashes from the current report.
-- a description edit is classified as breaking: add a focused nested-field regression before changing policy or the ledger.
+- a description edit is classified as breaking: inspect the reported nested field and the owning comparison rule before changing policy or the ledger; do not suppress a real contract delta.
 - an internal change unexpectedly blocks: inspect model-source/scope drift first; ordinary internal entry changes are report-only.
 - many entries change together: verify stable IDs and the owning generator before accepting the report.
 
@@ -335,13 +315,13 @@ Runtime, structural CMake, native-extension, prototype/map/model/text/effect/ima
 
 0. Complete the version/changelog and exhaustive semantic migration review from the Engine update contract; run `BuildTools/docs_engine_version.py` against the exact publication baseline.
 1. Regenerate and check all seventeen canonical models plus generated Markdown.
-2. Run `test_docs_api_diff.py` and `test_docs_contract_diff.py`.
+2. Verify the baseline and current model identities; run the existing aggregate CLI.
 3. Compare against the intended base with `--write --enforce`.
 4. Review every required disposition and replace every generated placeholder.
-5. Run the affected native, script, CMake, packaging, starter, or project test.
-6. Run `test_docs_validate.py` and `docs_validate.py`.
-7. Inspect the CI contract-diff artifact and confirm each domain status.
-8. Keep staging empty unless staging or commit was explicitly requested.
+5. Build/compile/bake/package affected consumers and use direct application checks when needed.
+6. Run `docs_validate.py` against fresh prerequisites.
+7. Retain the local contract-diff artifact and confirm each domain status.
+8. Follow `AGENTS.md` for task-owned commit/push authorization; a narrower worker no-Git scope remains binding.
 
 ## See also
 
