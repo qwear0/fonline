@@ -439,7 +439,7 @@ def render_index(model: dict[str, Any]) -> str:
         "",
         "[Human policy](../../how-to/build/public-example-repositories.md) | [Canonical JSON](../../../generated/public-examples.json) | [Source registry](../../../../Examples/PublicRepositories.json)",
         "",
-        "This registry describes illustrative embedding-project repositories. Engine behavior remains normative only in Engine source, tests, and owning documentation.",
+        "This registry describes illustrative embedding-project repositories. Engine behavior remains normative only in current Engine source and owning documentation; local verification and external repository publication are separate evidence.",
         "",
         "## Program contract",
         "",
@@ -519,8 +519,8 @@ RUSSIAN_REPLACEMENTS = {
         "> Сгенерированный справочник. Не редактируйте эту страницу напрямую. Обновите `Examples/PublicRepositories.json` или управляющий overlay, затем выполните `python BuildTools/docs_examples.py --write`.",
     "[Human policy](../../how-to/build/public-example-repositories.md) | [Canonical JSON](../../../generated/public-examples.json) | [Source registry](../../../../Examples/PublicRepositories.json)":
         "[Политика для разработчиков](../../how-to/build/public-example-repositories.md) | [Канонический JSON](../../../generated/public-examples.json) | [Исходный реестр](../../../../Examples/PublicRepositories.json)",
-    "This registry describes illustrative embedding-project repositories. Engine behavior remains normative only in Engine source, tests, and owning documentation.":
-        "Этот реестр описывает демонстрационные репозитории встраивающих проектов. Нормативное поведение движка определяется только исходным кодом Engine, тестами и документацией-владельцем.",
+    "This registry describes illustrative embedding-project repositories. Engine behavior remains normative only in current Engine source and owning documentation; local verification and external repository publication are separate evidence.":
+        "Этот реестр описывает демонстрационные репозитории подключающих проектов. Нормативное поведение определяется текущими исходниками Engine и владеющей документацией; локальная проверка и публикация внешнего репозитория — отдельные свидетельства.",
     "## Program contract": "## Контракт программы",
     "## Publication evidence": "## Свидетельства публикации",
     "Read each repository's source status, remote visibility/state, observed required-check state, exact Engine pin, update-delivery policy, and Contract digest together. Only `published` source with a `public` / `published` remote and `passing` observed checks is publication evidence. A private, reserved, source-staged, planned, or not-observed row remains pre-publication evidence even when its source is ready.":

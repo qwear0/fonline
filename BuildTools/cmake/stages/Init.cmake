@@ -86,6 +86,11 @@ DeclareBoolOptions(
 	FO_UNIT_TESTS "Build only binaries for Unit Testing" OFF
 	FO_CODE_COVERAGE "Build only binaries for Code Coverage reports" OFF)
 
+# The fork no longer ships automated test suites or their executable targets.
+if(FO_UNIT_TESTS OR FO_CODE_COVERAGE)
+    AbortMessage("Unit-test and code-coverage targets were removed from this fork. Set FO_UNIT_TESTS and FO_CODE_COVERAGE to OFF.")
+endif()
+
 # Quiet all non-error messages instead ourself
 if(FO_VERBOSE_BUILD)
 	StatusMessage("Verbose build mode")

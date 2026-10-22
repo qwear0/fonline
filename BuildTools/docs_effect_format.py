@@ -143,11 +143,6 @@ def _validate_sources(root: Path, raw: object) -> dict[str, object]:
         "model_effect",
     ):
         result[field] = _source_path(root, raw.get(field), f"sources.{field}")
-    tests = _string_list(raw.get("tests"), "sources.tests")
-    result["tests"] = [
-        _source_path(root, path, f"sources.tests[{index}]")
-        for index, path in enumerate(tests)
-    ]
     return result
 
 
@@ -166,7 +161,7 @@ def _validate_outputs(raw: object) -> dict[str, object]:
             "spv_sdl",
             "glsl",
             "glsl_es",
-            "hlsl",
+            "dxbc",
             "msl_mac",
             "msl_ios",
         ],
@@ -697,8 +692,6 @@ def _render_validation(model: dict[str, object]) -> str:
             "",
             "```powershell",
             "python BuildTools\\docs_effect_format.py --check",
-            "python -m unittest BuildTools.tests.test_docs_effect_format",
-            "cmake --build <build-dir> --config RelWithDebInfo --target RunUnitTests",
             "```",
             "",
             "Finish in an embedding project with its resource bake and visible checks "

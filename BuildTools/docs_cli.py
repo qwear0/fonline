@@ -24,7 +24,7 @@ DEFAULT_OUTPUT_DIR = "Docs/en/reference/buildtools"
 RUSSIAN_OUTPUT_DIR = "Docs/ru/reference/buildtools"
 LEGACY_OUTPUT_DIR = "Docs/generated/cli"
 GENERATED_BY = "BuildTools/docs_cli.py"
-REPOSITORY = "cvet/fonline"
+REPOSITORY = "qwear0/fonline"
 SOURCE_REF = "master"
 PROGRAM = "buildtools.py"
 HELP_COLUMNS = 240
@@ -373,8 +373,8 @@ RUSSIAN_REPLACEMENTS = {
     "Excluded from this slice:": "Исключено из этого среза:",
     "Excluded surfaces remain implementation details until an owning parser-backed contract and compatibility policy are published.":
         "Исключённые поверхности остаются деталями реализации, пока для них не будут опубликованы владеющий контракт на основе парсера и политика совместимости.",
-    "Run commands from the engine repository root with `python BuildTools/buildtools.py <command>`. The exact usage and help blocks below are emitted by the executable parser.":
-        "Запускайте команды из корня репозитория движка через `python BuildTools/buildtools.py <command>`. Точные блоки usage и справки ниже созданы исполняемым парсером.",
+    "Run project build commands from the embedding project root with `python Engine/BuildTools/buildtools.py <command>`; project discovery defaults to the current directory. The exact usage and help blocks below are emitted by the executable parser.":
+        "Запускайте команды сборки проекта из корня подключающего проекта через `python Engine/BuildTools/buildtools.py <command>`; по умолчанию проект ищется в текущем каталоге. Точные блоки usage и справки ниже созданы исполняемым парсером.",
     "No parser description is declared.": "Описание в парсере не объявлено.",
     "Stable ID:": "Стабильный ID:",
     "No command-specific arguments.": "У команды нет собственных аргументов.",
@@ -497,7 +497,7 @@ def _render_commands(model: dict[str, object]) -> str:
     lines = _page_header(*PAGE_DEFINITIONS[1][1:])
     lines.extend(
         [
-            "Run commands from the engine repository root with `python BuildTools/buildtools.py <command>`. "
+            "Run project build commands from the embedding project root with `python Engine/BuildTools/buildtools.py <command>`; project discovery defaults to the current directory. "
             "The exact usage and help blocks below are emitted by the executable parser.",
             "",
         ]

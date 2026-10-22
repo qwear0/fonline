@@ -22,7 +22,7 @@ DEFAULT_OUTPUT_DIR = "Docs/en/reference/cmake"
 RUSSIAN_OUTPUT_DIR = "Docs/ru/reference/cmake"
 LEGACY_OUTPUT_DIR = "Docs/generated/cmake"
 GENERATED_BY = "BuildTools/docs_cmake.py"
-REPOSITORY = "cvet/fonline"
+REPOSITORY = "qwear0/fonline"
 SOURCE_REF = "master"
 PAGE_DEFINITIONS = (
     ("index.md", "generated-cmake-index", "Generated CMake Project Interface"),
@@ -103,6 +103,8 @@ def _validate_options(raw_options: object) -> list[dict[str, object]]:
         name = _required_string(raw_option.get("name"), f"{label}.name")
         if not OPTION_PATTERN.fullmatch(name):
             raise ValueError(f"{label}.name is not a public FO_ option: {name}")
+        if name in {"FO_UNIT_TESTS", "FO_CODE_COVERAGE"}:
+            raise ValueError(f"removed test/coverage mode is not a supported project option: {name}")
         if name in names:
             raise ValueError(f"duplicate CMake project option: {name}")
         names.add(name)
@@ -204,7 +206,12 @@ def _validate_helpers(root: Path, raw_helpers: object) -> list[dict[str, object]
         _required_string(raw_helper.get("description"), f"{label}.description")
         allowed_roles = raw_helper.get("allowed_roles")
         if allowed_roles is not None:
-            _string_list(allowed_roles, f"{label}.allowed_roles")
+            roles = _string_list(allowed_roles, f"{label}.allowed_roles")
+            if name == "AddEngineSources":
+                implementation = (root / str(raw_helper["source"])).read_text(encoding="utf-8")
+                role_guard = re.search(r'if\(NOT "\$\{target\}" MATCHES "\^\(([A-Z|]+)\)\$"\)', implementation)
+                if role_guard is None or role_guard.group(1).split("|") != roles:
+                    raise ValueError("AddEngineSources.allowed_roles differs from its implementation guard")
 
         helper = dict(raw_helper)
         helper["id"] = f"cmake.helper.{name}"
@@ -436,7 +443,7 @@ def _render_options(model: dict[str, object]) -> str:
     lines = _page_header(*PAGE_DEFINITIONS[1][1:])
     lines.extend(
         [
-            "Options are declared during `StartProjectGeneration()` from the interface manifest. "
+            "Options are declared by `BuildTools/cmake/stages/Init.cmake` during `StartProjectGeneration()`; the interface manifest documents them. "
             "All values are CMake cache values after declaration.",
             "",
             "See the [reference index](index.md#option-override-precedence) for override order.",
@@ -570,8 +577,8 @@ RUSSIAN_REPLACEMENTS = {
     "Excluded from this slice:": "Исключено из этого среза:",
     "Package declarations and payloads are documented by the separate [package interface reference](../packages/index.md). The main BuildTools command line is documented by the separate [parser-backed CLI reference](../buildtools/index.md).":
         "Объявления пакетов и payload описаны в отдельном [справочнике интерфейса пакетов](../packages/index.md). Основная командная строка BuildTools описана в отдельном [справочнике CLI на основе парсера](../buildtools/index.md).",
-    "Options are declared during `StartProjectGeneration()` from the interface manifest. All values are CMake cache values after declaration.":
-        "Параметры объявляются из manifest интерфейса во время `StartProjectGeneration()`. После объявления все значения являются значениями кеша CMake.",
+    "Options are declared by `BuildTools/cmake/stages/Init.cmake` during `StartProjectGeneration()`; the interface manifest documents them. All values are CMake cache values after declaration.":
+        "Параметры объявляются в `BuildTools/cmake/stages/Init.cmake` во время `StartProjectGeneration()`; manifest интерфейса их документирует. После объявления все значения являются значениями кеша CMake.",
     "See the [reference index](index.md#option-override-precedence) for override order.":
         "Порядок переопределения приведён в [индексе справочника](index.md#приоритет-переопределения-параметров).",
     "Embedding projects must call every entrypoint exactly once in the order below. Calling a stage twice, calling it out of order, or skipping a predecessor aborts CMake configure.":

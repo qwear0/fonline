@@ -26,11 +26,7 @@
     "client_types": "Source/Client/ModelInformation.h",
     "rendering_limits": "Source/Frontend/Rendering.h",
     "project_interface": "BuildTools/cmake/ProjectInterface.json",
-    "baking_pipeline": "Source/Tools/Baker.cpp",
-    "tests": [
-      "Source/Tests/Test_ModelBaker.cpp",
-      "Source/Tests/Test_AngelScriptCommonScriptMethods.cpp"
-    ]
+    "baking_pipeline": "Source/Tools/Baker.cpp"
   },
   "outputs": {
     "source_extension": ".fo3d",
@@ -144,10 +140,6 @@
         {
           "path": "Source/Tools/ModelMeshBaker.cpp",
           "anchors": ["ext != \"fbx\" && ext != \"obj\"", "BakeFbxFile"]
-        },
-        {
-          "path": "Source/Tests/Test_ModelBaker.cpp",
-          "anchors": ["Bakes a minimal OBJ mesh", "Bakes position-only OBJ mesh with default vertex fields"]
         }
       ]
     },
@@ -675,10 +667,6 @@
         {
           "path": "Source/Tools/ModelInfoBaker.cpp",
           "anchors": ["else if (token == \"AllowAnimationGeometry\")", "AnimationGeometryExceptions.emplace", "External animation model contains drawable mesh nodes"]
-        },
-        {
-          "path": "Source/Tests/Test_ModelBaker.cpp",
-          "anchors": ["Requires explicit temporary exceptions for known external animation geometry", "Rejects animation geometry exceptions after geometry removal"]
         }
       ]
     },
@@ -1051,8 +1039,8 @@
       "rationale": "Baking proves references and serialized structure; only the client renderer proves the composed visual result.",
       "source": [
         {
-          "path": "Source/Tests/Test_ModelBaker.cpp",
-          "anchors": ["TEST_CASE(\"ModelInfoBakerValidations\")", "Parses model description option tokens into saved description"]
+          "path": "Source/Tools/ModelInfoBaker.cpp",
+          "anchors": ["ModelInfoBaker", "AllowAnimationGeometry"]
         }
       ]
     }

@@ -107,11 +107,6 @@ def _validate_sources(root: Path, raw: object) -> dict[str, object]:
         "api_model",
     ):
         result[field] = _source_path(root, raw.get(field), f"sources.{field}")
-    tests = _string_list(raw.get("tests"), "sources.tests")
-    result["tests"] = [
-        _source_path(root, source, f"sources.tests[{index}]")
-        for index, source in enumerate(tests)
-    ]
     return result
 
 
@@ -581,12 +576,11 @@ def _render_validation(model: dict[str, object]) -> str:
     )
     lines.extend(
         [
-            "## Current diagnostic limitation",
+            "## Inheritance cycles",
             "",
-            "Parent graphs must be acyclic. The current baker recursively expands parents without a "
-            "dedicated cycle diagnostic, so embedding projects should validate cycles before baking "
-            "and keep inheritance chains shallow. This is a documented implementation limitation, "
-            "not a supported cyclic behavior.",
+            "Parent graphs must be acyclic. ProtoBaker and ProtoTextBaker track the active "
+            "inheritance traversal and reject a cycle with a dedicated diagnostic. "
+            "A successful bake does not validate project-specific inheritance policy.",
             "",
         ]
     )
@@ -676,9 +670,9 @@ RUSSIAN_REPLACEMENTS = {
     "## Built-in entity types": "## Встроенные типы сущностей",
     "These rules are enforced by the parser, metadata registrators, property serializer, or the side-specific prototype bake. Stable IDs let CI track contract changes.":
         "Эти правила обеспечиваются parser, registrators метаданных, serializer свойств или side-specific bake прототипов. Стабильные ID позволяют CI отслеживать изменения контракта.",
-    "## Current diagnostic limitation": "## Текущее ограничение диагностики",
-    "Parent graphs must be acyclic. The current baker recursively expands parents without a dedicated cycle diagnostic, so embedding projects should validate cycles before baking and keep inheritance chains shallow. This is a documented implementation limitation, not a supported cyclic behavior.":
-        "Граф родителей должен быть ациклическим. Текущий baker рекурсивно раскрывает родителей без отдельной диагностики цикла, поэтому встраивающим проектам следует проверять циклы до baking и держать цепочки наследования короткими. Это документированное ограничение реализации, а не поддержка циклического поведения.",
+    "## Inheritance cycles": "## Циклы наследования",
+    "Parent graphs must be acyclic. ProtoBaker and ProtoTextBaker track the active inheritance traversal and reject a cycle with a dedicated diagnostic. A successful bake does not validate project-specific inheritance policy.":
+        "Граф родителей должен быть ациклическим. ProtoBaker и ProtoTextBaker отслеживают активный обход наследования и отклоняют цикл с отдельной диагностикой. Успех запекания не проверяет проектную политику наследования.",
 }
 
 RUSSIAN_TABLE_HEADERS = {

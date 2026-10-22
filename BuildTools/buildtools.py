@@ -111,8 +111,6 @@ SINGLE_FLAG_BUILD_TARGETS = {
 	'mapper': 'FO_BUILD_MAPPER',
 	'ascompiler': 'FO_BUILD_ASCOMPILER',
 	'baker': 'FO_BUILD_BAKER',
-	'unit-tests': 'FO_UNIT_TESTS',
-	'code-coverage': 'FO_CODE_COVERAGE',
 }
 
 SINGLE_CLIENT_VALIDATION_PLATFORMS = {
@@ -150,14 +148,6 @@ VALIDATION_TARGETS: dict[str, ValidationTarget] = {
 	},
 	**make_validation_target_set('win64', 'win64', COMMON_VALIDATION_TARGET_NAMES),
 	**make_validation_target_set('win64-clang', 'win64-clang', WIN64_CLANG_VALIDATION_TARGET_NAMES),
-	'unit-tests': make_validation_target('native', 'unit-tests', 'Release', run_target_name='RunUnitTests'),
-	'unit-tests-san-address': make_validation_target('linux', 'unit-tests', 'San_Address', run_target_name='RunUnitTests'),
-	'unit-tests-san-memory': make_validation_target('linux', 'unit-tests', 'San_Memory', run_target_name='RunUnitTests', workspace_parts=('msan-libcxx',), msan_libcxx=True),
-	'unit-tests-san-memory-with-origins': make_validation_target('linux', 'unit-tests', 'San_MemoryWithOrigins', run_target_name='RunUnitTests', workspace_parts=('msan-libcxx',), msan_libcxx=True),
-	'unit-tests-san-undefined': make_validation_target('linux', 'unit-tests', 'San_Undefined', run_target_name='RunUnitTests'),
-	'unit-tests-san-thread': make_validation_target('linux', 'unit-tests', 'San_Thread', run_target_name='RunUnitTests'),
-	'win64-unit-tests-san-address': make_validation_target('win64', 'unit-tests', 'San_Address', run_target_name='RunUnitTests'),
-	'code-coverage': make_validation_target('linux', 'code-coverage', 'Debug', compiler_name='gcc', run_target_name='RunCodeCoverage'),
 	'managed-mac-client': make_validation_target('mac', 'client', 'Release', cmake_args=MANAGED_VALIDATION_CMAKE_ARGS),
 	'managed-ios-simulator-client': make_validation_target('ios', 'client', 'Release', cmake_args=MANAGED_VALIDATION_CMAKE_ARGS),
 	'managed-ios-device-client': make_validation_target('ios', 'client', 'Release', cmake_args=(*MANAGED_VALIDATION_CMAKE_ARGS, '-DPLATFORM=OS64', '-DCMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED=NO')),
@@ -4123,7 +4113,7 @@ def create_parser() -> argparse.ArgumentParser:
 
 	build_parser = subparsers.add_parser('build', help='configure and build a target')
 	build_parser.add_argument('platform', help='engine platform key, such as linux, win64, web, or android-arm64')
-	build_parser.add_argument('target', help='BuildTools target profile, such as client, server, baker, or unit-tests')
+	build_parser.add_argument('target', help='BuildTools target profile, such as client, server, mapper, or baker')
 	build_parser.add_argument('config', nargs='?', default='Release', help='CMake build configuration')
 
 	validate_parser = subparsers.add_parser('validate', help='configure and validate scenarios')

@@ -141,11 +141,6 @@ def _validate_sources(root: Path, raw: object) -> dict[str, object]:
         field: _source_path(root, raw.get(field), f"sources.{field}")
         for field in fields
     }
-    tests = _string_list(raw.get("tests"), "sources.tests")
-    result["tests"] = [
-        _source_path(root, path, f"sources.tests[{index}]")
-        for index, path in enumerate(tests)
-    ]
     return result
 
 
@@ -558,8 +553,6 @@ def _render_validation(model: dict[str, object]) -> str:
         "",
         "```powershell",
         "python BuildTools\\docs_image_format.py --check",
-        "python -m unittest BuildTools.tests.test_docs_image_format",
-        "cmake --build <build-dir> --config RelWithDebInfo --target RunUnitTests",
         "```",
         "",
         "An embedding project must also rebake affected resources and inspect every "

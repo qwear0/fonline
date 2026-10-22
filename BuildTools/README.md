@@ -14,7 +14,7 @@ Builds normally start in an embedding project. Use [Build Workflow](../Docs/en/h
 
 The exact main `buildtools.py` command surface is generated from its executable parser. Browse the [BuildTools CLI reference](../Docs/en/reference/buildtools/index.md) or the [canonical JSON model](../Docs/generated/cli.json) instead of maintaining a separate command inventory.
 
-Engine-owned helper scripts use a separate manifest-backed surface. Browse the [helper CLI reference](../Docs/en/reference/helper-cli/index.md) or [canonical JSON model](../Docs/generated/helper-cli.json) for codegen, Mono compilation, coverage, gameplay-test orchestration, Windows 7 import validation, Android-device, local-web-server, and MSI commands. The executable parsers own syntax; `HelperCliInterface.json` owns purpose, audience, invocation owner, and the explicit boundary from the main CLI and packager.
+Engine-owned helper scripts use a separate manifest-backed surface. Browse the [helper CLI reference](../Docs/en/reference/helper-cli/index.md) or [canonical JSON model](../Docs/generated/helper-cli.json) for codegen, Mono compilation, gameplay-test orchestration, Windows 7 import validation, Android-device, local-web-server, and MSI commands. The executable parsers own syntax; `HelperCliInterface.json` owns purpose, audience, invocation owner, and the explicit boundary from the main CLI and packager.
 
 `gameplay_test_runner.py` executes checked multi-process smoke manifests with readiness, required/forbidden markers, one scenario deadline, cleanup, and a compact JSON report. Its reusable testing contract and real headless server/client proof are documented in [Gameplay and Integration Testing](../Docs/en/how-to/testing/gameplay-and-integration.md).
 
@@ -34,18 +34,18 @@ Text-pack syntax, language normalization, prototype `$Text`, runtime lookup, and
 
 Effect sections, pass/render state, built-in shader resources, backend outputs, runtime caching, and script control are versioned in `EffectFormatInterface.json`; `docs_effect_format.py` validates live baker/renderer/runtime anchors, derives compile-limit defaults, and renders the [effect-format reference](../Docs/en/reference/effect-format/index.md). Authoring guidance lives in [Effect Format](../Docs/en/how-to/content/effect-format.md).
 
-Image source formats, FOFRM composition, legacy filename selectors, baked sprite records, stock runtime factories, atlases, caches, and validation are versioned in `ImageFormatInterface.json`; `docs_image_format.py` validates live baker/client/test anchors, derives both extension registries, and renders the [image-format reference](../Docs/en/reference/image-format/index.md). Authoring guidance lives in [Image And Sprite Formats](../Docs/en/how-to/content/image-format.md).
+Image source formats, FOFRM composition, legacy filename selectors, baked sprite records, stock runtime factories, atlases, caches, and validation are versioned in `ImageFormatInterface.json`; `docs_image_format.py` validates live baker/client anchors, derives both extension registries, and renders the [image-format reference](../Docs/en/reference/image-format/index.md). Authoring guidance lives in [Image And Sprite Formats](../Docs/en/how-to/content/image-format.md).
 
 Particle XML, registered SPARK objects, `SparkQuadRenderer`, editor behavior, raw-copy delivery, runtime caches/render paths, and integrations are versioned in `ParticleFormatInterface.json`; `docs_particle_format.py` derives the live registry, descriptors, editor coverage, extensions, and settings and renders the [particle-format reference](../Docs/en/reference/particle-format/index.md). Authoring guidance lives in [Particle Format And Runtime](../Docs/en/how-to/content/particle-format.md).
 
 FOFNT/BMFont descriptors, font-slot binding, bind-time scaling, text layout, rendering flags, inline colors, and validation are versioned in `FontFormatInterface.json`; `docs_font_format.py` validates parser, resource, enum, atlas, cache, and bundled-descriptor anchors and renders the [font-format reference](../Docs/en/reference/font-format/index.md). Authoring guidance lives in [Font Format And Text Layout](../Docs/en/how-to/content/font-format.md).
 
-WAV/Ogg baking, Vorbis runtime decoding, playback handles and spatial updates, exact-path identity, mixing, and silent/headless behavior are versioned in `AudioInterface.json`; `docs_audio.py` derives live baker, resource, decoder, frontend, setting, and test evidence and renders the [audio reference](../Docs/en/reference/audio/index.md). Authoring guidance lives in [Audio Resources and Playback](../Docs/en/how-to/content/audio.md).
+WAV/Ogg baking, Vorbis runtime decoding, playback handles and spatial updates, exact-path identity, mixing, and silent/headless behavior are versioned in `AudioInterface.json`; `docs_audio.py` derives live baker, resource, decoder, frontend, setting, and declared validation evidence and renders the [audio reference](../Docs/en/reference/audio/index.md). Authoring guidance lives in [Audio Resources and Playback](../Docs/en/how-to/content/audio.md).
 
 Ogg/Theora delivery, whole-resource decoding, fullscreen queue/input/music
 behavior, embedded playback, rendering, and validation gaps are versioned in
 `VideoInterface.json`; `docs_video.py` derives live decoder, client, script,
-rendering, raw-copy, dependency, and test evidence and renders the
+rendering, raw-copy, dependency, and declared validation evidence and renders the
 [video reference](../Docs/en/reference/video/index.md). Integration guidance lives in
 [Video Resources and Playback](../Docs/en/how-to/content/video.md).
 
@@ -59,32 +59,24 @@ Public example ownership, ordering, exact Engine pins, compatibility lanes, gove
 Validation scenarios can be run one at a time or batched in a single command:
 
 ```bash
-Engine/BuildTools/validate.sh unit-tests
 Engine/BuildTools/validate.sh android-arm64-client linux-client linux-server
 ```
 
-The ordinary `unit-tests` validation target selects the native host toolchain: MSVC on Windows,
-Xcode on macOS, and Clang on Linux. Sanitizer validators remain explicitly platform-specific.
-
-BuildTools Python regression tests live under `Engine/BuildTools/tests/` and can be run directly:
-
-```bash
-pytest -q Engine/BuildTools/tests
-```
+Run these build scenarios only with their existing toolchains and workspace prerequisites. The fork removed its own unit suites and test/coverage targets; see [Verification and tests](../Docs/en/contributing/testing/). Workflows under `.github/disabled-workflows/` are historical, not active CI.
 
 ## CMake layout
 
 All internal CMake modules now live under `Engine/BuildTools/cmake`.
 The public entry point kept at the `Engine/BuildTools` root is `Init.cmake`; staged CMake implementation lives under `Engine/BuildTools/cmake/stages/` and helpers under `Engine/BuildTools/cmake/helpers/`.
-`cmake/ProjectInterface.json` is the versioned documentation model for project options, stage order, entrypoints, hooks, and the selected helper surface. Configure-time authority remains in `Init.cmake` and the stage/helper files; the structural test rejects drift between them and the model. Browse the generated [CMake project-interface reference](../Docs/en/reference/cmake/index.md) or its [canonical JSON model](../Docs/generated/cmake.json) instead of copying declarations from stage implementation files. For project-owned targets and SDKs, use [Project-Local Dependencies](../Docs/en/how-to/native-extensions/project-dependencies.md); the current revision has no declared project-library helper and uses revision-pinned `FO_*_LIBS` integration state.
+`cmake/ProjectInterface.json` is the versioned documentation model for project options, stage order, entrypoints, hooks, and the selected helper surface. Configure-time authority remains in `Init.cmake` and the stage/helper files; review the implementation and run the model generator's check to detect documentation drift. Browse the generated [CMake project-interface reference](../Docs/en/reference/cmake/index.md) or its [canonical JSON model](../Docs/generated/cmake.json) instead of copying declarations from stage implementation files. For project-owned targets and SDKs, use [Project-Local Dependencies](../Docs/en/how-to/native-extensions/project-dependencies.md); the current revision has no declared project-library helper and uses revision-pinned `FO_*_LIBS` integration state.
 The executable opt-in starter project lives under `Engine/Examples/MinimalProject` and provides its own local validator. It is not a target in the current required Engine workflow.
 
 ## Documentation generators
 
 - `docs_api.py` runs the existing `codegen.py` metadata parser in read-only mode, applies source-owned `///@ ApiContract` classifications, and writes/checks `Docs/generated/api.json`.
 - `docs_api_diff.py` provides the native-symbol comparison layer, including overload families and source-owned stability.
-- `docs_contract_diff.py` compares the native API, CMake, main CLI, package, helper CLI, native-extension, prototype-format, map-format, model-format, text-format, effect-format, image-format, particle-format, font-format, audio, video, GUI runtime, and AiControl protocol models in one revision-pair report and enforces exact shared-ledger dispositions for baseline-public or model-contract breaks.
-- `docs_public_api.py` writes/checks the canonical EN/RU contract indexes plus the root `PUBLIC_API.md` legacy route from all eighteen machine models and their generated human references; native inventory counts and default stability are never maintained by hand.
+- `docs_contract_diff.py` compares the native API, CMake, main CLI, package, helper CLI, native-extension, prototype-format, map-format, model-format, text-format, effect-format, image-format, particle-format, font-format, audio, video, and AiControl protocol models in one revision-pair report and enforces exact shared-ledger dispositions for baseline-public or model-contract breaks.
+- `docs_public_api.py` writes/checks the canonical EN/RU contract indexes plus the root `PUBLIC_API.md` legacy route from all modeled domains and their generated human references; native inventory counts and default stability are never maintained by hand.
 - `docs_external_evidence.py` validates the pinned Last Frontier/TLA discovery inventory, owner review policy, dispositions, priorities, Engine/planned targets, and deterministic internal report. With both exact checkouts it also proves every recorded path exists in the pinned commit through `git cat-file`.
 - `docs_cmake.py` validates `cmake/ProjectInterface.json` and writes/checks `Docs/generated/cmake.json`, the English Markdown reference under `Docs/en/reference/cmake/`, and durable route pointers under `Docs/generated/cmake/`.
 - `docs_cli.py` loads the executable `buildtools.py` `argparse` parser and writes/checks `Docs/generated/cli.json`, exact help-backed English Markdown under `Docs/en/reference/buildtools/`, and durable route pointers under `Docs/generated/cli/`.
@@ -92,21 +84,21 @@ The executable opt-in starter project lives under `Engine/Examples/MinimalProjec
 - `docs_native_extension.py` validates the native role/hook documentation model against current CMake/codegen evidence and writes/checks `Docs/generated/native-extension.json` plus role, hook, and binding pages.
 - `docs_prototype_format.py` validates `PrototypeFormatInterface.json` against live parser/baker sources, derives built-in entity/property applicability from metadata, and writes/checks `Docs/generated/prototype-format.json` plus syntax, property, and validation pages.
 - `docs_map_format.py` validates `MapFormatInterface.json` against live loader/baker/mapper/runtime sources, derives Map/Critter/Item property and ItemOwnership data from metadata, and writes/checks `Docs/generated/map-format.json` plus syntax, property, baking, and validation pages.
-- `docs_model_format.py` validates `ModelFormatInterface.json` against the live model parser, mesh baker, client runtime, limits, and tests, then writes/checks `Docs/generated/model-format.json` plus syntax, token, composition, asset, animation, and validation pages.
-- `docs_text_format.py` validates `TextFormatInterface.json` against text-pack, baker, runtime, script API, settings, renderer, and test sources, then writes/checks `Docs/generated/text-format.json` plus syntax, language, prototype-text, runtime, and validation pages.
-- `docs_effect_format.py` validates `EffectFormatInterface.json` against the effect baker, render-effect/runtime/cache/script API, backend conventions, project limits, and tests, then writes/checks `Docs/generated/effect-format.json` plus syntax, render-state, resource, baking, runtime, and validation pages.
-- `docs_image_format.py` validates `ImageFormatInterface.json` against ImageBaker, FOFRM/import sources, stock client factory/sheet/atlas/cache behavior, and tests, then writes/checks `Docs/generated/image-format.json`, canonical English pages under `Docs/en/reference/image-format/`, and compatibility routes under `Docs/generated/image-format/`.
-- `docs_particle_format.py` validates `ParticleFormatInterface.json` against raw-copy settings, SPARK XML/registry/descriptors, the Engine renderer, ParticleEditor, client runtime, script/model integrations, and tests, then writes/checks `Docs/generated/particle-format.json` plus XML, object, renderer, tooling, runtime, integration, and validation pages.
-- `docs_audio.py` validates `AudioInterface.json` against AudioBaker conversion/passthrough, AudioManager indexing and Vorbis decoding, script playback handles and spatial updates, frontend conversion/mixing, headless behavior, and native-test inventory, then writes/checks `Docs/generated/audio.json` plus format, delivery, decoding, playback, and validation pages.
-- `docs_video.py` validates `VideoInterface.json` against raw-copy settings, Ogg/Theora decoding, fullscreen queue/input/music/drawing, embedded script playback, renderer behavior, dependencies, and native-test inventory, then writes/checks `Docs/generated/video.json` plus format, delivery, decoding, fullscreen, embedded, and validation pages.
+- `docs_model_format.py` validates `ModelFormatInterface.json` against the live model parser, mesh baker, client runtime and limits, then writes/checks `Docs/generated/model-format.json` plus syntax, token, composition, asset, animation, and validation pages.
+- `docs_text_format.py` validates `TextFormatInterface.json` against text-pack, baker, runtime, script API, settings and renderer sources, then writes/checks `Docs/generated/text-format.json` plus syntax, language, prototype-text, runtime, and validation pages.
+- `docs_effect_format.py` validates `EffectFormatInterface.json` against the effect baker, render-effect/runtime/cache/script API, backend conventions and project limits, then writes/checks `Docs/generated/effect-format.json` plus syntax, render-state, resource, baking, runtime, and validation pages.
+- `docs_image_format.py` validates `ImageFormatInterface.json` against ImageBaker, FOFRM/import sources, stock client factory/sheet/atlas/cache behavior, then writes/checks `Docs/generated/image-format.json`, canonical English pages under `Docs/en/reference/image-format/`, and compatibility routes under `Docs/generated/image-format/`.
+- `docs_particle_format.py` validates `ParticleFormatInterface.json` against raw-copy settings, SPARK XML/registry/descriptors, the Engine renderer, ParticleEditor, client runtime and script/model integrations, then writes/checks `Docs/generated/particle-format.json` plus XML, object, renderer, tooling, runtime, integration, and validation pages.
+- `docs_audio.py` validates `AudioInterface.json` against AudioBaker conversion/passthrough, AudioManager indexing and Vorbis decoding, script playback handles and spatial updates, frontend conversion/mixing, headless behavior and declared validation evidence, then writes/checks `Docs/generated/audio.json` plus format, delivery, decoding, playback, and validation pages.
+- `docs_video.py` validates `VideoInterface.json` against raw-copy settings, Ogg/Theora decoding, fullscreen queue/input/music/drawing, embedded script playback, renderer behavior, dependencies, and declared validation evidence, then writes/checks `Docs/generated/video.json` plus format, delivery, decoding, fullscreen, embedded, and validation pages.
 - `docs_ai_control_protocol.py` validates `AiControlProtocol.json` against the reference client and runnable sample, then writes/checks `Docs/generated/ai-control-protocol.json` plus wire, method, command/event, security, and integration/validation pages.
 - `docs_package.py` validates the package documentation model and executable `package.py` parser, then writes/checks `Docs/generated/package.json` plus package reference pages.
 - `docs_examples.py` validates `Examples/PublicRepositories.json` and the governance overlay, writes/checks `Docs/generated/public-examples.json` plus its registry page, materializes a source-ready example into a new clean candidate directory, and verifies external repository metadata, exact gitlink pins, required files, and provenance file bytes.
-- `docs_reference.py` renders the canonical API model into GitHub Pages-compatible Markdown under `Docs/generated/api/`.
+- `docs_reference.py` renders the canonical API model into canonical EN/RU Markdown under `Docs/en/reference/script-api/` and `Docs/ru/reference/script-api/`, with legacy pointers under `Docs/generated/api/`.
 - `docs_metadata.py` strictly decodes project-baked `Metadata.fometa-server/client`, verifies both sides agree, and writes/checks a project-owned remote-call JSON/Markdown catalog.
 - `docs_inventory.py` writes/checks the independent export-method, native-test, and setting declaration inventory.
 - `docs_localization.py` enforces complete bilingual coverage, the glossary, stable locale targets, normalized English hashes, exact translated fences, and language-preserving links, then writes/checks `docs-manifest.json#/translation_status`.
-- `docs_description_translations.py` inventories reader-facing prose in 20 generated contract models, applies the reviewed stable-ID Russian overlay, rejects duplicate/unknown/stale/type-changing/code-changing records, and writes/checks `Docs/generated/description-translation-status.json`. Missing entries remain explicit until the semantic catalog can move from `registered-translations-current` to `complete`.
+- `docs_description_translations.py` inventories reader-facing prose in the inventoried generated contract models, applies the reviewed stable-ID Russian overlay, rejects duplicate/unknown/stale/type-changing/code-changing records, and writes/checks `Docs/generated/description-translation-status.json`. The catalog uses `complete`; missing or stale entries fail rather than silently falling back.
 - `docs_ai_delivery.py` projects `Docs/documentation-manifest.json` and canonical Markdown into root `llms.txt`, bounded `llms-full.txt`, and public `docs-manifest.json`; it normalizes content hashes and rejects stale, oversized, or non-deterministic output.
 - `docs_site.py` resolves manifest-owned stable document IDs into checked localized Jekyll navigation data, bounded English and Russian static search indexes, and the public version/locale/legacy-route catalog; it rejects unknown/duplicate/omitted top-level pages, route collisions, ambiguous canonical targets, missing locale pairs, cross-locale search ownership, and oversized or stale output.
 - `docs_ai_eval.py` validates the versioned standalone task set in `Docs/ai-evaluation.json` against the manifest and the same compact search model used by the browser, then writes/checks `Docs/generated/ai-evaluation-report.json` with ranks, evidence checks, success rate, and MRR.
@@ -119,11 +111,11 @@ The executable opt-in starter project lives under `Engine/Examples/MinimalProjec
   source provenance, and recapture triggers; it writes/checks
   `Docs/generated/screenshots.json` with exact image, manifest, and source
   hashes.
-- `docs_site_artifact.py` validates the completed Jekyll `_site` tree against the route catalog and source artifacts. It rejects missing current/available-locale routes, altered or absent static endpoints, wrong canonical URLs/languages, missing accessibility landmarks/names, duplicate IDs, and broken links to publishable local resources; CI retains its JSON report.
-- `docs-browser/audit.mjs` serves that completed `_site` tree locally and uses the lock-file-pinned Playwright Chromium plus axe-core to audit every route at desktop and mobile widths. It rejects WCAG 2.2 A/AA violations, runtime/resource errors, page-level horizontal scrolling, broken responsive layout, and keyboard failures in skip navigation, search, theme, copy, and the mobile focus-trapped drawer; CI retains JSON and screenshots.
+- `docs_site_artifact.py` validates the completed Jekyll `_site` tree against the route catalog and source artifacts. It rejects missing current/available-locale routes, altered or absent static endpoints, wrong canonical URLs/languages, missing accessibility landmarks/names, duplicate IDs, and broken links to publishable local resources; retain its local JSON report against the exact rendered tree.
+- `docs-browser/audit.mjs` serves that completed `_site` tree locally and uses the lock-file-pinned Playwright Chromium plus axe-core to audit every route at desktop and mobile widths. It rejects WCAG 2.2 A/AA violations, runtime/resource errors, page-level horizontal scrolling, broken responsive layout, and keyboard failures in skip navigation, search, theme, copy, and the mobile focus-trapped drawer; retain local JSON and screenshots against the exact rendered tree.
 - `docs_validate.py` validates the documentation manifest, local links/anchors, source ownership, Pages contract, and freshness of every generated artifact.
 
-Run their focused tests and checks from the engine root; generated JSON and Markdown are checked in and must not be edited manually.
+Run the affected existing generator checks from the engine root. Public contract models and references are versioned; delivery indexes/catalogs under ignored output roots are rebuilt by `docs_prepare.py`. Neither may be hand-edited. Use [Documentation Maintenance](../Docs/en/contributing/documentation/) for dependency order and [Site Publication](../Docs/en/contributing/documentation/site-publication.md) for separately authorized rendering/browser prerequisites.
 
 Materialize a review candidate only from a clean, remotely fetchable exact
 Engine commit:
@@ -133,10 +125,7 @@ python BuildTools/docs_examples.py --stage-repository minimal-multiplayer --engi
 ```
 
 ```bash
-python -m unittest discover -s BuildTools/tests -p "test_docs*.py"
-cmake -P BuildTools/tests/validate_project_interface.cmake
-cmake -P BuildTools/tests/validate_native_extension_interface.cmake
-cmake -P BuildTools/tests/validate_package_interface.cmake
+python BuildTools/docs_prepare.py
 python BuildTools/docs_cmake.py --check
 python BuildTools/docs_cli.py --check
 python BuildTools/docs_helper_cli.py --check
@@ -164,10 +153,6 @@ python BuildTools/docs_screenshots.py --check
 python BuildTools/docs_snippets.py --check --external
 python BuildTools/docs_site.py --check
 python BuildTools/docs_ai_eval.py --check
-python BuildTools/docs_site_artifact.py --site-dir _site
-npm ci --prefix BuildTools/docs-browser
-npx --prefix BuildTools/docs-browser playwright install chromium
-npm --prefix BuildTools/docs-browser run audit
 python BuildTools/docs_ai_delivery.py --check
 python BuildTools/docs_validate.py
 ```
@@ -251,7 +236,7 @@ Default behaviour is build in current directory plus `Workspace`.
 
 #### FO_ANDROID_HOME / FO_ANDROID_SDK_ROOT / FO_ANDROID_NDK_ROOT
 
-Optional explicit Android SDK and NDK overrides for BuildTools. If not set, BuildTools uses prepared workspace locations and then the system `/usr/lib/android-sdk` fallback on Linux when available.
+BuildTools first uses existing prepared `Workspace/android-sdk` and `Workspace/android-ndk` directories. When those are absent it uses the explicit SDK/NDK overrides; SDK lookup finally falls back to `/usr/lib/android-sdk` on Linux when available.
 
 #### FO_CLANG_FORMAT
 
@@ -306,13 +291,7 @@ These explicit Release scenarios enable managed scripting and disable AngelScrip
 in the engine-owned validation scaffold. The device scenario selects `OS64` and
 disables code signing; the simulator scenario retains `SIMULATOR64`/x64. They
 build the pinned Mono runtime and link the native client, but do not install or
-execute an application. The manual `validate` workflow's `managed-apple` selection
-covers macOS x64/arm64 and both iOS scenarios without embedding-project inputs.
-
-`tests/test_apple_managed_architecture.py` configures the real Init stage with
-managed scripting enabled and checks both simulator and device runtime identities
-without requiring an Apple SDK. Native linking and managed execution still need
-the corresponding Apple host build and runtime checks.
+execute an application. The archived upstream workflow's `managed-apple` selection recorded these configurations; it does not run in this fork.
 
 Host wrapper scripts now delegate to the unified workspace preparation command:
 
@@ -352,16 +331,13 @@ workspace feature because it downloads matching LLVM sources and builds
 `libc++`, `libc++abi`, and `libunwind` with MemorySanitizer instrumentation. The
 runtime build also passes `BuildTools/sanitizers/msan-runtime-ignorelist.txt` so
 libunwind does not self-report on ABI register snapshots during C++ exception or
-sanitizer-report unwinding. The `unit-tests-san-memory` validator prepares it
-automatically before configuring `San_Memory`; use the explicit workspace command
-only when pre-warming a CI host or debugging the runtime build. Linux Mono source setup
+sanitizer-report unwinding. Prepare this workspace explicitly before a supported native `San_Memory` build; no removed unit-test validator prepares it. Linux Mono source setup
 also initializes each POSIX signal-action object and publishes its bytes through MSan's
 weak runtime hook for bounded diagnostics. This does not make the uninstrumented runtime
 or generated JIT code compatible with MSan, so managed-script builds reject `San_Memory*`.
 Managed-script builds reject `San_Thread` too: Mono's signal-based stop-the-world protocol
 does not create happens-before edges in the host TSan runtime, so valid nursery collection
-reports false races even when SGen's concurrent sweeper is disabled. The managed-disabled
-unit validators retain blocking native MSan and TSan coverage.
+reports false races even when SGen's concurrent sweeper is disabled. Managed-disabled native builds can use those sanitizer configurations, but this fork has no unit validator or current coverage claim for them.
 The Linux source marker invalidates already prepared runtimes when that patch changes.
 
 Linux hosts can prepare the Windows cross-compilation SDK/CRT through the same wrapper:
@@ -403,7 +379,7 @@ commit can decide which spelling is correct.
 The local Windows web debug flow uses these shared commands:
 
 - `buildtools.py build web client RelWithDebInfo`
-- `buildtools.py package-web-debug`
+- `buildtools.py package-web-debug <ProjectDevName> <Config>`
 
 For an optimized browser build use:
 
@@ -432,8 +408,7 @@ The packaged Android build is emitted into `Workspace/android-debug/<ProjectDevN
 
 ```bash
 python3 Engine/BuildTools/android_device.py --workspace-root Workspace connect
-cd Workspace/android-debug/<ProjectDevName>-Client-<Config>-Android
-./gradlew assembleDebug
+(cd Workspace/android-debug/<ProjectDevName>-Client-<Config>-Android && ./gradlew assembleDebug)
 python3 Engine/BuildTools/android_device.py --workspace-root Workspace install --apk Workspace/android-debug/<ProjectDevName>-Client-<Config>-Android/app/build/outputs/apk/debug/app-debug.apk
 python3 Engine/BuildTools/android_device.py --workspace-root Workspace launch --activity com.example.game/.FOnlineActivity
 

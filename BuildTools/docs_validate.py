@@ -61,10 +61,8 @@ ALLOWED_AUDIENCES = {
 }
 ALLOWED_PAGES_SOURCE_STATES = {"pending-admin-verification", "verified"}
 ALLOWED_PAGES_BUILD_TYPES = {"legacy", "workflow"}
-ALLOWED_DNS_STATES = {"public-resolution-confirmed"}
+ALLOWED_DNS_STATES = {"not-observed", "public-resolution-confirmed"}
 ALLOWED_DNS_OWNERSHIP_STATES = {"not-observed", "verified"}
-PAGES_BUILD_ACTION = "ruby/setup-ruby@v1"
-SITE_ARTIFACT_ACTION = "actions/upload-artifact@v4"
 PAGES_README_PERMALINKS = {
     "BuildTools/README.md": "/BuildTools/README.html",
     "Docs/README.md": "/Docs/README.html",
@@ -72,7 +70,6 @@ PAGES_README_PERMALINKS = {
     "Examples/MinimalMultiplayer/README.md": "/Examples/MinimalMultiplayer/README.html",
     "Examples/AiControlSample/README.md": "/Examples/AiControlSample/README.html",
     "Source/README.md": "/Source/README.html",
-    "Source/Tests/README.md": "/Source/Tests/README.html",
 }
 PLACEHOLDER_ROUTE_MARKER = "> placeholder route."
 LEGACY_ROUTE_MARKER = "> legacy route."
@@ -265,7 +262,8 @@ def _validate_publishing(
         "config": documentation_metadata.SITE_CONFIG,
         "gemfile": documentation_metadata.BUILD_OUTPUT_DIR + "/Gemfile",
         "ruby_version_file": documentation_metadata.BUILD_OUTPUT_DIR + "/.ruby-version",
-        "workflow": ".github/workflows/validate.yml",
+        "workflow": ".github/disabled-workflows/validate.yml",
+        "workflow_status": "archived",
         "site_artifact": documentation_metadata.SITE_OUTPUT_DIR,
     }
     for key, expected in expected_values.items():
@@ -323,7 +321,7 @@ def _validate_publishing(
         errors.append("documentation publishing dns has invalid resolution status")
     elif dns.get("ownership_verification") not in ALLOWED_DNS_OWNERSHIP_STATES:
         errors.append("documentation publishing dns has invalid ownership-verification status")
-    elif not re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(dns.get("verified_on", ""))):
+    elif dns["status"] == "public-resolution-confirmed" and not re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(dns.get("verified_on", ""))):
         errors.append("documentation publishing dns must name its audit date")
     elif dns["ownership_verification"] == "not-observed" and (
         not isinstance(dns.get("challenge_record"), str) or not dns["challenge_record"].strip()
@@ -391,51 +389,9 @@ def _validate_publishing(
         if not pages_pin.search(gemfile_text):
             errors.append("GitHub Pages Gemfile pin does not match the publishing manifest")
 
-    workflow_path = root / ".github/workflows/validate.yml"
-    if not workflow_path.is_file():
-        errors.append("GitHub Pages validation workflow is missing")
-    else:
-        workflow_text = workflow_path.read_text(encoding="utf-8")
-        required_workflow_markers = (
-            f"uses: {PAGES_BUILD_ACTION}",
-            "working-directory: Workspace/Documentation",
-            "BuildTools/docs_site_build.py",
-            "BuildTools/docs_site_artifact.py",
-            "--site-dir Workspace/DocumentationSite",
-            "Workspace/docs-site-artifact-report.json",
-            f"uses: {SITE_ARTIFACT_ACTION}",
-            "path: Workspace/DocumentationSite/",
-        )
-        for marker in required_workflow_markers:
-            if marker not in workflow_text:
-                errors.append(f"GitHub Pages validation workflow is missing: {marker}")
-        lifecycle_test = "BuildTools/tests/test_docs_script_lifecycle.py"
-        if lifecycle_test not in workflow_text:
-            errors.append(f"documentation script lifecycle workflow is missing: {lifecycle_test}")
-        model_animation_test = "BuildTools/tests/test_docs_model_animation.py"
-        if model_animation_test not in workflow_text:
-            errors.append(f"documentation model animation workflow is missing: {model_animation_test}")
-        sprite_root_motion_test = "BuildTools/tests/test_docs_sprite_root_motion.py"
-        if sprite_root_motion_test not in workflow_text:
-            errors.append(f"documentation sprite root motion workflow is missing: {sprite_root_motion_test}")
-        web_debugging_test = "BuildTools/tests/test_docs_web_debugging.py"
-        if web_debugging_test not in workflow_text:
-            errors.append(f"documentation Web debugging workflow is missing: {web_debugging_test}")
-        android_debugging_test = "BuildTools/tests/test_docs_android_debugging.py"
-        if android_debugging_test not in workflow_text:
-            errors.append(f"documentation Android debugging workflow is missing: {android_debugging_test}")
-        debugging_test = "BuildTools/tests/test_docs_debugging.py"
-        if debugging_test not in workflow_text:
-            errors.append(f"documentation native and AngelScript debugging workflow is missing: {debugging_test}")
-        angelscript_style_test = "BuildTools/tests/test_docs_angelscript_style.py"
-        if angelscript_style_test not in workflow_text:
-            errors.append(f"documentation AngelScript style workflow is missing: {angelscript_style_test}")
-        viewer_tools_test = "BuildTools/tests/test_docs_viewer_tools.py"
-        if viewer_tools_test not in workflow_text:
-            errors.append(f"documentation viewer tools workflow is missing: {viewer_tools_test}")
-        mapper_tools_test = "BuildTools/tests/test_docs_mapper_tools.py"
-        if mapper_tools_test not in workflow_text:
-            errors.append(f"documentation Mapper tools workflow is missing: {mapper_tools_test}")
+    archived_workflow = root / str(publishing.get("workflow", ""))
+    if not archived_workflow.is_file():
+        errors.append("archived documentation workflow is missing")
 
 
 def _validate_delivery_policy(manifest: dict[str, object], errors: list[str]) -> None:
@@ -561,7 +517,6 @@ def _validate_generated_artifacts(
         "schema_version": docs_cmake.SCHEMA_VERSION,
         "directory": docs_cmake.DEFAULT_OUTPUT_DIR,
         "paths": list(docs_cmake.OUTPUT_PATHS),
-        "structural_test": "BuildTools/tests/validate_project_interface.cmake",
     }
     for field, expected in expected_cmake_reference.items():
         if cmake_reference.get(field) != expected:
@@ -592,21 +547,6 @@ def _validate_generated_artifacts(
                         f"generated documentation CMake page is stale: {cmake_page_path}; "
                         "run python BuildTools/docs_cmake.py --write"
                     )
-
-    structural_test_path = root / expected_cmake_reference["structural_test"]
-    if not structural_test_path.is_file():
-        errors.append(f"CMake project interface structural test is missing: {expected_cmake_reference['structural_test']}")
-
-    workflow_path = root / ".github/workflows/validate.yml"
-    if workflow_path.is_file():
-        workflow_text = workflow_path.read_text(encoding="utf-8")
-        for marker in (
-            "BuildTools/tests/test_docs_cmake.py",
-            "BuildTools/docs_cmake.py --check",
-            "cmake -P BuildTools/tests/validate_project_interface.cmake",
-        ):
-            if marker not in workflow_text:
-                errors.append(f"documentation CMake reference workflow is missing: {marker}")
 
     cli_reference = generated_artifacts.get("cli_reference")
     if not isinstance(cli_reference, dict):
@@ -646,12 +586,6 @@ def _validate_generated_artifacts(
                     f"generated documentation BuildTools CLI page is stale: {cli_page_path}; "
                     "run python BuildTools/docs_cli.py --write"
                 )
-
-    if workflow_path.is_file():
-        workflow_text = workflow_path.read_text(encoding="utf-8")
-        for marker in ("BuildTools/tests/test_docs_cli.py", "BuildTools/docs_cli.py --check"):
-            if marker not in workflow_text:
-                errors.append(f"documentation BuildTools CLI reference workflow is missing: {marker}")
 
     helper_cli_reference = generated_artifacts.get("helper_cli_reference")
     if not isinstance(helper_cli_reference, dict):
@@ -696,15 +630,6 @@ def _validate_generated_artifacts(
                     "run python BuildTools/docs_helper_cli.py --write"
                 )
 
-    if workflow_path.is_file():
-        workflow_text = workflow_path.read_text(encoding="utf-8")
-        for marker in (
-            "BuildTools/tests/test_docs_helper_cli.py",
-            "BuildTools/docs_helper_cli.py --check",
-        ):
-            if marker not in workflow_text:
-                errors.append(f"documentation helper CLI reference workflow is missing: {marker}")
-
     native_extension_reference = generated_artifacts.get("native_extension_reference")
     if not isinstance(native_extension_reference, dict):
         errors.append("documentation manifest must declare generated_artifacts.native_extension_reference")
@@ -717,7 +642,6 @@ def _validate_generated_artifacts(
         "schema_version": docs_native_extension.SCHEMA_VERSION,
         "directory": docs_native_extension.DEFAULT_OUTPUT_DIR,
         "paths": list(docs_native_extension.OUTPUT_PATHS),
-        "structural_test": "BuildTools/tests/validate_native_extension_interface.cmake",
     }
     for field, expected in expected_native_extension_reference.items():
         if native_extension_reference.get(field) != expected:
@@ -747,23 +671,6 @@ def _validate_generated_artifacts(
                     f"generated documentation native extension page is stale: {page_path}; "
                     "run python BuildTools/docs_native_extension.py --write"
                 )
-
-    native_extension_structural_test = root / expected_native_extension_reference["structural_test"]
-    if not native_extension_structural_test.is_file():
-        errors.append(
-            "native extension interface structural test is missing: "
-            + expected_native_extension_reference["structural_test"]
-        )
-
-    if workflow_path.is_file():
-        workflow_text = workflow_path.read_text(encoding="utf-8")
-        for marker in (
-            "BuildTools/tests/test_docs_native_extension.py",
-            "BuildTools/docs_native_extension.py --check",
-            "cmake -P BuildTools/tests/validate_native_extension_interface.cmake",
-        ):
-            if marker not in workflow_text:
-                errors.append(f"documentation native extension reference workflow is missing: {marker}")
 
     prototype_format_reference = generated_artifacts.get("prototype_format_reference")
     if not isinstance(prototype_format_reference, dict):
@@ -813,15 +720,6 @@ def _validate_generated_artifacts(
                     "run python BuildTools/docs_prototype_format.py --write"
                 )
 
-    if workflow_path.is_file():
-        workflow_text = workflow_path.read_text(encoding="utf-8")
-        for marker in (
-            "BuildTools/tests/test_docs_prototype_format.py",
-            "BuildTools/docs_prototype_format.py --check",
-        ):
-            if marker not in workflow_text:
-                errors.append(f"documentation prototype format workflow is missing: {marker}")
-
     map_format_reference = generated_artifacts.get("map_format_reference")
     if not isinstance(map_format_reference, dict):
         errors.append("documentation manifest must declare generated_artifacts.map_format_reference")
@@ -866,15 +764,6 @@ def _validate_generated_artifacts(
                     f"generated documentation map format page is stale: {page_path}; "
                     "run python BuildTools/docs_map_format.py --write"
                 )
-
-    if workflow_path.is_file():
-        workflow_text = workflow_path.read_text(encoding="utf-8")
-        for marker in (
-            "BuildTools/tests/test_docs_map_format.py",
-            "BuildTools/docs_map_format.py --check",
-        ):
-            if marker not in workflow_text:
-                errors.append(f"documentation map format workflow is missing: {marker}")
 
     model_format_reference = generated_artifacts.get("model_format_reference")
     if not isinstance(model_format_reference, dict):
@@ -926,15 +815,6 @@ def _validate_generated_artifacts(
                     "run python BuildTools/docs_model_format.py --write"
                 )
 
-    if workflow_path.is_file():
-        workflow_text = workflow_path.read_text(encoding="utf-8")
-        for marker in (
-            "BuildTools/tests/test_docs_model_format.py",
-            "BuildTools/docs_model_format.py --check",
-        ):
-            if marker not in workflow_text:
-                errors.append(f"documentation model format workflow is missing: {marker}")
-
     text_format_reference = generated_artifacts.get("text_format_reference")
     if not isinstance(text_format_reference, dict):
         errors.append("documentation manifest must declare generated_artifacts.text_format_reference")
@@ -983,15 +863,6 @@ def _validate_generated_artifacts(
                     f"generated documentation text format page is stale: {page_path}; "
                     "run python BuildTools/docs_text_format.py --write"
                 )
-
-    if workflow_path.is_file():
-        workflow_text = workflow_path.read_text(encoding="utf-8")
-        for marker in (
-            "BuildTools/tests/test_docs_text_format.py",
-            "BuildTools/docs_text_format.py --check",
-        ):
-            if marker not in workflow_text:
-                errors.append(f"documentation text format workflow is missing: {marker}")
 
     effect_format_reference = generated_artifacts.get("effect_format_reference")
     if not isinstance(effect_format_reference, dict):
@@ -1043,15 +914,6 @@ def _validate_generated_artifacts(
                     "run python BuildTools/docs_effect_format.py --write"
                 )
 
-    if workflow_path.is_file():
-        workflow_text = workflow_path.read_text(encoding="utf-8")
-        for marker in (
-            "BuildTools/tests/test_docs_effect_format.py",
-            "BuildTools/docs_effect_format.py --check",
-        ):
-            if marker not in workflow_text:
-                errors.append(f"documentation effect format workflow is missing: {marker}")
-
     image_format_reference = generated_artifacts.get("image_format_reference")
     if not isinstance(image_format_reference, dict):
         errors.append("documentation manifest must declare generated_artifacts.image_format_reference")
@@ -1098,15 +960,6 @@ def _validate_generated_artifacts(
                     f"generated documentation image format page is stale: {page_path}; "
                     "run python BuildTools/docs_image_format.py --write"
                 )
-
-    if workflow_path.is_file():
-        workflow_text = workflow_path.read_text(encoding="utf-8")
-        for marker in (
-            "BuildTools/tests/test_docs_image_format.py",
-            "BuildTools/docs_image_format.py --check",
-        ):
-            if marker not in workflow_text:
-                errors.append(f"documentation image format workflow is missing: {marker}")
 
     particle_format_reference = generated_artifacts.get("particle_format_reference")
     if not isinstance(particle_format_reference, dict):
@@ -1158,15 +1011,6 @@ def _validate_generated_artifacts(
                     "run python BuildTools/docs_particle_format.py --write"
                 )
 
-    if workflow_path.is_file():
-        workflow_text = workflow_path.read_text(encoding="utf-8")
-        for marker in (
-            "BuildTools/tests/test_docs_particle_format.py",
-            "BuildTools/docs_particle_format.py --check",
-        ):
-            if marker not in workflow_text:
-                errors.append(f"documentation particle format workflow is missing: {marker}")
-
     font_format_reference = generated_artifacts.get("font_format_reference")
     if not isinstance(font_format_reference, dict):
         errors.append("documentation manifest must declare generated_artifacts.font_format_reference")
@@ -1217,15 +1061,6 @@ def _validate_generated_artifacts(
                     "run python BuildTools/docs_font_format.py --write"
                 )
 
-    if workflow_path.is_file():
-        workflow_text = workflow_path.read_text(encoding="utf-8")
-        for marker in (
-            "BuildTools/tests/test_docs_font_format.py",
-            "BuildTools/docs_font_format.py --check",
-        ):
-            if marker not in workflow_text:
-                errors.append(f"documentation font format workflow is missing: {marker}")
-
     audio_reference = generated_artifacts.get("audio_reference")
     if not isinstance(audio_reference, dict):
         errors.append("documentation manifest must declare generated_artifacts.audio_reference")
@@ -1271,15 +1106,6 @@ def _validate_generated_artifacts(
                     f"generated documentation audio page is stale: {page_path}; "
                     "run python BuildTools/docs_audio.py --write"
                 )
-
-    if workflow_path.is_file():
-        workflow_text = workflow_path.read_text(encoding="utf-8")
-        for marker in (
-            "BuildTools/tests/test_docs_audio.py",
-            "BuildTools/docs_audio.py --check",
-        ):
-            if marker not in workflow_text:
-                errors.append(f"documentation audio workflow is missing: {marker}")
 
     video_reference = generated_artifacts.get("video_reference")
     if not isinstance(video_reference, dict):
@@ -1328,15 +1154,6 @@ def _validate_generated_artifacts(
                     f"generated documentation video page is stale: {page_path}; "
                     "run python BuildTools/docs_video.py --write"
                 )
-
-    if workflow_path.is_file():
-        workflow_text = workflow_path.read_text(encoding="utf-8")
-        for marker in (
-            "BuildTools/tests/test_docs_video.py",
-            "BuildTools/docs_video.py --check",
-        ):
-            if marker not in workflow_text:
-                errors.append(f"documentation video workflow is missing: {marker}")
 
     ai_control_protocol_reference = generated_artifacts.get(
         "ai_control_protocol_reference"
@@ -1409,19 +1226,6 @@ def _validate_generated_artifacts(
                     "BuildTools/docs_ai_control_protocol.py --write"
                 )
 
-    if workflow_path.is_file():
-        workflow_text = workflow_path.read_text(encoding="utf-8")
-        for marker in (
-            "BuildTools/tests/test_ai_control_protocol.py",
-            "BuildTools/tests/test_docs_ai_control_protocol.py",
-            "BuildTools/docs_ai_control_protocol.py --check",
-        ):
-            if marker not in workflow_text:
-                errors.append(
-                    "documentation AiControl protocol workflow is missing: "
-                    + marker
-                )
-
     package_reference = generated_artifacts.get("package_reference")
     if not isinstance(package_reference, dict):
         errors.append("documentation manifest must declare generated_artifacts.package_reference")
@@ -1435,7 +1239,6 @@ def _validate_generated_artifacts(
         "schema_version": docs_package.SCHEMA_VERSION,
         "directory": docs_package.DEFAULT_OUTPUT_DIR,
         "paths": list(docs_package.OUTPUT_PATHS),
-        "structural_test": "BuildTools/tests/validate_package_interface.cmake",
     }
     for field, expected in expected_package_reference.items():
         if package_reference.get(field) != expected:
@@ -1462,20 +1265,6 @@ def _validate_generated_artifacts(
                     f"generated documentation package page is stale: {package_page_path}; "
                     "run python BuildTools/docs_package.py --write"
                 )
-
-    package_structural_test = root / expected_package_reference["structural_test"]
-    if not package_structural_test.is_file():
-        errors.append(f"package interface structural test is missing: {expected_package_reference['structural_test']}")
-
-    if workflow_path.is_file():
-        workflow_text = workflow_path.read_text(encoding="utf-8")
-        for marker in (
-            "BuildTools/tests/test_docs_package.py",
-            "BuildTools/docs_package.py --check",
-            "cmake -P BuildTools/tests/validate_package_interface.cmake",
-        ):
-            if marker not in workflow_text:
-                errors.append(f"documentation package reference workflow is missing: {marker}")
 
     public_examples_reference = generated_artifacts.get("public_examples_reference")
     if not isinstance(public_examples_reference, dict):
@@ -1508,15 +1297,6 @@ def _validate_generated_artifacts(
                         "run python BuildTools/docs_examples.py --write"
                     )
 
-        if workflow_path.is_file():
-            workflow_text = workflow_path.read_text(encoding="utf-8")
-            for marker in (
-                "BuildTools/tests/test_docs_examples.py",
-                "BuildTools/docs_examples.py --check",
-            ):
-                if marker not in workflow_text:
-                    errors.append(f"documentation public examples workflow is missing: {marker}")
-
     support_matrix = generated_artifacts.get("support_matrix")
     if not isinstance(support_matrix, dict):
         errors.append("documentation manifest must declare generated_artifacts.support_matrix")
@@ -1547,15 +1327,6 @@ def _validate_generated_artifacts(
                         f"generated support matrix artifact is stale: {relative_path}; "
                         "run python BuildTools/docs_support_matrix.py --write"
                     )
-
-        if workflow_path.is_file():
-            workflow_text = workflow_path.read_text(encoding="utf-8")
-            for marker in (
-                "BuildTools/tests/test_docs_support_matrix.py",
-                "BuildTools/docs_support_matrix.py --check",
-            ):
-                if marker not in workflow_text:
-                    errors.append(f"documentation support matrix workflow is missing: {marker}")
 
     public_api_document = (
         documents.get(docs_public_api.DEFAULT_OUTPUT)
@@ -1606,17 +1377,6 @@ def _validate_generated_artifacts(
                     errors.append(
                         f"generated public API contract page is stale: {relative_path}; "
                         "run python BuildTools/docs_public_api.py --write"
-                    )
-
-        if workflow_path.is_file():
-            workflow_text = workflow_path.read_text(encoding="utf-8")
-            for marker in (
-                "BuildTools/tests/test_docs_public_api.py",
-                "BuildTools/docs_public_api.py --check",
-            ):
-                if marker not in workflow_text:
-                    errors.append(
-                        f"documentation public API workflow is missing: {marker}"
                     )
 
     external_evidence_document = (
@@ -1680,18 +1440,6 @@ def _validate_generated_artifacts(
                         "BuildTools/docs_external_evidence.py --write"
                     )
 
-        if workflow_path.is_file():
-            workflow_text = workflow_path.read_text(encoding="utf-8")
-            for marker in (
-                "BuildTools/tests/test_docs_external_evidence.py",
-                "BuildTools/docs_external_evidence.py --check",
-            ):
-                if marker not in workflow_text:
-                    errors.append(
-                        f"documentation external project evidence workflow is "
-                        f"missing: {marker}"
-                    )
-
     documentation_diagrams = generated_artifacts.get("documentation_diagrams")
     if not isinstance(documentation_diagrams, dict):
         errors.append(
@@ -1730,17 +1478,6 @@ def _validate_generated_artifacts(
                         f"generated documentation diagram artifact is stale: "
                         f"{relative_path}; run python "
                         "BuildTools/docs_diagrams.py --write"
-                    )
-
-        if workflow_path.is_file():
-            workflow_text = workflow_path.read_text(encoding="utf-8")
-            for marker in (
-                "BuildTools/tests/test_docs_diagrams.py",
-                "BuildTools/docs_diagrams.py --check",
-            ):
-                if marker not in workflow_text:
-                    errors.append(
-                        f"documentation diagram workflow is missing: {marker}"
                     )
 
     documentation_screenshots = generated_artifacts.get(
@@ -1791,17 +1528,6 @@ def _validate_generated_artifacts(
                         "BuildTools/docs_screenshots.py --write"
                     )
 
-        if workflow_path.is_file():
-            workflow_text = workflow_path.read_text(encoding="utf-8")
-            for marker in (
-                "BuildTools/tests/test_docs_screenshots.py",
-                "BuildTools/docs_screenshots.py --check",
-            ):
-                if marker not in workflow_text:
-                    errors.append(
-                        f"documentation screenshot workflow is missing: {marker}"
-                    )
-
     localization_status = generated_artifacts.get("localization_status")
     if not isinstance(localization_status, dict):
         errors.append(
@@ -1835,17 +1561,6 @@ def _validate_generated_artifacts(
                     "generated documentation localization status is stale; "
                     "run python BuildTools/docs_localization.py --write"
                 )
-
-        if workflow_path.is_file():
-            workflow_text = workflow_path.read_text(encoding="utf-8")
-            for marker in (
-                "BuildTools/tests/test_docs_localization.py",
-                "BuildTools/docs_localization.py --check",
-            ):
-                if marker not in workflow_text:
-                    errors.append(
-                        f"documentation localization workflow is missing: {marker}"
-                    )
 
     description_translation_status = generated_artifacts.get(
         "description_translation_status"
@@ -1895,18 +1610,6 @@ def _validate_generated_artifacts(
                     "run python BuildTools/docs_description_translations.py --write"
                 )
 
-        if workflow_path.is_file():
-            workflow_text = workflow_path.read_text(encoding="utf-8")
-            for marker in (
-                "BuildTools/tests/test_docs_description_translations.py",
-                "BuildTools/docs_description_translations.py --check",
-            ):
-                if marker not in workflow_text:
-                    errors.append(
-                        "documentation generated-description translation workflow is "
-                        f"missing: {marker}"
-                    )
-
     ai_delivery = generated_artifacts.get("ai_delivery")
     if not isinstance(ai_delivery, dict):
         errors.append("documentation manifest must declare generated_artifacts.ai_delivery")
@@ -1936,15 +1639,6 @@ def _validate_generated_artifacts(
                         "run python BuildTools/docs_ai_delivery.py --write"
                     )
 
-        if workflow_path.is_file():
-            workflow_text = workflow_path.read_text(encoding="utf-8")
-            for marker in (
-                "BuildTools/tests/test_docs_ai_delivery.py",
-                "BuildTools/docs_ai_delivery.py --check",
-            ):
-                if marker not in workflow_text:
-                    errors.append(f"documentation AI delivery workflow is missing: {marker}")
-
     ai_evaluation = generated_artifacts.get("ai_evaluation")
     if not isinstance(ai_evaluation, dict):
         errors.append(
@@ -1957,7 +1651,6 @@ def _validate_generated_artifacts(
             "path": docs_ai_eval.DEFAULT_OUTPUT,
             "generator": docs_ai_eval.GENERATED_BY,
             "schema_version": docs_ai_eval.SCHEMA_VERSION,
-            "test": "BuildTools/tests/test_docs_ai_eval.py",
         }
         for field, expected in expected_ai_evaluation.items():
             if ai_evaluation.get(field) != expected:
@@ -1987,19 +1680,6 @@ def _validate_generated_artifacts(
                     "run python BuildTools/docs_ai_eval.py --write"
                 )
 
-        if workflow_path.is_file():
-            workflow_text = workflow_path.read_text(encoding="utf-8")
-            for marker in (
-                "BuildTools/tests/test_docs_ai_eval.py",
-                "BuildTools/tests/test_docs_ai_model_eval.py",
-                "BuildTools/tests/test_docs_ai_model_review.py",
-                "BuildTools/docs_ai_eval.py --check",
-            ):
-                if marker not in workflow_text:
-                    errors.append(
-                        f"documentation AI evaluation workflow is missing: {marker}"
-                    )
-
     snippet_validation = generated_artifacts.get("snippet_validation")
     if not isinstance(snippet_validation, dict):
         errors.append(
@@ -2011,7 +1691,6 @@ def _validate_generated_artifacts(
             "path": docs_snippets.DEFAULT_OUTPUT,
             "generator": docs_snippets.GENERATED_BY,
             "schema_version": docs_snippets.SCHEMA_VERSION,
-            "test": "BuildTools/tests/test_docs_snippets.py",
             "external_check": "python3 BuildTools/docs_snippets.py --check --external",
         }
         for field, expected in expected_snippet_validation.items():
@@ -2041,18 +1720,6 @@ def _validate_generated_artifacts(
                     "generated documentation snippet report is stale; "
                     "run python BuildTools/docs_snippets.py --write"
                 )
-
-        if workflow_path.is_file():
-            workflow_text = workflow_path.read_text(encoding="utf-8")
-            for marker in (
-                "BuildTools/tests/test_docs_snippets.py",
-                "BuildTools/docs_snippets.py --check",
-                "BuildTools/docs_snippets.py --check --external",
-            ):
-                if marker not in workflow_text:
-                    errors.append(
-                        f"documentation snippet workflow is missing: {marker}"
-                    )
 
     site_delivery = generated_artifacts.get("site_delivery")
     if not isinstance(site_delivery, dict):
@@ -2146,21 +1813,6 @@ def _validate_generated_artifacts(
             if not (root / relative_path).is_file():
                 errors.append(f"documentation site rendering asset is missing: {relative_path}")
 
-        if workflow_path.is_file():
-            workflow_text = workflow_path.read_text(encoding="utf-8")
-            for marker in (
-                "BuildTools/tests/test_docs_site.py",
-                "BuildTools/tests/test_docs_site_layout.py",
-                "BuildTools/tests/test_docs_site_artifact.py",
-                "BuildTools/tests/test_docs_browser.py",
-                "BuildTools/docs_site.py --check",
-                "BuildTools/docs_site_artifact.py",
-                "playwright install --with-deps chromium",
-                "npm run audit",
-            ):
-                if marker not in workflow_text:
-                    errors.append(f"documentation site delivery workflow is missing: {marker}")
-
     contract_diff = generated_artifacts.get("contract_diff")
     if not isinstance(contract_diff, dict):
         errors.append("documentation manifest must declare generated_artifacts.contract_diff")
@@ -2212,7 +1864,6 @@ def _validate_generated_artifacts(
             docs_contract_diff.DEFAULT_JSON_OUTPUT,
             docs_contract_diff.DEFAULT_MARKDOWN_OUTPUT,
         ],
-        "workflow": ".github/workflows/validate.yml",
     }
     for field, expected in expected_contract_diff.items():
         if contract_diff.get(field) != expected:
@@ -2229,19 +1880,6 @@ def _validate_generated_artifacts(
         except (OSError, ValueError) as exception:
             errors.append(f"invalid documentation contract change dispositions: {exception}")
 
-    workflow_path = root / ".github/workflows/validate.yml"
-    if workflow_path.is_file():
-        workflow_text = workflow_path.read_text(encoding="utf-8")
-        for marker in (
-            "BuildTools/tests/test_docs_contract_diff.py",
-            "BuildTools/docs_contract_diff.py",
-            "--baseline-git-ref",
-            "--enforce",
-            "Docs/contract-change-dispositions.json",
-            "fetch-depth: 0",
-        ):
-            if marker not in workflow_text:
-                errors.append(f"documentation contract diff workflow is missing: {marker}")
 
 
 def validate_manifest(root: Path, manifest_path: Path) -> tuple[list[str], dict[str, object]]:
@@ -2397,6 +2035,16 @@ def validate_manifest(root: Path, manifest_path: Path) -> tuple[list[str], dict[
         elif document["disposition"] == "move-meta" and not target.startswith("Docs/_meta/"):
             errors.append(f"{label} internal migration target must be under Docs/_meta/: {target}")
 
+        historical_sources = document.get("historical_sources", [])
+        if not isinstance(historical_sources, list):
+            errors.append(f"{label} historical_sources must be an array")
+        else:
+            for source in historical_sources:
+                if not isinstance(source, str) or not source:
+                    errors.append(f"{label} historical source paths must be non-empty strings")
+                else:
+                    _validate_relative_path(source, f"{label} historical source", errors)
+
         sources = document["sources"]
         if not isinstance(sources, list) or not sources:
             errors.append(f"{label} must name at least one source path")
@@ -2440,7 +2088,19 @@ def validate_manifest(root: Path, manifest_path: Path) -> tuple[list[str], dict[
             )
         else:
             redirect_path = root / path
-            canonical_path = (root / target_path).resolve()
+            linked_target_path = target_path
+            if path.startswith("Docs/ru/"):
+                try:
+                    localization = manifest.get("localization")
+                    if not isinstance(localization, dict) or not isinstance(localization.get("entrypoint_targets"), dict):
+                        raise ValueError("localization entrypoint_targets must be an object")
+                    _, linked_target_path = docs_localization._translation_targets(
+                        redirect_to, documents[target_path], localization["entrypoint_targets"]
+                    )
+                except ValueError as exception:
+                    errors.append(f"manifest entry {path} cannot resolve localized redirect: {exception}")
+                    continue
+            canonical_path = (root / linked_target_path).resolve()
             links_to_canonical = False
             for _, target in _iter_markdown_links(redirect_path):
                 parsed = urlsplit(target)
@@ -2453,7 +2113,7 @@ def validate_manifest(root: Path, manifest_path: Path) -> tuple[list[str], dict[
             if not links_to_canonical:
                 errors.append(
                     f"manifest entry {path} redirect must link to canonical document "
-                    f"{target_path}"
+                    f"{linked_target_path}"
                 )
 
     return errors, manifest

@@ -24,7 +24,7 @@ DEFAULT_OUTPUT_DIR = "Docs/en/reference/helper-cli"
 RUSSIAN_OUTPUT_DIR = "Docs/ru/reference/helper-cli"
 LEGACY_OUTPUT_DIR = "Docs/generated/helper-cli"
 GENERATED_BY = "BuildTools/docs_helper_cli.py"
-REPOSITORY = "cvet/fonline"
+REPOSITORY = "qwear0/fonline"
 SOURCE_REF = "master"
 PAGE_DEFINITIONS = (
     ("index.md", "generated-helper-cli-index", "Generated Helper CLI Reference"),

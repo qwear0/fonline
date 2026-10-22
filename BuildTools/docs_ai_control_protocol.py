@@ -443,7 +443,6 @@ def _render_rules(model: dict[str, object], page_index: int, collections: tuple[
             "",
             "```powershell",
             "python Examples\\AiControlSample\\run_protocol_smoke.py",
-            "python BuildTools\\tests\\test_ai_control_protocol.py",
             "python BuildTools\\docs_ai_control_protocol.py --check",
             "```",
             "",

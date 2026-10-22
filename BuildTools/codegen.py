@@ -1109,10 +1109,15 @@ def parse_settings_group_name(first_line: str) -> str:
 
 
 def parse_settings_entry(line: str, valid_types: set[str]) -> SettingsEntry:
-    setting_comment = [line[line.find('//') + 2:].strip()] if line.find('//') != -1 else []
-    setting_type = line[:line.find('(')]
+    open_pos = line.find('(')
+    close_pos = find_matching_cpp_paren(line, open_pos)
+    trailing_text = line[close_pos + 1:].strip().removeprefix(';').lstrip()
+    assert not trailing_text or trailing_text.startswith('//'), 'Invalid setting suffix ' + trailing_text
+    setting_comment = [trailing_text[2:].strip()] if trailing_text.startswith('//') else []
+    setting_type = line[:open_pos]
     assert setting_type == 'SETTING', 'Invalid setting type ' + setting_type
-    setting_args = [token.strip().strip('"') for token in line[line.find('(') + 1:line.find(')')].split(',')]
+    setting_args = split_engine_args(line[open_pos + 1:close_pos])
+    setting_args = [token[1:-1] if token.startswith('"') and token.endswith('"') else token for token in setting_args]
     assert len(setting_args) >= 3, 'Invalid setting args count'
     return SettingsEntry(
         engine_type_to_meta_type(setting_args[0], valid_types),

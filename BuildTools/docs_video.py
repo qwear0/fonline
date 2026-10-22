@@ -154,9 +154,6 @@ def _validate_sources(root: Path, raw: object) -> dict[str, object]:
         field: _source_path(root, raw.get(field), f"sources.{field}")
         for field in file_fields
     }
-    result["native_test_directory"] = _source_directory(
-        root, raw.get("native_test_directory"), "sources.native_test_directory"
-    )
     return result
 
 
@@ -247,13 +244,6 @@ def _derive_outputs(root: Path, sources: dict[str, object]) -> dict[str, object]
     if "ogv" not in raw_copy_extensions:
         raise ValueError("ogv is missing from Baking.RawCopyFileExtensions")
 
-    test_root = root / str(sources["native_test_directory"])
-    native_test_files = sorted(
-        path.relative_to(root).as_posix()
-        for path in test_root.glob("Test_*.cpp")
-        if re.search(r"(video|theora)", path.name, re.IGNORECASE)
-    )
-
     return {
         "resource_extension": "ogv",
         "container": "Ogg",
@@ -269,7 +259,6 @@ def _derive_outputs(root: Path, sources: dict[str, object]) -> dict[str, object]
         "fullscreen_stretches_to_target": True,
         "script_draw_event": "RenderIface",
         "runtime_side": "client",
-        "native_test_files": native_test_files,
     }
 
 
@@ -538,7 +527,6 @@ def _render_index(model: dict[str, object]) -> str:
                 docs_cli._code(outputs["container_audio_decoded"]),
             ),
             ("Runtime side", docs_cli._code(outputs["runtime_side"])),
-            ("Focused native video tests", str(len(outputs["native_test_files"]))),
         ],
     )
     docs_cli._table(
@@ -610,8 +598,6 @@ def _render_validation(model: dict[str, object]) -> str:
             "",
             "```powershell",
             "python BuildTools\\docs_video.py --check",
-            "python -m unittest BuildTools.tests.test_docs_video",
-            "cmake --build <build-dir> --config RelWithDebInfo --target RunUnitTests",
             "```",
             "",
             "There is no focused native video decoder/playback fixture. A visible "
@@ -650,7 +636,6 @@ RUSSIAN_REPLACEMENTS = {
     "Whole resource buffered": "Весь ресурс буферизуется",
     "Container audio decoded": "Аудио контейнера декодируется",
     "Runtime side": "Сторона выполнения",
-    "Focused native video tests": "Сфокусированные нативные video-тесты",
     "[Formats](formats.md)": "[Форматы](formats.md)",
     "Container, codec, and pixel-format requirements.": "Требования к контейнеру, кодеку и пиксельным форматам.",
     "[Delivery](delivery.md)": "[Доставка](delivery.md)",

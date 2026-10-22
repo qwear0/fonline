@@ -110,11 +110,6 @@ def _validate_sources(root: Path, raw: object) -> dict[str, object]:
         "api_model",
     ):
         result[field] = _source_path(root, raw.get(field), f"sources.{field}")
-    tests = _string_list(raw.get("tests"), "sources.tests")
-    result["tests"] = [
-        _source_path(root, source, f"sources.tests[{index}]")
-        for index, source in enumerate(tests)
-    ]
     return result
 
 

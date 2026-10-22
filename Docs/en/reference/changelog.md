@@ -8,11 +8,24 @@ permalink: /Docs/en/reference/changelog.html
 
 # Engine Changelog
 
-Developer-visible FOnline changes and migration notes are maintained here in English and Russian. The current development version is owned by [VERSION](https://github.com/cvet/fonline/blob/master/VERSION). [Versioning and release rules](../how-to/release/versioning.md) define CalVer, release dates, immutable tags, and compatibility boundaries.
+Developer-visible FOnline changes and migration notes are maintained here in English and Russian. The current development version is owned by [VERSION](https://github.com/qwear0/fonline/blob/master/VERSION). [Versioning and release rules](../how-to/release/versioning.md) define CalVer, release dates, immutable tags, and compatibility boundaries.
 
 ## Unreleased
 
-## Current - 2026-10-20
+## Current - 2026-10-22
+
+### Changed
+
+- Begin the coordinated fork documentation/test-retirement update: archive Actions, remove owned unit/coverage build and CLI registration, reject unsupported source roles, and reconcile documentation models and validators with live consumers. Vendored sources and production diagnostics remain supported.
+- Parse setting defaults with the existing balanced C++ argument helpers; quoted commas, parentheses and comment-like text remain one value. Generated `Web.BackgroundColor` now preserves `rgb(0, 0, 0)`.
+- Adopt the owner's Russian-description commit and normal fork-push policy. Begin removal of owned Python/debugger tests; the remaining removals and synchronized bilingual/generated guidance follow in the same coordinated publication range.
+
+### Migration
+
+- Base `aafc7fe74bb8fa35e6395e04d8c6d2a66a91831a` (`2026.1.57-dev`) → `2026.1.58-dev`. Keep `FO_UNIT_TESTS` and `FO_CODE_COVERAGE` disabled; remove UnitTests/Coverage runner assumptions and `AddEngineSources(TESTS ...)`. Only COMMON, SERVER, CLIENT, MAPPER and BAKER are consumed roles; unsupported roles now fail configuration instead of silently contributing unused metadata. Use the existing compiler/baker/application and documentation checks, not retired suites or archived CI.
+- This corrects documentation-generation defaults, not native runtime setting syntax. No save/network/resource migration, wire change (`0.0.75`) or Managed ABI change (`9`) is introduced. Regenerate owning documentation models and rebuild matching generated metadata/applications. Publish the complete coordinated range; rollback restores the preceding matching source/artifact set rather than mixing old test wiring with removed suites.
+
+## 2026.1.57-dev - 2026-10-20
 
 ### Documentation
 

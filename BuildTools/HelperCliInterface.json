@@ -28,6 +28,10 @@
       {
         "source": "BuildTools/package.py",
         "reason": "Owned by Docs/generated/package.json and BuildTools/docs_package.py."
+      },
+      {
+        "source": "BuildTools/codecoverage.py",
+        "reason": "Retained historical coverage helper; this fork has no generated test or coverage target that invokes it."
       }
     ]
   },
@@ -42,17 +46,6 @@
       "audiences": ["engine-contributor", "embedding-project-build-system"],
       "invocation_owner": "BuildTools/cmake/stages/Codegen.cmake",
       "description": "Generate engine configuration, metadata registration, script bindings, and embedded-resource source files."
-    },
-    {
-      "id": "helper-cli.codecoverage",
-      "name": "Code coverage",
-      "source": "BuildTools/codecoverage.py",
-      "factory": "create_parser",
-      "program": "codecoverage.py",
-      "owner": "quality",
-      "audiences": ["engine-contributor", "ci-maintainer"],
-      "invocation_owner": "BuildTools/cmake/stages/Applications.cmake",
-      "description": "Clean, collect, and report engine code coverage for generated test targets."
     },
     {
       "id": "helper-cli.gameplay-test-runner",

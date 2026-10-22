@@ -27,14 +27,7 @@
     "property_serializer": "Source/Common/PropertiesSerializer.cpp",
     "settings": "Source/Common/Settings.inc",
     "api_model_generator": "BuildTools/docs_api.py",
-    "api_model": "Docs/generated/api.json",
-    "tests": [
-      "Source/Tests/Test_ProtoBaker.cpp",
-        "Source/Tests/Test_ConfigFile.cpp",
-        "Source/Tests/Test_Properties.cpp",
-        "Source/Tests/Test_ProtoManager.cpp",
-        "Source/Tests/Test_EntityProtos.cpp"
-    ]
+    "api_model": "Docs/generated/api.json"
   },
   "file_selection": {
     "setting": "Baking.ProtoFileExtensions",

@@ -587,26 +587,6 @@
       "category": "target",
       "description": "Generate baker application targets.",
       "affects_baking": false
-    },
-    {
-      "name": "FO_UNIT_TESTS",
-      "cache_type": "BOOL",
-      "value_kind": "boolean",
-      "required": false,
-      "default": "OFF",
-      "category": "quality",
-      "description": "Generate engine unit-test targets.",
-      "affects_baking": false
-    },
-    {
-      "name": "FO_CODE_COVERAGE",
-      "cache_type": "BOOL",
-      "value_kind": "boolean",
-      "required": false,
-      "default": "OFF",
-      "category": "quality",
-      "description": "Generate the code-coverage configuration; this mode cannot be combined with application or unit-test build modes.",
-      "affects_baking": false
     }
   ],
   "stages": [
@@ -685,7 +665,7 @@
         "Post"
       ],
       "source": "BuildTools/cmake/stages/Applications.cmake",
-      "description": "Create enabled client, server, mapper, compiler, baker, viewer, and test applications."
+      "description": "Create enabled client, server, mapper, compiler, baker, and viewer applications."
     },
     {
       "order": 8,
@@ -753,8 +733,7 @@
         "SERVER",
         "CLIENT",
         "MAPPER",
-        "BAKER",
-        "TESTS"
+        "BAKER"
       ],
       "description": "Add role-scoped embedding-project native sources before RegisterEngineSources."
     },

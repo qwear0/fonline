@@ -93,6 +93,11 @@ def generate_support_matrix(
         if not (root / source).is_file():
             raise ValueError(f"sources.{key} does not exist: {source}")
 
+    workflow_status = _required_string(raw.get("workflow_status"), "workflow_status")
+    if workflow_status != "archived" or not str(sources["workflow"]).startswith(
+        ".github/disabled-workflows/"
+    ):
+        raise ValueError("this fork requires an explicitly archived workflow source")
     workflow_text = (root / str(sources["workflow"])).read_text(encoding="utf-8")
     workflow_targets = _workflow_matrix_targets(workflow_text)
     validation_targets = set(buildtools.VALIDATION_TARGETS)
@@ -134,6 +139,13 @@ def generate_support_matrix(
             f"{label}.available_validation_targets",
             allow_empty=True,
         )
+        archived_targets = _string_list(
+            entry.get("archived_validation_targets", []),
+            f"{label}.archived_validation_targets",
+            allow_empty=True,
+        )
+        if ci_targets or level in {"build_gated", "smoke_gated"}:
+            raise ValueError(f"{label} cannot claim an active gate from an archived workflow")
         for target in ci_targets + available_targets:
             if target not in validation_targets:
                 raise ValueError(
@@ -141,10 +153,10 @@ def generate_support_matrix(
                 )
         if level == "source_capable" and ci_targets:
             raise ValueError(f"{label} source_capable entry must not declare CI targets")
-        missing_workflow = sorted(set(ci_targets) - workflow_targets)
+        missing_workflow = sorted(set(archived_targets) - workflow_targets)
         if missing_workflow:
             raise ValueError(
-                f"{label} CI targets are absent from the required workflow: "
+                f"{label} historical targets are absent from the archived workflow: "
                 + ", ".join(missing_workflow)
             )
         if level in {"build_gated", "smoke_gated"} and not ci_targets:
@@ -158,6 +170,7 @@ def generate_support_matrix(
         entry["applications"] = applications
         entry["ci_validation_targets"] = ci_targets
         entry["available_validation_targets"] = available_targets
+        entry["archived_validation_targets"] = archived_targets
         normalized_platforms.append(entry)
 
     renderer_policy = raw.get("renderer_policy")
@@ -174,6 +187,7 @@ def generate_support_matrix(
         "generated_by": GENERATED_BY,
         "title": raw["title"],
         "channel": raw["channel"],
+        "workflow_status": workflow_status,
         "policy": copy.deepcopy(policy),
         "sources": copy.deepcopy(sources),
         "platforms": normalized_platforms,
@@ -219,8 +233,8 @@ def generate_reference_page(model: dict[str, Any]) -> str:
         "",
         "# Generated Support Matrix",
         "",
-        "This page is generated from the checked support policy and the live BuildTools/CI target registry.",
-        "A build gate proves configuration and compilation; only a smoke gate proves the named process route.",
+        "This page checks live BuildTools targets and retains archived workflow definitions separately; this fork has no active CI gates.",
+        "Archived targets are historical configuration, not evidence that a build or process route ran on the current revision.",
         "",
         "## Evidence levels",
         "",
@@ -234,8 +248,8 @@ def generate_reference_page(model: dict[str, Any]) -> str:
             "",
             "## Platform profiles",
             "",
-            "| Host / target | Compiler | Level | Applications | Required validation targets | Runtime evidence | Limitations |",
-            "|---|---|---|---|---|---|---|",
+            "| Host / target | Compiler | Level | Applications | Available local targets | Archived workflow targets | Runtime evidence | Limitations |",
+            "|---|---|---|---|---|---|---|---|",
         ]
     )
     for entry in model["platforms"]:
@@ -243,7 +257,8 @@ def generate_reference_page(model: dict[str, Any]) -> str:
         lines.append(
             f"| {entry['host']} / {entry['target']} | {entry['compiler']} | "
             f"`{entry['level']}` | {'; '.join(entry['applications'])} | "
-            f"{_code_list(targets)} | {entry['runtime_evidence']} | {entry['limitations']} |"
+            f"{_code_list(targets)} | {_code_list(entry['archived_validation_targets'])} | "
+            f"{entry['runtime_evidence']} | {entry['limitations']} |"
         )
     lines.extend(
         [
@@ -279,10 +294,10 @@ def generate_reference_page(model: dict[str, Any]) -> str:
 
 RUSSIAN_REPLACEMENTS = {
     "Generated Support Matrix": "Сгенерированная матрица поддержки",
-    "This page is generated from the checked support policy and the live BuildTools/CI target registry.":
-        "Эта страница создаётся из проверяемой политики поддержки и актуального реестра целей BuildTools/CI.",
-    "A build gate proves configuration and compilation; only a smoke gate proves the named process route.":
-        "Проверка сборки подтверждает конфигурацию и компиляцию; только smoke-проверка подтверждает указанный маршрут запуска процесса.",
+    "This page checks live BuildTools targets and retains archived workflow definitions separately; this fork has no active CI gates.":
+        "Страница проверяет актуальные цели BuildTools и отдельно сохраняет архивные определения workflow; в этом форке нет действующих CI-гейтов.",
+    "Archived targets are historical configuration, not evidence that a build or process route ran on the current revision.":
+        "Архивные цели — историческая конфигурация, а не доказательство запуска сборки или процесса на текущей ревизии.",
     "## Evidence levels": "## Уровни подтверждения",
     "## Platform profiles": "## Профили платформ",
     "## Renderer qualification": "## Квалификация рендеринга",
@@ -302,8 +317,8 @@ RUSSIAN_REPLACEMENTS = {
     "See [Support Matrix](support-matrix.md) for release interpretation and project acceptance requirements.":
         "Правила интерпретации релизов и требования приёмки проекта приведены в [матрице поддержки](support-matrix.md).",
     "| Level | Meaning |": "| Уровень | Значение |",
-    "| Host / target | Compiler | Level | Applications | Required validation targets | Runtime evidence | Limitations |":
-        "| Хост / цель | Компилятор | Уровень | Приложения | Обязательные цели проверки | Подтверждение runtime | Ограничения |",
+    "| Host / target | Compiler | Level | Applications | Available local targets | Archived workflow targets | Runtime evidence | Limitations |":
+        "| Хост / цель | Компилятор | Уровень | Приложения | Доступные локальные цели | Цели архивного workflow | Подтверждение runtime | Ограничения |",
     "| Platforms | Compiled backends | Qualification boundary |":
         "| Платформы | Скомпилированные backend | Граница квалификации |",
 }

@@ -33,11 +33,7 @@
     "sprite_resource_header": "Source/Common/SpriteResource.h",
     "sprite_meshing": "Source/Tools/SpriteMeshing.cpp",
     "sprite_meshing_header": "Source/Tools/SpriteMeshing.h",
-    "string_utils_header": "Source/Essentials/StringUtils.h",
-    "tests": [
-      "Source/Tests/Test_ImageBaker.cpp",
-      "Source/Tests/Test_TextureAtlas.cpp"
-    ]
+    "string_utils_header": "Source/Essentials/StringUtils.h"
   },
   "outputs": {
     "baker_name": "Image",
@@ -948,12 +944,6 @@
             "i < copy->_spr.size()",
             "copy->RefreshParams()"
           ]
-        },
-        {
-          "path": "Source/Tests/Test_SpriteSheet.cpp",
-          "anchors": [
-            "TEST_CASE(\"SpriteManagerReturnsIndependentSheetsFromTheFirstLoad\""
-          ]
         }
       ]
     },
@@ -975,12 +965,6 @@
           "path": "Source/Client/DefaultSprites.h",
           "anchors": [
             "auto GetSprOffset() const noexcept -> const_span<ipos32>"
-          ]
-        },
-        {
-          "path": "Source/Tests/Test_SpriteSheet.cpp",
-          "anchors": [
-            "TEST_CASE(\"ResourceManagerTrimsOnlyItsOwnSpriteSheet\""
           ]
         },
         {
@@ -1032,12 +1016,6 @@
             "_copyableSpriteCache.emplace(pair {path, atlas_type}, spr)",
             "auto copy = spr->MakeCopy()"
           ]
-        },
-        {
-          "path": "Source/Tests/Test_SpriteSheet.cpp",
-          "anchors": [
-            "TEST_CASE(\"SpriteManagerReturnsIndependentSheetsFromTheFirstLoad\""
-          ]
         }
       ]
     },
@@ -1046,7 +1024,7 @@
       "name": "Missing-path memoization",
       "stability": "experimental",
       "requirement": "Missing paths, absent extensions, unknown factories, and factory load failures are memoized by path in _nonFoundSprites; CleanupSpriteCache does not clear that set.",
-      "rationale": "Adding a previously missing resource during a live session normally requires recreating the manager or restarting the client before retrying the same path.",
+      "rationale": "Native callers can use ForgetFailedSprite to clear a failed path or InvalidateSpriteResource to clear that path's caches. Where no such operation is exposed to project tooling, recreate the manager or restart the client before retrying.",
       "source": [
         {
           "path": "Source/Client/SpriteManager.cpp",
@@ -1086,7 +1064,7 @@
       "id": "image-format.validation.fofrm-directions",
       "name": "Complete equal-size directions",
       "stability": "experimental",
-      "requirement": "Reject partial direction sets and any later direction whose flattened frame count differs from direction zero.",
+      "requirement": "A missing direction-one section or missing direction-one frame reference ends loading as single-direction; later authored directions are then not examined. Once later directions are reached, missing sections or frame-count mismatches fail. Author either one direction or the complete map direction set.",
       "rationale": "Every direction sheet shares one frame-count and timing header.",
       "source": [
         {
@@ -1094,12 +1072,6 @@
           "anchors": [
             "dir > 0 && frames != collection.SequenceSize",
             "throw ImageBakerException(\"FOFRM file invalid data\", fname)"
-          ]
-        },
-        {
-          "path": "Source/Tests/Test_ImageBaker.cpp",
-          "anchors": [
-            "SECTION(\"FofrmDirectionEdgeCases\")"
           ]
         }
       ]
@@ -1148,12 +1120,6 @@
             "TGA support only 24 and 32 bpp",
             "height - y - 1"
           ]
-        },
-        {
-          "path": "Source/Tests/Test_ImageBaker.cpp",
-          "anchors": [
-            "SECTION(\"InvalidTgaInputsAreReported\")"
-          ]
         }
       ]
     },
@@ -1161,17 +1127,12 @@
       "id": "image-format.validation.malformed-inputs",
       "name": "Malformed decoder inputs",
       "stability": "experimental",
-      "requirement": "Keep focused failure coverage for corrupt PNG, TGA, FRM/FRx/RIX/ART/ZAR/TIL/MOS/BAM, SPR, and nested FOFRM inputs.",
+      "requirement": "Bake the changed image inputs and inspect decoder diagnostics. Do not treat successful documentation generation as execution of PNG, TGA, legacy, SPR, or nested FOFRM parsers.",
       "rationale": "Legacy binary parsers must fail deterministically instead of emitting truncated runtime containers.",
       "source": [
         {
-          "path": "Source/Tests/Test_ImageBaker.cpp",
-          "anchors": [
-            "SECTION(\"InvalidPngInputIsReported\")",
-            "SECTION(\"InvalidLegacyHeadersAreReported\")",
-            "SECTION(\"InvalidSprInputsAreReported\")",
-            "SECTION(\"InvalidFofrmNestedFramesAreReported\")"
-          ]
+          "path": "Source/Tools/ImageBaker.cpp",
+          "anchors": ["static auto LoadImage", "ImageBaker::LoadAny"]
         }
       ]
     },
@@ -1222,20 +1183,11 @@
       "name": "Embedding-project visual gate",
       "stability": "experimental",
       "requirement": "After native and documentation checks, rebake the embedding project and inspect changed dimensions, alpha edges, mirrors, directions, cadence, offsets, hit masks, and relevant client profiles in a visible scene.",
-      "rationale": "Parser and container tests cannot prove art framing, filtering, gait, or project resource-pack selection.",
+      "rationale": "Source-derived documentation checks cannot prove art framing, filtering, gait, or project resource-pack selection.",
       "source": [
         {
-          "path": "Source/Tests/Test_ImageBaker.cpp",
-          "anchors": [
-            "TEST_CASE(\"ImageBaker\")"
-          ]
-        },
-        {
-          "path": "Source/Tests/Test_TextureAtlas.cpp",
-          "anchors": [
-            "TEST_CASE(\"TextureAtlasLayoutPacksOverlappingMaximalFreeRectangles\")",
-            "TEST_CASE(\"TextureAtlasLayoutDumpOverlayDrawsMeshGeometry\")"
-          ]
+          "path": "Source/Client/SpriteManager.cpp",
+          "anchors": ["LoadSprite", "DrawSpriteSize"]
         }
       ]
     }

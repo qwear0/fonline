@@ -152,9 +152,6 @@ def _validate_sources(root: Path, raw: object) -> dict[str, object]:
         field: _source_path(root, raw.get(field), f"sources.{field}")
         for field in file_fields
     }
-    result["native_test_directory"] = _source_directory(
-        root, raw.get("native_test_directory"), "sources.native_test_directory"
-    )
     return result
 
 
@@ -261,13 +258,6 @@ def _derive_outputs(root: Path, sources: dict[str, object]) -> dict[str, object]
         )
     }
 
-    native_test_root = root / str(sources["native_test_directory"])
-    native_test_files = sorted(
-        path.relative_to(root).as_posix()
-        for path in native_test_root.glob("Test_*.cpp")
-        if re.search(r"(audio|sound)", path.name, re.IGNORECASE)
-    )
-
     if "return false;" not in headless_text.split(
         "auto AppAudio::IsEnabled() const -> bool", maxsplit=1
     )[1].split("}", maxsplit=1)[0]:
@@ -303,7 +293,6 @@ def _derive_outputs(root: Path, sources: dict[str, object]) -> dict[str, object]
         "headless_audio_enabled": False,
         "unsupported_extension_rejected": True,
         "authored_extension_preserved": True,
-        "native_test_files": native_test_files,
     }
 
 
@@ -581,10 +570,6 @@ def _render_index(model: dict[str, object]) -> str:
                 "yes" if outputs["missing_suffix_fallback"] else "no",
             ),
             ("Runtime side", docs_cli._code(outputs["runtime_side"])),
-            (
-                "Focused native audio tests",
-                str(len(outputs["native_test_files"])),
-            ),
         ],
     )
     docs_cli._table(
@@ -671,13 +656,9 @@ def _render_validation(model: dict[str, object]) -> str:
             "",
             "```powershell",
             "python BuildTools\\docs_audio.py --check",
-            "python -m unittest BuildTools.tests.test_docs_audio",
-            "cmake --build <build-dir> --config RelWithDebInfo --target RunUnitTests",
             "```",
             "",
-            "Run the focused Test_AudioBaker, Test_AudioBakerAcm, and "
-            "Test_AudioManager native suites; ACM coverage requires FO_AUDIO_ACM. "
-            "An embedding project must also bake representative WAV and Ogg "
+            "An embedding project must bake representative WAV and Ogg "
             "resources, and ACM when enabled, exercise effect and music calls in "
             "a visible client with audio enabled, inspect logs, and verify "
             "volume/repeat behavior on every claimed platform.",
@@ -711,7 +692,6 @@ RUSSIAN_REPLACEMENTS = {
     "Runtime formats": "Runtime-форматы",
     "Default missing suffix": "Суффикс по умолчанию при его отсутствии",
     "Runtime side": "Сторона выполнения",
-    "Focused native audio tests": "Сфокусированные нативные audio-тесты",
     "[Formats](formats.md)": "[Форматы](formats.md)",
     "Accepted containers/codecs and source roles.": "Допустимые контейнеры/кодеки и роли источников.",
     "[Delivery](delivery.md)": "[Доставка](delivery.md)",
@@ -726,8 +706,8 @@ RUSSIAN_REPLACEMENTS = {
     "Included:": "Включено:",
     "Excluded:": "Исключено:",
     "## Validation commands": "## Команды проверки",
-    "Run the focused Test_AudioBaker, Test_AudioBakerAcm, and Test_AudioManager native suites; ACM coverage requires FO_AUDIO_ACM. An embedding project must also bake representative WAV and Ogg resources, and ACM when enabled, exercise effect and music calls in a visible client with audio enabled, inspect logs, and verify volume/repeat behavior on every claimed platform.":
-        "Запускайте сфокусированные нативные suites Test_AudioBaker, Test_AudioBakerAcm и Test_AudioManager; покрытие ACM требует FO_AUDIO_ACM. Встраиваемый проект также должен запечь репрезентативные WAV и Ogg, а при включённой опции ещё и ACM, вызвать эффекты и музыку в видимом клиенте с включённым аудио, проверить логи и поведение громкости/повтора на каждой заявленной платформе.",
+    "An embedding project must bake representative WAV and Ogg resources, and ACM when enabled, exercise effect and music calls in a visible client with audio enabled, inspect logs, and verify volume/repeat behavior on every claimed platform.":
+        "Встраиваемый проект должен запечь репрезентативные WAV и Ogg, а при включённой опции ещё и ACM, вызвать эффекты и музыку в видимом клиенте с включённым аудио, проверить логи и поведение громкости/повтора на каждой заявленной платформе.",
 }
 
 RUSSIAN_TABLE_HEADERS = {

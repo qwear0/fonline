@@ -39,7 +39,7 @@
       "source_list": "FO_COMMON_SOURCE",
       "library_target": "CommonLib",
       "primary_header": "Common.h",
-      "consumers": ["client", "server", "mapper", "baker", "animation-viewer", "particle-viewer", "ascompiler", "tests"],
+      "consumers": ["client", "server", "mapper", "baker", "animation-viewer", "particle-viewer", "ascompiler"],
       "script_targets": ["common"],
       "description": "Code shared by every enabled engine role; use only for genuinely common dependencies and hooks."
     },
@@ -49,7 +49,7 @@
       "source_list": "FO_SERVER_SOURCE",
       "library_target": "ServerLib",
       "primary_header": "Server.h",
-      "consumers": ["server", "tests"],
+      "consumers": ["server"],
       "script_targets": ["server"],
       "description": "Authoritative server-only code and script exports."
     },
@@ -59,7 +59,7 @@
       "source_list": "FO_CLIENT_SOURCE",
       "library_target": "ClientLib",
       "primary_header": "Client.h",
-      "consumers": ["client", "server", "mapper", "baker", "animation-viewer", "particle-viewer", "ascompiler", "tests"],
+      "consumers": ["client", "server", "mapper", "baker", "animation-viewer", "particle-viewer", "ascompiler"],
       "script_targets": ["client", "mapper"],
       "description": "Client runtime code; server controller paths, Mapper, both focused viewers, BakerLib, and ASCompiler link ClientLib, while only client and mapper are script export targets."
     },
@@ -69,7 +69,7 @@
       "source_list": "FO_MAPPER_SOURCE",
       "library_target": "MapperLib",
       "primary_header": "Mapper.h",
-      "consumers": ["mapper", "tests"],
+      "consumers": ["mapper"],
       "script_targets": ["mapper"],
       "description": "Mapper-only native tooling and mapper script exports."
     },
@@ -79,19 +79,9 @@
       "source_list": "FO_BAKER_SOURCE",
       "library_target": "BakerLib",
       "primary_header": "Baker.h",
-      "consumers": ["mapper", "baker", "animation-viewer", "particle-viewer", "ascompiler", "tests"],
+      "consumers": ["mapper", "baker", "animation-viewer", "particle-viewer", "ascompiler"],
       "script_targets": [],
       "description": "Resource-baker extensions shared by Baker, Mapper, both focused viewers, and ASCompiler; BAKER is not a script export target."
-    },
-    {
-      "id": "native-extension.role.tests",
-      "name": "TESTS",
-      "source_list": "FO_TESTS_SOURCE",
-      "library_target": "UnitTests/Coverage executable",
-      "primary_header": "catch_amalgamated.hpp",
-      "consumers": ["tests", "coverage"],
-      "script_targets": [],
-      "description": "Project-native Catch2 translation units compiled directly into enabled unit-test and coverage executables; TESTS has no runtime or script-export consumer."
     }
   ],
   "hooks": [

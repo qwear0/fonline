@@ -656,17 +656,6 @@ TargetCompileDefinitions(imgui PRIVATE "IMGUI_USER_CONFIG=\"ImGuiConfig.h\"")
 AddCompileDefinitionsList("IMGUI_USER_CONFIG=\"ImGuiConfig.h\"")
 AppendList(FO_ESSENTIALS_SOURCE "$<$<BOOL:${MSVC}>:${FO_DEAR_IMGUI_DIR}/misc/debuggers/imgui.natvis>")
 
-# Catch2
-SetValue(FO_CATCH2_DIR "${FO_ENGINE_ROOT}/ThirdParty/Catch2")
-SetValue(FO_CATCH2_SOURCE
-    "${FO_CATCH2_DIR}/catch_amalgamated.cpp"
-    "${FO_CATCH2_DIR}/catch_amalgamated.hpp")
-AddStaticThirdPartyLibrary(Catch2
-    SOURCE_LIST FO_CATCH2_SOURCE
-    APPEND_TO FO_TESTING_LIBS
-    INCLUDE_DIRS "${FO_CATCH2_DIR}")
-TargetCompileDefinitions(Catch2 PRIVATE "CATCH_AMALGAMATED_CUSTOM_MAIN")
-
 # Native stack traces on Linux: LLVM libunwind walks the stack, libbacktrace names the frames
 if(FO_LINUX)
     enable_language(ASM)

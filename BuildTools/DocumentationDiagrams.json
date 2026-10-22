@@ -61,7 +61,7 @@
           "title": "Applications",
           "lines": [
             "client, server, mapper",
-            "baker, tests, platforms"
+            "baker, viewers, platforms"
           ]
         },
         {
@@ -236,7 +236,7 @@
           "title": "Engine inputs",
           "lines": [
             "source, interface models",
-            "generators and tests"
+            "generators and validators"
           ]
         },
         {
@@ -287,7 +287,7 @@
           "role": "validation",
           "title": "Focused validation",
           "lines": [
-            "unit, parser, gameplay",
+            "parser, CLI, gameplay",
             "platform smoke routes"
           ]
         },
@@ -368,7 +368,7 @@
       "description": "One canonical Markdown corpus is projected into GitHub Pages, machine-readable AI routes, and review evidence.",
       "owning_document": "Docs/en/contributing/documentation/site-publication.md",
       "alt": "Documentation delivery diagram. Canonical Markdown and the documentation manifest feed deterministic generators. Navigation, search, route catalogs, AI bundles, and reports are generated before the site build; reviewed diagram images remain versioned. Jekyll builds the human site while AI clients consume llms.txt, llms-full.txt, docs-manifest.json, and generated JSON. Static, browser, accessibility, hash, and freshness gates validate the same revision.",
-      "caption": "Human and AI routes are projections of one versioned Markdown corpus. GitHub Pages, machine-readable endpoints, and CI evidence all use the same manifest, generated artifacts, source revision, and content hashes.",
+      "caption": "Human and AI routes are projections of one versioned Markdown corpus. Local site, machine-readable endpoints, and review evidence must use the same manifest, generated artifacts, source revision, and content hashes.",
       "width": 1120,
       "height": 650,
       "source_paths": [
@@ -378,7 +378,7 @@
         "BuildTools/docs_site_artifact.py",
         "BuildTools/docs-browser/audit.mjs",
         "Docs/Site/Layouts/default.html",
-        ".github/workflows/validate.yml"
+        ".github/disabled-workflows/validate.yml"
       ],
       "bands": [
         {

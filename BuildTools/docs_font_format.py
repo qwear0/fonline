@@ -152,11 +152,6 @@ def _validate_sources(root: Path, raw: object) -> dict[str, object]:
     result["font_resources"] = _source_directory(
         root, raw.get("font_resources"), "sources.font_resources"
     )
-    tests = _string_list(raw.get("tests"), "sources.tests")
-    result["tests"] = [
-        _source_path(root, path, f"sources.tests[{index}]")
-        for index, path in enumerate(tests)
-    ]
     return result
 
 
@@ -653,8 +648,6 @@ def _render_validation(model: dict[str, object]) -> str:
             "",
             "```powershell",
             "python BuildTools\\docs_font_format.py --check",
-            "python -m unittest BuildTools.tests.test_docs_font_format",
-            "cmake --build <build-dir> --config RelWithDebInfo --target RunUnitTests",
             "```",
             "",
             "An embedding project must also bake the descriptor and image together, "

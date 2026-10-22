@@ -645,8 +645,6 @@ def _render_validation(model: dict[str, object]) -> str:
             "",
             "```powershell",
             "python BuildTools\\docs_particle_format.py --check",
-            "python -m unittest BuildTools.tests.test_docs_particle_format",
-            "cmake --build <build-dir> --config RelWithDebInfo --target RunUnitTests",
             "```",
             "",
             "An embedding project must also rebake its resources and visibly inspect "

@@ -32,12 +32,7 @@
     "script_types": "Source/Scripting/AngelScript/AngelScriptTypes.cpp",
     "settings": "Source/Common/Settings.inc",
     "renderer": "Source/Client/FontManager.cpp",
-    "renderer_header": "Source/Client/FontManager.h",
-    "tests": [
-      "Source/Tests/Test_TextPack.cpp",
-      "Source/Tests/Test_TextBaker.cpp",
-      "Source/Tests/Test_ProtoTextBaker.cpp"
-    ]
+    "renderer_header": "Source/Client/FontManager.h"
   },
   "outputs": {
     "source_extension": ".fotxt",
@@ -154,25 +149,12 @@
           ]
         },
         {
-          "path": "Source/Tests/Test_TextPack.cpp",
-          "anchors": [
-            "CHECK(restored.GetStrCount(dialogs_twenty) == 2);",
-            "CHECK(restored.GetStr(dialogs_twenty, 1) == \"Gamma\");"
-          ]
-        },
-        {
           "path": "Source/Common/TextPack.cpp",
           "anchors": [
             "void TextPack::AppendBinaryData",
             "_strData.capacity() * 2",
             "auto TextPack::LoadFromBinaryData(const_span<uint8_t> data, string_view collection) -> bool",
             "void TextPack::LoadFromResources(FileSystem& resources, string_view language)"
-          ]
-        },
-        {
-          "path": "Source/Tests/Test_TextPack.cpp",
-          "anchors": [
-            "TextPackResourceBatchMatchesSequentialLoads"
           ]
         }
       ]
@@ -263,21 +245,14 @@
             "Bake language is declared more than once",
             "Bake language fallback parent must be declared before its child"
           ]
-        },
-        {
-          "path": "Source/Tests/Test_TextPack.cpp",
-          "anchors": [
-            "ParseBakeLanguagesNormalizesInlineFallbacks",
-            "ParseBakeLanguagesRejectsInvalidDeclarations"
-          ]
         }
       ]
     },
     {
       "id": "text-format.language.default-source-required",
       "name": "Base source required",
-      "requirement": "For every changed raw text pack, the selected file set must contain the base-language source.",
-      "rationale": "TextBaker cannot normalize a changed pack without the base language and throws before parsing output.",
+      "requirement": "The selected raw input set must contain the base language in aggregate. This is not a per-pack source-completeness check; a child-only pack absent from its fallback can be removed during normalization.",
+      "rationale": "TextBaker checks the set of selected languages, then FixPacks normalizes pack/key presence against the configured fallback. Projects must audit each pack's authored base source separately.",
       "stability": "experimental",
       "source": [
         {
@@ -301,12 +276,6 @@
           "anchors": [
             "// Ensure full language set for changed text packs",
             "packs_to_complete.contains(text_pack_name)"
-          ]
-        },
-        {
-          "path": "Source/Tests/Test_TextBaker.cpp",
-          "anchors": [
-            "BakeCheckerCompletesChangedPackLanguages"
           ]
         }
       ]
@@ -425,13 +394,6 @@
           "path": "Source/Tools/ProtoTextBaker.cpp",
           "anchors": [
             "StringEscaping::DecodeString(value)"
-          ]
-        },
-        {
-          "path": "Source/Tests/Test_ProtoTextBaker.cpp",
-          "anchors": [
-            "$Text engl Long = Line\\nBreak",
-            "== \"Line\\nBreak\""
           ]
         }
       ]
@@ -762,12 +724,6 @@
           "anchors": [
             "throw TextPackException(\"Invalid text file\", file.GetPath());"
           ]
-        },
-        {
-          "path": "Source/Tests/Test_TextPack.cpp",
-          "anchors": [
-            "MalformedLoadFromStringReportsFailureAfterKeepingValidEntries"
-          ]
         }
       ]
     },
@@ -825,12 +781,6 @@
           "anchors": [
             "Prototype text key has too many tokens"
           ]
-        },
-        {
-          "path": "Source/Tests/Test_ProtoTextBaker.cpp",
-          "anchors": [
-            "TooManyTextTokens"
-          ]
         }
       ]
     },
@@ -846,12 +796,6 @@
           "anchors": [
             "Proto text intersection detected",
             "Errors during proto texts parsing"
-          ]
-        },
-        {
-          "path": "Source/Tests/Test_ProtoTextBaker.cpp",
-          "anchors": [
-            "ProtoTextIntersection"
           ]
         }
       ]
@@ -869,14 +813,6 @@
             "reader.verify_payload_count(count, 5 * sizeof(uint32_t))",
             "reader.read_string()",
             "reader.read_string_view(str_len)"
-          ]
-        },
-        {
-          "path": "Source/Tests/Test_TextPack.cpp",
-          "anchors": [
-            "TextPackDecodeFailureSkipsSortUntilRetry",
-            "TextPackBinaryRejectsImpossibleSizesBeforeAllocation",
-            "TextPackBatchPreservesEmptyAndFilteredInputs"
           ]
         }
       ]

@@ -293,6 +293,10 @@ macro(ResolveContributedFiles)
 endmacro()
 
 macro(AddEngineSource target)
+	if(NOT "${target}" MATCHES "^(COMMON|SERVER|CLIENT|MAPPER|BAKER)$")
+		AbortMessage("Unsupported AddEngineSources role: ${target}. Expected COMMON, SERVER, CLIENT, MAPPER or BAKER.")
+	endif()
+
 	ResolveContributedFiles(${ARGN})
 
 	foreach(resolvedFile ${resolvedFiles})

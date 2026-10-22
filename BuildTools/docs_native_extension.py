@@ -13,6 +13,7 @@ from urllib.parse import quote
 
 import codegen
 import docs_cli
+import docs_cmake
 import docs_description_translations
 import docs_localization
 
@@ -25,7 +26,7 @@ DEFAULT_OUTPUT_DIR = "Docs/en/reference/native-extension"
 RUSSIAN_OUTPUT_DIR = "Docs/ru/reference/native-extension"
 LEGACY_OUTPUT_DIR = "Docs/generated/native-extension"
 GENERATED_BY = "BuildTools/docs_native_extension.py"
-REPOSITORY = "cvet/fonline"
+REPOSITORY = "qwear0/fonline"
 SOURCE_REF = "master"
 PAGE_DEFINITIONS = (
     ("index.md", "generated-native-extension-index", "Generated Native Extension Interface"),
@@ -215,7 +216,7 @@ def _validate_binding_rules(raw: object) -> list[dict[str, str]]:
 
 
 def _project_roles(root: Path, project_interface_path: str = DEFAULT_PROJECT_INTERFACE) -> list[str]:
-    interface = json.loads((root / project_interface_path).read_text(encoding="utf-8"))
+    interface = docs_cmake.generate_cmake_model(root, project_interface_path)
     helper = next(
         (entry for entry in interface.get("helpers", []) if entry.get("name") == "AddEngineSources"),
         None,

@@ -5,7 +5,7 @@ permalink: /BuildTools/README.ru.html
 locale: ru
 document_id: buildtools-readme
 ---
-<!-- docs-translation: {"document_id":"buildtools-readme","locale":"ru","source_path":"BuildTools/README.md","source_sha256":"225cd8b63ac134e516a3602ae86ded7636c61c9bfbc1f9ba18110814714ddc41"} -->
+<!-- docs-translation: {"document_id":"buildtools-readme","locale":"ru","source_path":"BuildTools/README.md","source_sha256":"0bc32673e5cdfeebbbed670a781c6105f5c31ee52857d8eab9e7c6e0d870fa97"} -->
 # Инструменты сборки FOnline Engine
 
 ## Скрипты сборки
@@ -22,7 +22,7 @@ document_id: buildtools-readme
 Скрипты-помощники движка имеют отдельную поверхность на основе manifest.
 Используйте [справочник helper CLI](../Docs/ru/reference/helper-cli/index.md) или
 [каноническую JSON-модель](../Docs/generated/helper-cli.json) для codegen,
-компиляции Mono, покрытия, оркестрации gameplay-тестов, проверки импортов
+компиляции Mono, оркестрации gameplay-тестов, проверки импортов
 Windows 7, Android-device, локального web-сервера и MSI-команд. Исполняемые
 parser владеют синтаксисом; `HelperCliInterface.json` владеет назначением,
 аудиторией, владельцем вызова и явной границей с основным CLI и packager.
@@ -87,7 +87,7 @@ baker/renderer/runtime anchors, выводит compile-limit defaults и стр�
 Форматы исходных изображений, композиция FOFRM, legacy selectors имён файлов,
 записи baked sprite, стандартные runtime factories, atlases, caches и
 валидация версионируются в `ImageFormatInterface.json`; `docs_image_format.py`
-проверяет живые baker/client/test anchors, выводит оба extension registry и
+проверяет живые baker/client anchors, выводит оба extension registry и
 строит [справочник изображений](../Docs/ru/reference/image-format/index.md).
 Руководство по authoring находится в
 [Форматы изображений и спрайтов](../Docs/ru/how-to/content/image-format.md).
@@ -138,20 +138,10 @@ governance files, исключения source staging и release gates верс�
 Сценарии валидации можно запускать по одному или группой одной командой:
 
 ```bash
-Engine/BuildTools/validate.sh unit-tests
 Engine/BuildTools/validate.sh android-arm64-client linux-client linux-server
 ```
 
-Обычная validation target `unit-tests` выбирает toolchain нативного host:
-MSVC на Windows, Xcode на macOS и Clang на Linux. Sanitizer validators остаются
-явно platform-specific.
-
-Python regression tests BuildTools находятся в `Engine/BuildTools/tests/` и
-могут запускаться напрямую:
-
-```bash
-pytest -q Engine/BuildTools/tests
-```
+Запускайте эти сценарии сборки только с существующими toolchain и предпосылками workspace. Собственные unit-наборы и test/coverage-цели форка удалены; см. [правила проверки](../Docs/ru/contributing/testing/). Workflows в `.github/disabled-workflows/` — история, не активный CI.
 
 ## Структура CMake
 
@@ -162,7 +152,7 @@ helpers - в `Engine/BuildTools/cmake/helpers/`.
 `cmake/ProjectInterface.json` является версионированной документационной моделью
 project options, порядка stages, entrypoints, hooks и выбранной поверхности
 helpers. Configure-time authority остаётся у `Init.cmake` и файлов стадий и
-helper-команд; структурный тест отклоняет расхождения реализации с моделью.
+helper-команд; сверяйте реализацию и запускайте проверку генератора модели для обнаружения дрейфа документации.
 Используйте сгенерированный
 [справочник CMake project interface](../Docs/ru/reference/cmake/index.md) или его
 [каноническую JSON-модель](../Docs/generated/cmake.json), а не копируйте
@@ -178,8 +168,8 @@ SDK используйте [Проектные зависимости](../Docs/r
 
 - `docs_api.py` запускает существующий metadata parser `codegen.py` в режиме только чтения, применяет source-owned классификации `///@ ApiContract` и записывает/проверяет `Docs/generated/api.json`.
 - `docs_api_diff.py` предоставляет слой сравнения native symbols, включая overload families и source-owned stability.
-- `docs_contract_diff.py` сравнивает модели native API, CMake, main CLI, package, helper CLI, native-extension, prototype-format, map-format, model-format, text-format, effect-format, image-format, particle-format, font-format, audio, video, GUI runtime и AiControl protocol в одном отчёте по паре revisions и требует точных dispositions общего ledger для baseline-public или model-contract breaks.
-- `docs_public_api.py` записывает/проверяет канонические EN/RU индексы контрактов и корневой legacy-маршрут `PUBLIC_API.md` из всех восемнадцати машинных моделей и их сгенерированных human references; native inventory counts и default stability никогда не поддерживаются вручную.
+- `docs_contract_diff.py` сравнивает модели native API, CMake, main CLI, package, helper CLI, native-extension, prototype-format, map-format, model-format, text-format, effect-format, image-format, particle-format, font-format, audio, video и AiControl protocol в одном отчёте по паре revisions и требует точных dispositions общего ledger для baseline-public или model-contract breaks.
+- `docs_public_api.py` записывает/проверяет канонические EN/RU индексы контрактов и корневой legacy-маршрут `PUBLIC_API.md` из всех моделируемых доменов и их сгенерированных human references; native inventory counts и default stability никогда не поддерживаются вручную.
 - `docs_external_evidence.py` проверяет pinned Last Frontier/TLA discovery inventory, owner review policy, dispositions, priorities, Engine/planned targets и детерминированный внутренний отчёт. При наличии обоих точных checkout он также доказывает через `git cat-file`, что каждый записанный путь существует в pinned commit.
 - `docs_cmake.py` проверяет `cmake/ProjectInterface.json` и записывает/проверяет `Docs/generated/cmake.json`, английский справочник Markdown в `Docs/en/reference/cmake/` и устойчивые указатели маршрутов в `Docs/generated/cmake/`.
 - `docs_cli.py` загружает исполняемый parser `argparse` из `buildtools.py` и записывает/проверяет `Docs/generated/cli.json`, точный английский справочник Markdown на основе help в `Docs/en/reference/buildtools/` и устойчивые указатели маршрутов в `Docs/generated/cli/`.
@@ -187,21 +177,21 @@ SDK используйте [Проектные зависимости](../Docs/r
 - `docs_native_extension.py` проверяет документационную модель native roles/hooks по текущим данным CMake/codegen и записывает/проверяет `Docs/generated/native-extension.json` вместе со страницами roles, hooks и bindings.
 - `docs_prototype_format.py` проверяет `PrototypeFormatInterface.json` по живым parser/baker sources, выводит применимость встроенных entity/property из metadata и записывает/проверяет `Docs/generated/prototype-format.json` вместе со страницами syntax, property и validation.
 - `docs_map_format.py` проверяет `MapFormatInterface.json` по живым loader/baker/mapper/runtime sources, выводит данные Map/Critter/Item property и ItemOwnership из metadata и записывает/проверяет `Docs/generated/map-format.json` вместе со страницами syntax, property, baking и validation.
-- `docs_model_format.py` проверяет `ModelFormatInterface.json` по живому model parser, mesh baker, client runtime, limits и tests, затем записывает/проверяет `Docs/generated/model-format.json` вместе со страницами syntax, token, composition, asset, animation и validation.
-- `docs_text_format.py` проверяет `TextFormatInterface.json` по text-pack, baker, runtime, script API, settings, renderer и test sources, затем записывает/проверяет `Docs/generated/text-format.json` вместе со страницами syntax, language, prototype-text, runtime и validation.
-- `docs_effect_format.py` проверяет `EffectFormatInterface.json` по effect baker, render-effect/runtime/cache/script API, backend conventions, project limits и tests, затем записывает/проверяет `Docs/generated/effect-format.json` вместе со страницами syntax, render-state, resource, baking, runtime и validation.
-- `docs_image_format.py` проверяет `ImageFormatInterface.json` по ImageBaker, FOFRM/import sources, стандартному client factory/sheet/atlas/cache behavior и tests, затем записывает/проверяет `Docs/generated/image-format.json`, канонические английские страницы в `Docs/en/reference/image-format/` и совместимые маршруты в `Docs/generated/image-format/`.
-- `docs_particle_format.py` проверяет `ParticleFormatInterface.json` по raw-copy settings, SPARK XML/registry/descriptors, Engine renderer, ParticleEditor, client runtime, script/model integrations и tests, затем записывает/проверяет `Docs/generated/particle-format.json` вместе со страницами XML, object, renderer, tooling, runtime, integration и validation.
-- `docs_audio.py` проверяет `AudioInterface.json` по conversion/passthrough `AudioBaker`, indexing и Vorbis decoding `AudioManager`, script playback handles/spatial updates, frontend conversion/mixing, headless behavior и native-test inventory, затем записывает/проверяет `Docs/generated/audio.json` вместе со страницами format, delivery, decoding, playback и validation.
-- `docs_video.py` проверяет `VideoInterface.json` по raw-copy settings, декодированию Ogg/Theora, fullscreen queue/input/music/drawing, embedded script playback, renderer behavior, dependencies и native-test inventory, затем записывает/проверяет `Docs/generated/video.json` вместе со страницами format, delivery, decoding, fullscreen, embedded и validation.
+- `docs_model_format.py` проверяет `ModelFormatInterface.json` по живому model parser, mesh baker, client runtime и limits, затем записывает/проверяет `Docs/generated/model-format.json` вместе со страницами syntax, token, composition, asset, animation и validation.
+- `docs_text_format.py` проверяет `TextFormatInterface.json` по text-pack, baker, runtime, script API, settings и renderer sources, затем записывает/проверяет `Docs/generated/text-format.json` вместе со страницами syntax, language, prototype-text, runtime и validation.
+- `docs_effect_format.py` проверяет `EffectFormatInterface.json` по effect baker, render-effect/runtime/cache/script API, backend conventions и project limits, затем записывает/проверяет `Docs/generated/effect-format.json` вместе со страницами syntax, render-state, resource, baking, runtime и validation.
+- `docs_image_format.py` проверяет `ImageFormatInterface.json` по ImageBaker, FOFRM/import sources, стандартному client factory/sheet/atlas/cache behavior, затем записывает/проверяет `Docs/generated/image-format.json`, канонические английские страницы в `Docs/en/reference/image-format/` и совместимые маршруты в `Docs/generated/image-format/`.
+- `docs_particle_format.py` проверяет `ParticleFormatInterface.json` по raw-copy settings, SPARK XML/registry/descriptors, Engine renderer, ParticleEditor, client runtime и script/model integrations, затем записывает/проверяет `Docs/generated/particle-format.json` вместе со страницами XML, object, renderer, tooling, runtime, integration и validation.
+- `docs_audio.py` проверяет `AudioInterface.json` по conversion/passthrough `AudioBaker`, indexing и Vorbis decoding `AudioManager`, script playback handles/spatial updates, frontend conversion/mixing, headless behavior и объявленным свидетельствам проверки, затем записывает/проверяет `Docs/generated/audio.json` вместе со страницами format, delivery, decoding, playback и validation.
+- `docs_video.py` проверяет `VideoInterface.json` по raw-copy settings, декодированию Ogg/Theora, fullscreen queue/input/music/drawing, embedded script playback, renderer behavior, dependencies и объявленным свидетельствам проверки, затем записывает/проверяет `Docs/generated/video.json` вместе со страницами format, delivery, decoding, fullscreen, embedded и validation.
 - `docs_ai_control_protocol.py` проверяет `AiControlProtocol.json` по reference client и запускаемому sample, затем записывает/проверяет `Docs/generated/ai-control-protocol.json` вместе со страницами wire, method, command/event, security и integration/validation.
 - `docs_package.py` проверяет документационную модель package и исполняемый parser `package.py`, затем записывает/проверяет `Docs/generated/package.json` вместе со страницами package reference.
 - `docs_examples.py` проверяет `Examples/PublicRepositories.json` и governance overlay, записывает/проверяет `Docs/generated/public-examples.json` и его registry page, материализует source-ready example в новом чистом candidate directory и проверяет metadata внешнего repository, точные gitlink pins, обязательные файлы и байты provenance file.
-- `docs_reference.py` отображает каноническую модель API в совместимый с GitHub Pages Markdown в `Docs/generated/api/`.
+- `docs_reference.py` отображает каноническую модель API в канонические EN/RU Markdown в `Docs/en/reference/script-api/` и `Docs/ru/reference/script-api/`, с legacy-указателями в `Docs/generated/api/`.
 - `docs_metadata.py` строго декодирует project-baked `Metadata.fometa-server/client`, проверяет согласованность обеих сторон и записывает/проверяет принадлежащий проекту JSON/Markdown catalog remote calls.
 - `docs_inventory.py` записывает/проверяет независимый inventory export methods, native tests и setting declarations.
 - `docs_localization.py` обеспечивает полное двуязычное покрытие, проверяет glossary, стабильные locale targets, нормализованные English hashes, точные переведённые fences и language-preserving links, затем записывает/проверяет `docs-manifest.json#/translation_status`.
-- `docs_description_translations.py` инвентаризирует обращённый к читателю текст в 20 генерируемых контрактных моделях, применяет проверенный русский overlay со стабильными ID, отклоняет повторяющиеся, неизвестные, устаревшие, меняющие тип или код записи и записывает/проверяет `Docs/generated/description-translation-status.json`. Отсутствующие записи остаются явными, пока семантический каталог не сможет перейти из `registered-translations-current` в `complete`.
+- `docs_description_translations.py` инвентаризирует обращённый к читателю текст в инвентаризируемых генерируемых контрактных моделях, применяет проверенный русский overlay со стабильными ID, отклоняет повторяющиеся, неизвестные, устаревшие, меняющие тип или код записи и записывает/проверяет `Docs/generated/description-translation-status.json`. Каталог использует `complete`; отсутствие или устаревание записи завершает проверку ошибкой, а не неявным fallback.
 - `docs_ai_delivery.py` проецирует `Docs/documentation-manifest.json` и канонический Markdown в корневые `llms.txt`, ограниченный `llms-full.txt` и публичный `docs-manifest.json`; он нормализует content hashes и отклоняет stale, oversized или non-deterministic output.
 - `docs_site.py` разрешает manifest-owned stable document IDs в проверенные localized Jekyll navigation data, ограниченные статические English/Russian search indexes и публичный version/locale/legacy-route catalog; он отклоняет неизвестные, дублированные или пропущенные top-level pages, route collisions, неоднозначные canonical targets, отсутствующие locale pairs, cross-locale search ownership и oversized или stale output.
 - `docs_ai_eval.py` проверяет версионированный standalone task set в `Docs/ai-evaluation.json` по manifest и той же компактной search model, которую использует browser, затем записывает/проверяет `Docs/generated/ai-evaluation-report.json` с ranks, evidence checks, success rate и MRR.
@@ -210,12 +200,11 @@ SDK используйте [Проектные зависимости](../Docs/r
 - `docs_snippets.py` инвентаризует каждый fence в public/current/human documents, применяет language/harness contract из `SnippetPolicy.json`, записывает/проверяет `Docs/generated/snippets.json` и при необходимости требует реальные parser Bash и PowerShell без выполнения команд.
 - `docs_diagrams.py` проверяет `DocumentationDiagrams.json`, alt/caption markup owning document, source provenance, canvas bounds, node overlap и local-only SVG safety; он записывает/проверяет desktop/mobile SVG variants для трёх teaching diagrams вместе с `Docs/generated/diagrams.json` с точными hashes.
 - `docs_screenshots.py` проверяет `DocumentationScreenshots.json`, точные PNG bytes/dimensions, alt/caption markup owning document, capture environment, source provenance и recapture triggers; он записывает/проверяет `Docs/generated/screenshots.json` с точными image, manifest и source hashes.
-- `docs_site_artifact.py` проверяет готовое дерево Jekyll `_site` по route catalog и source artifacts. Он отклоняет отсутствующие current/available-locale routes, изменённые или отсутствующие static endpoints, неверные canonical URL/languages, отсутствующие accessibility landmarks/names, duplicate IDs и сломанные ссылки на публикуемые локальные ресурсы; CI сохраняет его JSON report.
-- `docs-browser/audit.mjs` локально обслуживает готовое дерево `_site` и применяет зафиксированный lock-файлом Playwright Chromium вместе с axe-core для проверки каждого route на desktop и mobile ширине. Он отклоняет нарушения WCAG 2.2 A/AA, runtime/resource errors, горизонтальную прокрутку уровня страницы, сломанный responsive layout и keyboard failures в skip navigation, search, theme, copy и mobile focus-trapped drawer; CI сохраняет JSON и screenshots.
+- `docs_site_artifact.py` проверяет готовое дерево Jekyll `_site` по route catalog и source artifacts. Он отклоняет отсутствующие current/available-locale routes, изменённые или отсутствующие static endpoints, неверные canonical URL/languages, отсутствующие accessibility landmarks/names, duplicate IDs и сломанные ссылки на публикуемые локальные ресурсы; сохраняйте локальный JSON report для точного отрендеренного дерева.
+- `docs-browser/audit.mjs` локально обслуживает готовое дерево `_site` и применяет зафиксированный lock-файлом Playwright Chromium вместе с axe-core для проверки каждого route на desktop и mobile ширине. Он отклоняет нарушения WCAG 2.2 A/AA, runtime/resource errors, горизонтальную прокрутку уровня страницы, сломанный responsive layout и keyboard failures в skip navigation, search, theme, copy и mobile focus-trapped drawer; сохраняйте локальные JSON и screenshots для точного отрендеренного дерева.
 - `docs_validate.py` проверяет documentation manifest, локальные links/anchors, source ownership, Pages contract и freshness каждого generated artifact.
 
-Запускайте их сфокусированные тесты и проверки из корня движка; generated JSON
-и Markdown хранятся в repository и не должны редактироваться вручную.
+Запускайте затронутые существующие проверки генераторов из корня движка. Публичные модели и справочники версионируются; индексы/каталоги доставки в игнорируемых каталогах восстанавливает `docs_prepare.py`. Не редактируйте ни те ни другие вручную. Порядок зависимостей описан в [сопровождении документации](../Docs/ru/contributing/documentation/), предпосылки отдельно разрешённых rendering/browser-проверок — в [публикации сайта](../Docs/ru/contributing/documentation/site-publication.md).
 
 Материализуйте review candidate только из чистого, удалённо доступного точного
 Engine commit:
@@ -225,10 +214,7 @@ python BuildTools/docs_examples.py --stage-repository minimal-multiplayer --engi
 ```
 
 ```bash
-python -m unittest discover -s BuildTools/tests -p "test_docs*.py"
-cmake -P BuildTools/tests/validate_project_interface.cmake
-cmake -P BuildTools/tests/validate_native_extension_interface.cmake
-cmake -P BuildTools/tests/validate_package_interface.cmake
+python BuildTools/docs_prepare.py
 python BuildTools/docs_cmake.py --check
 python BuildTools/docs_cli.py --check
 python BuildTools/docs_helper_cli.py --check
@@ -256,10 +242,6 @@ python BuildTools/docs_screenshots.py --check
 python BuildTools/docs_snippets.py --check --external
 python BuildTools/docs_site.py --check
 python BuildTools/docs_ai_eval.py --check
-python BuildTools/docs_site_artifact.py --site-dir _site
-npm ci --prefix BuildTools/docs-browser
-npx --prefix BuildTools/docs-browser playwright install chromium
-npm --prefix BuildTools/docs-browser run audit
 python BuildTools/docs_ai_delivery.py --check
 python BuildTools/docs_validate.py
 ```
@@ -352,9 +334,7 @@ file (вне `BuildTools`, в корне repository).
 
 #### FO_ANDROID_HOME / FO_ANDROID_SDK_ROOT / FO_ANDROID_NDK_ROOT
 
-Необязательные явные overrides Android SDK и NDK для BuildTools. Если они не
-заданы, BuildTools использует подготовленные workspace locations, а затем
-системный fallback `/usr/lib/android-sdk` в Linux, когда он доступен.
+BuildTools сначала использует существующие подготовленные каталоги `Workspace/android-sdk` и `Workspace/android-ndk`. Если их нет, применяются явные overrides SDK/NDK; для SDK последним fallback в Linux служит `/usr/lib/android-sdk`, когда он доступен.
 
 #### FO_CLANG_FORMAT
 
@@ -441,10 +421,7 @@ hosts продолжают использовать подготовленную
 собирает `libc++`, `libc++abi` и `libunwind` с MemorySanitizer instrumentation.
 Runtime build также передаёт `BuildTools/sanitizers/msan-runtime-ignorelist.txt`,
 чтобы libunwind не выдавал self-report для ABI register snapshots во время
-разворачивания C++ exception или sanitizer report. Validator
-`unit-tests-san-memory` автоматически подготавливает его перед конфигурацией
-`San_Memory`; используйте явную workspace-команду только для предварительного
-прогрева CI host или отладки runtime build.
+разворачивания C++ exception или sanitizer report. Подготовьте этот workspace явно перед поддерживаемой native-сборкой `San_Memory`; удалённый unit-validator его больше не подготавливает. Managed-script сборки отклоняют `San_Memory*` и `San_Thread` из-за границ инструментации Mono и signal-based stop-the-world. В форке нет unit-validator и текущего заявления о покрытии этих конфигураций.
 
 Linux hosts могут подготовить Windows cross-compilation SDK/CRT через ту же
 обёртку:
@@ -502,7 +479,7 @@ runners должен выполнять команду сразу после che
 Локальный отладочный flow Web в Windows использует общие команды:
 
 - `buildtools.py build web client RelWithDebInfo`
-- `buildtools.py package-web-debug`
+- `buildtools.py package-web-debug <ProjectDevName> <Config>`
 
 Для оптимизированной browser build используйте:
 
@@ -540,8 +517,7 @@ host.
 
 ```bash
 python3 Engine/BuildTools/android_device.py --workspace-root Workspace connect
-cd Workspace/android-debug/<ProjectDevName>-Client-<Config>-Android
-./gradlew assembleDebug
+(cd Workspace/android-debug/<ProjectDevName>-Client-<Config>-Android && ./gradlew assembleDebug)
 python3 Engine/BuildTools/android_device.py --workspace-root Workspace install --apk Workspace/android-debug/<ProjectDevName>-Client-<Config>-Android/app/build/outputs/apk/debug/app-debug.apk
 python3 Engine/BuildTools/android_device.py --workspace-root Workspace launch --activity com.example.game/.FOnlineActivity
 
