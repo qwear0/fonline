@@ -5,7 +5,7 @@ locale: ru
 document_id: client-runtime
 permalink: /Docs/ru/explanation/runtime/client.html
 ---
-<!-- docs-translation: {"document_id":"client-runtime","locale":"ru","source_path":"Docs/en/explanation/runtime/client.md","source_sha256":"cf9d9369f2152cf012d97e6f857c849d15c388ee288c3b52e0ecf164625abfa8"} -->
+<!-- docs-translation: {"document_id":"client-runtime","locale":"ru","source_path":"Docs/en/explanation/runtime/client.md","source_sha256":"e5e264dcdb17fd50d52147088c2c5d84a381269cc715a918cf2b26e0e32a9ca8"} -->
 # Клиентская среда выполнения
 
 > Документация движка. Эта страница описывает переиспользуемое поведение клиентского runtime в `Source/Client/`; политика игрового интерфейса, игровые правила и конкретный контент принадлежат встраиваемому проекту.
@@ -173,6 +173,8 @@ callers сохраняют и адресуют эти items. Action-context snap
 identity на своей более узкой boundary.
 
 Script GUI widgets `ItemView` кешируют handles предметов, привязанные к cells. `Resort()` удаляет destroyed handles, возвращённые stale supplier, сохраняет cell только когда источник вернул тот же живой экземпляр handle, и перепривязывает replacement clone с тем же entity id, чтобы callback отрисовки предмета видел актуальное количество и остальные projected properties.
+
+`Net_OnCritterMoveItem()` применяет актуальные слоты инвентаря выбранного криттера до обновления его представления и вызова `OnCritterAction`. При переносе в одиночный слот вытесненный предмет также перемещается в прежний слот; остальные предметы множественного слота остаются на месте. Detached action-context item описывает полученный слот назначения, а аргумент действия содержит прежний слот. Виджеты инвентаря, принадлежащие игровому проекту, могут перестраивать кеш ячеек по этому событию без локального предсказания переноса.
 
 ## Архитектура runtime 3D-моделей
 

@@ -12,7 +12,18 @@ Developer-visible FOnline changes and migration notes are maintained here in Eng
 
 ## Unreleased
 
-## Current - 2026-10-22
+## Current - 2026-10-23
+
+### Fixed
+
+- Apply the chosen critter's authoritative equipment slots, including a displaced item in a single-item slot, before refreshing animations and firing `OnCritterAction`. Inventory widgets can refresh from that event without observing the previous slot layout; equipping a weapon no longer requires reconnecting to update its stance.
+
+### Migration
+
+- Base `fd4877d81e55a89e7734f5b4dc3fff0c1b08f419` (`2026.1.65-dev`) → `2026.1.66-dev`. Rebuild and redistribute client runtimes. Games that cache inventory cells should refresh them on authoritative item-move events; the engine applies slots before those callbacks. Local prediction remains optional.
+- No API signature, settings, serialized properties, save/resource schema, wire `0.0.75` or Managed ABI `9` change, and no data conversion. Slot synchronization is corrected using the existing packet fields and slot multiplicity settings. Rollback restores the preceding client runtime and may restore stale equipment presentation until reconnect.
+
+## 2026.1.65-dev - 2026-10-22
 
 ### Changed
 
