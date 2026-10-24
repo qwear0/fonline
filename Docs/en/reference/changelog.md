@@ -16,6 +16,17 @@ Developer-visible FOnline changes and migration notes are maintained here in Eng
 
 ### Fixed
 
+- Compile the client critter model query without an unused-variable warning when 3D support is disabled. The query still validates that the critter is on the loaded map before returning false.
+
+### Migration
+
+- Base `f47024e29d018d6b0d9fb6cfdb609a5d69f1a02c` (`2026.1.67-dev`) → `2026.1.68-dev`. Rebuild affected client runtimes to obtain the warning-free implementation. No project API, setting, data or resource migration is required; validation and return semantics remain unchanged.
+- Wire compatibility `0.0.76` and Managed ABI `9` are unchanged. For rollback, restore the preceding matching runtime/resource artifacts; no data conversion is needed.
+
+## 2026.1.67-dev - 2026-10-24
+
+### Fixed
+
 - Retire and sync the pending recovery journal before discarding durable replay progress. Startup and reconnect recognize an empty pending journal with surviving progress as interrupted cleanup, avoiding replay of an already applied insert/update history. Nonempty pending journals still require exact matching progress prefixes.
 - Replace every non-chosen critter's public inventory snapshot, including an empty snapshot, before view refresh and action callbacks. Moving or hiding the last public item no longer leaves stale remote equipment. Chosen inventory remains independently synchronized and rejects snapshot items in this message.
 
