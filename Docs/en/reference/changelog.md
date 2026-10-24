@@ -12,7 +12,20 @@ Developer-visible FOnline changes and migration notes are maintained here in Eng
 
 ## Unreleased
 
-## Current - 2026-10-23
+## Current - 2026-10-24
+
+### Fixed
+
+- Retire and sync the pending recovery journal before discarding durable replay progress. Startup and reconnect recognize an empty pending journal with surviving progress as interrupted cleanup, avoiding replay of an already applied insert/update history. Nonempty pending journals still require exact matching progress prefixes.
+- Replace every non-chosen critter's public inventory snapshot, including an empty snapshot, before view refresh and action callbacks. Moving or hiding the last public item no longer leaves stale remote equipment. Chosen inventory remains independently synchronized and rejects snapshot items in this message.
+
+### Migration
+
+- Base `ab493e700bfe115cf45aa8509839394050eb167b` (`2026.1.66-dev`) → `2026.1.67-dev`. Reconfigure, rebuild server and client runtimes, rebake resources/metadata and redistribute the matching artifacts. No project API, setting, serialized-property, backend-record or resource-schema conversion is required. The existing journal line format and inventory packet fields retain their meanings; this repairs their recovery/snapshot invariants.
+- Wire compatibility advances from `0.0.75` to `0.0.76` through `Source/Common/Common.h` to require corrected clients and servers together; do not override the compatibility check to mix runtimes. Managed ABI remains `9`.
+- Preserve consistent database and both journal backups before upgrade. For rollback, first finish recovery and stop with both journals empty: the older runtime rejects the new interrupted-cleanup state with empty pending and nonempty progress. Existing nonempty pending journals whose progress was already lost under the old cleanup order are not automatically repaired; use the [recovery procedure](../how-to/release/backup-and-recovery.md), not manual journal deletion. See [Persistence](../explanation/persistence/) for the retirement transition. Restore the matching previous runtime/resource set on rollback; stale remote equipment can recur.
+
+## 2026.1.66-dev - 2026-10-23
 
 ### Fixed
 
